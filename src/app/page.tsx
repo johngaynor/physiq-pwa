@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "./store/reducer";
 import { incrementCount, decrementCount } from "./Main/state/actions";
-import { Button } from "@/components/ui";
+// import { Button } from "@/components/ui";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -13,11 +13,13 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, { incrementCount, decrementCount });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Main: React.FC<PropsFromRedux> = ({
-  count,
-  incrementCount,
-  decrementCount,
-}) => {
+const Main: React.FC<PropsFromRedux> = (
+  {
+    // count,
+    // incrementCount,
+    // decrementCount,
+  }
+) => {
   return (
     <div className="flex h-screen flex-col items-center justify-center">
       <h1 className="scroll-m-20 font-extrabold tracking-tight text-8xl text-center">
