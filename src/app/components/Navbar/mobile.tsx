@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useTheme } from "next-themes";
 import { House, Dumbbell, Database, HeartPlus, Sun, Moon } from "lucide-react";
-import { Button } from "@/components/ui";
 
 const NavItems = [
   {
