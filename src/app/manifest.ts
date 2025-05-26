@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Bodybuilding Redefined.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0f172a",
-    theme_color: "#1e293b",
+    background_color: "#020617",
+    theme_color: "#020617",
     icons: [
       {
         src: "192x192.png",
