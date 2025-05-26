@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ReduxProvider>
             <div className="relative max-w-6xl mx-auto px-5">
               <NavbarWrapper>{children}</NavbarWrapper>
