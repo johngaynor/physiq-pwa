@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useTheme } from "next-themes";
 import { House, Dumbbell, Database, HeartPlus, Sun, Moon } from "lucide-react";
+import { Button } from "@/components/ui";
 
 const NavItems = [
   {
@@ -34,7 +35,10 @@ const MobileNavbar = ({}) => {
     <NavigationMenu className="fixed bottom-0 right-0 left-0">
       <NavigationMenuList>
         {NavItems.map((item, index) => (
-          <NavigationMenuItem key={index} className="w-full">
+          <NavigationMenuItem
+            key={"mobile-nav-item-" + index}
+            className="w-full"
+          >
             <a
               href={item.href}
               className="flex items-center justify-center h-16"
