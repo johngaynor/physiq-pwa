@@ -19,7 +19,7 @@ function NavigationMenu({
       data-viewport={viewport}
       className={cn(
         // "group/navigation-menu absolute flex max-w-max flex-1 items-center justify-center bg-red-100 p-2",
-        "absolute z-10 right-5 left-5",
+        "absolute z-10",
         className
       )}
       {...props}
@@ -39,7 +39,7 @@ function NavigationMenuList({
       data-slot="navigation-menu-list"
       className={cn(
         // "group flex flex-1 list-none items-center justify-center gap-1",
-        "flex h-16 w-full items-center justify-between px-4",
+        "flex h-16 w-full items-center justify-between",
         className
       )}
       {...props}

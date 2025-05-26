@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "./store";
-import Navbar from "./components/Navbar";
+import NavbarWrapper from "./components/Navbar";
 import { ThemeProvider } from "./components/Theme";
 
 const geistSans = Geist({
@@ -33,8 +33,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ReduxProvider>
             <div className="relative max-w-6xl mx-auto px-5">
-              <Navbar />
-              {children}
+              <NavbarWrapper>{children}</NavbarWrapper>
             </div>
           </ReduxProvider>
         </ThemeProvider>
