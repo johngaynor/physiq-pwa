@@ -60,3 +60,31 @@ export function H4({ children, className, ...props }: HeaderProps) {
     </h4>
   );
 }
+
+export function H5({ children, className, ...props }: HeaderProps) {
+  return (
+    <h5
+      className={cn(
+        "scroll-m-20 text-lg font-semibold tracking-tight",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </h5>
+  );
+}
+
+export function H6({ children, className, ...props }: HeaderProps) {
+  return (
+    <h6
+      className={cn(
+        "scroll-m-20 text-md font-semibold tracking-tight",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </h6>
+  );
+}

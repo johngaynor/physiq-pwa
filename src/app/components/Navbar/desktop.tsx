@@ -16,20 +16,11 @@ import {
 } from "./ListItems";
 import { useTheme } from "next-themes";
 import { Button, H4 } from "@/components/ui";
-import {
-  useUser,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Sun, Moon } from "lucide-react";
 
 const DesktopNavbar = ({}) => {
   const { theme, setTheme } = useTheme();
-  const { user } = useUser();
-
-  console.log(user);
 
   return (
     <NavigationMenu className="right-5 left-5">
