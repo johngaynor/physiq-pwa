@@ -112,15 +112,14 @@ const DesktopNavbar = ({}) => {
               {theme === "light" ? <Moon size={36} /> : <Sun size={36} />}
             </Button>
           </NavigationMenuItem>
-          <SignedOut>
-            <NavigationMenuItem>
+
+          <NavigationMenuItem>
+            <SignedOut>
               <SignInButton mode="redirect">
                 <Button variant="default">Sign In</Button>
               </SignInButton>
-            </NavigationMenuItem>
-          </SignedOut>
-          <SignedIn>
-            <NavigationMenuItem className="flex justify-center items-center">
+            </SignedOut>
+            <SignedIn>
               <UserButton
                 appearance={{
                   elements: {
@@ -128,8 +127,8 @@ const DesktopNavbar = ({}) => {
                   },
                 }}
               />
-            </NavigationMenuItem>
-          </SignedIn>
+            </SignedIn>
+          </NavigationMenuItem>
         </div>
       </NavigationMenuList>
     </NavigationMenu>
