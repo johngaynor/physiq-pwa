@@ -7,50 +7,72 @@ type ListItem = {
 export const TrainingItems: ListItem[] = [
   {
     title: "Workout Log",
-    href: "/docs/primitives/alert-dialog",
-    description: "Log your workouts, track your progress, and stay motivated.",
+    href: "/",
+    description: "Log your workouts.",
   },
   {
     title: "Workout History",
-    href: "/docs/primitives/hover-card",
-    description: "View your history.",
+    href: "/",
+    description: "View your training history.",
+  },
+  {
+    title: "Workout Builder",
+    href: "/",
+    description: "Build templates for training blocks and sessions.",
+  },
+  {
+    title: "Exercise Database",
+    href: "/",
+    description: "Create and manage exercises for your workouts.",
   },
 ];
 
 export const LibraryItems: ListItem[] = [
   {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
+    title: "Bodybuilder Case Studies",
+    href: "/",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "Study the methodologies of the world's most renowned bodybuilders.",
+  },
+];
+
+export const ReportItems: ListItem[] = [
+  {
+    title: "Check-Ins",
+    href: "/",
+    description: "Complete weekly check-ins to track your progress.",
   },
   {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
+    title: "Recovery Statistics",
+    href: "/",
+    description: "Gain insights into your recovery with trends and reports.",
+  },
+];
+
+export const HealthItems: ListItem[] = [
+  {
+    title: "Nutrition Log",
+    href: "/",
+    description: "View and manage your meal plans and nutrition information.",
   },
   {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+    title: "Supplement Tracker",
+    href: "/",
+    description: "Log your daily supplement intake.",
   },
   {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
+    title: "Weight Tracker",
+    href: "/",
+    description: "Log your daily fasted AM bodyweight.",
   },
   {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+    title: "Steps Tracker",
+    href: "/",
+    description: "Log your daily step count.",
   },
   {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+    title: "Sleep Tracker",
+    href: "/",
+    description: "Track and monitor your sleep patterns.",
   },
 ];

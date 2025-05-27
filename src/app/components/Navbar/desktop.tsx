@@ -8,12 +8,28 @@ import {
   NavigationMenuTrigger,
   ListItem,
 } from "@/components/ui/navigation-menu";
-import { TrainingItems, LibraryItems } from "./ListItems";
+import {
+  TrainingItems,
+  LibraryItems,
+  HealthItems,
+  ReportItems,
+} from "./ListItems";
 import { useTheme } from "next-themes";
 import { Button, H4 } from "@/components/ui";
+import {
+  useUser,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import { Sun, Moon } from "lucide-react";
 
 const DesktopNavbar = ({}) => {
   const { theme, setTheme } = useTheme();
+  const { user } = useUser();
+
+  console.log(user);
 
   return (
     <NavigationMenu className="right-5 left-5">
@@ -58,7 +74,23 @@ const DesktopNavbar = ({}) => {
             <NavigationMenuTrigger>Health</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                {LibraryItems.map((component) => (
+                {HealthItems.map((component) => (
+                  <ListItem
+                    key={component.title}
+                    title={component.title}
+                    href={component.href}
+                  >
+                    {component.description}
+                  </ListItem>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Reports</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                {ReportItems.map((component) => (
                   <ListItem
                     key={component.title}
                     title={component.title}
@@ -72,19 +104,32 @@ const DesktopNavbar = ({}) => {
           </NavigationMenuItem>
         </div>
         <div className=" flex items-center">
-          <NavigationMenuItem
-          // className="mr-5"
-          >
+          <NavigationMenuItem className="mr-5">
             <Button
               variant="outline"
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             >
-              Change Mode (current: {theme || "..."})
+              {theme === "light" ? <Moon size={36} /> : <Sun size={36} />}
             </Button>
           </NavigationMenuItem>
-          {/* <NavigationMenuItem>
-            <Button variant="outline">Logout</Button>
-          </NavigationMenuItem> */}
+          <SignedOut>
+            <NavigationMenuItem>
+              <SignInButton mode="redirect">
+                <Button variant="default">Sign In</Button>
+              </SignInButton>
+            </NavigationMenuItem>
+          </SignedOut>
+          <SignedIn>
+            <NavigationMenuItem className="flex justify-center items-center">
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "border border-gray-300 rounded-full",
+                  },
+                }}
+              />
+            </NavigationMenuItem>
+          </SignedIn>
         </div>
       </NavigationMenuList>
     </NavigationMenu>
