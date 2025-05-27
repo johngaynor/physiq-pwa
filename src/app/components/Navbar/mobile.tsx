@@ -11,19 +11,19 @@ import { House, Dumbbell, Database, HeartPlus, Sun, Moon } from "lucide-react";
 const NavItems = [
   {
     href: "/",
-    icon: <House size={36} />,
+    icon: <House size={24} />,
   },
   {
     href: "/",
-    icon: <Dumbbell size={36} />,
+    icon: <Dumbbell size={24} />,
   },
   {
     href: "/",
-    icon: <Database size={36} />,
+    icon: <Database size={24} />,
   },
   {
     href: "/",
-    icon: <HeartPlus size={36} />,
+    icon: <HeartPlus size={24} />,
   },
 ];
 
@@ -49,7 +49,7 @@ const MobileNavbar = ({}) => {
         <NavigationMenuItem className="w-full">
           {theme === "dark" ? (
             <Sun
-              size={36}
+              size={24}
               onClick={() => setTheme("light")}
               className="flex items-center justify-center mx-auto"
             />
