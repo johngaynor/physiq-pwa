@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../store/reducer";
-import { incrementCount, decrementCount } from "../Main/state/actions";
+import { incrementCount, decrementCount } from "./state/actions";
 import { Button } from "@/components/ui";
 
 function mapStateToProps(state: RootState) {
