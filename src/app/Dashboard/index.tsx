@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import { connect, ConnectedProps } from "react-redux";
+import { RootState } from "../store/reducer";
 import { H4, Checkbox } from "@/components/ui";
 import {
   Table,
@@ -10,24 +12,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DashboardButton } from "./components/Button";
+import { SupplementData } from "../Health/testdata";
 
-type SupplementItem = {
-  id: number;
-  name: string;
-  dosage: string;
-  checked: boolean;
-};
+function mapStateToProps(state: RootState) {
+  return {
+    dailyLogs: state.health.dailyLogs,
+    dailyLogsLoading: state.health.dailyLogsLoading,
+  };
+}
 
-const SupplementData: SupplementItem[] = [
-  { id: 1, name: "Creatine Monohydrate", dosage: "5g", checked: false },
-  { id: 2, name: "Pre-Workout", dosage: "1 scoop", checked: true },
-  { id: 3, name: "Noxygen Pump Powder", dosage: "1 scoop", checked: false },
-  { id: 4, name: "Glutamine", dosage: "5g", checked: false },
-  { id: 5, name: "D-Aspartic Acid", dosage: "9000mg", checked: false },
-  // { id: 6, name: "Berberine", dosage: "1 Softgel", checked: false },
-];
+const connector = connect(mapStateToProps, {});
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Dashboard = () => {
+const Dashboard: React.FC<PropsFromRedux> = ({
+  dailyLogs,
+  dailyLogsLoading,
+}) => {
   return (
     <div className="py-4">
       <H4 className="pb-4">Today</H4>
@@ -84,4 +84,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default connector(Dashboard);
