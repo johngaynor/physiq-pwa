@@ -47,7 +47,7 @@ function FormWrapper<T>({
   return (
     <Dialog>
       <DialogTrigger asChild>{Trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] top-[20%] translate-y-0">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
