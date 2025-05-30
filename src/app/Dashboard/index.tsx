@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DashboardButton } from "./components/Button";
+import { StepsForm, WeightForm } from "./components/Forms";
 import { SupplementData } from "../Health/testdata";
 
 function mapStateToProps(state: RootState) {
@@ -28,26 +29,33 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
 }) => {
+  console.log(dailyLogs, dailyLogsLoading);
   return (
     <div className="py-4">
       <H4 className="pb-4">Today</H4>
-      <div className="grid grid-cols-2 grid-rows-2 gap-1 h-full w-full border-2 rounded-md">
-        {/* <WeightForm
-            Trigger={
-              <DashboardButton
-                header="Weight"
-                subheader="lbs this AM"
-                data="187.2"
-                onSubmit={() => console.log("submitted for weight")}
-              />
-            }
-          /> */}
-        <DashboardButton
-          header="Steps"
-          subheader="Steps yesterday"
-          data="10,368"
+      <div className="grid grid-cols-2 grid-rows-2 gap-2 p-2 h-full w-full border-2 rounded-md">
+        <WeightForm
+          Trigger={
+            <DashboardButton
+              header="Weight"
+              subheader="lbs this AM"
+              data="187.2"
+              onSubmit={() => console.log("submitted for weight")}
+            />
+          }
         />
-        <DashboardButton
+        <StepsForm
+          Trigger={
+            <DashboardButton
+              header="Steps"
+              subheader="Steps yesterday"
+              data={10342}
+              onSubmit={() => console.log("submitted for steps")}
+            />
+          }
+        />
+
+        {/* <DashboardButton
           header="Sleep"
           subheader="Sleep last night"
           data="7h 12m"
@@ -56,7 +64,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           header="Training"
           subheader="Today's training"
           // data="56m"
-        />
+        /> */}
       </div>
       <div className="border-2 p-2 rounded-md mt-2">
         <Table>

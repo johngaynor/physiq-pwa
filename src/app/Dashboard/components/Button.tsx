@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, H1, H5 } from "@/components/ui";
+import { H1, H5 } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 
 type DashboardButtonProps = {
@@ -11,16 +11,12 @@ type DashboardButtonProps = {
 export const DashboardButton = React.forwardRef<
   HTMLButtonElement,
   DashboardButtonProps
->(({ header = "--", subheader = "--", data }, ref) => {
+>(({ header = "--", subheader = "--", data, ...props }, ref) => {
   return (
-    <div className="relative">
-      <div className="absolute inset-0 p-2">
-        <Button
-          variant="outline"
-          className="w-full h-full flex flex-col relative"
-          ref={ref}
-        >
-          <p className="absolute left-2 top-2 text-gray-500">{header}</p>
+    <button ref={ref} {...props} className="relative w-full">
+      <div className="absolute inset-0">
+        <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
+          <p className="absolute left-5 top-3 text-gray-500">{header}</p>
           {data ? (
             <>
               <H1>{data}</H1>
@@ -32,9 +28,9 @@ export const DashboardButton = React.forwardRef<
               <H5>Record {header}</H5>
             </>
           )}
-        </Button>
+        </div>
       </div>
       <div className="pt-[100%]" />
-    </div>
+    </button>
   );
 });

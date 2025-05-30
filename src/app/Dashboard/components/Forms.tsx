@@ -44,36 +44,6 @@ function FormWrapper({
   );
 }
 
-// old one for reference
-export function WeightForm(props: { Trigger: React.ReactNode }) {
-  const { Trigger } = props;
-  return (
-    <Dialog>
-      <DialogTrigger asChild>{Trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Morning Weight</DialogTitle>
-          <DialogDescription>
-            Record your morning weight after defecation and before eating or
-            drinking.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="weight" className="text-right">
-              Weight
-            </Label>
-            <Input id="weight" value={187.2} className="col-span-3" />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 type StepsFormValues = {
   steps: number | null;
 };
@@ -99,6 +69,38 @@ export function StepsForm(props: { Trigger: React.ReactNode }) {
           Steps
         </Label>
         <Input id="steps" value={10342} className="col-span-3" />
+      </div>
+    </FormWrapper>
+  );
+}
+
+type WeightFormValues = {
+  weight: number | null;
+};
+
+export function WeightForm(props: { Trigger: React.ReactNode }) {
+  const { Trigger } = props;
+
+  function handleSubmit(values: WeightFormValues) {
+    console.log("submitting form for weight");
+  }
+
+  return (
+    <FormWrapper
+      Trigger={Trigger}
+      title="Log Weight"
+      description="Record your morning weight after defecation and before eating or drinking."
+      onSubmit={() => console.log("submitted for weight")}
+      // onSubmit={(values: WeightFormValues) => console.log("submitted for weight")} // typing for submit form is null... need to fix later
+    >
+      {/* Want to figure out how to make adjustable columns, specifically for sleep */}
+      <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="weight" className="text-right">
+            Weight
+          </Label>
+          <Input id="weight" value={187.2} className="col-span-3" />
+        </div>
       </div>
     </FormWrapper>
   );
