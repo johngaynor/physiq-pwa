@@ -10,21 +10,40 @@ import {
 } from "@/components/ui/dialog";
 import { Label, Input, Button } from "@/components/ui";
 
-type DashboardFormProps = {
+type DashboardFormProps<T> = {
   Trigger: React.ReactNode;
   title?: string;
   description?: string;
-  onSubmit: () => void;
-  children: React.ReactNode;
+  onSubmit: (values: T) => void;
+  initialValues: T;
+  children: (
+    formValues: T,
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  ) => React.ReactNode;
 };
 
-function FormWrapper({
-  children,
+function FormWrapper<T>({
   Trigger,
   title,
   description,
   onSubmit,
-}: DashboardFormProps) {
+  initialValues,
+  children,
+}: DashboardFormProps<T>) {
+  const [formValues, setFormValues] = React.useState<T>(initialValues);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { id, value } = e.target;
+    setFormValues((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  }
+
+  function handleSubmit() {
+    onSubmit(formValues);
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>{Trigger}</DialogTrigger>
@@ -33,9 +52,11 @@ function FormWrapper({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">{children}</div>
+        <div className="grid gap-4 py-4">
+          {children(formValues, handleChange)}
+        </div>
         <DialogFooter>
-          <Button type="submit" onClick={() => onSubmit()}>
+          <Button type="submit" onClick={handleSubmit}>
             Save changes
           </Button>
         </DialogFooter>
@@ -44,64 +65,67 @@ function FormWrapper({
   );
 }
 
-type StepsFormValues = {
-  steps: number | null;
-};
-
-export function StepsForm(props: { Trigger: React.ReactNode }) {
-  const { Trigger } = props;
-
-  function handleSubmit(values: StepsFormValues) {
-    console.log("submitting form for steps");
-  }
-
-  return (
-    <FormWrapper
-      Trigger={Trigger}
-      title="Log Steps"
-      description="Enter yesterday's steps."
-      onSubmit={() => console.log("submitted for steps")}
-      // onSubmit={(values: StepsFormValues) => console.log("submitted for steps")} // typing for submit form is null... need to fix later
-    >
-      {/* Want to figure out how to make adjustable columns, specifically for sleep */}
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="weight" className="text-right">
-          Steps
-        </Label>
-        <Input id="steps" value={10342} className="col-span-3" />
-      </div>
-    </FormWrapper>
-  );
-}
-
 type WeightFormValues = {
-  weight: number | null;
+  weight: number | string;
 };
 
-export function WeightForm(props: { Trigger: React.ReactNode }) {
-  const { Trigger } = props;
-
-  function handleSubmit(values: WeightFormValues) {
-    console.log("submitting form for weight");
-  }
-
+export function WeightForm({
+  Trigger,
+  handleSubmit,
+}: {
+  Trigger: React.ReactNode;
+  handleSubmit: (values: WeightFormValues) => void;
+}) {
   return (
-    <FormWrapper
+    <FormWrapper<WeightFormValues>
       Trigger={Trigger}
       title="Log Weight"
       description="Record your morning weight after defecation and before eating or drinking."
-      onSubmit={() => console.log("submitted for weight")}
-      // onSubmit={(values: WeightFormValues) => console.log("submitted for weight")} // typing for submit form is null... need to fix later
+      initialValues={{ weight: 187.2 }}
+      onSubmit={handleSubmit}
     >
-      {/* Want to figure out how to make adjustable columns, specifically for sleep */}
-      <div className="grid gap-4 py-4">
+      {(values, handleChange) => (
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="weight" className="text-right">
             Weight
           </Label>
-          <Input id="weight" value={187.2} className="col-span-3" />
+          <Input
+            id="weight"
+            value={values.weight}
+            onChange={handleChange}
+            className="col-span-3"
+            type="number"
+          />
         </div>
-      </div>
+      )}
     </FormWrapper>
   );
 }
+
+// type StepsFormValues = {
+//   steps: number | null;
+// };
+
+// export function StepsForm(props: {
+//   Trigger: React.ReactNode;
+//   handleSubmit: (values: StepsFormValues) => void;
+// }) {
+//   const { Trigger, handleSubmit } = props;
+
+//   return (
+//     <FormWrapper
+//       Trigger={Trigger}
+//       title="Log Steps"
+//       description="Enter yesterday's steps."
+//       onSubmit={handleSubmit} // typing for submit form is null... need to fix later
+//     >
+//       {/* Want to figure out how to make adjustable columns, specifically for sleep */}
+//       <div className="grid grid-cols-4 items-center gap-4">
+//         <Label htmlFor="weight" className="text-right">
+//           Steps
+//         </Label>
+//         <Input id="steps" value={10342} className="col-span-3" />
+//       </div>
+//     </FormWrapper>
+//   );
+// }

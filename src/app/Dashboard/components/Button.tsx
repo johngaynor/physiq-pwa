@@ -34,3 +34,4 @@ export const DashboardButton = React.forwardRef<
     </button>
   );
 });
+DashboardButton.displayName = "DashboardButton";

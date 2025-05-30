@@ -12,8 +12,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DashboardButton } from "./components/Button";
-import { StepsForm, WeightForm } from "./components/Forms";
+import {
+  // StepsForm,
+  WeightForm,
+} from "./components/Forms";
 import { SupplementData } from "../Health/testdata";
+import { useUser } from "@clerk/nextjs";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -25,11 +29,22 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, {});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Dashboard: React.FC<PropsFromRedux> = ({
-  dailyLogs,
-  dailyLogsLoading,
-}) => {
-  console.log(dailyLogs, dailyLogsLoading);
+const Dashboard: React.FC<PropsFromRedux> = (
+  {
+    // dailyLogs,
+    // dailyLogsLoading,
+  }
+) => {
+  const { user } = useUser();
+
+  function handleSubmitWeight(values: { weight: number | string }) {
+    console.log("submitting weight", {
+      ...values,
+      userId: user?.id,
+      date: new Date(),
+    });
+  }
+
   return (
     <div className="py-4">
       <H4 className="pb-4">Today</H4>
@@ -40,11 +55,11 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               header="Weight"
               subheader="lbs this AM"
               data="187.2"
-              onSubmit={() => console.log("submitted for weight")}
             />
           }
+          handleSubmit={handleSubmitWeight}
         />
-        <StepsForm
+        {/* <StepsForm
           Trigger={
             <DashboardButton
               header="Steps"
@@ -53,7 +68,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               onSubmit={() => console.log("submitted for steps")}
             />
           }
-        />
+        /> */}
 
         {/* <DashboardButton
           header="Sleep"
