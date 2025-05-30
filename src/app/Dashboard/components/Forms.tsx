@@ -77,7 +77,7 @@ export function WeightForm({
   handleSubmit: (values: WeightFormValues) => void;
 }) {
   return (
-    <FormWrapper
+    <FormWrapper<WeightFormValues>
       Trigger={Trigger}
       title="Log Weight"
       description="Record your morning weight after defecation and before eating or drinking."

@@ -43,6 +43,7 @@ const Dashboard: React.FC<PropsFromRedux> = (
       userId: user?.id,
       date: new Date(),
     });
+    alert("attempting submit");
   }
 
   return (
