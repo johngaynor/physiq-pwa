@@ -6,14 +6,15 @@ type DashboardButtonProps = {
   header?: string;
   subheader?: string;
   data?: string | number;
+  onClick?: () => void;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const DashboardButton = React.forwardRef<
   HTMLButtonElement,
   DashboardButtonProps
->(({ header = "--", subheader = "--", data, ...props }, ref) => {
+>(({ header = "--", subheader = "--", data, onClick, ...props }, ref) => {
   return (
-    <button ref={ref} {...props} className="relative w-full">
+    <button ref={ref} {...props} className="relative w-full" onClick={onClick}>
       <div className="absolute inset-0">
         <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
           <p className="absolute left-5 top-3 text-gray-500">{header}</p>

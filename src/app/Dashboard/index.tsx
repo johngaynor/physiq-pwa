@@ -105,7 +105,11 @@ const Dashboard: React.FC<PropsFromRedux> = (
           }
           handleSubmit={handleSubmitSleep}
         />
-        <DashboardButton header="Training" subheader="Today's training" />
+        <DashboardButton
+          header="Training"
+          subheader="Today's training"
+          onClick={() => alert("functionality not here yet womp womp")}
+        />
       </div>
       <div className="border-2 p-2 rounded-md mt-2">
         <Table>
