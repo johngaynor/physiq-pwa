@@ -1,0 +1,2 @@
+export const FETCH_HEALTH_DAILY_LOGS = "FETCH_HEALTH_DAILY_LOGS" as const;
+export const LOAD_HEALTH_DAILY_LOGS = "LOAD_HEALTH_DAILY_LOGS" as const;

@@ -1,15 +1,8 @@
-type DailyLog = {
-  userId: string;
-  date: string;
-  weight: number | null;
-  steps: number | null;
-  totalBed: number | null;
-  totalSleep: number | null;
-  awakeQty: number | null;
-  lightQty: number | null;
-  remQty: number | null;
-  deepQty: number | null;
-};
+import {
+  FETCH_HEALTH_DAILY_LOGS,
+  LOAD_HEALTH_DAILY_LOGS,
+} from "../../store/actionTypes";
+import type { DailyLog } from "./types";
 
 interface HealthState {
   dailyLogs: DailyLog[];
@@ -17,22 +10,25 @@ interface HealthState {
 }
 
 type Action =
-  | { type: "FETCH_HEALTH_DAILY_LOGS" }
-  | { type: "LOAD_HEALTH_DAILY_LOGS"; data: DailyLog[] };
+  | { type: typeof FETCH_HEALTH_DAILY_LOGS }
+  | { type: typeof LOAD_HEALTH_DAILY_LOGS; data: DailyLog[] };
 
 const DEFAULT_STATE: HealthState = {
   dailyLogs: [],
   dailyLogsLoading: false,
 };
 
-export default (state = DEFAULT_STATE, action: Action) => {
+export default function healthReducer(
+  state = DEFAULT_STATE,
+  action: Action
+): HealthState {
   switch (action.type) {
-    case "FETCH_HEALTH_DAILY_LOGS":
+    case FETCH_HEALTH_DAILY_LOGS:
       return {
         ...state,
         dailyLogsLoading: true,
       };
-    case "LOAD_HEALTH_DAILY_LOGS":
+    case LOAD_HEALTH_DAILY_LOGS:
       return {
         ...state,
         dailyLogsLoading: false,
@@ -41,4 +37,4 @@ export default (state = DEFAULT_STATE, action: Action) => {
     default:
       return state;
   }
-};
+}
