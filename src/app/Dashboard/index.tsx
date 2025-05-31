@@ -12,10 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DashboardButton } from "./components/Button";
-import {
-  // StepsForm,
-  WeightForm,
-} from "./components/Forms";
+import { SleepForm, StepsForm, WeightForm } from "./components/Forms";
 import { SupplementData } from "../Health/testdata";
 import { useUser } from "@clerk/nextjs";
 
@@ -38,12 +35,40 @@ const Dashboard: React.FC<PropsFromRedux> = (
   const { user } = useUser();
 
   function handleSubmitWeight(values: { weight: number | string }) {
-    console.log("submitting weight", {
-      ...values,
-      userId: user?.id,
-      date: new Date(),
-    });
-    alert("attempting submit");
+    alert(
+      JSON.stringify(
+        { ...values, userId: user?.id, date: new Date().toISOString() },
+        null,
+        2
+      )
+    );
+  }
+
+  function handleSubmitSteps(values: { steps: number | string }) {
+    alert(
+      JSON.stringify(
+        { ...values, userId: user?.id, date: new Date().toISOString() },
+        null,
+        2
+      )
+    );
+  }
+
+  function handleSubmitSleep(values: {
+    totalSleep: number | string;
+    totalBed: number | string;
+    awakeQty: number | string;
+    lightQty: number | string;
+    remQty: number | string;
+    deepQty: number | string;
+  }) {
+    alert(
+      JSON.stringify(
+        { ...values, userId: user?.id, date: new Date().toISOString() },
+        null,
+        2
+      )
+    );
   }
 
   return (
@@ -60,27 +85,27 @@ const Dashboard: React.FC<PropsFromRedux> = (
           }
           handleSubmit={handleSubmitWeight}
         />
-        {/* <StepsForm
+        <StepsForm
           Trigger={
             <DashboardButton
               header="Steps"
               subheader="Steps yesterday"
               data={10342}
-              onSubmit={() => console.log("submitted for steps")}
             />
           }
-        /> */}
-
-        {/* <DashboardButton
-          header="Sleep"
-          subheader="Sleep last night"
-          data="7h 12m"
+          handleSubmit={handleSubmitSteps}
         />
-        <DashboardButton
-          header="Training"
-          subheader="Today's training"
-          // data="56m"
-        /> */}
+        <SleepForm
+          Trigger={
+            <DashboardButton
+              header="Sleep"
+              subheader="Hrs last night"
+              data={"7h 12m"}
+            />
+          }
+          handleSubmit={handleSubmitSleep}
+        />
+        <DashboardButton header="Training" subheader="Today's training" />
       </div>
       <div className="border-2 p-2 rounded-md mt-2">
         <Table>

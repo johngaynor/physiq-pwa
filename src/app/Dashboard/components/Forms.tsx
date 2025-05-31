@@ -31,6 +31,7 @@ function FormWrapper<T>({
   children,
 }: DashboardFormProps<T>) {
   const [formValues, setFormValues] = React.useState<T>(initialValues);
+  const [open, setOpen] = React.useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target;
@@ -42,10 +43,11 @@ function FormWrapper<T>({
 
   function handleSubmit() {
     onSubmit(formValues);
+    setOpen(false);
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{Trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px] top-[20%] translate-y-0">
         <DialogHeader>
@@ -102,30 +104,150 @@ export function WeightForm({
   );
 }
 
-// type StepsFormValues = {
-//   steps: number | null;
-// };
+type StepsFormValues = {
+  steps: number | string;
+};
 
-// export function StepsForm(props: {
-//   Trigger: React.ReactNode;
-//   handleSubmit: (values: StepsFormValues) => void;
-// }) {
-//   const { Trigger, handleSubmit } = props;
+export function StepsForm({
+  Trigger,
+  handleSubmit,
+}: {
+  Trigger: React.ReactNode;
+  handleSubmit: (values: StepsFormValues) => void;
+}) {
+  return (
+    <FormWrapper<StepsFormValues>
+      Trigger={Trigger}
+      title="Log Steps"
+      description="Record yesterday's steps."
+      initialValues={{ steps: 10834 }}
+      onSubmit={handleSubmit}
+    >
+      {(values, handleChange) => (
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="steps" className="text-right">
+            Steps
+          </Label>
+          <Input
+            id="steps"
+            value={values.steps}
+            onChange={handleChange}
+            className="col-span-3"
+            type="number"
+          />
+        </div>
+      )}
+    </FormWrapper>
+  );
+}
 
-//   return (
-//     <FormWrapper
-//       Trigger={Trigger}
-//       title="Log Steps"
-//       description="Enter yesterday's steps."
-//       onSubmit={handleSubmit} // typing for submit form is null... need to fix later
-//     >
-//       {/* Want to figure out how to make adjustable columns, specifically for sleep */}
-//       <div className="grid grid-cols-4 items-center gap-4">
-//         <Label htmlFor="weight" className="text-right">
-//           Steps
-//         </Label>
-//         <Input id="steps" value={10342} className="col-span-3" />
-//       </div>
-//     </FormWrapper>
-//   );
-// }
+type SleepFormValues = {
+  totalBed: number | string;
+  totalSleep: number | string;
+  awakeQty: number | string;
+  lightQty: number | string;
+  remQty: number | string;
+  deepQty: number | string;
+};
+
+export function SleepForm({
+  Trigger,
+  handleSubmit,
+}: {
+  Trigger: React.ReactNode;
+  handleSubmit: (values: SleepFormValues) => void;
+}) {
+  return (
+    <FormWrapper<SleepFormValues>
+      Trigger={Trigger}
+      title="Log Sleep"
+      description="Record last night's sleep."
+      initialValues={{
+        totalBed: 8,
+        totalSleep: 7.2,
+        awakeQty: 0.5,
+        lightQty: 2,
+        remQty: 1.5,
+        deepQty: 3,
+      }}
+      onSubmit={handleSubmit}
+    >
+      {(values, handleChange) => (
+        <>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="totalBed" className="text-right">
+              Total Bed
+            </Label>
+            <Input
+              id="totalBed"
+              value={values.totalBed}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="totalSleep" className="text-right">
+              Total Sleep
+            </Label>
+            <Input
+              id="totalSleep"
+              value={values.totalSleep}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="awakeQty" className="text-right">
+              Awake Qty
+            </Label>
+            <Input
+              id="awakeQty"
+              value={values.awakeQty}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="lightQty" className="text-right">
+              Light Sleep Qty
+            </Label>
+            <Input
+              id="lightQty"
+              value={values.lightQty}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="remQty" className="text-right">
+              REM Sleep Qty
+            </Label>
+            <Input
+              id="remQty"
+              value={values.remQty}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="deepQty" className="text-right">
+              Deep Sleep Qty
+            </Label>
+            <Input
+              id="deepQty"
+              value={values.deepQty}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+        </>
+      )}
+    </FormWrapper>
+  );
+}
