@@ -32,8 +32,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   getDailyLogs,
 }) => {
   React.useEffect(() => {
-    if (!dailyLogsLoading && !dailyLogs.length)
-      getDailyLogs().then((data) => alert("ROWS RETURNED: " + data.length));
+    if (!dailyLogsLoading && !dailyLogs.length) getDailyLogs();
   }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
 
   function handleSubmitWeight(values: { weight: number | string }) {
