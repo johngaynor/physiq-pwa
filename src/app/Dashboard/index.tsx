@@ -63,7 +63,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
 
   return (
     <div className="py-4">
-      <H4 className="pb-4">Today</H4>
+      <H4 className="pb-4">Today - {dailyLogs.length}</H4>
       <div className="grid grid-cols-2 grid-rows-2 gap-2 p-2 h-full w-full border-2 rounded-md">
         <WeightForm
           Trigger={
