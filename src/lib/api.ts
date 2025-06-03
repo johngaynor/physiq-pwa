@@ -1,10 +1,36 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig, Method } from "axios";
 import { getToken } from "./apiClient";
 
-type methodType = "get" | "post" | "put" | "patch" | "delete" | "options";
+type MethodType = "get" | "post" | "put" | "patch" | "delete" | "options";
 
-function caller<T>(obj: ApiObj<T>, method: methodType) {
-  return async (dispatch: any): Promise<T> => {
+async function apiCall<T>(
+  method: MethodType,
+  path: string,
+  config?: AxiosRequestConfig
+): Promise<T> {
+  try {
+    const response = await axios.request<T>({
+      method: method.toUpperCase() as Method,
+      url: path,
+      ...config,
+    });
+
+    if ([242].includes(response.status)) {
+      return Promise.reject({
+        status: response.status,
+        warning: response.data,
+      });
+    }
+
+    return response.data;
+  } catch (err: any) {
+    const message = err.response?.data?.error || "Unknown API error";
+    throw new Error(message);
+  }
+}
+
+function caller<T>(obj: ApiObj<T>, method: MethodType) {
+  return async (dispatch: (action: any) => void): Promise<T> => {
     const { route, data, fetchArr, loadArr, onFailArr, error, success, empty } =
       obj.state;
 
@@ -22,19 +48,21 @@ function caller<T>(obj: ApiObj<T>, method: methodType) {
           ? "http://localhost:3000"
           : "https://physiq-api.onrender.com") + route;
 
-      const res = await apiCall<T>(method, url, {
-        credentials: "include",
+      const config: AxiosRequestConfig = {
         headers,
-        ...(Array.isArray(data) || typeof data === "string" ? { data } : data),
-      });
+        withCredentials: true,
+        ...(Array.isArray(data) || typeof data === "string"
+          ? { data }
+          : { data }),
+      };
 
-      if (loadArr.length) {
-        loadArr.forEach((load) => {
-          if (typeof load === "function") dispatch(load(res));
-          else if (typeof load === "object") dispatch({ ...load, data: res });
-          else dispatch({ type: load, data: res });
-        });
-      }
+      const res = await apiCall<T>(method, url, config);
+
+      loadArr.forEach((load) => {
+        if (typeof load === "function") dispatch(load(res));
+        else if (typeof load === "object") dispatch({ ...load, data: res });
+        else dispatch({ type: load, data: res });
+      });
 
       if (empty && (!res || (Array.isArray(res) && res.length === 0))) {
         // dispatch(setFlash(empty, 'yellow'));
@@ -43,7 +71,7 @@ function caller<T>(obj: ApiObj<T>, method: methodType) {
       if (success) console.log("success", success);
 
       return res;
-    } catch (err: any) {
+    } catch (err) {
       if (!onFailArr.length && loadArr.length) {
         loadArr.forEach((load) =>
           dispatch(typeof load === "function" ? load([{}] as T) : load)
@@ -54,45 +82,23 @@ function caller<T>(obj: ApiObj<T>, method: methodType) {
         dispatch(typeof fail === "function" ? fail() : fail)
       );
 
-      console.log(JSON.stringify(err, null, 2));
-
-      console.error("API call failed:", (error as Error).message || error, err);
+      console.error("API call failed:", error, err);
       throw err;
     }
   };
 }
 
-async function apiCall<T>(
-  method: methodType,
-  path: string,
-  data?: any
-): Promise<T> {
-  try {
-    const response = await axios[method](path, data);
-    if ([242].includes(response.status)) {
-      return Promise.reject({
-        status: response.status,
-        warning: response.data,
-      });
-    }
-    return response.data as T;
-  } catch (err: any) {
-    const error = new Error(err.response?.data?.error || "Unknown API error");
-    // Optionally handle Sentry here
-    throw error;
-  }
-}
-
 type LoadFunction<T> = (data: T) => any;
+type Dispatchable = { type: string; data?: any } | (() => any);
 
 interface ApiObjState<T> {
   route: string;
   error: string | Error;
   success?: string;
   empty?: string;
-  fetchArr: Array<any>;
-  loadArr: Array<LoadFunction<T> | object | string>;
-  onFailArr: Array<() => any | object | string>;
+  fetchArr: Dispatchable[];
+  loadArr: Array<LoadFunction<T> | { type: string; data?: any } | string>;
+  onFailArr: Dispatchable[];
   data?: any;
 }
 
@@ -109,17 +115,17 @@ class ApiObj<T = any> {
     };
   }
 
-  fetch(fn: any) {
+  fetch(fn: Dispatchable) {
     this.state.fetchArr.push(fn);
     return this;
   }
 
-  load(fn: LoadFunction<T> | object | string) {
+  load(fn: LoadFunction<T> | { type: string; data?: any } | string) {
     this.state.loadArr.push(fn);
     return this;
   }
 
-  onFail(fn: any) {
+  onFail(fn: Dispatchable) {
     this.state.onFailArr.push(fn);
     return this;
   }
@@ -150,6 +156,10 @@ class ApiObj<T = any> {
 
   post() {
     return caller<T>(this, "post");
+  }
+
+  delete() {
+    return caller<T>(this, "delete");
   }
 }
 
