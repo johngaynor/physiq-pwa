@@ -5,7 +5,7 @@ import "./globals.css";
 import { ReduxProvider } from "./store";
 import NavbarWrapper from "./components/Navbar";
 import { ThemeProvider } from "./components/Theme";
-import { UserInitializer } from "./components/UserInitializer";
+import SessionInitializer from "./components/SessionInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,8 +34,8 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <SessionInitializer />
             <ReduxProvider>
-              <UserInitializer />
               <div className="relative max-w-6xl mx-auto px-5">
                 <NavbarWrapper>{children}</NavbarWrapper>
               </div>

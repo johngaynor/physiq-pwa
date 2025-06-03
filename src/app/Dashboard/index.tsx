@@ -14,7 +14,7 @@ import {
 import { DashboardButton } from "./components/Button";
 import { SleepForm, StepsForm, WeightForm } from "./components/Forms";
 import { SupplementData } from "../Health/testdata";
-import { useUser } from "@clerk/nextjs";
+import { getDailyLogs } from "../Health/state/actions";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -23,34 +23,28 @@ function mapStateToProps(state: RootState) {
   };
 }
 
-const connector = connect(mapStateToProps, {});
+const connector = connect(mapStateToProps, { getDailyLogs });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Dashboard: React.FC<PropsFromRedux> = (
-  {
-    // dailyLogs,
-    // dailyLogsLoading,
-  }
-) => {
-  const { user } = useUser();
+const Dashboard: React.FC<PropsFromRedux> = ({
+  dailyLogs,
+  dailyLogsLoading,
+  getDailyLogs,
+}) => {
+  React.useEffect(() => {
+    if (!dailyLogsLoading && !dailyLogs.length)
+      getDailyLogs().then((data) => alert("ROWS RETURNED: " + data.length));
+  }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
 
   function handleSubmitWeight(values: { weight: number | string }) {
     alert(
-      JSON.stringify(
-        { ...values, userId: user?.id, date: new Date().toISOString() },
-        null,
-        2
-      )
+      JSON.stringify({ ...values, date: new Date().toISOString() }, null, 2)
     );
   }
 
   function handleSubmitSteps(values: { steps: number | string }) {
     alert(
-      JSON.stringify(
-        { ...values, userId: user?.id, date: new Date().toISOString() },
-        null,
-        2
-      )
+      JSON.stringify({ ...values, date: new Date().toISOString() }, null, 2)
     );
   }
 
@@ -63,11 +57,7 @@ const Dashboard: React.FC<PropsFromRedux> = (
     deepQty: number | string;
   }) {
     alert(
-      JSON.stringify(
-        { ...values, userId: user?.id, date: new Date().toISOString() },
-        null,
-        2
-      )
+      JSON.stringify({ ...values, date: new Date().toISOString() }, null, 2)
     );
   }
 

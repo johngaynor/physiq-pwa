@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getApiUserId } from "@/lib/userContext";
+import { getToken } from "./apiClient";
 
 type methodType = "get" | "post" | "put" | "patch" | "delete" | "options";
 
@@ -11,12 +11,18 @@ function caller<T>(obj: ApiObj<T>, method: methodType) {
     fetchArr.forEach((fn) => dispatch(typeof fn === "function" ? fn() : fn));
 
     try {
-      const headers = {
-        "x-user-id": getApiUserId() || "",
-        "x-api-key": process.env.API_KEY || "",
+      const token = getToken();
+
+      const headers: Record<string, string> = {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
 
-      const res = await apiCall<T>(method, route, {
+      const url =
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:3000"
+          : "https://physiq-api.onrender.com") + route;
+
+      const res = await apiCall<T>(method, url, {
         credentials: "include",
         headers,
         ...(Array.isArray(data) || typeof data === "string" ? { data } : data),
@@ -48,6 +54,8 @@ function caller<T>(obj: ApiObj<T>, method: methodType) {
         dispatch(typeof fail === "function" ? fail() : fail)
       );
 
+      console.log(JSON.stringify(err, null, 2));
+
       console.error("API call failed:", (error as Error).message || error, err);
       throw err;
     }
@@ -69,7 +77,7 @@ async function apiCall<T>(
     }
     return response.data as T;
   } catch (err: any) {
-    const error = new Error(err.response?.data?.message || "Unknown API error");
+    const error = new Error(err.response?.data?.error || "Unknown API error");
     // Optionally handle Sentry here
     throw error;
   }

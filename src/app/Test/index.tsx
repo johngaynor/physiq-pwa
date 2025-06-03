@@ -20,9 +20,9 @@ const Main: React.FC<PropsFromRedux> = ({
 }) => {
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <h1 className="scroll-m-20 font-extrabold tracking-tight text-8xl text-center">
+      {/* <h1 className="scroll-m-20 font-extrabold tracking-tight text-8xl text-center">
         Bodybuilding Redefined.
-      </h1>
+      </h1> */}
       <p className="text-lg">Count: {count}</p>
       <Button onClick={() => incrementCount()} className="mt-4">
         Increment
