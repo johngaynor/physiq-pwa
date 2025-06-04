@@ -15,6 +15,8 @@ import { DashboardButton } from "./components/Button";
 import { SleepForm, StepsForm, WeightForm } from "./components/Forms";
 import { SupplementData } from "../Health/testdata";
 import { getDailyLogs } from "../Health/state/actions";
+import { DateTime } from "luxon";
+import { convertTime } from "../components/Time";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -34,6 +36,11 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   React.useEffect(() => {
     if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
   }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
+
+  const today = DateTime.now().toISODate();
+  const todayLog = dailyLogs?.find((d) => d.date === today);
+  const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
+  const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
 
   function handleSubmitWeight(values: { weight: number | string }) {
     alert(
@@ -62,38 +69,50 @@ const Dashboard: React.FC<PropsFromRedux> = ({
 
   return (
     <div className="py-4">
-      <H4 className="pb-4">
-        Today - {dailyLogs ? dailyLogs.length : "No logs returned"}
-      </H4>
+      <H4 className="pb-4">Today</H4>
       <div className="grid grid-cols-2 grid-rows-2 gap-2 p-2 h-full w-full border-2 rounded-md">
         <WeightForm
           Trigger={
             <DashboardButton
               header="Weight"
               subheader="lbs this AM"
-              data="187.2"
+              data={todayLog?.weight}
             />
           }
+          initialValues={{
+            weight: todayLog?.weight || "",
+          }}
           handleSubmit={handleSubmitWeight}
         />
         <StepsForm
           Trigger={
             <DashboardButton
               header="Steps"
-              subheader="Steps yesterday"
-              data={10342}
+              subheader="steps yesterday"
+              data={yesterdayLog?.steps}
             />
           }
+          initialValues={{
+            steps: yesterdayLog?.steps || "",
+          }}
           handleSubmit={handleSubmitSteps}
         />
         <SleepForm
           Trigger={
             <DashboardButton
               header="Sleep"
-              subheader="Hrs last night"
-              data={"7h 12m"}
+              subheader="last night"
+              data={convertTime(todayLog?.totalSleep || 0)}
             />
           }
+          initialValues={{
+            totalSleep: todayLog?.totalSleep || "",
+            totalBed: todayLog?.totalBed || "",
+            awakeQty: todayLog?.awakeQty || "",
+            lightQty: todayLog?.lightQty || "",
+            deepQty: todayLog?.deepQty || "",
+            remQty: todayLog?.remQty || "",
+          }}
           handleSubmit={handleSubmitSleep}
         />
         <DashboardButton

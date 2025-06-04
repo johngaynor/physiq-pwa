@@ -33,6 +33,10 @@ function FormWrapper<T>({
   const [formValues, setFormValues] = React.useState<T>(initialValues);
   const [open, setOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    setFormValues(initialValues);
+  }, [initialValues]);
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target;
     setFormValues((prev) => ({
@@ -74,16 +78,18 @@ type WeightFormValues = {
 export function WeightForm({
   Trigger,
   handleSubmit,
+  initialValues,
 }: {
   Trigger: React.ReactNode;
   handleSubmit: (values: WeightFormValues) => void;
+  initialValues: WeightFormValues;
 }) {
   return (
     <FormWrapper<WeightFormValues>
       Trigger={Trigger}
       title="Log Weight"
       description="Record your morning weight after defecation and before eating or drinking."
-      initialValues={{ weight: 187.2 }}
+      initialValues={initialValues}
       onSubmit={handleSubmit}
     >
       {(values, handleChange) => (
@@ -111,16 +117,18 @@ type StepsFormValues = {
 export function StepsForm({
   Trigger,
   handleSubmit,
+  initialValues,
 }: {
   Trigger: React.ReactNode;
   handleSubmit: (values: StepsFormValues) => void;
+  initialValues: StepsFormValues;
 }) {
   return (
     <FormWrapper<StepsFormValues>
       Trigger={Trigger}
       title="Log Steps"
       description="Record yesterday's steps."
-      initialValues={{ steps: 10834 }}
+      initialValues={initialValues}
       onSubmit={handleSubmit}
     >
       {(values, handleChange) => (
@@ -153,39 +161,22 @@ type SleepFormValues = {
 export function SleepForm({
   Trigger,
   handleSubmit,
+  initialValues,
 }: {
   Trigger: React.ReactNode;
   handleSubmit: (values: SleepFormValues) => void;
+  initialValues: SleepFormValues;
 }) {
   return (
     <FormWrapper<SleepFormValues>
       Trigger={Trigger}
       title="Log Sleep"
       description="Record last night's sleep."
-      initialValues={{
-        totalBed: 8,
-        totalSleep: 7.2,
-        awakeQty: 0.5,
-        lightQty: 2,
-        remQty: 1.5,
-        deepQty: 3,
-      }}
+      initialValues={initialValues}
       onSubmit={handleSubmit}
     >
       {(values, handleChange) => (
         <>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="totalBed" className="text-right">
-              Total Bed
-            </Label>
-            <Input
-              id="totalBed"
-              value={values.totalBed}
-              onChange={handleChange}
-              className="col-span-3"
-              type="number"
-            />
-          </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="totalSleep" className="text-right">
               Total Sleep
@@ -198,6 +189,19 @@ export function SleepForm({
               type="number"
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="totalBed" className="text-right">
+              Total Bed
+            </Label>
+            <Input
+              id="totalBed"
+              value={values.totalBed}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="awakeQty" className="text-right">
               Awake Qty

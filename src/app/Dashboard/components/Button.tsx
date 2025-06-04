@@ -5,7 +5,7 @@ import { CirclePlus } from "lucide-react";
 type DashboardButtonProps = {
   header?: string;
   subheader?: string;
-  data?: string | number;
+  data?: string | number | null;
   onClick?: () => void;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
