@@ -5,7 +5,7 @@ import {
 import type { DailyLog } from "./types";
 
 interface HealthState {
-  dailyLogs: DailyLog[];
+  dailyLogs: DailyLog[] | null;
   dailyLogsLoading: boolean;
 }
 
@@ -14,7 +14,7 @@ type Action =
   | { type: typeof LOAD_HEALTH_DAILY_LOGS; data: DailyLog[] };
 
 const DEFAULT_STATE: HealthState = {
-  dailyLogs: [],
+  dailyLogs: null,
   dailyLogsLoading: false,
 };
 

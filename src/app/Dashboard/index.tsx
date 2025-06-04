@@ -32,7 +32,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   getDailyLogs,
 }) => {
   React.useEffect(() => {
-    if (!dailyLogsLoading && !dailyLogs.length) getDailyLogs();
+    if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
   }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
 
   function handleSubmitWeight(values: { weight: number | string }) {
@@ -62,7 +62,9 @@ const Dashboard: React.FC<PropsFromRedux> = ({
 
   return (
     <div className="py-4">
-      <H4 className="pb-4">Today - {dailyLogs.length}</H4>
+      <H4 className="pb-4">
+        Today - {dailyLogs ? dailyLogs.length : "No logs returned"}
+      </H4>
       <div className="grid grid-cols-2 grid-rows-2 gap-2 p-2 h-full w-full border-2 rounded-md">
         <WeightForm
           Trigger={
