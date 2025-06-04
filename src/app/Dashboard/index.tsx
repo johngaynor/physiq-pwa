@@ -77,6 +77,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               header="Weight"
               subheader="lbs this AM"
               data={todayLog?.weight}
+              loading={!dailyLogs || dailyLogsLoading}
             />
           }
           initialValues={{
@@ -90,6 +91,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               header="Steps"
               subheader="steps yesterday"
               data={yesterdayLog?.steps}
+              loading={!dailyLogs || dailyLogsLoading}
             />
           }
           initialValues={{
@@ -103,6 +105,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               header="Sleep"
               subheader="last night"
               data={convertTime(todayLog?.totalSleep || 0)}
+              loading={!dailyLogs || dailyLogsLoading}
             />
           }
           initialValues={{
