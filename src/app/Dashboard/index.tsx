@@ -51,8 +51,6 @@ const Dashboard: React.FC<PropsFromRedux> = ({
     if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
   }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
 
-  console.log(editStepsLoading, dailyLogsLoading);
-
   const today = DateTime.now().toISODate();
   const todayLog = dailyLogs?.find((d) => d.date === today);
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
