@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../store/reducer";
-import { H4, Checkbox } from "@/components/ui";
+import { H4, Checkbox, Spinner } from "@/components/ui";
 import {
   Table,
   TableBody,
@@ -13,11 +13,12 @@ import {
 } from "@/components/ui/table";
 import { DashboardButton } from "./components/Button";
 import { SleepForm, StepsForm, WeightForm } from "./components/Forms";
-import { SupplementData } from "../Health/testdata";
 import {
   getDailyLogs,
   editDailyWeight,
   editDailySteps,
+  getSupplements,
+  getSupplementLogs,
 } from "../Health/state/actions";
 import { DateTime } from "luxon";
 import { convertTime } from "../components/Time";
@@ -28,6 +29,10 @@ function mapStateToProps(state: RootState) {
     dailyLogsLoading: state.health.dailyLogsLoading,
     editWeightLoading: state.health.editWeightLoading,
     editStepsLoading: state.health.editStepsLoading,
+    supplements: state.health.supplements,
+    supplementsLoading: state.health.supplementsLoading,
+    supplementLogs: state.health.supplementLogs,
+    supplementLogsLoading: state.health.supplementLogsLoading,
   };
 }
 
@@ -35,6 +40,8 @@ const connector = connect(mapStateToProps, {
   getDailyLogs,
   editDailyWeight,
   editDailySteps,
+  getSupplements,
+  getSupplementLogs,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -46,10 +53,18 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   editDailyWeight,
   editStepsLoading,
   editDailySteps,
+  supplements,
+  supplementsLoading,
+  getSupplements,
+  supplementLogs,
+  supplementLogsLoading,
+  getSupplementLogs,
 }) => {
   React.useEffect(() => {
     if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
-  }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
+    if (!supplementsLoading && !supplements) getSupplements();
+    if (!supplementLogsLoading && !supplementLogs) getSupplementLogs();
+  });
 
   const today = DateTime.now().toISODate();
   const todayLog = dailyLogs?.find((d) => d.date === today);
@@ -132,27 +147,34 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           onClick={() => alert("functionality not here yet womp womp")}
         />
       </div>
-      <div className="border-2 p-2 rounded-md mt-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead></TableHead>
-              <TableHead>Supplement</TableHead>
-              <TableHead>Dosage</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {SupplementData.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">
-                  <Checkbox checked={item.checked} />
-                </TableCell>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.dosage}</TableCell>
+      <div className="border-2 p-2 rounded-md mt-2 min-h-[100px] flex justify-center items-center">
+        {!supplements ||
+        !supplementLogs ||
+        supplementsLoading ||
+        supplementLogsLoading ? (
+          <Spinner size="large" />
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead></TableHead>
+                <TableHead>Supplement</TableHead>
+                <TableHead>Dosage</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {supplements.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">
+                    <Checkbox checked={false} />
+                  </TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.dosage}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   );

@@ -5,37 +5,22 @@ import {
   LOAD_EDIT_HEALTH_DAILY_WEIGHT,
   FETCH_EDIT_HEALTH_DAILY_STEPS,
   LOAD_EDIT_HEALTH_DAILY_STEPS,
+  FETCH_HEALTH_SUPPLEMENTS,
+  LOAD_HEALTH_SUPPLEMENTS,
+  FETCH_HEALTH_SUPPLEMENT_LOGS,
+  LOAD_HEALTH_SUPPLEMENT_LOGS,
 } from "../../store/actionTypes";
-import type { DailyLog } from "./types";
-
-interface HealthState {
-  dailyLogs: DailyLog[] | null;
-  dailyLogsLoading: boolean;
-  editWeightLoading: boolean;
-  editStepsLoading: boolean;
-}
-
-type Action =
-  | { type: typeof FETCH_HEALTH_DAILY_LOGS }
-  | { type: typeof LOAD_HEALTH_DAILY_LOGS; data: DailyLog[] }
-  | {
-      type: typeof FETCH_EDIT_HEALTH_DAILY_WEIGHT;
-      date: string;
-      weight: number;
-    }
-  | { type: typeof LOAD_EDIT_HEALTH_DAILY_WEIGHT }
-  | {
-      type: typeof FETCH_EDIT_HEALTH_DAILY_STEPS;
-      date: string;
-      steps: number;
-    }
-  | { type: typeof LOAD_EDIT_HEALTH_DAILY_STEPS };
+import type { HealthState, Action } from "./types";
 
 const DEFAULT_STATE: HealthState = {
   dailyLogs: null,
   dailyLogsLoading: false,
   editWeightLoading: false,
   editStepsLoading: false,
+  supplements: null,
+  supplementsLoading: false,
+  supplementLogs: null,
+  supplementLogsLoading: false,
 };
 
 export default function healthReducer(
@@ -107,6 +92,28 @@ export default function healthReducer(
       return {
         ...state,
         editStepsLoading: false,
+      };
+    case FETCH_HEALTH_SUPPLEMENTS:
+      return {
+        ...state,
+        supplementsLoading: true,
+      };
+    case LOAD_HEALTH_SUPPLEMENTS:
+      return {
+        ...state,
+        supplementsLoading: false,
+        supplements: action.data,
+      };
+    case FETCH_HEALTH_SUPPLEMENT_LOGS:
+      return {
+        ...state,
+        supplementLogsLoading: true,
+      };
+    case LOAD_HEALTH_SUPPLEMENT_LOGS:
+      return {
+        ...state,
+        supplementLogsLoading: false,
+        supplementLogs: action.data,
       };
     default:
       return state;

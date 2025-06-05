@@ -216,7 +216,7 @@ export function SleepForm({
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="lightQty" className="text-right">
-              Light Sleep Qty
+              Light Qty
             </Label>
             <Input
               id="lightQty"
@@ -228,7 +228,7 @@ export function SleepForm({
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="remQty" className="text-right">
-              REM Sleep Qty
+              REM Qty
             </Label>
             <Input
               id="remQty"
@@ -240,7 +240,7 @@ export function SleepForm({
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="deepQty" className="text-right">
-              Deep Sleep Qty
+              Deep Qty
             </Label>
             <Input
               id="deepQty"

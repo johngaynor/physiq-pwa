@@ -5,9 +5,13 @@ import {
   LOAD_EDIT_HEALTH_DAILY_WEIGHT,
   FETCH_EDIT_HEALTH_DAILY_STEPS,
   LOAD_EDIT_HEALTH_DAILY_STEPS,
+  FETCH_HEALTH_SUPPLEMENTS,
+  LOAD_HEALTH_SUPPLEMENTS,
+  FETCH_HEALTH_SUPPLEMENT_LOGS,
+  LOAD_HEALTH_SUPPLEMENT_LOGS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { DailyLog } from "./types";
+import { DailyLog, Supplement, SupplementLog } from "./types";
 
 export const getDailyLogs = () => {
   return api
@@ -36,4 +40,25 @@ export const editDailySteps = (date: string, steps: number) => {
     .error("Error editing daily steps log")
     .data({ date, steps })
     .post();
+};
+
+export const getSupplements = () => {
+  return api
+    .route("/api/health/supplements")
+    .fetch(() => ({ type: FETCH_HEALTH_SUPPLEMENTS }))
+    .load((data: Supplement[]) => ({ type: LOAD_HEALTH_SUPPLEMENTS, data }))
+    .error("Error fetching health supplements")
+    .get();
+};
+
+export const getSupplementLogs = () => {
+  return api
+    .route("/api/health/supplements/logs")
+    .fetch(() => ({ type: FETCH_HEALTH_SUPPLEMENT_LOGS }))
+    .load((data: SupplementLog[]) => ({
+      type: LOAD_HEALTH_SUPPLEMENT_LOGS,
+      data,
+    }))
+    .error("Error fetching health supplement logs")
+    .get();
 };
