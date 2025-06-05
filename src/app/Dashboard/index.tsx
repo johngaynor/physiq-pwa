@@ -14,7 +14,11 @@ import {
 import { DashboardButton } from "./components/Button";
 import { SleepForm, StepsForm, WeightForm } from "./components/Forms";
 import { SupplementData } from "../Health/testdata";
-import { getDailyLogs } from "../Health/state/actions";
+import {
+  getDailyLogs,
+  editDailyWeight,
+  editDailySteps,
+} from "../Health/state/actions";
 import { DateTime } from "luxon";
 import { convertTime } from "../components/Time";
 
@@ -22,20 +26,32 @@ function mapStateToProps(state: RootState) {
   return {
     dailyLogs: state.health.dailyLogs,
     dailyLogsLoading: state.health.dailyLogsLoading,
+    editWeightLoading: state.health.editWeightLoading,
+    editStepsLoading: state.health.editStepsLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDailyLogs });
+const connector = connect(mapStateToProps, {
+  getDailyLogs,
+  editDailyWeight,
+  editDailySteps,
+});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const Dashboard: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
   getDailyLogs,
+  editWeightLoading,
+  editDailyWeight,
+  editStepsLoading,
+  editDailySteps,
 }) => {
   React.useEffect(() => {
     if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
   }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
+
+  console.log(editStepsLoading, dailyLogsLoading);
 
   const today = DateTime.now().toISODate();
   const todayLog = dailyLogs?.find((d) => d.date === today);
@@ -43,15 +59,11 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
 
   function handleSubmitWeight(values: { weight: number | string }) {
-    alert(
-      JSON.stringify({ ...values, date: new Date().toISOString() }, null, 2)
-    );
+    editDailyWeight(today, Number(values.weight));
   }
 
   function handleSubmitSteps(values: { steps: number | string }) {
-    alert(
-      JSON.stringify({ ...values, date: new Date().toISOString() }, null, 2)
-    );
+    editDailySteps(yesterday, Number(values.steps));
   }
 
   function handleSubmitSleep(values: {
@@ -62,9 +74,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
     remQty: number | string;
     deepQty: number | string;
   }) {
-    alert(
-      JSON.stringify({ ...values, date: new Date().toISOString() }, null, 2)
-    );
+    alert(JSON.stringify({ ...values, date: today }, null, 2));
   }
 
   return (
@@ -77,7 +87,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               header="Weight"
               subheader="lbs this AM"
               data={todayLog?.weight}
-              loading={!dailyLogs || dailyLogsLoading}
+              loading={!dailyLogs || dailyLogsLoading || editWeightLoading}
             />
           }
           initialValues={{
@@ -91,7 +101,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               header="Steps"
               subheader="steps yesterday"
               data={yesterdayLog?.steps}
-              loading={!dailyLogs || dailyLogsLoading}
+              loading={!dailyLogs || dailyLogsLoading || editStepsLoading}
             />
           }
           initialValues={{

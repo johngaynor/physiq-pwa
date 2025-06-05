@@ -24,8 +24,7 @@ async function apiCall<T>(
 
     return response.data;
   } catch (err: any) {
-    const message = err.response?.data?.error || "Unknown API error";
-    throw new Error(message);
+    throw err;
   }
 }
 
