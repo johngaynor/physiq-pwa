@@ -12,13 +12,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DashboardButton } from "./components/Button";
-import { SleepForm, StepsForm, WeightForm } from "./components/Forms";
+import {
+  BodyfatForm,
+  SleepForm,
+  StepsForm,
+  WeightForm,
+} from "./components/Forms";
 import {
   getDailyLogs,
   editDailyWeight,
   editDailySteps,
   getSupplements,
   getSupplementLogs,
+  toggleSupplementLog,
 } from "../Health/state/actions";
 import { DateTime } from "luxon";
 import { convertTime } from "../components/Time";
@@ -42,6 +48,7 @@ const connector = connect(mapStateToProps, {
   editDailySteps,
   getSupplements,
   getSupplementLogs,
+  toggleSupplementLog,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -59,6 +66,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   supplementLogs,
   supplementLogsLoading,
   getSupplementLogs,
+  toggleSupplementLog,
 }) => {
   React.useEffect(() => {
     if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
@@ -70,14 +78,6 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   const todayLog = dailyLogs?.find((d) => d.date === today);
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
-
-  function handleSubmitWeight(values: { weight: number | string }) {
-    editDailyWeight(today, Number(values.weight));
-  }
-
-  function handleSubmitSteps(values: { steps: number | string }) {
-    editDailySteps(yesterday, Number(values.steps));
-  }
 
   function handleSubmitSleep(values: {
     totalSleep: number | string;
@@ -106,7 +106,9 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           initialValues={{
             weight: todayLog?.weight || "",
           }}
-          handleSubmit={handleSubmitWeight}
+          handleSubmit={(values: { weight: number | string }) =>
+            editDailyWeight(today, Number(values.weight))
+          }
         />
         <StepsForm
           Trigger={
@@ -120,7 +122,9 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           initialValues={{
             steps: yesterdayLog?.steps || "",
           }}
-          handleSubmit={handleSubmitSteps}
+          handleSubmit={(values: { steps: number | string }) =>
+            editDailySteps(yesterday, Number(values.steps))
+          }
         />
         <SleepForm
           Trigger={
@@ -140,6 +144,23 @@ const Dashboard: React.FC<PropsFromRedux> = ({
             remQty: todayLog?.remQty || "",
           }}
           handleSubmit={handleSubmitSleep}
+        />
+        <BodyfatForm
+          Trigger={
+            <DashboardButton
+              header="BF %"
+              subheader="BF % Today"
+              data={todayLog?.bodyfat}
+              // loading={!dailyLogs || dailyLogsLoading || editStepsLoading}
+            />
+          }
+          initialValues={{
+            bodyfat: todayLog?.bodyfat || "",
+          }}
+          handleSubmit={(values: { bodyfat: number | string }) =>
+            // editDailySteps(yesterday, Number(values.bodyfat))
+            alert(JSON.stringify({ ...values, date: today }, null, 2))
+          }
         />
         <DashboardButton
           header="Training"
@@ -163,13 +184,22 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {supplements.map((item) => (
-                <TableRow key={item.id}>
+              {supplements.map((supp) => (
+                <TableRow key={supp.id}>
                   <TableCell className="font-medium">
-                    <Checkbox checked={false} />
+                    <Checkbox
+                      checked={
+                        supplementLogs?.find(
+                          (l) => l.date === today && l.supplementId === supp.id
+                        )?.completed
+                      }
+                      onCheckedChange={(checked) =>
+                        toggleSupplementLog(today, supp.id, Boolean(checked))
+                      }
+                    />
                   </TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.dosage}</TableCell>
+                  <TableCell>{supp.name}</TableCell>
+                  <TableCell>{supp.dosage}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

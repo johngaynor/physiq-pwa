@@ -9,6 +9,8 @@ import {
   LOAD_HEALTH_SUPPLEMENTS,
   FETCH_HEALTH_SUPPLEMENT_LOGS,
   LOAD_HEALTH_SUPPLEMENT_LOGS,
+  FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+  LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
 } from "../../store/actionTypes";
 import type { HealthState, Action } from "./types";
 
@@ -21,6 +23,7 @@ const DEFAULT_STATE: HealthState = {
   supplementsLoading: false,
   supplementLogs: null,
   supplementLogsLoading: false,
+  toggleSupplementLoading: false,
 };
 
 export default function healthReducer(
@@ -114,6 +117,40 @@ export default function healthReducer(
         ...state,
         supplementLogsLoading: false,
         supplementLogs: action.data,
+      };
+    case FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG:
+      let toggledLogs;
+      // remove if checked
+      if (action.checked) {
+        toggledLogs = state.supplementLogs?.filter(
+          (log) =>
+            !(
+              log.date === action.date &&
+              log.supplementId === action.supplementId
+            )
+        );
+      } else {
+        // add to array
+        toggledLogs = state.supplementLogs?.map((log) => {
+          if (
+            log.date === action.date &&
+            log.supplementId === action.supplementId
+          ) {
+            return { ...log, checked: true };
+          }
+          return log;
+        });
+      }
+
+      return {
+        ...state,
+        toggleSupplementLoading: true,
+        supplementLogs: toggledLogs || [],
+      };
+    case LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG:
+      return {
+        ...state,
+        toggleSupplementLoading: false,
       };
     default:
       return state;

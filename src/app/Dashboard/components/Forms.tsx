@@ -255,3 +255,42 @@ export function SleepForm({
     </FormWrapper>
   );
 }
+
+type BodyfatFormValues = {
+  bodyfat: number | string;
+};
+
+export function BodyfatForm({
+  Trigger,
+  handleSubmit,
+  initialValues,
+}: {
+  Trigger: React.ReactNode;
+  handleSubmit: (values: BodyfatFormValues) => void;
+  initialValues: BodyfatFormValues;
+}) {
+  return (
+    <FormWrapper<BodyfatFormValues>
+      Trigger={Trigger}
+      title="Log BF %"
+      description="Record this morning's BF %."
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+    >
+      {(values, handleChange) => (
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="bf" className="text-right">
+            BF %
+          </Label>
+          <Input
+            id="bf"
+            value={values.bodyfat}
+            onChange={handleChange}
+            className="col-span-3"
+            type="number"
+          />
+        </div>
+      )}
+    </FormWrapper>
+  );
+}

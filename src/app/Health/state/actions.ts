@@ -9,6 +9,8 @@ import {
   LOAD_HEALTH_SUPPLEMENTS,
   FETCH_HEALTH_SUPPLEMENT_LOGS,
   LOAD_HEALTH_SUPPLEMENT_LOGS,
+  FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+  LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { DailyLog, Supplement, SupplementLog } from "./types";
@@ -61,4 +63,25 @@ export const getSupplementLogs = () => {
     }))
     .error("Error fetching health supplement logs")
     .get();
+};
+
+export const toggleSupplementLog = (
+  date: string,
+  supplementId: number,
+  checked: boolean
+) => {
+  return api
+    .route("/api/health/supplements/logs")
+    .fetch(() => ({
+      type: FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+      date,
+      supplementId,
+      checked,
+    }))
+    .load(() => ({
+      type: LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+    }))
+    .error("Error toggling health supplement log")
+    .data({ date, supplementId, checked })
+    .post();
 };

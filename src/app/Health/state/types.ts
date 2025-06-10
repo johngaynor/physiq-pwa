@@ -9,6 +9,8 @@ import {
   LOAD_HEALTH_SUPPLEMENTS,
   FETCH_HEALTH_SUPPLEMENT_LOGS,
   LOAD_HEALTH_SUPPLEMENT_LOGS,
+  FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+  LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
 } from "../../store/actionTypes";
 
 // data object types
@@ -22,6 +24,7 @@ export type DailyLog = {
   lightQty?: number | null;
   remQty?: number | null;
   deepQty?: number | null;
+  bodyfat?: number | null;
 };
 
 export type Supplement = {
@@ -58,7 +61,14 @@ export type Action =
   | { type: typeof FETCH_HEALTH_SUPPLEMENTS }
   | { type: typeof LOAD_HEALTH_SUPPLEMENTS; data: Supplement[] }
   | { type: typeof FETCH_HEALTH_SUPPLEMENT_LOGS }
-  | { type: typeof LOAD_HEALTH_SUPPLEMENT_LOGS; data: SupplementLog[] };
+  | { type: typeof LOAD_HEALTH_SUPPLEMENT_LOGS; data: SupplementLog[] }
+  | {
+      type: typeof FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG;
+      date: string;
+      supplementId: number;
+      checked: boolean;
+    }
+  | { type: typeof LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG };
 
 export interface HealthState {
   dailyLogs: DailyLog[] | null;
@@ -69,4 +79,5 @@ export interface HealthState {
   supplementsLoading: boolean;
   supplementLogs: SupplementLog[] | null;
   supplementLogsLoading: boolean;
+  toggleSupplementLoading: boolean;
 }
