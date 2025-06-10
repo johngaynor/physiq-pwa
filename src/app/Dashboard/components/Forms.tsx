@@ -272,15 +272,15 @@ export function BodyfatForm({
   return (
     <FormWrapper<BodyfatFormValues>
       Trigger={Trigger}
-      title="Log BF %"
-      description="Record this morning's BF %."
+      title="Log Bodyfat %"
+      description="Record this morning's bodyfat %."
       initialValues={initialValues}
       onSubmit={handleSubmit}
     >
       {(values, handleChange) => (
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="bodyfat" className="text-right">
-            BF %
+            % Bodyfat
           </Label>
           <Input
             id="bodyfat"

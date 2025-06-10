@@ -153,8 +153,8 @@ const Dashboard: React.FC<PropsFromRedux> = ({
         <BodyfatForm
           Trigger={
             <DashboardButton
-              header="% Bodyfat"
-              subheader="BF % Today"
+              header="Bodyfat %"
+              subheader="% bodyfat this AM"
               data={todayLog?.bodyfat}
               loading={!dailyLogs || dailyLogsLoading || editBodyfatLoading}
             />
