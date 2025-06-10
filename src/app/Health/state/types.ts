@@ -11,6 +11,8 @@ import {
   LOAD_HEALTH_SUPPLEMENT_LOGS,
   FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG,
   LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+  FETCH_EDIT_HEALTH_DAILY_BODYFAT,
+  LOAD_EDIT_HEALTH_DAILY_BODYFAT,
 } from "../../store/actionTypes";
 
 // data object types
@@ -68,13 +70,21 @@ export type Action =
       supplementId: number;
       checked: boolean;
     }
-  | { type: typeof LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG };
+  | { type: typeof LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG }
+  | { type: typeof LOAD_EDIT_HEALTH_DAILY_WEIGHT }
+  | {
+      type: typeof FETCH_EDIT_HEALTH_DAILY_BODYFAT;
+      date: string;
+      bodyfat: number;
+    }
+  | { type: typeof LOAD_EDIT_HEALTH_DAILY_BODYFAT };
 
 export interface HealthState {
   dailyLogs: DailyLog[] | null;
   dailyLogsLoading: boolean;
   editWeightLoading: boolean;
   editStepsLoading: boolean;
+  editBodyfatLoading: boolean;
   supplements: Supplement[] | null;
   supplementsLoading: boolean;
   supplementLogs: SupplementLog[] | null;

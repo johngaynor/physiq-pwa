@@ -25,6 +25,7 @@ import {
   getSupplements,
   getSupplementLogs,
   toggleSupplementLog,
+  editDailyBodyfat,
 } from "../Health/state/actions";
 import { DateTime } from "luxon";
 import { convertTime } from "../components/Time";
@@ -35,6 +36,7 @@ function mapStateToProps(state: RootState) {
     dailyLogsLoading: state.health.dailyLogsLoading,
     editWeightLoading: state.health.editWeightLoading,
     editStepsLoading: state.health.editStepsLoading,
+    editBodyfatLoading: state.health.editBodyfatLoading,
     supplements: state.health.supplements,
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
@@ -46,6 +48,7 @@ const connector = connect(mapStateToProps, {
   getDailyLogs,
   editDailyWeight,
   editDailySteps,
+  editDailyBodyfat,
   getSupplements,
   getSupplementLogs,
   toggleSupplementLog,
@@ -60,6 +63,8 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   editDailyWeight,
   editStepsLoading,
   editDailySteps,
+  editBodyfatLoading,
+  editDailyBodyfat,
   supplements,
   supplementsLoading,
   getSupplements,
@@ -148,18 +153,17 @@ const Dashboard: React.FC<PropsFromRedux> = ({
         <BodyfatForm
           Trigger={
             <DashboardButton
-              header="BF %"
+              header="% Bodyfat"
               subheader="BF % Today"
               data={todayLog?.bodyfat}
-              // loading={!dailyLogs || dailyLogsLoading || editStepsLoading}
+              loading={!dailyLogs || dailyLogsLoading || editBodyfatLoading}
             />
           }
           initialValues={{
             bodyfat: todayLog?.bodyfat || "",
           }}
           handleSubmit={(values: { bodyfat: number | string }) =>
-            // editDailySteps(yesterday, Number(values.bodyfat))
-            alert(JSON.stringify({ ...values, date: today }, null, 2))
+            editDailyBodyfat(today, Number(values.bodyfat))
           }
         />
         <DashboardButton

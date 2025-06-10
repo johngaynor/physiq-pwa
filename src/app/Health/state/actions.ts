@@ -11,6 +11,8 @@ import {
   LOAD_HEALTH_SUPPLEMENT_LOGS,
   FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG,
   LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+  FETCH_EDIT_HEALTH_DAILY_BODYFAT,
+  LOAD_EDIT_HEALTH_DAILY_BODYFAT,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { DailyLog, Supplement, SupplementLog } from "./types";
@@ -83,5 +85,15 @@ export const toggleSupplementLog = (
     }))
     .error("Error toggling health supplement log")
     .data({ date, supplementId, checked })
+    .post();
+};
+
+export const editDailyBodyfat = (date: string, bodyfat: number) => {
+  return api
+    .route("/api/health/logs/daily/bodyfat")
+    .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_BODYFAT, date, bodyfat }))
+    .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_BODYFAT }))
+    .error("Error editing daily bodyfat log")
+    .data({ date, bodyfat })
     .post();
 };

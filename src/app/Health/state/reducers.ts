@@ -11,6 +11,8 @@ import {
   LOAD_HEALTH_SUPPLEMENT_LOGS,
   FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG,
   LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
+  FETCH_EDIT_HEALTH_DAILY_BODYFAT,
+  LOAD_EDIT_HEALTH_DAILY_BODYFAT,
 } from "../../store/actionTypes";
 import type { HealthState, Action } from "./types";
 
@@ -19,6 +21,7 @@ const DEFAULT_STATE: HealthState = {
   dailyLogsLoading: false,
   editWeightLoading: false,
   editStepsLoading: false,
+  editBodyfatLoading: false,
   supplements: null,
   supplementsLoading: false,
   supplementLogs: null,
@@ -151,6 +154,33 @@ export default function healthReducer(
       return {
         ...state,
         toggleSupplementLoading: false,
+      };
+    case FETCH_EDIT_HEALTH_DAILY_BODYFAT: {
+      let found = false;
+
+      const newBodyfatLogs =
+        state.dailyLogs?.map((log) => {
+          if (log.date === action.date) {
+            found = true;
+            return { ...log, bodyfat: action.bodyfat };
+          }
+          return log;
+        }) || [];
+
+      if (!found) {
+        newBodyfatLogs.push({ date: action.date, bodyfat: action.bodyfat });
+      }
+
+      return {
+        ...state,
+        editWeightLoading: true,
+        dailyLogs: newBodyfatLogs,
+      };
+    }
+    case LOAD_EDIT_HEALTH_DAILY_BODYFAT:
+      return {
+        ...state,
+        editWeightLoading: false,
       };
     default:
       return state;
