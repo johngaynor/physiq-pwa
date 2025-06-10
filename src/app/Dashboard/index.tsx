@@ -14,8 +14,10 @@ import {
 import { DashboardButton } from "./components/Button";
 import {
   BodyfatForm,
+  CaloriesForm,
   SleepForm,
   StepsForm,
+  WaterForm,
   WeightForm,
 } from "./components/Forms";
 import {
@@ -26,6 +28,8 @@ import {
   getSupplementLogs,
   toggleSupplementLog,
   editDailyBodyfat,
+  editDailyCalories,
+  editDailyWater,
 } from "../Health/state/actions";
 import { DateTime } from "luxon";
 import { convertTime } from "../components/Time";
@@ -37,6 +41,8 @@ function mapStateToProps(state: RootState) {
     editWeightLoading: state.health.editWeightLoading,
     editStepsLoading: state.health.editStepsLoading,
     editBodyfatLoading: state.health.editBodyfatLoading,
+    editWaterLoading: state.health.editWaterLoading,
+    editCaloriesLoading: state.health.editCaloriesLoading,
     supplements: state.health.supplements,
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
@@ -52,6 +58,8 @@ const connector = connect(mapStateToProps, {
   getSupplements,
   getSupplementLogs,
   toggleSupplementLog,
+  editDailyCalories,
+  editDailyWater,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -65,6 +73,10 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   editDailySteps,
   editBodyfatLoading,
   editDailyBodyfat,
+  editWaterLoading,
+  editDailyWater,
+  editCaloriesLoading,
+  editDailyCalories,
   supplements,
   supplementsLoading,
   getSupplements,
@@ -164,6 +176,38 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           }}
           handleSubmit={(values: { bodyfat: number | string }) =>
             editDailyBodyfat(today, Number(values.bodyfat))
+          }
+        />
+        <WaterForm
+          Trigger={
+            <DashboardButton
+              header="Water"
+              subheader="/ 128"
+              data={todayLog?.water}
+              loading={!dailyLogs || dailyLogsLoading || editWaterLoading}
+            />
+          }
+          initialValues={{
+            water: todayLog?.water || "",
+          }}
+          handleSubmit={(values: { water: number | string }) =>
+            editDailyWater(today, Number(values.water))
+          }
+        />
+        <CaloriesForm
+          Trigger={
+            <DashboardButton
+              header="Calories"
+              subheader="/ 4033"
+              data={todayLog?.calories}
+              loading={!dailyLogs || dailyLogsLoading || editCaloriesLoading}
+            />
+          }
+          initialValues={{
+            calories: todayLog?.calories || "",
+          }}
+          handleSubmit={(values: { calories: number | string }) =>
+            editDailyCalories(today, Number(values.calories))
           }
         />
         {/* Removing training temporarily */}

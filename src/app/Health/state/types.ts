@@ -13,6 +13,10 @@ import {
   LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
   FETCH_EDIT_HEALTH_DAILY_BODYFAT,
   LOAD_EDIT_HEALTH_DAILY_BODYFAT,
+  FETCH_EDIT_HEALTH_DAILY_WATER,
+  LOAD_EDIT_HEALTH_DAILY_WATER,
+  FETCH_EDIT_HEALTH_DAILY_CALORIES,
+  LOAD_EDIT_HEALTH_DAILY_CALORIES,
 } from "../../store/actionTypes";
 
 // data object types
@@ -27,6 +31,8 @@ export type DailyLog = {
   remQty?: number | null;
   deepQty?: number | null;
   bodyfat?: number | null;
+  water?: number | null;
+  calories?: number | null;
 };
 
 export type Supplement = {
@@ -77,7 +83,19 @@ export type Action =
       date: string;
       bodyfat: number;
     }
-  | { type: typeof LOAD_EDIT_HEALTH_DAILY_BODYFAT };
+  | { type: typeof LOAD_EDIT_HEALTH_DAILY_BODYFAT }
+  | {
+      type: typeof FETCH_EDIT_HEALTH_DAILY_WATER;
+      date: string;
+      water: number;
+    }
+  | { type: typeof LOAD_EDIT_HEALTH_DAILY_WATER }
+  | {
+      type: typeof FETCH_EDIT_HEALTH_DAILY_CALORIES;
+      date: string;
+      calories: number;
+    }
+  | { type: typeof LOAD_EDIT_HEALTH_DAILY_CALORIES };
 
 export interface HealthState {
   dailyLogs: DailyLog[] | null;
@@ -85,6 +103,8 @@ export interface HealthState {
   editWeightLoading: boolean;
   editStepsLoading: boolean;
   editBodyfatLoading: boolean;
+  editWaterLoading: boolean;
+  editCaloriesLoading: boolean;
   supplements: Supplement[] | null;
   supplementsLoading: boolean;
   supplementLogs: SupplementLog[] | null;

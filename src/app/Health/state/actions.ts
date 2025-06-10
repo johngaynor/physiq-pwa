@@ -13,6 +13,10 @@ import {
   LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
   FETCH_EDIT_HEALTH_DAILY_BODYFAT,
   LOAD_EDIT_HEALTH_DAILY_BODYFAT,
+  FETCH_EDIT_HEALTH_DAILY_WATER,
+  LOAD_EDIT_HEALTH_DAILY_WATER,
+  FETCH_EDIT_HEALTH_DAILY_CALORIES,
+  LOAD_EDIT_HEALTH_DAILY_CALORIES,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { DailyLog, Supplement, SupplementLog } from "./types";
@@ -95,5 +99,25 @@ export const editDailyBodyfat = (date: string, bodyfat: number) => {
     .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_BODYFAT }))
     .error("Error editing daily bodyfat log")
     .data({ date, bodyfat })
+    .post();
+};
+
+export const editDailyWater = (date: string, water: number) => {
+  return api
+    .route("/api/health/logs/daily/water")
+    .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_WATER, date, water }))
+    .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_WATER }))
+    .error("Error editing daily water log")
+    .data({ date, water })
+    .post();
+};
+
+export const editDailyCalories = (date: string, calories: number) => {
+  return api
+    .route("/api/health/logs/daily/calories")
+    .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_CALORIES, date, calories }))
+    .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_CALORIES }))
+    .error("Error editing daily calories log")
+    .data({ date, calories })
     .post();
 };

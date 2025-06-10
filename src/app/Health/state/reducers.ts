@@ -13,6 +13,10 @@ import {
   LOAD_TOGGLE_HEALTH_SUPPLEMENT_LOG,
   FETCH_EDIT_HEALTH_DAILY_BODYFAT,
   LOAD_EDIT_HEALTH_DAILY_BODYFAT,
+  FETCH_EDIT_HEALTH_DAILY_WATER,
+  LOAD_EDIT_HEALTH_DAILY_WATER,
+  FETCH_EDIT_HEALTH_DAILY_CALORIES,
+  LOAD_EDIT_HEALTH_DAILY_CALORIES,
 } from "../../store/actionTypes";
 import type { HealthState, Action } from "./types";
 
@@ -22,6 +26,8 @@ const DEFAULT_STATE: HealthState = {
   editWeightLoading: false,
   editStepsLoading: false,
   editBodyfatLoading: false,
+  editWaterLoading: false,
+  editCaloriesLoading: false,
   supplements: null,
   supplementsLoading: false,
   supplementLogs: null,
@@ -74,14 +80,12 @@ export default function healthReducer(
       };
     case FETCH_EDIT_HEALTH_DAILY_STEPS: {
       let found = false;
-      console.log("editing", action.date, action.steps);
 
       const newStepLogs =
         state.dailyLogs?.map((log) => {
           if (log.date === action.date) {
             found = true;
-            console.log("found a match", log, action.date);
-            return { ...log, weight: action.steps };
+            return { ...log, steps: action.steps };
           }
           return log;
         }) || [];
@@ -183,6 +187,60 @@ export default function healthReducer(
       return {
         ...state,
         editBodyfatLoading: false,
+      };
+    case FETCH_EDIT_HEALTH_DAILY_WATER: {
+      let found = false;
+
+      const newWaterLogs =
+        state.dailyLogs?.map((log) => {
+          if (log.date === action.date) {
+            found = true;
+            return { ...log, water: action.water };
+          }
+          return log;
+        }) || [];
+
+      if (!found) {
+        newWaterLogs.push({ date: action.date, water: action.water });
+      }
+
+      return {
+        ...state,
+        editWaterLoading: true,
+        dailyLogs: newWaterLogs,
+      };
+    }
+    case LOAD_EDIT_HEALTH_DAILY_WATER:
+      return {
+        ...state,
+        editWaterLoading: false,
+      };
+    case FETCH_EDIT_HEALTH_DAILY_CALORIES: {
+      let found = false;
+
+      const newCalorieLogs =
+        state.dailyLogs?.map((log) => {
+          if (log.date === action.date) {
+            found = true;
+            return { ...log, calories: action.calories };
+          }
+          return log;
+        }) || [];
+
+      if (!found) {
+        newCalorieLogs.push({ date: action.date, calories: action.calories });
+      }
+
+      return {
+        ...state,
+        editCaloriesLoading: true,
+        dailyLogs: newCalorieLogs,
+      };
+    }
+    case LOAD_EDIT_HEALTH_DAILY_CALORIES:
+      return {
+        ...state,
+        editCaloriesLoading: false,
       };
     default:
       return state;
