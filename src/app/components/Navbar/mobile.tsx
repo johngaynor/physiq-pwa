@@ -28,7 +28,7 @@ const MobileNavbar = ({}) => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <NavigationMenu className="fixed bottom-0 pb-10 right-0 left-0 border-t border-gray-100 bg-background">
+    <NavigationMenu className="fixed bottom-0 pb-5 right-0 left-0 border-t border-gray-100 bg-background">
       <NavigationMenuList>
         {NavItems.map((item, index) => (
           <NavigationMenuItem
