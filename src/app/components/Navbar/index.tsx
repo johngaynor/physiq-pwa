@@ -15,7 +15,7 @@ export default function NavbarWrapper({
   return (
     <>
       {!isMobile && <DesktopNavbar />}
-      {children}
+      <div className={isMobile ? "mb-20" : ""}>{children}</div>
       {isMobile && <MobileNavbar />}
     </>
   );
