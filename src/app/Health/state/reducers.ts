@@ -17,6 +17,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_WATER,
   FETCH_EDIT_HEALTH_DAILY_CALORIES,
   LOAD_EDIT_HEALTH_DAILY_CALORIES,
+  FETCH_EDIT_HEALTH_DAILY_SLEEP,
+  LOAD_EDIT_HEALTH_DAILY_SLEEP,
 } from "../../store/actionTypes";
 import type { HealthState, Action } from "./types";
 
@@ -28,6 +30,7 @@ const DEFAULT_STATE: HealthState = {
   editBodyfatLoading: false,
   editWaterLoading: false,
   editCaloriesLoading: false,
+  editSleepLoading: false,
   supplements: null,
   supplementsLoading: false,
   supplementLogs: null,
@@ -241,6 +244,31 @@ export default function healthReducer(
       return {
         ...state,
         editCaloriesLoading: false,
+      };
+    case FETCH_EDIT_HEALTH_DAILY_SLEEP:
+      return {
+        ...state,
+        editSleepLoading: true,
+      };
+    case LOAD_EDIT_HEALTH_DAILY_SLEEP:
+      let found = false;
+
+      const newSleepLogs =
+        state.dailyLogs?.map((log) => {
+          if (log.date === action.data?.date) {
+            found = true;
+            return { ...log, ...action.data };
+          }
+          return log;
+        }) || [];
+
+      if (!found) {
+        newSleepLogs.push({ ...action.data });
+      }
+      return {
+        ...state,
+        editSleepLoading: false,
+        dailyLogs: newSleepLogs,
       };
     default:
       return state;

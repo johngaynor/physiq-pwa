@@ -15,7 +15,7 @@ import { DashboardButton } from "./components/Button";
 import {
   BodyfatForm,
   CaloriesForm,
-  SleepForm,
+  // SleepForm,
   StepsForm,
   WaterForm,
   WeightForm,
@@ -30,6 +30,7 @@ import {
   editDailyBodyfat,
   editDailyCalories,
   editDailyWater,
+  getDailySleep,
 } from "../Health/state/actions";
 import { DateTime } from "luxon";
 import { convertTime } from "../components/Time";
@@ -43,6 +44,7 @@ function mapStateToProps(state: RootState) {
     editBodyfatLoading: state.health.editBodyfatLoading,
     editWaterLoading: state.health.editWaterLoading,
     editCaloriesLoading: state.health.editCaloriesLoading,
+    editSleepLoading: state.health.editSleepLoading,
     supplements: state.health.supplements,
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
@@ -60,6 +62,7 @@ const connector = connect(mapStateToProps, {
   toggleSupplementLog,
   editDailyCalories,
   editDailyWater,
+  getDailySleep,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -77,6 +80,8 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   editDailyWater,
   editCaloriesLoading,
   editDailyCalories,
+  editSleepLoading,
+  getDailySleep,
   supplements,
   supplementsLoading,
   getSupplements,
@@ -143,7 +148,8 @@ const Dashboard: React.FC<PropsFromRedux> = ({
             editDailySteps(yesterday, Number(values.steps))
           }
         />
-        <SleepForm
+        {/* Temporarily removing sleep form and replacing with button */}
+        {/* <SleepForm
           Trigger={
             <DashboardButton
               header="Sleep"
@@ -161,6 +167,13 @@ const Dashboard: React.FC<PropsFromRedux> = ({
             remQty: todayLog?.remQty || "",
           }}
           handleSubmit={handleSubmitSleep}
+        /> */}
+        <DashboardButton
+          header="Sleep"
+          subheader="last night"
+          data={convertTime(todayLog?.totalSleep || 0)}
+          loading={!dailyLogs || dailyLogsLoading || editSleepLoading}
+          onClick={() => getDailySleep(today)}
         />
         <BodyfatForm
           Trigger={

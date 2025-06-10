@@ -17,6 +17,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_WATER,
   FETCH_EDIT_HEALTH_DAILY_CALORIES,
   LOAD_EDIT_HEALTH_DAILY_CALORIES,
+  FETCH_EDIT_HEALTH_DAILY_SLEEP,
+  LOAD_EDIT_HEALTH_DAILY_SLEEP,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { DailyLog, Supplement, SupplementLog } from "./types";
@@ -120,4 +122,14 @@ export const editDailyCalories = (date: string, calories: number) => {
     .error("Error editing daily calories log")
     .data({ date, calories })
     .post();
+};
+
+// calls Oura API from Lambda function
+export const getDailySleep = (date: string) => {
+  return api
+    .route(`/api/health/logs/daily/sleep/oura/${date}`)
+    .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_SLEEP }))
+    .load((data) => ({ type: LOAD_EDIT_HEALTH_DAILY_SLEEP, data }))
+    .error("Error getting daily sleep from oura")
+    .get();
 };
