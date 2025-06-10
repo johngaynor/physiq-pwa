@@ -173,14 +173,14 @@ export default function healthReducer(
 
       return {
         ...state,
-        editWeightLoading: true,
+        editBodyfatLoading: true,
         dailyLogs: newBodyfatLogs,
       };
     }
     case LOAD_EDIT_HEALTH_DAILY_BODYFAT:
       return {
         ...state,
-        editWeightLoading: false,
+        editBodyfatLoading: false,
       };
     default:
       return state;
