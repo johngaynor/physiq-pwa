@@ -166,11 +166,12 @@ const Dashboard: React.FC<PropsFromRedux> = ({
             editDailyBodyfat(today, Number(values.bodyfat))
           }
         />
-        <DashboardButton
+        {/* Removing training temporarily */}
+        {/* <DashboardButton
           header="Training"
           subheader="Today's training"
           onClick={() => alert("functionality not here yet womp womp")}
-        />
+        /> */}
       </div>
       <div className="border-2 p-2 rounded-md mt-2 min-h-[100px] flex justify-center items-center">
         {!supplements ||
