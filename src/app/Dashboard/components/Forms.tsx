@@ -279,11 +279,11 @@ export function BodyfatForm({
     >
       {(values, handleChange) => (
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="bf" className="text-right">
+          <Label htmlFor="bodyfat" className="text-right">
             BF %
           </Label>
           <Input
-            id="bf"
+            id="bodyfat"
             value={values.bodyfat}
             onChange={handleChange}
             className="col-span-3"
