@@ -101,17 +101,6 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
 
-  function handleSubmitSleep(values: {
-    totalSleep: number | string;
-    totalBed: number | string;
-    awakeQty: number | string;
-    lightQty: number | string;
-    remQty: number | string;
-    deepQty: number | string;
-  }) {
-    alert(JSON.stringify({ ...values, date: today }, null, 2));
-  }
-
   return (
     <div className="py-4">
       <H4 className="pb-4">Today</H4>
