@@ -74,11 +74,13 @@ export default function healthReducer(
       };
     case FETCH_EDIT_HEALTH_DAILY_STEPS: {
       let found = false;
+      console.log("editing", action.date, action.steps);
 
       const newStepLogs =
         state.dailyLogs?.map((log) => {
           if (log.date === action.date) {
             found = true;
+            console.log("found a match", log, action.date);
             return { ...log, weight: action.steps };
           }
           return log;
