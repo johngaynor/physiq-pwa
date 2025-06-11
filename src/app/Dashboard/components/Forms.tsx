@@ -335,7 +335,7 @@ export function WaterForm({
 }
 
 type CalorieFormValues = {
-  calories: number | string;
+  calories: number;
 };
 
 export function CaloriesForm({

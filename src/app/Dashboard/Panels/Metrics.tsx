@@ -79,7 +79,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
           Trigger={
             <DashboardButton
               header="Weight"
-              subheader="lbs this AM"
+              subheader="lbs"
               data={todayLog?.weight}
               loading={!dailyLogs || dailyLogsLoading || editWeightLoading}
             />
@@ -138,7 +138,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
           Trigger={
             <DashboardButton
               header="Bodyfat %"
-              subheader="% bodyfat this AM"
+              subheader="% bodyfat"
               data={todayLog?.bodyfat}
               loading={!dailyLogs || dailyLogsLoading || editBodyfatLoading}
             />
@@ -180,7 +180,11 @@ const Metrics: React.FC<PropsFromRedux> = ({
               subheader={
                 dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"
               }
-              data={todayLog?.calories ? `${todayLog.calories} cal` : "0 cal"}
+              data={
+                todayLog?.calories
+                  ? `${Math.floor(todayLog.calories)} cal`
+                  : "0 cal"
+              }
               loading={
                 !dailyLogs ||
                 dailyLogsLoading ||
@@ -190,9 +194,9 @@ const Metrics: React.FC<PropsFromRedux> = ({
             />
           }
           initialValues={{
-            calories: todayLog?.calories || "",
+            calories: todayLog?.calories || 0,
           }}
-          handleSubmit={(values: { calories: number | string }) =>
+          handleSubmit={(values: { calories: number }) =>
             editDailyCalories(today, Number(values.calories))
           }
         />
