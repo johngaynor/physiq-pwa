@@ -24,6 +24,7 @@ async function apiCall<T>(
 
     return response.data;
   } catch (err: any) {
+    console.log(err?.response?.data?.error);
     throw err;
   }
 }
@@ -81,7 +82,7 @@ function caller<T>(obj: ApiObj<T>, method: MethodType) {
         dispatch(typeof fail === "function" ? fail() : fail)
       );
 
-      console.error("API call failed:", error, err);
+      console.error("API call failed:", error);
       throw err;
     }
   };
