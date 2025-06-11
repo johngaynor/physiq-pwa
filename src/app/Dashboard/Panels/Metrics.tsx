@@ -2,7 +2,6 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { H4 } from "@/components/ui";
 import { DashboardButton } from "../components/Button";
 import {
   BodyfatForm,

@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { H4, Checkbox, Spinner } from "@/components/ui";
+import { Checkbox, Spinner } from "@/components/ui";
 import {
   Table,
   TableBody,
