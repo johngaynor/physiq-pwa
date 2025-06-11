@@ -31,6 +31,7 @@ import {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
+  getDietLogs,
 } from "../Health/state/actions";
 import { DateTime } from "luxon";
 import { convertTime } from "../components/Time";
@@ -49,6 +50,8 @@ function mapStateToProps(state: RootState) {
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
     supplementLogsLoading: state.health.supplementLogsLoading,
+    dietLogs: state.health.dietLogs,
+    dietLogsLoading: state.health.dietLogsLoading,
   };
 }
 
@@ -63,6 +66,7 @@ const connector = connect(mapStateToProps, {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
+  getDietLogs,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -89,17 +93,23 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   supplementLogsLoading,
   getSupplementLogs,
   toggleSupplementLog,
+  getDietLogs,
+  dietLogs,
+  dietLogsLoading,
 }) => {
   React.useEffect(() => {
     if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
     if (!supplementsLoading && !supplements) getSupplements();
     if (!supplementLogsLoading && !supplementLogs) getSupplementLogs();
+    if (!dietLogsLoading && !dietLogs) getDietLogs();
   });
 
   const today = DateTime.now().toISODate();
   const todayLog = dailyLogs?.find((d) => d.date === today);
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
+
+  const dietLog = dietLogs?.[0];
 
   return (
     <div className="py-4">
@@ -184,8 +194,10 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           Trigger={
             <DashboardButton
               header="Water"
-              subheader="/ 128"
-              data={todayLog?.water}
+              subheader={
+                dietLog?.water ? `/ ${dietLog.water}oz` : "No goal set"
+              }
+              data={todayLog?.water ? `${todayLog.water} oz` : "0 oz"}
               loading={!dailyLogs || dailyLogsLoading || editWaterLoading}
             />
           }
@@ -200,8 +212,10 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           Trigger={
             <DashboardButton
               header="Calories"
-              subheader="/ 4033"
-              data={todayLog?.calories}
+              subheader={
+                dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"
+              }
+              data={todayLog?.calories ? `${todayLog.calories} cal` : "0 cal"}
               loading={!dailyLogs || dailyLogsLoading || editCaloriesLoading}
             />
           }

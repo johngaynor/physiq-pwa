@@ -19,6 +19,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_CALORIES,
   FETCH_EDIT_HEALTH_DAILY_SLEEP,
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
+  FETCH_HEALTH_DIET_LOGS,
+  LOAD_HEALTH_DIET_LOGS,
 } from "../../store/actionTypes";
 import type { HealthState, Action } from "./types";
 
@@ -36,6 +38,8 @@ const DEFAULT_STATE: HealthState = {
   supplementLogs: null,
   supplementLogsLoading: false,
   toggleSupplementLoading: false,
+  dietLogs: null,
+  dietLogsLoading: false,
 };
 
 export default function healthReducer(
@@ -269,6 +273,17 @@ export default function healthReducer(
         ...state,
         editSleepLoading: false,
         dailyLogs: newSleepLogs,
+      };
+    case FETCH_HEALTH_DIET_LOGS:
+      return {
+        ...state,
+        dietLogsLoading: true,
+      };
+    case LOAD_HEALTH_DIET_LOGS:
+      return {
+        ...state,
+        dietLogsLoading: false,
+        dietLogs: action.data,
       };
     default:
       return state;

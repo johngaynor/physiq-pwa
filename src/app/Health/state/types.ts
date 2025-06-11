@@ -19,6 +19,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_CALORIES,
   FETCH_EDIT_HEALTH_DAILY_SLEEP,
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
+  FETCH_HEALTH_DIET_LOGS,
+  LOAD_HEALTH_DIET_LOGS,
 } from "../../store/actionTypes";
 
 // data object types
@@ -50,6 +52,20 @@ export type SupplementLog = {
   date: string;
   completed: boolean;
   reason: string | null;
+};
+
+export type DietLog = {
+  id: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+  calories: number;
+  effectiveDate: string;
+  cardio: string;
+  cardioMinutes: number;
+  notes: string;
+  water: number;
+  steps: number;
 };
 
 // action types
@@ -101,7 +117,9 @@ export type Action =
   | {
       type: typeof FETCH_EDIT_HEALTH_DAILY_SLEEP;
     }
-  | { type: typeof LOAD_EDIT_HEALTH_DAILY_SLEEP; data: DailyLog };
+  | { type: typeof LOAD_EDIT_HEALTH_DAILY_SLEEP; data: DailyLog }
+  | { type: typeof FETCH_HEALTH_DIET_LOGS }
+  | { type: typeof LOAD_HEALTH_DIET_LOGS; data: DietLog[] };
 
 export interface HealthState {
   dailyLogs: DailyLog[] | null;
@@ -117,4 +135,6 @@ export interface HealthState {
   supplementLogs: SupplementLog[] | null;
   supplementLogsLoading: boolean;
   toggleSupplementLoading: boolean;
+  dietLogs: DietLog[] | null;
+  dietLogsLoading: boolean;
 }
