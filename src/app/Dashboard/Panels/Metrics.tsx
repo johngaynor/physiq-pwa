@@ -32,8 +32,9 @@ function mapStateToProps(state: RootState) {
     editWaterLoading: state.health.editWaterLoading,
     editCaloriesLoading: state.health.editCaloriesLoading,
     editSleepLoading: state.health.editSleepLoading,
-    dietLogs: state.health.dietLogs,
-    dietLogsLoading: state.health.dietLogsLoading,
+    dietLog: state.health.dietLog,
+    dietLogLoading: state.health.dietLogLoading,
+    dietSupplements: state.health.dietSupplements,
   };
 }
 
@@ -62,15 +63,14 @@ const Metrics: React.FC<PropsFromRedux> = ({
   editDailyCalories,
   editSleepLoading,
   getDailySleep,
-  dietLogs,
-  dietLogsLoading,
+  dietLog,
+  dietLogLoading,
+  dietSupplements,
 }) => {
   const today = DateTime.now().toISODate();
   const todayLog = dailyLogs?.find((d) => d.date === today);
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
-
-  const dietLog = dietLogs?.[0];
 
   return (
     <div className="w-full md:w-[400px] shrink-0">
@@ -162,7 +162,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
                 !dailyLogs ||
                 dailyLogsLoading ||
                 editWaterLoading ||
-                dietLogsLoading
+                dietLogLoading
               }
             />
           }
@@ -189,7 +189,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
                 !dailyLogs ||
                 dailyLogsLoading ||
                 editCaloriesLoading ||
-                dietLogsLoading
+                dietLogLoading
               }
             />
           }

@@ -13,7 +13,7 @@ import {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
-  getDietLogs,
+  getLatestDietLog,
 } from "../Health/state/actions";
 import Metrics from "./Panels/Metrics";
 import Supplements from "./Panels/Supplements";
@@ -27,8 +27,8 @@ function mapStateToProps(state: RootState) {
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
     supplementLogsLoading: state.health.supplementLogsLoading,
-    dietLogs: state.health.dietLogs,
-    dietLogsLoading: state.health.dietLogsLoading,
+    dietLog: state.health.dietLog,
+    dietLogLoading: state.health.dietLogLoading,
   };
 }
 
@@ -43,7 +43,7 @@ const connector = connect(mapStateToProps, {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
-  getDietLogs,
+  getLatestDietLog,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -57,15 +57,15 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   supplementLogs,
   supplementLogsLoading,
   getSupplementLogs,
-  getDietLogs,
-  dietLogs,
-  dietLogsLoading,
+  getLatestDietLog,
+  dietLog,
+  dietLogLoading,
 }) => {
   React.useEffect(() => {
     if (!dailyLogsLoading && !dailyLogs) getDailyLogs();
     if (!supplementsLoading && !supplements) getSupplements();
     if (!supplementLogsLoading && !supplementLogs) getSupplementLogs();
-    if (!dietLogsLoading && !dietLogs) getDietLogs();
+    if (!dietLogLoading && !dietLog) getLatestDietLog();
   });
 
   return (

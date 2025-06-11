@@ -19,8 +19,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_CALORIES,
   FETCH_EDIT_HEALTH_DAILY_SLEEP,
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
-  FETCH_HEALTH_DIET_LOGS,
-  LOAD_HEALTH_DIET_LOGS,
+  FETCH_HEALTH_DIET_LOGS_LATEST,
+  LOAD_HEALTH_DIET_LOGS_LATEST,
 } from "../../store/actionTypes";
 
 // data object types
@@ -54,6 +54,13 @@ export type SupplementLog = {
   reason: string | null;
 };
 
+export type DietSupplement = {
+  id: number;
+  supplementId: number;
+  dosage: string | null;
+  frequency: string | null;
+};
+
 export type DietLog = {
   id: number;
   protein: number;
@@ -66,6 +73,11 @@ export type DietLog = {
   notes: string;
   water: number;
   steps: number;
+};
+
+export type DashboardDietLog = {
+  log: DietLog;
+  supplements: DietSupplement[];
 };
 
 // action types
@@ -118,8 +130,8 @@ export type Action =
       type: typeof FETCH_EDIT_HEALTH_DAILY_SLEEP;
     }
   | { type: typeof LOAD_EDIT_HEALTH_DAILY_SLEEP; data: DailyLog }
-  | { type: typeof FETCH_HEALTH_DIET_LOGS }
-  | { type: typeof LOAD_HEALTH_DIET_LOGS; data: DietLog[] };
+  | { type: typeof FETCH_HEALTH_DIET_LOGS_LATEST }
+  | { type: typeof LOAD_HEALTH_DIET_LOGS_LATEST; data: DashboardDietLog };
 
 export interface HealthState {
   dailyLogs: DailyLog[] | null;
@@ -135,6 +147,7 @@ export interface HealthState {
   supplementLogs: SupplementLog[] | null;
   supplementLogsLoading: boolean;
   toggleSupplementLoading: boolean;
-  dietLogs: DietLog[] | null;
-  dietLogsLoading: boolean;
+  dietLog: DietLog | null;
+  dietSupplements: DietSupplement[] | null;
+  dietLogLoading: boolean;
 }
