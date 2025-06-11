@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, Method } from "axios";
 import { getToken } from "./apiClient";
+import { toast } from "sonner";
 
 type MethodType = "get" | "post" | "put" | "patch" | "delete" | "options";
 
@@ -24,7 +25,10 @@ async function apiCall<T>(
 
     return response.data;
   } catch (err: any) {
-    console.log(err?.response?.data?.error);
+    toast.error(
+      err?.response?.data?.error ||
+        "An error occurred while processing your request."
+    );
     throw err;
   }
 }
