@@ -52,7 +52,7 @@ const MobileNavbar = ({}) => {
             />
           ) : (
             <Moon
-              size={36}
+              size={24}
               onClick={() => setTheme("dark")}
               className="flex items-center justify-center mx-auto"
             />
