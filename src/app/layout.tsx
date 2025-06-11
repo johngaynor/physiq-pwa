@@ -37,7 +37,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <SessionInitializer />
             <ReduxProvider>
-              <Toaster richColors />
+              <Toaster richColors theme="system" />
               <div className="relative max-w-6xl mx-auto px-5">
                 <NavbarWrapper>{children}</NavbarWrapper>
               </div>
