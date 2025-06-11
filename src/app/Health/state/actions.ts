@@ -25,7 +25,7 @@ import { DailyLog, Supplement, SupplementLog } from "./types";
 
 export const getDailyLogs = () => {
   return api
-    .route("/api/health/logs/daily")
+    .route("/api/health/daily")
     .fetch(() => ({ type: FETCH_HEALTH_DAILY_LOGS }))
     .load((data: DailyLog[]) => ({ type: LOAD_HEALTH_DAILY_LOGS, data }))
     .error("Error fetching daily health logs")
@@ -34,7 +34,7 @@ export const getDailyLogs = () => {
 
 export const editDailyWeight = (date: string, weight: number) => {
   return api
-    .route("/api/health/logs/daily/weight")
+    .route("/api/health/daily/weight")
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_WEIGHT, date, weight }))
     .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_WEIGHT }))
     .error("Error editing daily weight log")
@@ -44,7 +44,7 @@ export const editDailyWeight = (date: string, weight: number) => {
 
 export const editDailySteps = (date: string, steps: number) => {
   return api
-    .route("/api/health/logs/daily/steps")
+    .route("/api/health/daily/steps")
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_STEPS, date, steps }))
     .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_STEPS }))
     .error("Error editing daily steps log")
@@ -96,7 +96,7 @@ export const toggleSupplementLog = (
 
 export const editDailyBodyfat = (date: string, bodyfat: number) => {
   return api
-    .route("/api/health/logs/daily/bodyfat")
+    .route("/api/health/daily/bodyfat")
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_BODYFAT, date, bodyfat }))
     .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_BODYFAT }))
     .error("Error editing daily bodyfat log")
@@ -106,7 +106,7 @@ export const editDailyBodyfat = (date: string, bodyfat: number) => {
 
 export const editDailyWater = (date: string, water: number) => {
   return api
-    .route("/api/health/logs/daily/water")
+    .route("/api/health/daily/water")
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_WATER, date, water }))
     .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_WATER }))
     .error("Error editing daily water log")
@@ -116,7 +116,7 @@ export const editDailyWater = (date: string, water: number) => {
 
 export const editDailyCalories = (date: string, calories: number) => {
   return api
-    .route("/api/health/logs/daily/calories")
+    .route("/api/health/daily/calories")
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_CALORIES, date, calories }))
     .load(() => ({ type: LOAD_EDIT_HEALTH_DAILY_CALORIES }))
     .error("Error editing daily calories log")
@@ -127,7 +127,7 @@ export const editDailyCalories = (date: string, calories: number) => {
 // calls Oura API from Lambda function
 export const getDailySleep = (date: string) => {
   return api
-    .route(`/api/health/logs/daily/sleep/oura/${date}`)
+    .route(`/api/health/daily/sleep/oura/${date}`)
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_SLEEP }))
     .load((data) => ({ type: LOAD_EDIT_HEALTH_DAILY_SLEEP, data }))
     .error("Error getting daily sleep from oura")
