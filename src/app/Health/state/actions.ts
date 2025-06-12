@@ -23,7 +23,7 @@ import {
   LOAD_HEALTH_DIET_LOGS_LATEST,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { DailyLog, DashboardDietLog, DietLog, Supplement, SupplementLog } from "./types";
+import { DailyLog, DashboardDietLog, Supplement, SupplementLog } from "./types";
 
 export const getDailyLogs = () => {
   return api
@@ -140,7 +140,10 @@ export const getLatestDietLog = () => {
   return api
     .route("/api/health/diet/log/latest")
     .fetch(() => ({ type: FETCH_HEALTH_DIET_LOGS_LATEST }))
-    .load((data: DashboardDietLog) => ({ type: LOAD_HEALTH_DIET_LOGS_LATEST, data }))
+    .load((data: DashboardDietLog) => ({
+      type: LOAD_HEALTH_DIET_LOGS_LATEST,
+      data,
+    }))
     .error("Error fetching diet logs")
     .get();
 };

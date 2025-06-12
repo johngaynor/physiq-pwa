@@ -65,7 +65,6 @@ const Metrics: React.FC<PropsFromRedux> = ({
   getDailySleep,
   dietLog,
   dietLogLoading,
-  dietSupplements,
 }) => {
   const today = DateTime.now().toISODate();
   const todayLog = dailyLogs?.find((d) => d.date === today);
