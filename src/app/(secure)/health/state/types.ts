@@ -21,7 +21,7 @@ import {
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
   FETCH_HEALTH_DIET_LOGS_LATEST,
   LOAD_HEALTH_DIET_LOGS_LATEST,
-} from "../../store/actionTypes";
+} from "../../../store/actionTypes";
 
 // data object types
 export type DailyLog = {

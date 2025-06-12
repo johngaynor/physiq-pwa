@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../../store/reducer";
+import { RootState } from "../../../store/reducer";
 
 function mapStateToProps(state: RootState) {
   return {
