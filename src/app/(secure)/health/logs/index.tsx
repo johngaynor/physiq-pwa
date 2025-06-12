@@ -13,8 +13,8 @@ const connector = connect(mapStateToProps, {});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const LogPage: React.FC<PropsFromRedux> = ({ apps }) => {
-  const logApps = apps?.filter((app) => app.route.includes("/health/logs"));
-  console.log({ logApps });
+  // const logApps = apps?.filter((app) => app.route.includes("/health/logs"));
+  // console.log({ logApps });
   return <div className="w-full">TEST CONTENT</div>;
 };
 

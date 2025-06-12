@@ -62,7 +62,7 @@ export const HealthItems: ListItem[] = [
   },
   {
     title: "Weight Tracker",
-    href: "/",
+    href: "/health/log/weight",
     description: "Log your daily fasted AM bodyweight.",
   },
   {

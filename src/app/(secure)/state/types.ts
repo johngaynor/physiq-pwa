@@ -3,7 +3,8 @@ import { FETCH_APPS, LOAD_APPS } from "../../store/actionTypes";
 export type App = {
   id: number;
   name: string;
-  route: string;
+  description: string;
+  link: string;
 };
 
 // action types
