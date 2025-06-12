@@ -9,7 +9,11 @@ export default async function SecureLayout({
   const { userId } = await auth();
 
   if (!userId) {
-    redirect(`/sign-in?redirectUrl=${encodeURIComponent("/secure/dashboard")}`);
+    redirect(
+      `https://physiq.clerk.accounts.dev/sign-in?redirect_url=${encodeURIComponent(
+        "/secure/dashboard"
+      )}`
+    );
   }
 
   return <>{children}</>;
