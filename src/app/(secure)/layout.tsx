@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { SignIn } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
 export default async function SecureLayout({
   children,
@@ -9,7 +9,7 @@ export default async function SecureLayout({
   const { userId } = await auth();
 
   if (!userId) {
-    return <SignIn />;
+    redirect(`/sign-in?redirectUrl=${encodeURIComponent("/secure/dashboard")}`);
   }
 
   return <>{children}</>;
