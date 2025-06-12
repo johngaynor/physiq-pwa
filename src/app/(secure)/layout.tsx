@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { SignIn } from "@clerk/nextjs";
 
 export default async function SecureLayout({
   children,
@@ -9,7 +10,7 @@ export default async function SecureLayout({
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/sign-in");
+    return <SignIn />;
   }
 
   return <>{children}</>;
