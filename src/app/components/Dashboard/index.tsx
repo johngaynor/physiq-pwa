@@ -17,7 +17,7 @@ import {
 } from "../../(secure)/health/state/actions";
 import Metrics from "./Panels/Metrics";
 import Supplements from "./Panels/Supplements";
-import { H4 } from "@/components/ui";
+import PageTemplate from "../Page";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -69,13 +69,10 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   });
 
   return (
-    <div>
-      <H4 className="py-4">Today</H4>
-      <div className="flex flex-col md:flex-row gap-4 w-full">
-        <Metrics />
-        <Supplements />
-      </div>
-    </div>
+    <PageTemplate title="Today">
+      <Metrics />
+      <Supplements />
+    </PageTemplate>
   );
 };
 
