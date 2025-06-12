@@ -18,4 +18,5 @@ const LogPage: React.FC<PropsFromRedux> = ({ apps }) => {
   return <div className="w-full">LOG APPS</div>;
 };
 
-export default connector(LogPage);
+const index = connector(LogPage);
+export default index;
