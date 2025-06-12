@@ -21,7 +21,10 @@ export default function PageTemplate({ children, title }: PageTemplateProps) {
         <H3 className="py-4 align-left md:w-auto w-full">{title}</H3>
         <div className="text-md text-muted-foreground pt-2 pl-3 md:block hidden">
           {segments.map((segment, idx) => {
-            const href = "/" + segments.slice(0, idx + 1).join("/");
+            const href =
+              segment === "Dashboard"
+                ? "/"
+                : "/" + segments.slice(0, idx + 1).join("/");
             return (
               <span key={idx}>
                 {idx > 0 && " / "}

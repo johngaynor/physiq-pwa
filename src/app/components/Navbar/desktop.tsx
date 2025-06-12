@@ -18,6 +18,7 @@ import { useTheme } from "next-themes";
 import { Button, H4 } from "@/components/ui";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Sun, Moon } from "lucide-react";
+import Link from "next/link";
 
 const DesktopNavbar = ({}) => {
   const { theme, setTheme } = useTheme();
@@ -27,7 +28,9 @@ const DesktopNavbar = ({}) => {
       <NavigationMenuList>
         <div className=" flex items-center">
           <NavigationMenuItem>
-            <H4 className="pr-10 pb-2">PhysiQ</H4>
+            <Link href="/">
+              <H4 className="pr-10 pb-2">PhysiQ</H4>
+            </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuTrigger>Training</NavigationMenuTrigger>
