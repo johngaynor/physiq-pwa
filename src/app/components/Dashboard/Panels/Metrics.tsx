@@ -18,7 +18,7 @@ import {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
-} from "../../../tempHealth/state/actions";
+} from "../../../health/state/actions";
 import { convertTime } from "../../../components/Time";
 import { DateTime } from "luxon";
 

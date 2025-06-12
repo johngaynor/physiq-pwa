@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toggleSupplementLog } from "../../../tempHealth/state/actions";
+import { toggleSupplementLog } from "../../../health/state/actions";
 import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {
