@@ -1,4 +1,4 @@
-import { FETCH_APPS, LOAD_APPS } from "../store/actionTypes";
+import { FETCH_APPS, LOAD_APPS } from "../../store/actionTypes";
 import type { AppState, Action } from "./types";
 
 const DEFAULT_STATE: AppState = {

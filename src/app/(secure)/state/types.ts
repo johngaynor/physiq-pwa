@@ -1,4 +1,4 @@
-import { FETCH_APPS, LOAD_APPS } from "../store/actionTypes";
+import { FETCH_APPS, LOAD_APPS } from "../../store/actionTypes";
 
 export type App = {
   id: number;

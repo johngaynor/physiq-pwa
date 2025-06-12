@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import app from "../state/reducers";
+import app from "../(secure)/state/reducers";
 import health from "../(secure)/health/state/reducers";
 
 const rootReducer = combineReducers({
