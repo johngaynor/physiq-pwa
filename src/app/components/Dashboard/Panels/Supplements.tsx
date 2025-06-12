@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../../store/reducer";
+import { RootState } from "../../../store/reducer";
 import { Checkbox, Spinner } from "@/components/ui";
 import {
   Table,
@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toggleSupplementLog } from "../../Health/state/actions";
+import { toggleSupplementLog } from "../../../health/state/actions";
 import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../../store/reducer";
+import { RootState } from "../../../store/reducer";
 import { DashboardButton } from "../components/Button";
 import {
   BodyfatForm,
@@ -18,8 +18,8 @@ import {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
-} from "../../Health/state/actions";
-import { convertTime } from "../../components/Time";
+} from "../../../health/state/actions";
+import { convertTime } from "../../../components/Time";
 import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {

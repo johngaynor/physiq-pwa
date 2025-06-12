@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../store/reducer";
+import { RootState } from "../../store/reducer";
 import {
   getDailyLogs,
   editDailyWeight,
@@ -14,7 +14,7 @@ import {
   editDailyWater,
   getDailySleep,
   getLatestDietLog,
-} from "../Health/state/actions";
+} from "../../health/state/actions";
 import Metrics from "./Panels/Metrics";
 import Supplements from "./Panels/Supplements";
 import { H4 } from "@/components/ui";
