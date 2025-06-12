@@ -17,7 +17,7 @@ import {
 } from "../../(secure)/health/state/actions";
 import Metrics from "./Panels/Metrics";
 import Supplements from "./Panels/Supplements";
-import PageTemplate from "../Page";
+import PageTemplate from "../Page/PageTemplate";
 
 function mapStateToProps(state: RootState) {
   return {

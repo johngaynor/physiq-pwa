@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, Method } from "axios";
-import { getToken } from "./apiClient";
+import { waitForToken } from "./apiClient";
 import { toast } from "sonner";
 
 type MethodType = "get" | "post" | "put" | "patch" | "delete" | "options";
@@ -41,7 +41,7 @@ function caller<T>(obj: ApiObj<T>, method: MethodType) {
     fetchArr.forEach((fn) => dispatch(typeof fn === "function" ? fn() : fn));
 
     try {
-      const token = getToken();
+      const token = await waitForToken();
 
       const headers: Record<string, string> = {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
