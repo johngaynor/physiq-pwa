@@ -20,6 +20,7 @@ function mapStateToProps(state: RootState) {
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
     supplementLogsLoading: state.health.supplementLogsLoading,
+    dietSupplements: state.health.dietSupplements,
   };
 }
 
@@ -33,6 +34,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
   supplementsLoading,
   supplementLogs,
   supplementLogsLoading,
+  dietSupplements,
   toggleSupplementLog,
 }) => {
   const today = DateTime.now().toISODate();
@@ -52,29 +54,31 @@ const Metrics: React.FC<PropsFromRedux> = ({
                 <TableHead></TableHead>
                 <TableHead>Supplement</TableHead>
                 <TableHead className="hidden lg:table-cell truncate overflow-hidden">
-                  Description
+                  Frequency
                 </TableHead>
                 <TableHead className="lg:pl-5">Dosage</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {supplements.map((supp) => (
+              {dietSupplements?.map((supp) => (
                 <TableRow key={supp.id}>
                   <TableCell className="font-medium">
                     <Checkbox
-                      checked={
+                      checked={Boolean(
                         supplementLogs?.find(
                           (l) => l.date === today && l.supplementId === supp.id
                         )?.completed
-                      }
+                      )}
                       onCheckedChange={(checked) =>
                         toggleSupplementLog(today, supp.id, Boolean(checked))
                       }
                     />
                   </TableCell>
-                  <TableCell>{supp.name}</TableCell>
+                  <TableCell>
+                    {supplements?.find((s) => s.id === supp.supplementId)?.name}
+                  </TableCell>
                   <TableCell className="hidden lg:table-cell truncate overflow-hidden max-w-[200px]">
-                    {supp.description}
+                    {supp.frequency}
                   </TableCell>
                   <TableCell className="lg:pl-5">{supp.dosage}</TableCell>
                 </TableRow>

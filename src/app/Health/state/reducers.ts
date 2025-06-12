@@ -136,10 +136,10 @@ export default function healthReducer(
         supplementLogs: action.data,
       };
     case FETCH_TOGGLE_HEALTH_SUPPLEMENT_LOG:
-      let toggledLogs;
-      // remove if checked
-      if (action.checked) {
-        toggledLogs = state.supplementLogs?.filter(
+      let toggledLogs = [...(state.supplementLogs || [])];
+      if (!action.checked) {
+        // remove
+        toggledLogs = toggledLogs.filter(
           (log) =>
             !(
               log.date === action.date &&
@@ -148,14 +148,11 @@ export default function healthReducer(
         );
       } else {
         // add to array
-        toggledLogs = state.supplementLogs?.map((log) => {
-          if (
-            log.date === action.date &&
-            log.supplementId === action.supplementId
-          ) {
-            return { ...log, checked: true };
-          }
-          return log;
+        toggledLogs.push({
+          date: action.date,
+          supplementId: action.supplementId,
+          completed: true,
+          reason: null,
         });
       }
 
