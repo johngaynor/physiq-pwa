@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useUser } from "@clerk/nextjs";
-import Dashboard from "./Dashboard";
+import Dashboard from "./components/Dashboard";
 import { Spinner } from "@/components/ui";
 
 const Main = () => {
