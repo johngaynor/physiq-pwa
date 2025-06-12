@@ -14,7 +14,7 @@ import {
   editDailyWater,
   getDailySleep,
   getLatestDietLog,
-} from "../../health/state/actions";
+} from "../../tempHealth/state/actions";
 import Metrics from "./Panels/Metrics";
 import Supplements from "./Panels/Supplements";
 import { H4 } from "@/components/ui";
