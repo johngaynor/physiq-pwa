@@ -6,6 +6,7 @@ import { getDailyLogs } from "../../state/actions";
 import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
+import { ChartLineMultiple } from "../components/ChartLineMultiple";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -40,12 +41,12 @@ const WeightLog: React.FC<PropsFromRedux> = ({
     <>
       <div>
         {dailyLogsLoading ? (
-          <div className="flex flex-col space-y-3 md:w-[200px] w-full">
-            <Skeleton className="h-[400px] w-full rounded-xl" />
+          <div className="flex flex-col space-y-3 md:w-[250px] w-full">
+            <Skeleton className="h-[340px] w-full rounded-xl" />
             <Skeleton className="h-[50px] w-full rounded-xl" />
           </div>
         ) : (
-          <>
+          <div className="flex flex-col justify-between h-full">
             <Calendar
               mode="single"
               selected={date}
@@ -56,7 +57,7 @@ const WeightLog: React.FC<PropsFromRedux> = ({
             />
             <Button
               variant="outline"
-              className="w-full mt-2 h-20"
+              className="w-full h-20"
               onClick={() =>
                 alert("Sorry, this functionality is not available yet.")
               }
@@ -70,10 +71,12 @@ const WeightLog: React.FC<PropsFromRedux> = ({
                 </div>
               )}
             </Button>
-          </>
+          </div>
         )}
       </div>
-      <div>{/* <h1>[GRAPH]</h1> */}</div>
+      <div className="w-full">
+        <ChartLineMultiple dailyLogs={dailyLogs} />
+      </div>
     </>
   );
 };
