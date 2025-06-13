@@ -46,7 +46,7 @@ const WeightLog: React.FC<PropsFromRedux> = ({
             <Skeleton className="h-[50px] w-full rounded-xl" />
           </div>
         ) : (
-          <div className="flex flex-col justify-between h-full">
+          <div className="flex flex-col justify-between">
             <Calendar
               mode="single"
               selected={date}
@@ -57,7 +57,7 @@ const WeightLog: React.FC<PropsFromRedux> = ({
             />
             <Button
               variant="outline"
-              className="w-full h-20"
+              className="w-full h-20 my-6"
               onClick={() =>
                 alert("Sorry, this functionality is not available yet.")
               }
