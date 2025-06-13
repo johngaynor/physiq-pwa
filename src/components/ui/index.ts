@@ -6,3 +6,4 @@ export { Checkbox } from "./checkbox";
 export { Spinner } from "./spinner";
 export { Badge } from "./badge";
 export { Calendar } from "./calendar";
+export { Skeleton } from "./skeleton";
