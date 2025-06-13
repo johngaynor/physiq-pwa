@@ -22,6 +22,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PhysiQ",
   description: "Bodybuilding Redefined.",
+  icons: {
+    icon: "/192.png",
+    shortcut: "/192.png",
+    apple: "/192.png",
+  },
 };
 
 export default function RootLayout({
