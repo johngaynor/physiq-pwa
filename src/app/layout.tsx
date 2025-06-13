@@ -6,6 +6,7 @@ import { ReduxProvider } from "./store";
 import NavbarWrapper from "./components/Navbar";
 import { ThemeProvider } from "./components/Theme";
 import SessionInitializer from "./components/SessionInitializer";
+import PullToRefresh from "./components/PullToRefresh";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -36,6 +37,7 @@ export default function RootLayout({
         >
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <SessionInitializer />
+            <PullToRefresh />
             <ReduxProvider>
               <Toaster richColors theme="system" />
               <div className="relative max-w-6xl mx-auto px-5">
