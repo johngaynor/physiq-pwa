@@ -6,7 +6,15 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { useTheme } from "next-themes";
-import { House, Dumbbell, Database, Sun, Moon, CircleUser } from "lucide-react";
+import {
+  House,
+  Dumbbell,
+  // Database,
+  Sun,
+  Moon,
+  CircleUser,
+  HeartPlus,
+} from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -20,8 +28,9 @@ const NavItems = [
     icon: <Dumbbell size={24} />,
   },
   {
-    href: "/",
-    icon: <Database size={24} />,
+    href: "/health",
+    // icon: <Database size={24} />,
+    icon: <HeartPlus size={24} />,
   },
 ];
 
