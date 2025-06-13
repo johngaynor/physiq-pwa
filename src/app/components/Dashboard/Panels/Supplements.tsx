@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
-import { Checkbox, Spinner } from "@/components/ui";
+import { Checkbox } from "@/components/ui";
 import {
   Table,
   TableBody,
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { toggleSupplementLog } from "../../../(secure)/health/state/actions";
 import { DateTime } from "luxon";
+import SupplementsLoading from "../components/SupplementsLoading";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -46,7 +47,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
         !supplementLogs ||
         supplementsLoading ||
         supplementLogsLoading ? (
-          <Spinner size="large" />
+          <SupplementsLoading />
         ) : (
           <Table>
             <TableHeader>
