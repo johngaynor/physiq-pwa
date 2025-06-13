@@ -8,6 +8,7 @@ import {
 import { useTheme } from "next-themes";
 import { House, Dumbbell, Database, Sun, Moon, CircleUser } from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 const NavItems = [
   {
@@ -35,12 +36,12 @@ const MobileNavbar = ({}) => {
             key={"mobile-nav-item-" + index}
             className="w-full"
           >
-            <a
+            <Link
               href={item.href}
               className="flex items-center justify-center h-16"
             >
               {item.icon}
-            </a>
+            </Link>
           </NavigationMenuItem>
         ))}
         <NavigationMenuItem className="w-full">

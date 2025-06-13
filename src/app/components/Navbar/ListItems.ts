@@ -56,23 +56,33 @@ export const HealthItems: ListItem[] = [
     description: "View and manage your meal plans and nutrition information.",
   },
   {
-    title: "Supplement Tracker",
-    href: "/",
+    title: "Supplements Tracker",
+    href: "/health/logs/supplements",
     description: "Log your daily supplement intake.",
   },
   {
     title: "Weight Tracker",
-    href: "/health/log/weight",
+    href: "/health/logs/weight",
     description: "Log your daily fasted AM bodyweight.",
   },
   {
     title: "Steps Tracker",
-    href: "/",
+    href: "/health/logs/steps",
     description: "Log your daily step count.",
   },
   {
+    title: "Water Intake Tracker",
+    href: "/health/logs/water",
+    description: "Log your daily water intake.",
+  },
+  {
+    title: "Daily Calorie Tracker",
+    href: "/health/logs/calories",
+    description: "Log your daily caloric intake.",
+  },
+  {
     title: "Sleep Tracker",
-    href: "/",
+    href: "/health/logs/sleep",
     description: "Track and monitor your sleep patterns.",
   },
 ];

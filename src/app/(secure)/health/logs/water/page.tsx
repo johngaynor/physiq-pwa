@@ -4,7 +4,7 @@ import PageTemplate from "@/app/components/Page/PageTemplate";
 
 export default function Page() {
   return (
-    <PageTemplate title="Weight Log">
+    <PageTemplate title="Water Log">
       <p>This feature is still being built. Check back later!</p>
     </PageTemplate>
   );
