@@ -2,26 +2,31 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
-import { getDailyLogs } from "../../state/actions";
+import { getDailyLogs, editDailyWeight } from "../../state/actions";
 import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { ChartLineMultiple } from "../components/ChartLineMultiple";
+import { WeightForm } from "../components/Forms/WeightForm";
+import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {
   return {
     dailyLogs: state.health.dailyLogs,
     dailyLogsLoading: state.health.dailyLogsLoading,
+    editWeightLoading: state.health.editWeightLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDailyLogs });
+const connector = connect(mapStateToProps, { getDailyLogs, editDailyWeight });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const WeightLog: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
   getDailyLogs,
+  editDailyWeight,
+  editWeightLoading,
 }) => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
@@ -40,7 +45,7 @@ const WeightLog: React.FC<PropsFromRedux> = ({
   return (
     <>
       <div>
-        {dailyLogsLoading ? (
+        {dailyLogsLoading || editWeightLoading ? (
           <div className="flex flex-col space-y-3 md:w-[250px] w-full">
             <Skeleton className="h-[340px] w-full rounded-xl" />
             <Skeleton className="h-[50px] w-full rounded-xl" />
@@ -55,22 +60,29 @@ const WeightLog: React.FC<PropsFromRedux> = ({
               captionLayout="dropdown"
               dataDates={dailyLogs?.map((log) => new Date(log.date))}
             />
-            <Button
-              variant="outline"
-              className="w-full h-20"
-              onClick={() =>
-                alert("Sorry, this functionality is not available yet.")
+            <WeightForm
+              Trigger={
+                <Button variant="outline" className="w-full h-20">
+                  {activeLog && activeLog?.weight ? (
+                    <H1>{activeLog.weight.toFixed(1)} lbs</H1>
+                  ) : (
+                    <div className="flex">
+                      <CirclePlus className="size-8 font-extrabold" />
+                      <H3 className="pl-2">Add Weight</H3>
+                    </div>
+                  )}
+                </Button>
               }
-            >
-              {activeLog && activeLog?.weight ? (
-                <H1>{activeLog.weight.toFixed(1)} lbs</H1>
-              ) : (
-                <div className="flex">
-                  <CirclePlus className="size-8 font-extrabold" />
-                  <H3 className="pl-2">Add Weight</H3>
-                </div>
-              )}
-            </Button>
+              initialValues={{
+                weight: activeLog?.weight || "",
+              }}
+              handleSubmit={(values: { weight: number | string }) =>
+                editDailyWeight(
+                  isoDate || DateTime.now().toISODate(),
+                  Number(values.weight)
+                )
+              }
+            />
           </div>
         )}
       </div>

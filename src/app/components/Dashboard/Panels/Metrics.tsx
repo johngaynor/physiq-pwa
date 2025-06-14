@@ -9,8 +9,8 @@ import {
   // SleepForm,
   StepsForm,
   WaterForm,
-  WeightForm,
 } from "../components/Forms";
+import { WeightForm } from "@/app/(secure)/health/logs/components/Forms/WeightForm";
 import {
   editDailyWeight,
   editDailySteps,
