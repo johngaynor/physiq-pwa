@@ -1,7 +1,5 @@
 "use client";
 
-// version with dots
-
 import * as React from "react";
 import {
   ChevronDownIcon,
@@ -45,7 +43,7 @@ function Calendar({
         ...formatters,
       }}
       classNames={{
-        root: cn("w-[calc(100%+1px)] overflow-hidden", defaultClassNames.root), // was originally just w-fit
+        root: cn("w-full", defaultClassNames.root), // was originally just w-fit
         months: cn(
           "flex gap-4 flex-col md:flex-row relative",
           defaultClassNames.months

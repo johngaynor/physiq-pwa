@@ -47,7 +47,7 @@ const WeightLog: React.FC<PropsFromRedux> = ({
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <div className="min-w-0 flex flex-col justify-between">
+            <div className="min-w-0 flex flex-col justify-between fix-ios-height">
               <Calendar
                 mode="single"
                 selected={date}
