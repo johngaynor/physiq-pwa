@@ -4,13 +4,13 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { DashboardButton } from "../components/Button";
 import {
+  WeightForm,
   BodyfatForm,
   CaloriesForm,
   // SleepForm,
   StepsForm,
   WaterForm,
-} from "../components/Forms";
-import { WeightForm } from "@/app/(secure)/health/logs/components/Forms/WeightForm";
+} from "@/app/(secure)/health/logs/components/Forms";
 import {
   editDailyWeight,
   editDailySteps,
