@@ -120,9 +120,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-@supports (-webkit-touch-callout: none) {
-  .fix-ios-height {
-    min-height: -webkit-fill-available;
-  }
-}
