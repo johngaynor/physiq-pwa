@@ -46,12 +46,12 @@ const WeightLog: React.FC<PropsFromRedux> = ({
             <Skeleton className="h-[50px] w-full rounded-xl" />
           </div>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
-              className="rounded-md border shadow-sm"
+              className="rounded-md border shadow-sm w-[250px] md:w-full"
               captionLayout="dropdown"
               dataDates={dailyLogs?.map((log) => new Date(log.date))}
             />
