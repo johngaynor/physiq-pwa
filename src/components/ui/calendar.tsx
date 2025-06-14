@@ -19,11 +19,11 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
-  dataDates = [],
+  // dataDates = [],
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-  dataDates?: Date[];
+  // dataDates?: Date[];
 }) {
   const defaultClassNames = getDefaultClassNames();
 
