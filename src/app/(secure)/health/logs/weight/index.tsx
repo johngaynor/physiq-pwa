@@ -47,7 +47,7 @@ const WeightLog: React.FC<PropsFromRedux> = ({
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <div className="w-full self-start">
+            <div className="w-full flex-shrink-0">
               <Calendar
                 mode="single"
                 selected={date}
