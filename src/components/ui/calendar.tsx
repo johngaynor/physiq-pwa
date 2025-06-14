@@ -1,5 +1,7 @@
 "use client";
 
+// version with dots
+
 import * as React from "react";
 import {
   ChevronDownIcon,
@@ -19,11 +21,11 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
-  // dataDates = [],
+  dataDates = [],
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-  // dataDates?: Date[];
+  dataDates?: Date[];
 }) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -43,7 +45,7 @@ function Calendar({
         ...formatters,
       }}
       classNames={{
-        root: cn("w-[calc(100%+1px)]", defaultClassNames.root),
+        root: cn("w-[calc(100%+1px)] overflow-hidden", defaultClassNames.root), // was originally just w-fit
         months: cn(
           "flex gap-4 flex-col md:flex-row relative",
           defaultClassNames.months
@@ -154,7 +156,10 @@ function Calendar({
             <ChevronDownIcon className={cn("size-4", className)} {...props} />
           );
         },
-        DayButton: CalendarDayButton,
+        DayButton: (props) => (
+          <CalendarDayButton {...props} dataDates={dataDates} />
+        ),
+
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -175,14 +180,24 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
+  dataDates = [],
   ...props
-}: React.ComponentProps<typeof DayButton>) {
+}: React.ComponentProps<typeof DayButton> & {
+  dataDates?: Date[];
+}) {
   const defaultClassNames = getDefaultClassNames();
 
   const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
+
+  const isDataDay = dataDates.some(
+    (d) =>
+      d.getUTCFullYear() === day.date.getUTCFullYear() &&
+      d.getUTCMonth() === day.date.getUTCMonth() &&
+      d.getUTCDate() === day.date.getUTCDate()
+  );
 
   return (
     <Button
@@ -202,10 +217,16 @@ function CalendarDayButton({
       className={cn(
         "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
-        className
+        className,
+        "group"
       )}
       {...props}
-    />
+    >
+      <span>{day.date.getDate()}</span>
+      {isDataDay && (
+        <span className="absolute bottom-[10%] left-1/2 -translate-x-1/2 md:w-1 md:h-1 h-1.5 w-1.5 rounded-full bg-primary group-data-[selected-single=true]:bg-primary-foreground" />
+      )}
+    </Button>
   );
 }
 
