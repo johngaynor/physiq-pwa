@@ -53,7 +53,7 @@ const WeightLog: React.FC<PropsFromRedux> = ({
               onSelect={setDate}
               className="rounded-md border shadow-sm"
               captionLayout="dropdown"
-              dataDates={dailyLogs?.map((log) => new Date(log.date))}
+              // dataDates={dailyLogs?.map((log) => new Date(log.date))}
             />
             <Button
               variant="outline"
