@@ -57,7 +57,7 @@ export const HealthItems: ListItem[] = [
   },
   {
     title: "Supplements Tracker",
-    href: "/health/logs/supplements",
+    href: "/",
     description: "Log your daily supplement intake.",
   },
   {
@@ -82,7 +82,7 @@ export const HealthItems: ListItem[] = [
   },
   {
     title: "Sleep Tracker",
-    href: "/health/logs/sleep",
+    href: "/",
     description: "Track and monitor your sleep patterns.",
   },
 ];
