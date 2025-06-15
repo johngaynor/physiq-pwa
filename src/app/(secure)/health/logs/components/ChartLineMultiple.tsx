@@ -50,10 +50,13 @@ export function ChartLineMultiple({
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("last30");
 
-  const sortedLogs =
-    dailyLogs?.slice().sort((a, b) => {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    }) || [];
+  const sortedLogs = React.useMemo(() => {
+    return (
+      dailyLogs?.slice().sort((a, b) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      }) || []
+    );
+  }, [dailyLogs]);
 
   const filteredData = React.useMemo(() => {
     if (!dailyLogs) return [];
@@ -66,7 +69,7 @@ export function ChartLineMultiple({
       default:
         return sortedLogs;
     }
-  }, [activeChart, sortedLogs]);
+  }, [activeChart, sortedLogs, dailyLogs]);
 
   const averages = React.useMemo(() => {
     function average(vals: (number | undefined | null)[]) {
@@ -108,7 +111,7 @@ export function ChartLineMultiple({
       : 0;
 
   function getRoundedDomain(rounding: number) {
-    return ([dataMin, dataMax]: [number, number], allowDataOverflow: boolean) =>
+    return ([dataMin, dataMax]: [number, number]) =>
       [
         Math.floor(dataMin / rounding) * rounding,
         Math.ceil(dataMax / rounding) * rounding,
