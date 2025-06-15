@@ -7,7 +7,7 @@ import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
-import { BodyfatForm, StepsForm } from "../components/Forms";
+import { BodyfatForm } from "../components/Forms";
 import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {
