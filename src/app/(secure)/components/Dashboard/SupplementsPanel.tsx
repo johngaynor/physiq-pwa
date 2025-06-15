@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
-import { Checkbox } from "@/components/ui";
+import { Checkbox, Skeleton } from "@/components/ui";
 import {
   Table,
   TableBody,
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/table";
 import { toggleSupplementLog } from "../../../(secure)/health/state/actions";
 import { DateTime } from "luxon";
-import SupplementsLoading from "../components/SupplementsLoading";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -47,7 +46,40 @@ const Metrics: React.FC<PropsFromRedux> = ({
         !supplementLogs ||
         supplementsLoading ||
         supplementLogsLoading ? (
-          <SupplementsLoading />
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead></TableHead>
+                <TableHead>
+                  <Skeleton className="h-5 w-30" />
+                </TableHead>
+                <TableHead className="hidden lg:table-cell truncate overflow-hidden">
+                  <Skeleton className="h-5 w-30" />
+                </TableHead>
+                <TableHead>
+                  <Skeleton className="h-5 w-25" />
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 6 }).map((_, index) => (
+                <TableRow key={"supp-loading-" + index}>
+                  <TableCell>
+                    <Skeleton className="h-5 w-5" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-30" />
+                  </TableCell>
+                  <TableCell className="hidden lg:table-cell truncate overflow-hidden max-w-[200px]">
+                    <Skeleton className="h-5 w-30" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-25" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         ) : (
           <Table>
             <TableHeader>

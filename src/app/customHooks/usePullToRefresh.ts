@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+// for mobile since converting to a PWA disables the native pull to refresh
 export function usePullToRefresh(refreshFn: () => void) {
   useEffect(() => {
     let startY = 0;

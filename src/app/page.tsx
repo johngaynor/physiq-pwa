@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useUser } from "@clerk/nextjs";
-import Dashboard from "./components/Dashboard";
+import Page from "./(secure)/page";
 
 const Main = () => {
   const { user, isLoaded } = useUser();
@@ -18,7 +18,7 @@ const Main = () => {
         </h1>
       </div>
     );
-  } else return <Dashboard />;
+  } else return <Page />;
 };
 
 export default Main;

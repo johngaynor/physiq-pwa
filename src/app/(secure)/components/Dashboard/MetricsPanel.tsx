@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
-import { DashboardButton } from "../components/Button";
+import { DashboardButton } from "./DashboardButton";
 import {
   WeightForm,
   BodyfatForm,
@@ -18,7 +18,7 @@ import {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
-} from "../../../(secure)/health/state/actions";
+} from "../../health/state/actions";
 import { convertTime } from "../../../components/Time";
 import { DateTime } from "luxon";
 
@@ -48,7 +48,7 @@ const connector = connect(mapStateToProps, {
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Metrics: React.FC<PropsFromRedux> = ({
+const MetricsPanel: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
   editWeightLoading,
@@ -210,4 +210,4 @@ const Metrics: React.FC<PropsFromRedux> = ({
   );
 };
 
-export default connector(Metrics);
+export default connector(MetricsPanel);

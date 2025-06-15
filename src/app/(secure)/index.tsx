@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../../store/reducer";
+import { RootState } from "../store/reducer";
 import {
   getDailyLogs,
   editDailyWeight,
@@ -14,10 +14,10 @@ import {
   editDailyWater,
   getDailySleep,
   getLatestDietLog,
-} from "../../(secure)/health/state/actions";
-import Metrics from "./Panels/Metrics";
-import Supplements from "./Panels/Supplements";
-import PageTemplate from "../Page/PageTemplate";
+} from "./health/state/actions";
+import PageTemplate from "./components/Templates/PageTemplate";
+import MetricsPanel from "./components/Dashboard/MetricsPanel";
+import SupplementsPanel from "./components/Dashboard/SupplementsPanel";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -70,8 +70,8 @@ const Dashboard: React.FC<PropsFromRedux> = ({
 
   return (
     <PageTemplate title="Today">
-      <Metrics />
-      <Supplements />
+      <MetricsPanel />
+      <SupplementsPanel />
     </PageTemplate>
   );
 };

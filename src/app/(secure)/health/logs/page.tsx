@@ -1,5 +1,5 @@
 import React from "react";
-import PageTemplate from "../../../components/Page/PageTemplate";
+import PageTemplate from "../../components/Templates/PageTemplate";
 import AppsGrid from "@/app/components/Page/AppsGrid";
 
 const title = "Health Logs";
