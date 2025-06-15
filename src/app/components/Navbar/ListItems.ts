@@ -50,16 +50,16 @@ export const ReportItems: ListItem[] = [
 ];
 
 export const HealthItems: ListItem[] = [
-  {
-    title: "Nutrition Log",
-    href: "/",
-    description: "View and manage your meal plans and nutrition information.",
-  },
-  {
-    title: "Supplements Tracker",
-    href: "/",
-    description: "Log your daily supplement intake.",
-  },
+  // {
+  //   title: "Nutrition Log",
+  //   href: "/",
+  //   description: "View and manage your meal plans and nutrition information.",
+  // },
+  // {
+  //   title: "Supplements Tracker",
+  //   href: "/",
+  //   description: "Log your daily supplement intake.",
+  // },
   {
     title: "Weight Tracker",
     href: "/health/logs/weight",
@@ -80,14 +80,14 @@ export const HealthItems: ListItem[] = [
     href: "/health/logs/water",
     description: "Log your daily water intake.",
   },
-  {
-    title: "Daily Calorie Tracker",
-    href: "/health/logs/calories",
-    description: "Log your daily caloric intake.",
-  },
-  {
-    title: "Sleep Tracker",
-    href: "/",
-    description: "Track and monitor your sleep patterns.",
-  },
+  // {
+  //   title: "Daily Calorie Tracker",
+  //   href: "/health/logs/calories",
+  //   description: "Log your daily caloric intake.",
+  // },
+  // {
+  //   title: "Sleep Tracker",
+  //   href: "/",
+  //   description: "Track and monitor your sleep patterns.",
+  // },
 ];
