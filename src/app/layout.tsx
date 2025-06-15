@@ -36,16 +36,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            enableColorScheme
-          >
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <SessionInitializer />
             <PullToRefresh />
             <ReduxProvider>
