@@ -68,7 +68,7 @@ const CaloriesLog: React.FC<PropsFromRedux> = ({
               Trigger={
                 <Button variant="outline" className="w-full h-20">
                   {activeLog ? (
-                    <H1>{activeLog.calories} %</H1>
+                    <H1>{activeLog.calories} cal</H1>
                   ) : (
                     <div className="flex">
                       <CirclePlus className="size-8 font-extrabold" />

@@ -195,7 +195,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           initialValues={{
             calories: todayLog?.calories || 0,
           }}
-          handleSubmit={(values: { calories: number }) =>
+          handleSubmit={(values: { calories: number | string }) =>
             editDailyCalories(today, Number(values.calories))
           }
         />

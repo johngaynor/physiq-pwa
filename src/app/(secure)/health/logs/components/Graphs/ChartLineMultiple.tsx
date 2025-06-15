@@ -172,11 +172,8 @@ export function ChartLineMultiple({
               axisLine={true}
               tickMargin={8}
               tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                const date = DateTime.fromISO(value);
+                return date.toFormat("MMM d");
               }}
             />
             <YAxis
