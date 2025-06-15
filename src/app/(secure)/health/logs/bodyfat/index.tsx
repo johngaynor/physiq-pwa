@@ -97,6 +97,7 @@ const BodyfatLog: React.FC<PropsFromRedux> = ({
           unit="%"
           dataKey="bodyfat"
           rounding={1}
+          showUnit
         />
       </div>
     </>

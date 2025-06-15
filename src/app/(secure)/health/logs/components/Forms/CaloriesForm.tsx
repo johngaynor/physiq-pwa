@@ -3,7 +3,7 @@ import { Input, Label } from "@/components/ui";
 import { FormWrapper } from "./FormWrapper";
 
 type CalorieFormValues = {
-  calories: number;
+  calories: number | string;
 };
 
 export function CaloriesForm({
