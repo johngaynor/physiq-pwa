@@ -198,8 +198,8 @@ export function ChartLineMultiple({
         <div className="flex w-full items-start gap-2 text-sm -mt-4 py-5">
           <div className="flex flex-col lg:flex-row items-start gap-2 w-full">
             <div className="flex items-center gap-2 leading-none font-medium">
-              Trending {diff >= 0 ? "up" : "down"} by {Math.abs(diff)}
-              {unit} {activeChart !== "today" ? "over the last" : ""}{" "}
+              Trending {diff >= 0 ? "up" : "down"} by {Math.abs(diff)} {unit}{" "}
+              {activeChart !== "today" ? "over the last" : ""}{" "}
               {labels[activeChart]}
               {diff >= 0 ? (
                 <TrendingUp className="h-4 w-4" />

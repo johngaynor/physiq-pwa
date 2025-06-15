@@ -4,11 +4,11 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
 import { getDailyLogs, editDailyCalories } from "../../state/actions";
 import { Button, Calendar, H1, H3 } from "@/components/ui";
-import { Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
 import { CaloriesForm } from "../components/Forms";
 import { DateTime } from "luxon";
+import LogsLoadingPage from "../components/Pages/LogsLoadingPage";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -44,53 +44,46 @@ const CaloriesLog: React.FC<PropsFromRedux> = ({
     (log) => log.date === isoDate && log.calories
   );
 
+  if (dailyLogsLoading || editCaloriesLoading) return <LogsLoadingPage />;
+
   return (
     <>
-      <div>
-        {dailyLogsLoading || editCaloriesLoading ? (
-          <div className="flex flex-col space-y-3 md:w-[250px] w-full">
-            <Skeleton className="h-[340px] w-full rounded-xl" />
-            <Skeleton className="h-[50px] w-full rounded-xl" />
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="rounded-md border shadow-sm"
-              captionLayout="dropdown"
-              dataDates={dailyLogs
-                ?.filter((d) => d.calories)
-                .map((log) => new Date(log.date))}
-            />
-            <CaloriesForm
-              Trigger={
-                <Button variant="outline" className="w-full h-20">
-                  {activeLog ? (
-                    <H1>{activeLog.calories} cal</H1>
-                  ) : (
-                    <div className="flex">
-                      <CirclePlus className="size-8 font-extrabold" />
-                      <H3 className="pl-2">Add Calories</H3>
-                    </div>
-                  )}
-                </Button>
-              }
-              initialValues={{
-                calories: activeLog?.calories || "",
-              }}
-              handleSubmit={(values: { calories: number | string }) =>
-                editDailyCalories(
-                  isoDate || DateTime.now().toISODate(),
-                  Number(values.calories)
-                )
-              }
-            />
-          </div>
-        )}
+      <div className="flex flex-col gap-4">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-md border shadow-sm"
+          captionLayout="dropdown"
+          dataDates={dailyLogs
+            ?.filter((d) => d.calories)
+            .map((log) => new Date(log.date))}
+        />
+        <CaloriesForm
+          Trigger={
+            <Button variant="outline" className="w-full h-20">
+              {activeLog ? (
+                <H1>{activeLog.calories} cal</H1>
+              ) : (
+                <div className="flex">
+                  <CirclePlus className="size-8 font-extrabold" />
+                  <H3 className="pl-2">Add Calories</H3>
+                </div>
+              )}
+            </Button>
+          }
+          initialValues={{
+            calories: activeLog?.calories || "",
+          }}
+          handleSubmit={(values: { calories: number | string }) =>
+            editDailyCalories(
+              isoDate || DateTime.now().toISODate(),
+              Number(values.calories)
+            )
+          }
+        />
       </div>
-      <div className="w-full">
+      <div className="w-full md:pb-0 pb-10">
         <ChartLineMultiple
           dailyLogs={dailyLogs}
           title="Daily Caloric Intake"
