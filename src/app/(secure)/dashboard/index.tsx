@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../store/reducer";
+import { RootState } from "../../store/reducer";
 import {
   getDailyLogs,
   editDailyWeight,
@@ -14,10 +14,10 @@ import {
   editDailyWater,
   getDailySleep,
   getLatestDietLog,
-} from "./health/state/actions";
-import PageTemplate from "./components/Templates/PageTemplate";
-import MetricsPanel from "./components/Dashboard/MetricsPanel";
-import SupplementsPanel from "./components/Dashboard/SupplementsPanel";
+} from "../health/state/actions";
+import PageTemplate from "../components/Templates/PageTemplate";
+import MetricsPanel from "./components/MetricsPanel";
+import SupplementsPanel from "./components/SupplementsPanel";
 
 function mapStateToProps(state: RootState) {
   return {
