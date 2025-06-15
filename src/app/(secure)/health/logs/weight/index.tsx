@@ -6,7 +6,7 @@ import { getDailyLogs, editDailyWeight } from "../../state/actions";
 import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
-import { ChartLineMultiple } from "../components/ChartLineMultiple";
+import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
 import { WeightForm } from "../components/Forms/WeightForm";
 import { DateTime } from "luxon";
 

@@ -4,6 +4,7 @@ type DataKeys = {
   weight?: string;
   steps?: string;
   water?: string;
+  bodyfat?: string;
 };
 
 export type ChartProps = {

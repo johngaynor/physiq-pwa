@@ -71,6 +71,11 @@ export const HealthItems: ListItem[] = [
     description: "Log your daily step count.",
   },
   {
+    title: "Bodyfat % Tracker",
+    href: "/health/logs/bodyfat",
+    description: "Log your daily fasted AM bodyfat %.",
+  },
+  {
     title: "Water Intake Tracker",
     href: "/health/logs/water",
     description: "Log your daily water intake.",

@@ -6,7 +6,7 @@ import { getDailyLogs, editDailySteps } from "../../state/actions";
 import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
-import { ChartLineMultiple } from "../components/ChartLineMultiple";
+import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
 import { StepsForm } from "../components/Forms";
 import { DateTime } from "luxon";
 
