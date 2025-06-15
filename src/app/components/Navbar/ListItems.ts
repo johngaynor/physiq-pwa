@@ -80,11 +80,11 @@ export const HealthItems: ListItem[] = [
     href: "/health/logs/water",
     description: "Log your daily water intake.",
   },
-  // {
-  //   title: "Daily Calorie Tracker",
-  //   href: "/health/logs/calories",
-  //   description: "Log your daily caloric intake.",
-  // },
+  {
+    title: "Daily Calorie Tracker",
+    href: "/health/logs/calories",
+    description: "Log your daily caloric intake.",
+  },
   // {
   //   title: "Sleep Tracker",
   //   href: "/",
