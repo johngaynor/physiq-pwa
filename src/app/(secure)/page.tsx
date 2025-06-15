@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import PageTemplate from "@/app/(secure)/components/Templates/PageTemplate";
+import PageTemplate from "./components/Templates/PageTemplate";
 import Dashboard from "./index";
 
 export default function Page() {
   return (
-    <PageTemplate title="Weight Log">
+    <PageTemplate title="Today">
       <Dashboard />
     </PageTemplate>
   );

@@ -17,11 +17,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { DailyLog } from "../../state/types";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { DateTime } from "luxon";
-
-export const description = "An interactive line chart";
+import { ChartProps } from "./Graphs/types";
 
 const chartConfig = {
   today: {
@@ -35,11 +33,20 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-type ChartProps = {
-  dailyLogs: DailyLog[] | null;
+const labels = {
+  today: "all time",
+  last7: "7 days",
+  last30: "30 days",
 };
 
-export function ChartLineMultiple({ dailyLogs = [] }: ChartProps) {
+export function ChartLineMultiple({
+  dailyLogs = [],
+  title,
+  unit,
+  dataKey,
+  rounding,
+  showUnit = false,
+}: ChartProps) {
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("last30");
 
@@ -62,46 +69,61 @@ export function ChartLineMultiple({ dailyLogs = [] }: ChartProps) {
   }, [activeChart, sortedLogs]);
 
   const averages = React.useMemo(() => {
-    function average(weights: (number | undefined | null)[]) {
-      const validWeights = weights.filter(
-        (w): w is number => typeof w === "number"
-      );
-      const sum = validWeights.reduce((acc, w) => acc + w, 0);
-      return validWeights.length
-        ? Math.round((sum / validWeights.length) * 10) / 10
+    function average(vals: (number | undefined | null)[]) {
+      const validData = vals.filter((v): v is number => typeof v === "number");
+      const sum = validData.reduce((acc, v) => acc + v, 0);
+      return validData.length
+        ? Math.round((sum / validData.length) * 10) / 10
         : 0;
     }
 
-    const last7Weights = sortedLogs?.slice(-7).map((d) => d.weight) ?? [];
-    const last30Weights = sortedLogs?.slice(-30).map((d) => d.weight) ?? [];
+    const last7Data =
+      sortedLogs
+        ?.slice(-7)
+        .map((d) => d[dataKey] as number | undefined | null) ?? [];
+
+    const last30Data =
+      sortedLogs
+        ?.slice(-30)
+        .map((d) => d[dataKey] as number | undefined | null) ?? [];
 
     return {
-      today: sortedLogs[sortedLogs.length - 1]?.weight ?? "--",
-      last7: average(last7Weights),
-      last30: average(last30Weights),
+      today: sortedLogs[sortedLogs.length - 1]?.[dataKey] ?? "--",
+      last7: average(last7Data),
+      last30: average(last30Data),
     };
-  }, [sortedLogs]);
+  }, [sortedLogs, dataKey]);
 
-  const labels = {
-    today: "all time",
-    last7: "7 days",
-    last30: "30 days",
-  };
+  const startingValue = filteredData.find((d) => d[dataKey]);
+  const endingValue = [...filteredData].reverse().find((d) => d[dataKey]);
 
-  const startingValue = filteredData.find((d) => d.weight);
-  const endingValue = [...filteredData].reverse().find((d) => d.weight);
   const diff =
-    startingValue?.weight && endingValue?.weight
-      ? parseFloat((endingValue.weight - startingValue.weight).toFixed(2))
+    startingValue?.[dataKey] && endingValue?.[dataKey]
+      ? parseFloat(
+          (
+            (endingValue[dataKey] as number) -
+            (startingValue[dataKey] as number)
+          ).toFixed(2)
+        )
       : 0;
+
+  function getRoundedDomain(rounding: number) {
+    return ([dataMin, dataMax]: [number, number], allowDataOverflow: boolean) =>
+      [
+        Math.floor(dataMin / rounding) * rounding,
+        Math.ceil(dataMax / rounding) * rounding,
+      ] as [number, number];
+  }
 
   return (
     <Card className="py-4 sm:py-0">
       <CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row">
         <div className="flex sm:hidden lg:flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0">
-          <CardTitle>Morning Weight (lbs)</CardTitle>
+          <CardTitle>
+            {title} {showUnit ? `(${unit})` : ""}
+          </CardTitle>
           <CardDescription>
-            Showing weight {activeChart !== "today" ? "over the last" : ""}{" "}
+            Showing {dataKey} {activeChart !== "today" ? "over the last" : ""}{" "}
             {labels[activeChart]}
           </CardDescription>
         </div>
@@ -119,7 +141,8 @@ export function ChartLineMultiple({ dailyLogs = [] }: ChartProps) {
                   {chartConfig[chart].label}
                 </span>
                 <span className="text-lg leading-none font-bold sm:text-3xl w-auto md:w-36">
-                  {averages[key as keyof typeof averages].toLocaleString()} lbs
+                  {averages[key as keyof typeof averages].toLocaleString()}{" "}
+                  {showUnit ? unit : ""}
                 </span>
               </button>
             );
@@ -154,10 +177,7 @@ export function ChartLineMultiple({ dailyLogs = [] }: ChartProps) {
               }}
             />
             <YAxis
-              domain={[
-                (dataMin: number) => dataMin - 2,
-                (dataMax: number) => dataMax + 2,
-              ]}
+              domain={getRoundedDomain(rounding)}
               tickLine={true}
               axisLine={true}
               tickMargin={8}
@@ -165,7 +185,7 @@ export function ChartLineMultiple({ dailyLogs = [] }: ChartProps) {
 
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
-              dataKey="weight"
+              dataKey={dataKey}
               type="linear"
               stroke="var(--chart-1)"
               strokeWidth={2}
@@ -178,7 +198,7 @@ export function ChartLineMultiple({ dailyLogs = [] }: ChartProps) {
         <div className="flex w-full items-start gap-2 text-sm -mt-4 py-5">
           <div className="flex flex-col lg:flex-row items-start gap-2 w-full">
             <div className="flex items-center gap-2 leading-none font-medium">
-              Trending {diff >= 0 ? "up" : "down"} by {Math.abs(diff)} lbs{" "}
+              Trending {diff >= 0 ? "up" : "down"} by {Math.abs(diff)} {unit}{" "}
               {activeChart !== "today" ? "over the last" : ""}{" "}
               {labels[activeChart]}
               {diff >= 0 ? (

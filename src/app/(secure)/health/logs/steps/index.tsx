@@ -2,31 +2,31 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
-import { getDailyLogs, editDailyWeight } from "../../state/actions";
+import { getDailyLogs, editDailySteps } from "../../state/actions";
 import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { ChartLineMultiple } from "../components/ChartLineMultiple";
-import { WeightForm } from "../components/Forms/WeightForm";
+import { StepsForm } from "../components/Forms";
 import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {
   return {
     dailyLogs: state.health.dailyLogs,
     dailyLogsLoading: state.health.dailyLogsLoading,
-    editWeightLoading: state.health.editWeightLoading,
+    editStepsLoading: state.health.editStepsLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDailyLogs, editDailyWeight });
+const connector = connect(mapStateToProps, { getDailyLogs, editDailySteps });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const WeightLog: React.FC<PropsFromRedux> = ({
+const StepsLog: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
   getDailyLogs,
-  editDailyWeight,
-  editWeightLoading,
+  editDailySteps,
+  editStepsLoading,
 }) => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
@@ -40,14 +40,12 @@ const WeightLog: React.FC<PropsFromRedux> = ({
     timeZone: "America/New_York",
   });
 
-  const activeLog = dailyLogs?.find(
-    (log) => log.date === isoDate && log.weight
-  );
+  const activeLog = dailyLogs?.find((log) => log.date === isoDate && log.steps);
 
   return (
     <>
       <div>
-        {dailyLogsLoading || editWeightLoading ? (
+        {dailyLogsLoading || editStepsLoading ? (
           <div className="flex flex-col space-y-3 md:w-[250px] w-full">
             <Skeleton className="h-[340px] w-full rounded-xl" />
             <Skeleton className="h-[50px] w-full rounded-xl" />
@@ -61,29 +59,29 @@ const WeightLog: React.FC<PropsFromRedux> = ({
               className="rounded-md border shadow-sm"
               captionLayout="dropdown"
               dataDates={dailyLogs
-                ?.filter((d) => d.weight)
+                ?.filter((d) => d.steps)
                 .map((log) => new Date(log.date))}
             />
-            <WeightForm
+            <StepsForm
               Trigger={
                 <Button variant="outline" className="w-full h-20">
                   {activeLog ? (
-                    <H1>{activeLog.weight?.toFixed(1)} lbs</H1>
+                    <H1>{activeLog.steps} lbs</H1>
                   ) : (
                     <div className="flex">
                       <CirclePlus className="size-8 font-extrabold" />
-                      <H3 className="pl-2">Add Weight</H3>
+                      <H3 className="pl-2">Add Steps</H3>
                     </div>
                   )}
                 </Button>
               }
               initialValues={{
-                weight: activeLog?.weight || "",
+                steps: activeLog?.steps || "",
               }}
-              handleSubmit={(values: { weight: number | string }) =>
-                editDailyWeight(
+              handleSubmit={(values: { steps: number | string }) =>
+                editDailySteps(
                   isoDate || DateTime.now().toISODate(),
-                  Number(values.weight)
+                  Number(values.steps)
                 )
               }
             />
@@ -93,15 +91,14 @@ const WeightLog: React.FC<PropsFromRedux> = ({
       <div className="w-full">
         <ChartLineMultiple
           dailyLogs={dailyLogs}
-          title="Morning Weight"
-          unit="lbs"
-          showUnit
-          dataKey="weight"
-          rounding={1}
+          title="Daily Steps"
+          unit="steps"
+          dataKey="steps"
+          rounding={1000}
         />
       </div>
     </>
   );
 };
 
-export default connector(WeightLog);
+export default connector(StepsLog);
