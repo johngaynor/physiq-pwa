@@ -15,6 +15,8 @@ export default function NavbarWrapper({
 
   if (isMobile === undefined) return null;
 
+  console.log(isMobile, user);
+
   return (
     <>
       {!isMobile && user && <DesktopNavAuth />}
