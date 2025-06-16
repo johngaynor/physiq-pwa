@@ -14,20 +14,15 @@ import {
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
+  //   ChartLegend,
+  //   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { ChartProps } from "../logs/components/Graphs/types";
 import { DateTime } from "luxon";
 
-const chartConfig = {
-  weight: {
-    label: "Weight",
-    color: "var(--chart-1)",
-  },
-} satisfies ChartConfig;
+const chartConfig = {} satisfies ChartConfig;
 
 export function StatisticsGraph({
   dailyLogs = [],
@@ -106,7 +101,7 @@ export function StatisticsGraph({
               strokeWidth={2}
               dot={false}
             />
-            <ChartLegend content={<ChartLegendContent />} />
+            {/* <ChartLegend content={<ChartLegendContent />} /> */}
           </LineChart>
         </ChartContainer>
       </CardContent>
