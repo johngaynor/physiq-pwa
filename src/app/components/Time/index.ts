@@ -4,5 +4,5 @@ export function convertTime(time: number) {
   const hours = Math.floor(absTime);
   const minutes = Math.floor((absTime - hours) * 60);
 
-  return `${sign}${hours}h ${minutes}m`;
+  return `${sign}${hours > 0 ? hours + "h " : ""}${minutes}m`;
 }

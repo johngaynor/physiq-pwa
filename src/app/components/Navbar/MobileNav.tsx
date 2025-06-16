@@ -34,7 +34,7 @@ const NavItems = [
   },
 ];
 
-const MobileNavbar = ({}) => {
+const MobileNav = ({}) => {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -92,4 +92,4 @@ const MobileNavbar = ({}) => {
   );
 };
 
-export default MobileNavbar;
+export default MobileNav;

@@ -20,7 +20,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
 
-const DesktopNavbar = ({}) => {
+const DesktopNav = ({}) => {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -35,7 +35,7 @@ const DesktopNavbar = ({}) => {
           <NavigationMenuItem>
             <NavigationMenuTrigger>Training</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                 {TrainingItems.map((component) => (
                   <ListItem
                     key={component.title}
@@ -129,4 +129,4 @@ const DesktopNavbar = ({}) => {
   );
 };
 
-export default DesktopNavbar;
+export default DesktopNav;

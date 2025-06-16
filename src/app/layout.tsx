@@ -45,7 +45,7 @@ export default function RootLayout({
             <PullToRefresh />
             <ReduxProvider>
               <Toaster richColors theme="system" />
-              <div className="relative max-w-6xl mx-auto px-5">
+              <div className="relative mx-auto">
                 <NavbarWrapper>{children}</NavbarWrapper>
               </div>
             </ReduxProvider>

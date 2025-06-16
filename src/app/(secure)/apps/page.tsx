@@ -1,13 +1,13 @@
 import React from "react";
 import PageTemplate from "../components/Templates/PageTemplate";
-import HealthDashboard from "./index";
+import AppsGrid from "@/app/components/Page/AppsGrid";
 
-const title = "Health Metrics";
+const title = "All Applications";
 
 export default function Page() {
   return (
     <PageTemplate title={title}>
-      <HealthDashboard />
+      <AppsGrid filter="" />
     </PageTemplate>
   );
 }
