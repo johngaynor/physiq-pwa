@@ -43,7 +43,7 @@ function TabsTrigger({
       data-slot="tabs-trigger"
       className={cn(
         "relative", // Needed for positioning the `::after` underline
-        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground",
+        "dark:data-[state=active]:bg-[#060B1C] dark:data-[state=active]:text-foreground",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring",
         "text-foreground dark:text-muted-foreground dark:hover:bg-input/30 dark:hover:text-primary",
         "inline-flex h-[calc(100%-1px)] mb-2 flex-1 items-center justify-center gap-1.5",
@@ -55,7 +55,7 @@ function TabsTrigger({
         "data-[state=active]:after:content-[''] data-[state=active]:after:absolute",
         "data-[state=active]:after:bottom-[-7px] data-[state=active]:after:left-1/2",
         "data-[state=active]:after:-translate-x-1/2 data-[state=active]:after:w-full",
-        "data-[state=active]:after:h-0.5 data-[state=active]:after:bg-white",
+        "data-[state=active]:after:h-0.5 dark:data-[state=active]:after:bg-white",
         className
       )}
       {...props}
