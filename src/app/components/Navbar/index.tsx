@@ -1,7 +1,9 @@
 "use client";
-import MobileNavbar from "./mobile";
-import DesktopNavbar from "./desktop";
+import MobileNav from "./MobileNav";
+import DesktopNav from "./DesktopNav";
 import { useWindowDimensions } from "@/app/customHooks/useWindowDimensions";
+import DesktopNavAuth from "./DesktopNavAuth";
+import { useUser } from "@clerk/nextjs";
 
 export default function NavbarWrapper({
   children,
@@ -9,14 +11,16 @@ export default function NavbarWrapper({
   children: React.ReactNode;
 }>) {
   const isMobile = useWindowDimensions("(max-width: 768px)");
+  const { user } = useUser();
 
   if (isMobile === undefined) return null;
 
   return (
     <>
-      {!isMobile && <DesktopNavbar />}
-      <div className="mb-20 md:mb-0 mt-0 md:pt-10">{children}</div>
-      {isMobile && <MobileNavbar />}
+      {!isMobile && user && <DesktopNavAuth />}
+      {!isMobile && !user && <DesktopNav />}
+      <div className="mb-20 md:mb-0">{children}</div>
+      {isMobile && <MobileNav />}
     </>
   );
 }
