@@ -4,8 +4,10 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
 import { getDailyLogs } from "./state/actions";
 import StatisticsCard from "./components/StatisticsCard";
+import { StatisticsGraph } from "./components/StatisticsGraph";
 import { DateTime } from "luxon";
 import { convertTime } from "@/app/components/Time";
+import { Skeleton } from "@/components/ui";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -112,92 +114,151 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
 
   if (dailyLogsLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-        {/* {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-[200px] w-full rounded-xl" />
-        ))} */}
-        loading
+      <div className="w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} className="h-[170px] w-full rounded-xl" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 w-full">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Skeleton key={index} className="h-[300px] w-full rounded-xl" />
+          ))}
+        </div>
       </div>
     );
   } else
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-        <StatisticsCard
-          title="Weight"
-          value={today?.weight ? today.weight.toFixed(1) + " lbs" : "--"}
-          stat={
-            diffs.weight
-              ? `${diffs.weight >= 0 ? "+" : "-"}${Math.abs(diffs.weight)} lbs`
-              : "--"
-          }
-          subtitle={
-            diffs.weight
-              ? `Trending ${diffs.weight >= 0 ? "up" : "down"} this month`
-              : "--"
-          }
-          positive={diffs.weight ? diffs.weight >= 0 : false}
-          success={diffs.weight ? diffs.weight >= 0 : false}
-          description="Weight today"
-        />
-        <StatisticsCard
-          title="Fat Free Mass"
-          value={
-            today?.weight && today.bodyfat
-              ? parseFloat(
-                  (today.weight * (1 - today.bodyfat / 100)).toFixed(1)
-                ).toFixed(1) + " lbs"
-              : "--"
-          }
-          stat={
-            diffs.ffm
-              ? `${diffs.ffm >= 0 ? "+" : "-"}${Math.abs(diffs.ffm)} lbs`
-              : "--"
-          }
-          subtitle={
-            diffs.ffm
-              ? `Trending ${diffs.ffm >= 0 ? "up" : "down"} this month`
-              : "--"
-          }
-          positive={diffs.ffm ? diffs.ffm >= 0 : false}
-          success={diffs.ffm ? diffs.ffm >= 0 : false}
-          description="FFM today"
-        />
-        <StatisticsCard
-          title="Body Fat %"
-          value={today?.bodyfat ? today.bodyfat.toFixed(1) + "%" : "--"}
-          stat={
-            diffs.bodyfat
-              ? `${diffs.bodyfat >= 0 ? "+" : "-"}${Math.abs(diffs.bodyfat)}%`
-              : "--"
-          }
-          subtitle={
-            diffs.bodyfat
-              ? `Trending ${diffs.bodyfat >= 0 ? "up" : "down"} this month`
-              : "--"
-          }
-          positive={diffs.bodyfat ? diffs.bodyfat >= 0 : false}
-          success={diffs.bodyfat ? diffs.bodyfat <= 0 : false}
-          description="BF % today"
-        />
-        <StatisticsCard
-          title="Sleep"
-          value={today?.totalSleep ? convertTime(today.totalSleep) : "--"}
-          stat={
-            diffs.totalSleep
-              ? `${diffs.totalSleep >= 0 ? "+" : "-"}${convertTime(
-                  Math.abs(diffs.totalSleep)
-                )}`
-              : "--"
-          }
-          subtitle={
-            diffs.totalSleep
-              ? `Trending ${diffs.totalSleep >= 0 ? "up" : "down"} this month`
-              : "--"
-          }
-          positive={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
-          success={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
-          description="Sleep today"
-        />
+      <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          <StatisticsCard
+            title="Weight"
+            value={today?.weight ? today.weight.toFixed(1) + " lbs" : "--"}
+            stat={
+              diffs.weight
+                ? `${diffs.weight >= 0 ? "+" : "-"}${Math.abs(
+                    diffs.weight
+                  )} lbs`
+                : "--"
+            }
+            subtitle={
+              diffs.weight
+                ? `Trending ${diffs.weight >= 0 ? "up" : "down"} this month`
+                : "--"
+            }
+            positive={diffs.weight ? diffs.weight >= 0 : false}
+            success={diffs.weight ? diffs.weight >= 0 : false}
+            description="Weight today"
+          />
+          <StatisticsCard
+            title="Fat Free Mass"
+            value={
+              today?.weight && today.bodyfat
+                ? parseFloat(
+                    (today.weight * (1 - today.bodyfat / 100)).toFixed(1)
+                  ).toFixed(1) + " lbs"
+                : "--"
+            }
+            stat={
+              diffs.ffm
+                ? `${diffs.ffm >= 0 ? "+" : "-"}${Math.abs(diffs.ffm)} lbs`
+                : "--"
+            }
+            subtitle={
+              diffs.ffm
+                ? `Trending ${diffs.ffm >= 0 ? "up" : "down"} this month`
+                : "--"
+            }
+            positive={diffs.ffm ? diffs.ffm >= 0 : false}
+            success={diffs.ffm ? diffs.ffm >= 0 : false}
+            description="FFM today"
+          />
+          <StatisticsCard
+            title="Body Fat %"
+            value={today?.bodyfat ? today.bodyfat.toFixed(1) + "%" : "--"}
+            stat={
+              diffs.bodyfat
+                ? `${diffs.bodyfat >= 0 ? "+" : "-"}${Math.abs(diffs.bodyfat)}%`
+                : "--"
+            }
+            subtitle={
+              diffs.bodyfat
+                ? `Trending ${diffs.bodyfat >= 0 ? "up" : "down"} this month`
+                : "--"
+            }
+            positive={diffs.bodyfat ? diffs.bodyfat >= 0 : false}
+            success={diffs.bodyfat ? diffs.bodyfat <= 0 : false}
+            description="BF % today"
+          />
+          <StatisticsCard
+            title="Sleep"
+            value={today?.totalSleep ? convertTime(today.totalSleep) : "--"}
+            stat={
+              diffs.totalSleep
+                ? `${diffs.totalSleep >= 0 ? "+" : "-"}${convertTime(
+                    Math.abs(diffs.totalSleep)
+                  )}`
+                : "--"
+            }
+            subtitle={
+              diffs.totalSleep
+                ? `Trending ${diffs.totalSleep >= 0 ? "up" : "down"} this month`
+                : "--"
+            }
+            positive={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
+            success={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
+            description="Sleep today"
+          />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full pt-4">
+          <StatisticsGraph
+            title="Weight"
+            dailyLogs={last30Days}
+            dataKey="weight"
+            unit="lbs"
+            showUnit
+            rounding={2}
+          />
+          <StatisticsGraph
+            title="Bodyfat"
+            dailyLogs={last30Days}
+            dataKey="bodyfat"
+            unit="%"
+            showUnit
+            rounding={2}
+          />
+          {/* will want to figure out formatting for sleep */}
+          <StatisticsGraph
+            title="Sleep"
+            dailyLogs={last30Days}
+            dataKey="totalSleep"
+            unit="hrs"
+            rounding={2}
+          />
+          <StatisticsGraph
+            title="Steps"
+            dailyLogs={last30Days}
+            dataKey="steps"
+            unit="steps"
+            rounding={1000}
+          />
+          <StatisticsGraph
+            title="Water Intake"
+            dailyLogs={last30Days}
+            dataKey="water"
+            unit="oz"
+            showUnit
+            rounding={10}
+          />
+          <StatisticsGraph
+            title="Caloric Intake"
+            dailyLogs={last30Days}
+            dataKey="calories"
+            unit="cal"
+            showUnit
+            rounding={10}
+          />
+        </div>
       </div>
     );
 };
