@@ -99,11 +99,17 @@ const Metrics: React.FC<PropsFromRedux> = ({
                     <Checkbox
                       checked={Boolean(
                         supplementLogs?.find(
-                          (l) => l.date === today && l.supplementId === supp.id
+                          (l) =>
+                            l.date === today &&
+                            l.supplementId === supp.supplementId
                         )?.completed
                       )}
                       onCheckedChange={(checked) =>
-                        toggleSupplementLog(today, supp.id, Boolean(checked))
+                        toggleSupplementLog(
+                          today,
+                          supp.supplementId,
+                          Boolean(checked)
+                        )
                       }
                     />
                   </TableCell>
