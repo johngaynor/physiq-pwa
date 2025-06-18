@@ -41,18 +41,39 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
 
   if (dietLogsLoading) {
     return (
-      <div className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="h-[170px] w-full rounded-xl" />
-          ))}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 w-full">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="h-[300px] w-full rounded-xl" />
-          ))}
-        </div>
-      </div>
+      <Card className="w-full rounded-sm dark:bg-[#060B1C] p-0">
+        <CardContent>
+          <Table>
+            <TableBody>
+              {Array.from({ length: 15 }).map((_, index) => (
+                <TableRow key={index} className="mx-4">
+                  <TableCell>
+                    <Skeleton className="h-6" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6" />
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="text-sm font-medium">
+                      <Skeleton className="h-6" />
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-sm truncate overflow-hidden max-w-[200px]">
+                    <Skeleton className="h-6" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     );
   } else
     return (
