@@ -81,6 +81,7 @@ export default function DesktopNavAuth() {
         <TabsList className="flex bg-transparent p-0">
           {TabComponent("Dashboard")}
           {TabComponent("Health")}
+          {TabComponent("Diet")}
           {TabComponent("Apps")}
         </TabsList>
       </Tabs>
