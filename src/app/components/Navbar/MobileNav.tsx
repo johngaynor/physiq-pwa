@@ -8,8 +8,8 @@ import {
 import { useTheme } from "next-themes";
 import {
   House,
-  Dumbbell,
-  // Database,
+  // Dumbbell,
+  Database,
   Sun,
   Moon,
   CircleUser,
@@ -23,14 +23,17 @@ const NavItems = [
     href: "/",
     icon: <House size={24} />,
   },
-  {
-    href: "/",
-    icon: <Dumbbell size={24} />,
-  },
+  // {
+  //   href: "/",
+  //   icon: <Dumbbell size={24} />,
+  // },
   {
     href: "/health",
-    // icon: <Database size={24} />,
     icon: <HeartPlus size={24} />,
+  },
+  {
+    href: "/apps",
+    icon: <Database size={24} />,
   },
 ];
 
