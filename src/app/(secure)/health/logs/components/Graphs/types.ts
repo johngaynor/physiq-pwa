@@ -17,3 +17,13 @@ export type ChartProps = {
   rounding: number;
   showUnit?: boolean;
 };
+
+export type HealthChartProps = {
+  dailyLogs: DailyLog[] | null;
+  title: string;
+  unit: string;
+  dataKeys: (keyof DataKeys)[];
+  primaryKey: keyof DataKeys;
+  rounding: number;
+  showUnit?: boolean;
+};

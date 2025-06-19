@@ -214,7 +214,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           <StatisticsGraph
             title="Weight"
             dailyLogs={last30Days}
-            dataKey="weight"
+            dataKeys={["weight", "weight"]}
+            primaryKey="weight"
             unit="lbs"
             showUnit
             rounding={2}
@@ -222,7 +223,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           <StatisticsGraph
             title="Bodyfat"
             dailyLogs={last30Days}
-            dataKey="bodyfat"
+            dataKeys={["bodyfat"]}
+            primaryKey="bodyfat"
             unit="%"
             showUnit
             rounding={2}
@@ -231,21 +233,24 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           <StatisticsGraph
             title="Sleep"
             dailyLogs={last30Days}
-            dataKey="totalSleep"
+            dataKeys={["totalSleep"]}
+            primaryKey="totalSleep"
             unit="hrs"
             rounding={2}
           />
           <StatisticsGraph
             title="Steps"
             dailyLogs={last30Days}
-            dataKey="steps"
+            dataKeys={["steps"]}
+            primaryKey="steps"
             unit="steps"
             rounding={1000}
           />
           <StatisticsGraph
             title="Water Intake"
             dailyLogs={last30Days}
-            dataKey="water"
+            dataKeys={["water"]}
+            primaryKey="water"
             unit="oz"
             showUnit
             rounding={10}
@@ -253,7 +258,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           <StatisticsGraph
             title="Caloric Intake"
             dailyLogs={last30Days}
-            dataKey="calories"
+            dataKeys={["calories"]}
+            primaryKey="calories"
             unit="cal"
             showUnit
             rounding={10}
