@@ -233,7 +233,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           <StatisticsGraph
             title="Sleep"
             dailyLogs={last30Days}
-            dataKeys={["totalSleep"]}
+            dataKeys={["totalSleep", "totalBed"]}
             primaryKey="totalSleep"
             unit="hrs"
             rounding={2}
