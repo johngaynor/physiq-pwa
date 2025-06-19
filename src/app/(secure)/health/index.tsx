@@ -246,6 +246,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             primaryKey="steps"
             unit="steps"
             rounding={1000}
+            singleAxis
           />
           <StatisticsGraph
             title="Water Intake"
@@ -255,6 +256,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             unit="oz"
             showUnit
             rounding={10}
+            singleAxis
           />
           <StatisticsGraph
             title="Caloric Intake"
@@ -264,6 +266,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             unit="cal"
             showUnit
             rounding={10}
+            singleAxis
           />
         </div>
       </div>
