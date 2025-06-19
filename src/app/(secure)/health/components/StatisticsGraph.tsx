@@ -31,6 +31,11 @@ const lineColors = [
   "var(--chart-4)",
 ];
 
+const dataKeyLabels: Record<string, string> = {
+  weight: "Total Weight",
+  ffm: "Fat Free Weight",
+};
+
 export function StatisticsGraph({
   dailyLogs = [],
   title,
@@ -136,6 +141,7 @@ export function StatisticsGraph({
                     color: lineColors[index % lineColors.length],
                     type: "line",
                     id: key,
+                    name: dataKeyLabels[key] ?? key,
                   }))}
                 />
               }
