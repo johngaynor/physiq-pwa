@@ -38,6 +38,9 @@ export type DailyLog = {
   water?: number | null;
   calories?: number | null;
   ffm?: number | null;
+  caloriesTarget?: number | null;
+  waterTarget?: number | null;
+  stepsTarget?: number | null;
 };
 
 export type Supplement = {

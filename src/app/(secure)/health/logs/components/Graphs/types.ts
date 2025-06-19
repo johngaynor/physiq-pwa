@@ -9,6 +9,9 @@ type DataKeys = {
   totalSleep?: string;
   totalBed?: string;
   ffm?: string;
+  caloriesTarget?: string;
+  waterTarget?: string;
+  stepsTarget?: string;
 };
 
 export type ChartProps = {
