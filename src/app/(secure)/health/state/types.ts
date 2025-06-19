@@ -37,6 +37,7 @@ export type DailyLog = {
   bodyfat?: number | null;
   water?: number | null;
   calories?: number | null;
+  ffm?: number | null;
 };
 
 export type Supplement = {

@@ -214,7 +214,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           <StatisticsGraph
             title="Weight"
             dailyLogs={last30Days}
-            dataKeys={["weight", "weight"]}
+            dataKeys={["weight", "ffm"]}
             primaryKey="weight"
             unit="lbs"
             showUnit
