@@ -237,6 +237,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             primaryKey="totalSleep"
             unit="hrs"
             rounding={2}
+            singleAxis
           />
           <StatisticsGraph
             title="Steps"

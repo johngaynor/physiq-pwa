@@ -28,4 +28,5 @@ export type HealthChartProps = {
   primaryKey: keyof DataKeys;
   rounding: number;
   showUnit?: boolean;
+  singleAxis?: boolean;
 };

@@ -44,6 +44,7 @@ export function StatisticsGraph({
   rounding,
   showUnit,
   primaryKey,
+  singleAxis = false,
 }: HealthChartProps) {
   const startingValue = dailyLogs ? dailyLogs.find((d) => d[primaryKey]) : null;
   const endingValue = dailyLogs
@@ -106,15 +107,16 @@ export function StatisticsGraph({
               axisLine
               tickMargin={8}
             />
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              domain={getRoundedDomain(rounding)}
-              tickLine
-              axisLine
-              tickMargin={8}
-            />
-
+            {!singleAxis && (
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                domain={getRoundedDomain(rounding)}
+                tickLine
+                axisLine
+                tickMargin={8}
+              />
+            )}
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             {dataKeys.map((key: string, index: number) => (
               <Line
