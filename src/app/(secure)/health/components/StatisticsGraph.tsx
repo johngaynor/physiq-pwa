@@ -93,10 +93,25 @@ export function StatisticsGraph({
                 return date.toFormat("MMM d");
               }}
             />
-            <YAxis
+            {/* <YAxis
               domain={getRoundedDomain(rounding)}
               tickLine={true}
               axisLine={true}
+              tickMargin={8}
+            /> */}
+            <YAxis
+              yAxisId="left"
+              domain={getRoundedDomain(rounding)}
+              tickLine
+              axisLine
+              tickMargin={8}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              domain={getRoundedDomain(rounding)}
+              tickLine
+              axisLine
               tickMargin={8}
             />
 
@@ -110,6 +125,7 @@ export function StatisticsGraph({
                 strokeWidth={2}
                 dot={false}
                 name={key}
+                yAxisId={index === 0 ? "left" : "right"}
               />
             ))}
             <ChartLegend
