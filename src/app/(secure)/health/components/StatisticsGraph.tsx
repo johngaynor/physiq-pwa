@@ -127,7 +127,7 @@ export function StatisticsGraph({
                 strokeWidth={2}
                 dot={false}
                 name={key}
-                yAxisId={index === 0 ? "left" : "right"}
+                yAxisId={singleAxis ? "left" : index === 0 ? "left" : "right"}
               />
             ))}
             <ChartLegend
