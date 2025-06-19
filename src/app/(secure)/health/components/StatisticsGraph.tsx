@@ -1,6 +1,6 @@
 "use client";
 
-// import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { LineChart, CartesianGrid, XAxis, Line, YAxis } from "recharts";
 
 import {
@@ -43,21 +43,22 @@ export function StatisticsGraph({
   dataKeys,
   rounding,
   showUnit,
+  primaryKey,
 }: HealthChartProps) {
-  // const startingValue = dailyLogs ? dailyLogs.find((d) => d[dataKey]) : null;
-  // const endingValue = dailyLogs
-  //   ? [...dailyLogs].reverse().find((d) => d[dataKey])
-  //   : null;
+  const startingValue = dailyLogs ? dailyLogs.find((d) => d[primaryKey]) : null;
+  const endingValue = dailyLogs
+    ? [...dailyLogs].reverse().find((d) => d[primaryKey])
+    : null;
 
-  // const diff =
-  //   startingValue?.[dataKey] && endingValue?.[dataKey]
-  //     ? parseFloat(
-  //         (
-  //           (endingValue[dataKey] as number) -
-  //           (startingValue[dataKey] as number)
-  //         ).toFixed(2)
-  //       )
-  //     : 0;
+  const diff =
+    startingValue?.[primaryKey] && endingValue?.[primaryKey]
+      ? parseFloat(
+          (
+            (endingValue[primaryKey] as number) -
+            (startingValue[primaryKey] as number)
+          ).toFixed(2)
+        )
+      : 0;
 
   function getRoundedDomain(rounding: number) {
     return ([dataMin, dataMax]: [number, number]) =>
@@ -98,12 +99,6 @@ export function StatisticsGraph({
                 return date.toFormat("MMM d");
               }}
             />
-            {/* <YAxis
-              domain={getRoundedDomain(rounding)}
-              tickLine={true}
-              axisLine={true}
-              tickMargin={8}
-            /> */}
             <YAxis
               yAxisId="left"
               domain={getRoundedDomain(rounding)}
@@ -153,24 +148,22 @@ export function StatisticsGraph({
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none font-medium">
-              {/* You are {diff >= 0 ? "up" : "down"} {Math.abs(diff)} {unit} over
+              You are {diff >= 0 ? "up" : "down"} {Math.abs(diff)} {unit} over
               the last month
               {diff >= 0 ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
-              )} */}
-              diff
+              )}
             </div>
             <div className="text-muted-foreground flex items-center gap-2 leading-none">
-              {/* {DateTime.fromISO(
+              {DateTime.fromISO(
                 startingValue ? startingValue.date : ""
               ).toFormat("LLL dd")}{" "}
               -{" "}
               {DateTime.fromISO(endingValue ? endingValue.date : "").toFormat(
                 "LLL dd"
-              )} */}
-              date range
+              )}
             </div>
           </div>
         </div>
