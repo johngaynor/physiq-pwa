@@ -30,7 +30,7 @@ const initialValues = {
   carbs: "",
   fat: "",
   protein: "",
-  phase: "Cut",
+  phase: "",
   water: "",
   steps: "",
   cardio: "",
@@ -119,7 +119,7 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               }
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Phase" />
+                <SelectValue placeholder="Phase..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
