@@ -3,9 +3,17 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { getDietLogs } from "../state/actions";
-import { DietFormValues } from "./types";
-import { Input, Label } from "@/components/ui";
-import SectionWrapper from "./components/SectionWrapper";
+import { DietFormValues, DietPhase } from "./types";
+import { Input, Label, Select } from "@/components/ui";
+import { SectionWrapper, InputWrapper } from "./components/SectionWrapper";
+import {
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+} from "@/components/ui/select";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -77,9 +85,56 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
   } else
     return (
       <div className="w-full">
+        {/* General */}
+        <SectionWrapper title="General">
+          <InputWrapper>
+            <Label htmlFor="date">Effective Date (YYYY-MM-DD)</Label>
+            <Input
+              id="date"
+              value={formValues.effectiveDate}
+              onChange={handleOnChange}
+              placeholder="Effective Date..."
+              type="text"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="notes">Notes</Label>
+            <Input
+              id="notes"
+              value={formValues.notes}
+              onChange={handleOnChange}
+              placeholder="Notes..."
+              type="text"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="phase">Phase</Label>
+            <Select
+              value={formValues.phase}
+              onValueChange={(value) =>
+                setFormValues((prev) => ({
+                  ...prev,
+                  phase: value as DietPhase,
+                }))
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Phase" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Phases</SelectLabel>
+                  <SelectItem value="bulk">Bulk</SelectItem>
+                  <SelectItem value="maintenance">Maintenance</SelectItem>
+                  <SelectItem value="cut">Cut</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </InputWrapper>
+        </SectionWrapper>
         {/* Nutrition */}
         <SectionWrapper title="Nutrition">
-          <div className="grid w-full max-w-sm items-center gap-3">
+          <InputWrapper>
             <Label htmlFor="protein">Protein (g)</Label>
             <Input
               id="protein"
@@ -88,8 +143,8 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               placeholder="Protein..."
               type="number"
             />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-3">
+          </InputWrapper>
+          <InputWrapper>
             <Label htmlFor="calories">Carbs (g)</Label>
             <Input
               id="carbs"
@@ -98,8 +153,8 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               placeholder="Carbs..."
               type="number"
             />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-3">
+          </InputWrapper>
+          <InputWrapper>
             <Label htmlFor="fat">Fat (g)</Label>
             <Input
               id="fat"
@@ -108,12 +163,12 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               placeholder="Fat..."
               type="number"
             />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-3">
+          </InputWrapper>
+          <InputWrapper>
             <Label htmlFor="fat">Calories (kcal)</Label>
             <Input id="calories" value={calories} disabled />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-3">
+          </InputWrapper>
+          <InputWrapper>
             <Label htmlFor="water">Water (oz)</Label>
             <Input
               id="water"
@@ -122,11 +177,11 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               placeholder="Water..."
               type="number"
             />
-          </div>
+          </InputWrapper>
         </SectionWrapper>
         {/* Cardio */}
         <SectionWrapper title="Cardio">
-          <div className="grid w-full max-w-sm items-center gap-3">
+          <InputWrapper>
             <Label htmlFor="cardio">Cardio (type)</Label>
             <Input
               id="cardio"
@@ -135,8 +190,8 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               placeholder="Cardio..."
               type="text"
             />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-3">
+          </InputWrapper>
+          <InputWrapper>
             <Label htmlFor="cardioMinutes">Cardio (min / week)</Label>
             <Input
               id="cardioMinutes"
@@ -145,8 +200,8 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               placeholder="Cardio Minutes..."
               type="number"
             />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-3">
+          </InputWrapper>
+          <InputWrapper>
             <Label htmlFor="steps">Steps</Label>
             <Input
               id="steps"
@@ -155,7 +210,7 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               placeholder="Steps..."
               type="number"
             />
-          </div>
+          </InputWrapper>
         </SectionWrapper>
       </div>
     );

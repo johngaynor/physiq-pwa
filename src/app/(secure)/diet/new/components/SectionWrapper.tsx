@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { H3 } from "@/components/ui";
 
-export default function SectionWrapper({
+export function SectionWrapper({
   title,
   children,
 }: {
@@ -22,5 +22,11 @@ export default function SectionWrapper({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+export function InputWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid w-full max-w-sm items-center gap-3">{children}</div>
   );
 }
