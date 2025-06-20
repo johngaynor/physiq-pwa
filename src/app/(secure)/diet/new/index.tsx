@@ -125,24 +125,34 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
           </div>
         </SectionWrapper>
         {/* Cardio */}
-        <SectionWrapper title="Nutrition">
+        <SectionWrapper title="Cardio">
           <div className="grid w-full max-w-sm items-center gap-3">
-            <Label htmlFor="protein">Protein (g)</Label>
+            <Label htmlFor="cardio">Cardio (type)</Label>
             <Input
-              id="protein"
-              value={formValues.protein}
+              id="cardio"
+              value={formValues.cardio}
               onChange={handleOnChange}
-              placeholder="Protein..."
+              placeholder="Cardio..."
+              type="text"
+            />
+          </div>
+          <div className="grid w-full max-w-sm items-center gap-3">
+            <Label htmlFor="cardioMinutes">Cardio (min / week)</Label>
+            <Input
+              id="cardioMinutes"
+              value={formValues.cardioMinutes}
+              onChange={handleOnChange}
+              placeholder="Cardio Minutes..."
               type="number"
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-3">
-            <Label htmlFor="calories">Carbs (g)</Label>
+            <Label htmlFor="steps">Steps</Label>
             <Input
-              id="carbs"
-              value={formValues.carbs}
+              id="steps"
+              value={formValues.steps}
               onChange={handleOnChange}
-              placeholder="Carbs..."
+              placeholder="Steps..."
               type="number"
             />
           </div>
