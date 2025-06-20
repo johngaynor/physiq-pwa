@@ -6,3 +6,4 @@ export { Checkbox } from "./checkbox";
 export { Badge } from "./badge";
 export { Calendar } from "./calendar";
 export { Skeleton } from "./skeleton";
+export { Select } from "./select";

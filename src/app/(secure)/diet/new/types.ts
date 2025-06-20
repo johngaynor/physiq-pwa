@@ -1,13 +1,13 @@
 export type DietPhase = "Cut" | "Bulk" | "Maintenance";
 export type DietFormValues = {
   effectiveDate: string;
-  carbs: number | string;
-  fat: number | string;
-  protein: number | string;
+  carbs: string;
+  fat: string;
+  protein: string;
   phase: DietPhase;
-  water: number | string;
-  steps: number | string;
+  water: string;
+  steps: string;
   cardio: string;
-  cardioMinutes: number | string;
+  cardioMinutes: string;
   notes: string;
 };
