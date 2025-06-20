@@ -254,6 +254,12 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
             />
           </InputWrapper>
         </SectionWrapper>
+        <Button
+          variant="outline"
+          onClick={() => alert(`Sorry, this functionality isn't built yet :(`)}
+        >
+          Submit
+        </Button>
       </div>
     );
 };
