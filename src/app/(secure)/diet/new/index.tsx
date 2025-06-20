@@ -3,6 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { getDietLogs } from "../state/actions";
+import { getSupplements } from "../../health/state/actions";
 import { DietFormValues, DietPhase } from "./types";
 import { Input, Label, Select } from "@/components/ui";
 import { SectionWrapper, InputWrapper } from "./components/SectionWrapper";
@@ -19,10 +20,12 @@ function mapStateToProps(state: RootState) {
   return {
     dietLogs: state.diet.dietLogs,
     dietLogsLoading: state.diet.dietLogsLoading,
+    supplements: state.health.supplements,
+    supplementsLoading: state.health.supplementsLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDietLogs });
+const connector = connect(mapStateToProps, { getDietLogs, getSupplements });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const initialValues = {
@@ -42,13 +45,24 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
   dietLogs,
   dietLogsLoading,
   getDietLogs,
+  supplements,
+  supplementsLoading,
+  getSupplements,
 }) => {
   const [formValues, setFormValues] = React.useState<DietFormValues>(
     initialValues as DietFormValues
   );
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
-  }, [dietLogs, dietLogsLoading, getDietLogs]);
+    if (!supplements && !supplementsLoading) getSupplements();
+  }, [
+    dietLogs,
+    dietLogsLoading,
+    getDietLogs,
+    supplements,
+    supplementsLoading,
+    getSupplements,
+  ]);
 
   // const sortedLogs = React.useMemo(() => {
   //   return (

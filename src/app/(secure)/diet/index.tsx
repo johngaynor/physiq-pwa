@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { Input, Button, Label } from "@/components/ui";
+import { Input, Button } from "@/components/ui";
 import { getDietLogs } from "./state/actions";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
