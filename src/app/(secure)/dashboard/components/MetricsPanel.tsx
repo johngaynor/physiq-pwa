@@ -79,7 +79,9 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
             <DashboardButton
               header="Weight"
               subheader="lbs"
-              data={todayLog?.weight}
+              data={
+                todayLog && todayLog.weight ? todayLog.weight.toFixed(1) : ""
+              }
               loading={!dailyLogs || dailyLogsLoading || editWeightLoading}
             />
           }
