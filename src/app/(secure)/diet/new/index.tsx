@@ -5,7 +5,7 @@ import { RootState } from "../../../store/reducer";
 import { getDietLogs } from "../state/actions";
 import { getSupplements } from "../../health/state/actions";
 import { DietFormValues, DietPhase } from "./types";
-import { Input, Label, Select } from "@/components/ui";
+import { Button, Input, Label, Select } from "@/components/ui";
 import { SectionWrapper, InputWrapper } from "./components/SectionWrapper";
 import {
   SelectTrigger,
@@ -64,16 +64,19 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
     getSupplements,
   ]);
 
-  // const sortedLogs = React.useMemo(() => {
-  //   return (
-  //     dietLogs?.slice().sort((a, b) => {
-  //       return (
-  //         new Date(b.effectiveDate).getTime() -
-  //         new Date(a.effectiveDate).getTime()
-  //       );
-  //     }) || []
-  //   );
-  // }, [dietLogs]);
+  const sortedLogs = React.useMemo(() => {
+    return (
+      dietLogs?.slice().sort((a, b) => {
+        return (
+          new Date(b.effectiveDate).getTime() -
+          new Date(a.effectiveDate).getTime()
+        );
+      }) || []
+    );
+  }, [dietLogs]);
+  const latestLog = sortedLogs[0];
+
+  console.log(latestLog);
 
   function handleOnChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -83,6 +86,24 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
       ...prev,
       [id]: value,
     }));
+  }
+
+  function copyFromLastLog() {
+    const newLog: DietFormValues = {
+      ...initialValues,
+      notes: latestLog?.notes || "",
+      phase: (latestLog?.phase as DietPhase) || "",
+      protein: latestLog?.protein?.toString() || "",
+      carbs: latestLog?.carbs?.toString() || "",
+      fat: latestLog?.fat?.toString() || "",
+      water: latestLog?.water?.toString() || "",
+      steps: latestLog?.steps?.toString() || "",
+      cardio: latestLog?.cardio || "",
+      cardioMinutes: latestLog?.cardioMinutes?.toString() || "",
+      effectiveDate: new Date().toISOString().split("T")[0],
+    };
+
+    setFormValues(newLog);
   }
 
   const calories = React.useMemo(() => {
@@ -100,7 +121,14 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
     return (
       <div className="w-full">
         {/* General */}
-        <SectionWrapper title="General">
+        <SectionWrapper
+          title="General"
+          action={
+            <Button variant="outline" onClick={copyFromLastLog}>
+              Copy
+            </Button>
+          }
+        >
           <InputWrapper>
             <Label htmlFor="date">Effective Date (YYYY-MM-DD)</Label>
             <Input
@@ -138,9 +166,9 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Phases</SelectLabel>
-                  <SelectItem value="bulk">Bulk</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="cut">Cut</SelectItem>
+                  <SelectItem value="Bulk">Bulk</SelectItem>
+                  <SelectItem value="Maintenance">Maintenance</SelectItem>
+                  <SelectItem value="Cut">Cut</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
