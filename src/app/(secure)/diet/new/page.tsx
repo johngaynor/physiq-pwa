@@ -1,13 +1,13 @@
 import React from "react";
-import PageTemplate from "../components/Templates/PageTemplate";
-import DietDashboard from "./index";
+import PageTemplate from "../../components/Templates/PageTemplate";
+import DietLogForm from "./index";
 
-const title = "Diet";
+const title = "New Diet Log";
 
 export default function Page() {
   return (
     <PageTemplate title={title}>
-      <DietDashboard />
+      <DietLogForm />
     </PageTemplate>
   );
 }

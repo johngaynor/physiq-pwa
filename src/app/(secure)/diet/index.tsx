@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { Input, Button } from "@/components/ui";
+import { Input, Button, Label } from "@/components/ui";
 import { getDietLogs } from "./state/actions";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DateTime } from "luxon";
 import { Plus } from "lucide-react";
 import DashboardLoadingPage from "./components/DashboardLoadingPage";
+import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -30,6 +31,8 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
   }, [dietLogs, dietLogsLoading, getDietLogs]);
+
+  const router = useRouter();
 
   const sortedLogs = React.useMemo(() => {
     return (
@@ -58,9 +61,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
           <Button
             className="ml-2"
             variant="outline"
-            onClick={() => {
-              console.log("Search clicked:", search);
-            }}
+            onClick={() => router.push("/diet/new")}
           >
             <div className="flex">
               <Plus className=" font-extrabold" />
