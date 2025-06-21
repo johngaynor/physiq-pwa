@@ -19,7 +19,7 @@ export default function NavbarWrapper({
     <>
       {!isMobile && user && <DesktopNavAuth />}
       {!isMobile && !user && <DesktopNav />}
-      <div className="mb-20 md:mb-0">{children}</div>
+      <div className="pb-20 md:mb-0">{children}</div>
       {isMobile && <MobileNav />}
     </>
   );
