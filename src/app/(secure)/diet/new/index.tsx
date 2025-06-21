@@ -123,7 +123,7 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
           title="General"
           action={
             <Button variant="outline" onClick={copyFromLastLog}>
-              Copy
+              Copy from Last Log
             </Button>
           }
         >
