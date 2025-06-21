@@ -49,7 +49,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
     return <DashboardLoadingPage />;
   } else
     return (
-      <div>
+      <div className="w-full">
         <div className="mb-2 flex flex-row">
           <Input
             id="search"
@@ -69,16 +69,15 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
           </Button>
         </div>
         <Card className="w-full rounded-sm p-0">
-          <CardContent>
+          <CardContent className="p-0">
             <Table>
               <TableBody>
                 {sortedLogs?.map((log, index) => (
                   <TableRow
                     key={log.id}
-                    className="mx-4"
                     onClick={() => router.push(`/diet/log/${log.id}`)}
                   >
-                    <TableCell>
+                    <TableCell className="pl-8">
                       {DateTime.fromISO(log.effectiveDate).toFormat(
                         "LLL d, yyyy"
                       )}
@@ -124,7 +123,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
                         {log.cardio}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm truncate overflow-hidden max-w-[200px]">
+                    <TableCell className="text-sm truncate overflow-hidden max-w-[200px] pr-8">
                       {log.notes}
                     </TableCell>
                   </TableRow>
