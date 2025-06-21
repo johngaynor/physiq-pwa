@@ -269,7 +269,7 @@ const DietLogForm = ({
                   <TableHead></TableHead>
                   <TableHead>Supplement</TableHead>
                   <TableHead className="lg:pl-5">Dosage</TableHead>
-                  <TableHead className="hidden lg:table-cell truncate overflow-hidden">
+                  <TableHead className="truncate overflow-hidden">
                     Frequency
                   </TableHead>
                 </TableRow>
