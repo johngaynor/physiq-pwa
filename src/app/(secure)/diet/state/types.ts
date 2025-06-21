@@ -1,4 +1,9 @@
-import { FETCH_DIET_LOGS, LOAD_DIET_LOGS } from "../../../store/actionTypes";
+import {
+  FETCH_DIET_LOGS,
+  LOAD_DIET_LOGS,
+  FETCH_EDIT_DIET_LOG,
+  LOAD_EDIT_DIET_LOG,
+} from "../../../store/actionTypes";
 
 // data object types
 export type DietLogSupplement = {
@@ -10,7 +15,7 @@ export type DietLogSupplement = {
 };
 
 export type DietLog = {
-  id: number;
+  id?: number;
   protein: number;
   carbs: number;
   fat: number;
@@ -28,9 +33,12 @@ export type DietLog = {
 // action types
 export type Action =
   | { type: typeof FETCH_DIET_LOGS }
-  | { type: typeof LOAD_DIET_LOGS; data: DietLog[] };
+  | { type: typeof LOAD_DIET_LOGS; data: DietLog[] }
+  | { type: typeof FETCH_EDIT_DIET_LOG }
+  | { type: typeof LOAD_EDIT_DIET_LOG; data: DietLog };
 
 export interface DietState {
   dietLogs: DietLog[] | null;
   dietLogsLoading: boolean;
+  editDietLogLoading?: boolean;
 }

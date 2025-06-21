@@ -11,7 +11,7 @@ export const dietLogSchema = z.object({
       /^\d{4}-\d{2}-\d{2}$/,
       "Effective date must be in YYYY-MM-DD format"
     ),
-  notes: z.string().optional(),
+  notes: z.string().min(1, "Notes are required"),
   phase: z.enum(["Cut", "Maintenance", "Bulk"], {
     errorMap: () => ({ message: "Phase is required" }),
   }),
@@ -25,6 +25,7 @@ export const dietLogSchema = z.object({
       frequency: z.string().min(1, "Frequency is required"),
     })
   ),
+  calories: z.number().optional(),
 });
 
 export type DietLogFormData = z.infer<typeof dietLogSchema>;

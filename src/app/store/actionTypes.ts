@@ -42,3 +42,5 @@ export const FETCH_APPS = "FETCH_APPS" as const;
 export const LOAD_APPS = "LOAD_APPS" as const;
 export const FETCH_DIET_LOGS = "FETCH_DIET_LOGS" as const;
 export const LOAD_DIET_LOGS = "LOAD_DIET_LOGS" as const;
+export const FETCH_EDIT_DIET_LOG = "FETCH_EDIT_DIET_LOG" as const;
+export const LOAD_EDIT_DIET_LOG = "LOAD_EDIT_DIET_LOG" as const;

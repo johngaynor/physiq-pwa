@@ -2,10 +2,12 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
-import { getDietLogs } from "../state/actions";
+import { editDietLog, getDietLogs } from "../state/actions";
 import { getSupplements } from "../../health/state/actions";
 import DietFormLoadingPage from "./components/DietFormLoadingPage";
 import DietLogForm from "./components/DietLogForm";
+import { DietLogFormData } from "./types";
+import { DietLog } from "../state/types";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -13,10 +15,15 @@ function mapStateToProps(state: RootState) {
     dietLogsLoading: state.diet.dietLogsLoading,
     supplements: state.health.supplements,
     supplementsLoading: state.health.supplementsLoading,
+    editDietLogLoading: state.diet.editDietLogLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDietLogs, getSupplements });
+const connector = connect(mapStateToProps, {
+  getDietLogs,
+  getSupplements,
+  editDietLog,
+});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
@@ -26,6 +33,8 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
   supplements,
   supplementsLoading,
   getSupplements,
+  editDietLogLoading,
+  editDietLog,
 }) => {
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
@@ -51,11 +60,25 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
   }, [dietLogs]);
   const latestLog = sortedLogs[0];
 
-  function onSubmit(values: any) {
-    console.log("submitting", values);
+  function onSubmit(data: DietLogFormData) {
+    const formattedLog: DietLog = {
+      ...data,
+      protein: parseFloat(data.protein),
+      fat: parseFloat(data.fat),
+      carbs: parseFloat(data.carbs),
+      water: parseFloat(data.water),
+      cardioMinutes: parseFloat(data.cardioMinutes),
+      steps: parseFloat(data.steps),
+      calories:
+        (parseFloat(data.protein) || 0) * 4 +
+        (parseFloat(data.carbs) || 0) * 4 +
+        (parseFloat(data.fat) || 0) * 9,
+    };
+
+    editDietLog(formattedLog);
   }
 
-  if (dietLogsLoading || supplementsLoading) {
+  if (dietLogsLoading || supplementsLoading || editDietLogLoading) {
     return <DietFormLoadingPage />;
   } else
     return (
