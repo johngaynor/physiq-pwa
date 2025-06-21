@@ -68,7 +68,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
             </div>
           </Button>
         </div>
-        <Card className="w-full rounded-sm dark:bg-[#060B1C] p-0">
+        <Card className="w-full rounded-sm p-0">
           <CardContent>
             <Table>
               <TableBody>

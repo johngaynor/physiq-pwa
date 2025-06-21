@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function DashboardLoadingPage() {
   return (
-    <Card className="w-full rounded-sm dark:bg-[#060B1C] p-0">
+    <Card className="w-full rounded-sm p-0">
       <CardContent>
         <Table>
           <TableBody>

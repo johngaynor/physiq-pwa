@@ -12,7 +12,7 @@ export function SectionWrapper({
   action?: React.ReactNode;
 }) {
   return (
-    <Card className="w-full dark:bg-[#060B1C] mb-4">
+    <Card className="w-full mb-4">
       <CardHeader className="flex w-full flex-row justify-between">
         <CardTitle>
           <H3>{title}</H3>

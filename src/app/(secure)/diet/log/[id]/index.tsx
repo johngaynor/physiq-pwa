@@ -38,7 +38,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
   } else if (!log) {
     return (
       <div className="w-full">
-        <Card className="w-full rounded-sm dark:bg-[#060B1C] p-0">
+        <Card className="w-full rounded-sm p-0">
           <CardContent>
             <h1>Log not found</h1>
           </CardContent>
@@ -48,7 +48,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
   }
   return (
     <div className="w-full">
-      <Card className="w-full rounded-sm dark:bg-[#060B1C] p-0">
+      <Card className="w-full rounded-sm p-0">
         <CardContent>
           <h1>{log.effectiveDate}</h1>
           <h1>{log.calories}</h1>
