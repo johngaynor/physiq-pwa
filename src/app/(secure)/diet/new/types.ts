@@ -1,17 +1,30 @@
-import { DietLogSupplement } from "../state/types";
+import { z } from "zod";
 
-export type DietPhase = "Cut" | "Bulk" | "Maintenance";
+export const dietLogSchema = z.object({
+  protein: z.string().min(1, "Protein is required"),
+  fat: z.string().min(1, "Fat is required"),
+  carbs: z.string().min(1, "Carbs are required"),
+  water: z.string().min(1, "Water intake is required"),
+  effectiveDate: z
+    .string()
+    .regex(
+      /^\d{4}-\d{2}-\d{2}$/,
+      "Effective date must be in YYYY-MM-DD format"
+    ),
+  notes: z.string().optional(),
+  phase: z.enum(["Cut", "Maintenance", "Bulk"], {
+    errorMap: () => ({ message: "Phase is required" }),
+  }),
+  cardioMinutes: z.string().min(1, "Cardio minutes are required"),
+  cardio: z.string().min(1, "Cardio is required"),
+  steps: z.string().min(1, "Steps are required"),
+  supplements: z.array(
+    z.object({
+      supplementId: z.number(),
+      dosage: z.string().min(1, "Dosage is required"),
+      frequency: z.string().min(1, "Frequency is required"),
+    })
+  ),
+});
 
-export type DietFormValues = {
-  effectiveDate: string;
-  carbs: string;
-  fat: string;
-  protein: string;
-  phase: DietPhase;
-  water: string;
-  steps: string;
-  cardio: string;
-  cardioMinutes: string;
-  notes: string;
-  supplements: DietLogSupplement[];
-};
+export type DietLogFormData = z.infer<typeof dietLogSchema>;

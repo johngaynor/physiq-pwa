@@ -28,6 +28,19 @@ export function SectionWrapper({
   );
 }
 
-export function InputWrapper({ children }: { children: React.ReactNode }) {
-  return <div className="grid w-full items-center gap-3">{children}</div>;
+export function InputWrapper({
+  children,
+  error,
+}: {
+  children: React.ReactNode;
+  error?: string;
+}) {
+  return (
+    <div className="grid w-full items-center gap-3 relative pb-3">
+      {children}
+      {error && (
+        <p className="text-sm text-red-500 absolute -bottom-4">{error}</p>
+      )}
+    </div>
+  );
 }
