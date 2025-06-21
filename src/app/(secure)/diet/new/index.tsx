@@ -8,6 +8,7 @@ import DietFormLoadingPage from "./components/DietFormLoadingPage";
 import DietLogForm from "./components/DietLogForm";
 import { DietLogFormData } from "./types";
 import { DietLog } from "../state/types";
+import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -48,6 +49,8 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
     getSupplements,
   ]);
 
+  const router = useRouter();
+
   const sortedLogs = React.useMemo(() => {
     return (
       dietLogs?.slice().sort((a, b) => {
@@ -75,7 +78,9 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
         (parseFloat(data.fat) || 0) * 9,
     };
 
-    editDietLog(formattedLog);
+    editDietLog(formattedLog).then((data) =>
+      router.push(`/diet/log/${data.log.id}`)
+    );
   }
 
   if (dietLogsLoading || supplementsLoading || editDietLogLoading) {

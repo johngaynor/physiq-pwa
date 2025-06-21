@@ -20,7 +20,10 @@ export const editDietLog = (values: DietLog) => {
   return api
     .route("/api/diet/log")
     .fetch(() => ({ type: FETCH_EDIT_DIET_LOG }))
-    .load((data: DietLog) => ({ type: LOAD_EDIT_DIET_LOG, data }))
+    .load((data: { existing: boolean; log: DietLog }) => ({
+      type: LOAD_EDIT_DIET_LOG,
+      data,
+    }))
     .error("Error editing diet log")
     .data(values)
     .post();

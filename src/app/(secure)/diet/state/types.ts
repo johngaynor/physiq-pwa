@@ -35,7 +35,10 @@ export type Action =
   | { type: typeof FETCH_DIET_LOGS }
   | { type: typeof LOAD_DIET_LOGS; data: DietLog[] }
   | { type: typeof FETCH_EDIT_DIET_LOG }
-  | { type: typeof LOAD_EDIT_DIET_LOG; data: DietLog };
+  | {
+      type: typeof LOAD_EDIT_DIET_LOG;
+      data: { existing: boolean; log: DietLog };
+    };
 
 export interface DietState {
   dietLogs: DietLog[] | null;

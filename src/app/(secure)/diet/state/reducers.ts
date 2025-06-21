@@ -34,12 +34,23 @@ export default function healthReducer(
         editDietLogLoading: true,
       };
     case LOAD_EDIT_DIET_LOG:
-      console.log(action.data);
-      return {
-        ...state,
-        editDietLogLoading: false,
-        dietLogs: null, // will format this later to update/insert dynamically
-      };
+      if (action.data.existing) {
+        return {
+          ...state,
+          editDietLogLoading: false,
+          dietLogs:
+            state.dietLogs?.map((log) =>
+              log.id === action.data.log.id ? action.data.log : log
+            ) || null,
+        };
+      } else
+        return {
+          ...state,
+          editDietLogLoading: false,
+          dietLogs: state.dietLogs
+            ? [...state.dietLogs, action.data.log]
+            : [action.data.log],
+        };
     default:
       return state;
   }
