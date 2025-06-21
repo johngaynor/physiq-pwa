@@ -15,6 +15,7 @@ import {
   SelectLabel,
   SelectItem,
 } from "@/components/ui/select";
+import DietFormLoadingPage from "./components/DietFormLoadingPage";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -76,8 +77,6 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
   }, [dietLogs]);
   const latestLog = sortedLogs[0];
 
-  console.log(latestLog);
-
   function handleOnChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
@@ -114,9 +113,8 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
     return protein * 4 + carbs * 4 + fat * 9;
   }, [formValues.protein, formValues.carbs, formValues.fat]);
 
-  if (dietLogsLoading) {
-    // return <DashboardLoadingPage />;
-    return <h1>loading...</h1>;
+  if (dietLogsLoading || supplementsLoading) {
+    return <DietFormLoadingPage />;
   } else
     return (
       <div className="w-full">

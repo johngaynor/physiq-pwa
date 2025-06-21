@@ -29,7 +29,5 @@ export function SectionWrapper({
 }
 
 export function InputWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="grid w-full max-w-sm items-center gap-3">{children}</div>
-  );
+  return <div className="grid w-full items-center gap-3">{children}</div>;
 }
