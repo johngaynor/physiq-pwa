@@ -1,4 +1,7 @@
+import { DietLogSupplement } from "../state/types";
+
 export type DietPhase = "Cut" | "Bulk" | "Maintenance";
+
 export type DietFormValues = {
   effectiveDate: string;
   carbs: string;
@@ -10,4 +13,5 @@ export type DietFormValues = {
   cardio: string;
   cardioMinutes: string;
   notes: string;
+  supplements: DietLogSupplement[];
 };

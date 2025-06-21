@@ -5,7 +5,7 @@ import { RootState } from "../../../store/reducer";
 import { getDietLogs } from "../state/actions";
 import { getSupplements } from "../../health/state/actions";
 import { DietFormValues, DietPhase } from "./types";
-import { Button, Input, Label, Select } from "@/components/ui";
+import { Button, Input, Label, Select, H3 } from "@/components/ui";
 import { SectionWrapper, InputWrapper } from "./components/SectionWrapper";
 import {
   SelectTrigger,
@@ -15,7 +15,9 @@ import {
   SelectLabel,
   SelectItem,
 } from "@/components/ui/select";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import DietFormLoadingPage from "./components/DietFormLoadingPage";
+import { DietLogSupplement } from "../state/types";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -40,6 +42,7 @@ const initialValues = {
   cardio: "",
   cardioMinutes: "",
   notes: "",
+  supplements: [],
 };
 
 const DietLogForm: React.FC<PropsFromRedux> = ({
@@ -99,7 +102,7 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
       steps: latestLog?.steps?.toString() || "",
       cardio: latestLog?.cardio || "",
       cardioMinutes: latestLog?.cardioMinutes?.toString() || "",
-      effectiveDate: new Date().toISOString().split("T")[0],
+      supplements: (latestLog?.supplements as DietLogSupplement[]) || [],
     };
 
     setFormValues(newLog);
@@ -112,6 +115,10 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
 
     return protein * 4 + carbs * 4 + fat * 9;
   }, [formValues.protein, formValues.carbs, formValues.fat]);
+
+  const supplementOptions = supplements?.filter(
+    (s) => !formValues.supplements.some((sel) => sel.supplementId === s.id)
+  );
 
   if (dietLogsLoading || supplementsLoading) {
     return <DietFormLoadingPage />;
@@ -252,6 +259,52 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
             />
           </InputWrapper>
         </SectionWrapper>
+        <Card className="w-full dark:bg-[#060B1C] mb-4">
+          <CardHeader className="flex w-full flex-row justify-between">
+            <CardTitle>
+              <H3>Supplements</H3>
+            </CardTitle>
+            <Button variant="outline">Clear All</Button>
+          </CardHeader>
+          <CardContent>
+            <InputWrapper>
+              <Label htmlFor="phase">Add Supplements</Label>
+              <Select
+                onValueChange={(value) => {
+                  const supp = supplements?.find(
+                    (s) => s.id.toString() === value
+                  );
+                  if (supp) {
+                    setFormValues((prev) => ({
+                      ...prev,
+                      supplements: [
+                        ...prev.supplements,
+                        { supplementId: supp.id, dosage: "", frequency: "" },
+                      ],
+                    }));
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Supplement..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Supplements</SelectLabel>
+                    {supplementOptions?.map((supplement) => (
+                      <SelectItem
+                        key={supplement.id}
+                        value={supplement.id.toString()}
+                      >
+                        {supplement.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </InputWrapper>
+          </CardContent>
+        </Card>
         <Button
           variant="outline"
           onClick={() => alert(`Sorry, this functionality isn't built yet :(`)}

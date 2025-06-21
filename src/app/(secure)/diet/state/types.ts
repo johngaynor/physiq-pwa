@@ -2,8 +2,8 @@ import { FETCH_DIET_LOGS, LOAD_DIET_LOGS } from "../../../store/actionTypes";
 
 // data object types
 export type DietLogSupplement = {
-  id: number;
-  logId: number;
+  id?: number;
+  logId?: number;
   supplementId: number;
   dosage: string;
   frequency: string;
