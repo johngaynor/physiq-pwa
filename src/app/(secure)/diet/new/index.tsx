@@ -16,8 +16,17 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 import DietFormLoadingPage from "./components/DietFormLoadingPage";
 import { DietLogSupplement } from "../state/types";
+import { Trash } from "lucide-react";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -124,7 +133,7 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
     return <DietFormLoadingPage />;
   } else
     return (
-      <div className="w-full">
+      <div className="w-full mb-20">
         {/* General */}
         <SectionWrapper
           title="General"
@@ -264,7 +273,17 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
             <CardTitle>
               <H3>Supplements</H3>
             </CardTitle>
-            <Button variant="outline">Clear All</Button>
+            <Button
+              variant="outline"
+              onClick={() =>
+                setFormValues((prev) => ({
+                  ...prev,
+                  supplements: [],
+                }))
+              }
+            >
+              Clear All
+            </Button>
           </CardHeader>
           <CardContent>
             <InputWrapper>
@@ -303,11 +322,80 @@ const DietLogForm: React.FC<PropsFromRedux> = ({
                 </SelectContent>
               </Select>
             </InputWrapper>
+            {formValues.supplements.length ? (
+              <Table className="mt-8">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead></TableHead>
+                    <TableHead>Supplement</TableHead>
+                    <TableHead className="lg:pl-5">Dosage</TableHead>
+                    <TableHead className="hidden lg:table-cell truncate overflow-hidden">
+                      Frequency
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {formValues.supplements.map((supp, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Button
+                          variant="destructive"
+                          onClick={() => {
+                            const newSupplements = [...formValues.supplements];
+                            newSupplements.splice(index, 1);
+                            setFormValues((prev) => ({
+                              ...prev,
+                              supplements: newSupplements,
+                            }));
+                          }}
+                        >
+                          <Trash />
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        {
+                          supplements?.find((s) => s.id === supp.supplementId)
+                            ?.name
+                        }
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={supp.dosage}
+                          onChange={(e) => {
+                            const newSupplements = [...formValues.supplements];
+                            newSupplements[index].dosage = e.target.value;
+                            setFormValues((prev) => ({
+                              ...prev,
+                              supplements: newSupplements,
+                            }));
+                          }}
+                          placeholder="Dosage..."
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={supp.frequency}
+                          onChange={(e) => {
+                            const newSupplements = [...formValues.supplements];
+                            newSupplements[index].frequency = e.target.value;
+                            setFormValues((prev) => ({
+                              ...prev,
+                              supplements: newSupplements,
+                            }));
+                          }}
+                          placeholder="Frequency..."
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : null}
           </CardContent>
         </Card>
         <Button
           variant="outline"
-          onClick={() => alert(`Sorry, this functionality isn't built yet :(`)}
+          onClick={() => alert(JSON.stringify(formValues, null, 2))} // Replace with actual submit logic
         >
           Submit
         </Button>
