@@ -73,7 +73,11 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
             <Table>
               <TableBody>
                 {sortedLogs?.map((log, index) => (
-                  <TableRow key={log.id} className="mx-4">
+                  <TableRow
+                    key={log.id}
+                    className="mx-4"
+                    onClick={() => router.push(`/diet/log/${log.id}`)}
+                  >
                     <TableCell>
                       {DateTime.fromISO(log.effectiveDate).toFormat(
                         "LLL d, yyyy"
