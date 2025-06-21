@@ -26,6 +26,7 @@ import { Trash } from "lucide-react";
 import { DietLogSupplement } from "../../state/types";
 import { Supplement } from "@/app/(secure)/health/state/types";
 import { dietLogSchema, DietLogFormData } from "../types";
+import { DateTime } from "luxon";
 
 const DietLogForm = ({
   latestLog,
@@ -46,7 +47,10 @@ const DietLogForm = ({
     formState: { errors },
   } = useForm<DietLogFormData>({
     resolver: zodResolver(dietLogSchema),
-    defaultValues: { supplements: [] },
+    defaultValues: {
+      supplements: [],
+      effectiveDate: DateTime.now().toISODate(),
+    },
   });
   // field array for supplements
   const { fields, append, remove } = useFieldArray({
@@ -58,11 +62,11 @@ const DietLogForm = ({
     if (!latestLog) return;
 
     reset({
+      effectiveDate: DateTime.now().toISODate(),
       protein: latestLog.protein?.toString() || "",
       fat: latestLog.fat?.toString() || "",
       carbs: latestLog.carbs?.toString() || "",
       water: latestLog.water?.toString() || "",
-      effectiveDate: latestLog.effectiveDate || "",
       notes: latestLog.notes || "",
       phase: latestLog.phase || "",
       cardioMinutes: latestLog.cardioMinutes?.toString() || "",
