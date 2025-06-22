@@ -3,6 +3,8 @@ import {
   LOAD_DIET_LOGS,
   FETCH_EDIT_DIET_LOG,
   LOAD_EDIT_DIET_LOG,
+  FETCH_DELETE_DIET_LOG,
+  LOAD_DELETE_DIET_LOG,
 } from "../../../store/actionTypes";
 import type { DietState, Action } from "./types";
 
@@ -10,6 +12,7 @@ const DEFAULT_STATE: DietState = {
   dietLogs: null,
   dietLogsLoading: false,
   editDietLogLoading: false,
+  deleteDietLogLoading: false,
 };
 
 export default function healthReducer(
@@ -51,6 +54,19 @@ export default function healthReducer(
             ? [...state.dietLogs, action.data.log]
             : [action.data.log],
         };
+    case FETCH_DELETE_DIET_LOG:
+      return {
+        ...state,
+        deleteDietLogLoading: true,
+      };
+    case LOAD_DELETE_DIET_LOG:
+      return {
+        ...state,
+        deleteDietLogLoading: false,
+        dietLogs: state.dietLogs
+          ? state.dietLogs.filter((log) => log.id !== action.id)
+          : null,
+      };
     default:
       return state;
   }

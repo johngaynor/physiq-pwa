@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../store/reducer";
-import { getDietLogs } from "../../state/actions";
+import { getDietLogs, deleteDietLog } from "../../state/actions";
 import { getDailyLogs } from "@/app/(secure)/health/state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useParams } from "next/navigation";
@@ -24,6 +24,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { FieldValue } from "../../components/FieldValues";
+import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -31,10 +32,15 @@ function mapStateToProps(state: RootState) {
     dietLogsLoading: state.diet.dietLogsLoading,
     dailyLogs: state.health.dailyLogs,
     dailyLogsLoading: state.health.dailyLogsLoading,
+    deleteDietLogLoading: state.diet.deleteDietLogLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDietLogs, getDailyLogs });
+const connector = connect(mapStateToProps, {
+  getDietLogs,
+  getDailyLogs,
+  deleteDietLog,
+});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const DietLog: React.FC<PropsFromRedux> = ({
@@ -44,6 +50,8 @@ const DietLog: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
   getDailyLogs,
+  deleteDietLogLoading,
+  deleteDietLog,
 }) => {
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
@@ -58,6 +66,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
   ]);
 
   const params = useParams();
+  const router = useRouter();
 
   const logId = params.id ? parseInt(params.id as string) : null;
 
@@ -88,14 +97,17 @@ const DietLog: React.FC<PropsFromRedux> = ({
     });
   }, [dailyLogs, log, nextLog]);
 
-  if (dietLogsLoading) {
+  if (dietLogsLoading || dailyLogsLoading || deleteDietLogLoading) {
     return <h1>loading...</h1>;
   } else if (!log) {
     return (
       <div className="w-full">
         <Card className="w-full rounded-sm p-0">
-          <CardContent>
-            <h1>Log not found</h1>
+          <CardContent className="p-4">
+            <p>
+              There was no log found with this ID. If you think this was a
+              mistake, please contact your coach.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -123,7 +135,12 @@ const DietLog: React.FC<PropsFromRedux> = ({
               <Button
                 className="ml-2"
                 variant="outline"
-                onClick={() => console.log("deleting")}
+                onClick={() => {
+                  if (log.id) {
+                    deleteDietLog(log.id);
+                    router.push("/diet");
+                  }
+                }}
               >
                 <Trash className=" font-extrabold" />
               </Button>

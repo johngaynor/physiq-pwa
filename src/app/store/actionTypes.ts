@@ -44,3 +44,5 @@ export const FETCH_DIET_LOGS = "FETCH_DIET_LOGS" as const;
 export const LOAD_DIET_LOGS = "LOAD_DIET_LOGS" as const;
 export const FETCH_EDIT_DIET_LOG = "FETCH_EDIT_DIET_LOG" as const;
 export const LOAD_EDIT_DIET_LOG = "LOAD_EDIT_DIET_LOG" as const;
+export const FETCH_DELETE_DIET_LOG = "FETCH_DELETE_DIET_LOG" as const;
+export const LOAD_DELETE_DIET_LOG = "LOAD_DELETE_DIET_LOG" as const;

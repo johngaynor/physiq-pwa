@@ -3,6 +3,8 @@ import {
   LOAD_DIET_LOGS,
   FETCH_EDIT_DIET_LOG,
   LOAD_EDIT_DIET_LOG,
+  FETCH_DELETE_DIET_LOG,
+  LOAD_DELETE_DIET_LOG,
 } from "../../../store/actionTypes";
 
 // data object types
@@ -38,10 +40,13 @@ export type Action =
   | {
       type: typeof LOAD_EDIT_DIET_LOG;
       data: { existing: boolean; log: DietLog };
-    };
+    }
+  | { type: typeof FETCH_DELETE_DIET_LOG }
+  | { type: typeof LOAD_DELETE_DIET_LOG; id: number };
 
 export interface DietState {
   dietLogs: DietLog[] | null;
   dietLogsLoading: boolean;
   editDietLogLoading?: boolean;
+  deleteDietLogLoading?: boolean;
 }

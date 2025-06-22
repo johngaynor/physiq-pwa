@@ -3,6 +3,8 @@ import {
   LOAD_DIET_LOGS,
   FETCH_EDIT_DIET_LOG,
   LOAD_EDIT_DIET_LOG,
+  FETCH_DELETE_DIET_LOG,
+  LOAD_DELETE_DIET_LOG,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { DietLog } from "./types";
@@ -27,4 +29,16 @@ export const editDietLog = (values: DietLog) => {
     .error("Error editing diet log")
     .data(values)
     .post();
+};
+
+export const deleteDietLog = (id: number) => {
+  return api
+    .route(`/api/diet/log/${id}`)
+    .fetch(() => ({ type: FETCH_DELETE_DIET_LOG }))
+    .load(() => ({
+      type: LOAD_DELETE_DIET_LOG,
+      id,
+    }))
+    .error("Error deleting diet log")
+    .delete();
 };
