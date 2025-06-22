@@ -4,9 +4,26 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../store/reducer";
 import { getDietLogs } from "../../state/actions";
 import { getDailyLogs } from "@/app/(secure)/health/state/actions";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { StatisticsGraph } from "@/app/(secure)/health/components/StatisticsGraph";
+import { H3, Button } from "@/components/ui";
+import { Trash } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import { FieldValue } from "../../components/FieldValues";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -100,8 +117,79 @@ const DietLog: React.FC<PropsFromRedux> = ({
               subtitle="this calorie adjustment"
             />
           </div>
-          <div>right</div>
+          <div>
+            <div className="mb-6 flex justify-between items-center">
+              <H3>Diet Change #{log.id}</H3>
+              <Button
+                className="ml-2"
+                variant="outline"
+                onClick={() => console.log("deleting")}
+              >
+                <Trash className=" font-extrabold" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <FieldValue title="Effective Date" value={log.effectiveDate} />
+              <FieldValue title="Phase" value={log.phase} />
+              <FieldValue title="Calories" value={log.calories} />
+              <FieldValue title="Water" value={log.water + "oz"} />
+            </div>
+            <div className="py-4">
+              <FieldValue title="Notes" value={log.notes} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <FieldValue title="Protein" value={log.protein + "g"} />
+              <FieldValue title="Carbs" value={log.carbs + "g"} />
+              <FieldValue title="Fat" value={log.fat + "g"} />
+            </div>
+          </div>
         </CardContent>
+        <CardFooter className="p-0">
+          <Accordion type="single" collapsible className="border-t-1 w-full">
+            <AccordionItem value="cardio" className="px-6">
+              <AccordionTrigger>Cardio</AccordionTrigger>
+              <AccordionContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  <FieldValue title="Cardio (type)" value={log.cardio} />
+                  <FieldValue
+                    title="Cardio (minutes)"
+                    value={log.cardioMinutes + "min"}
+                  />
+                  <FieldValue title="Steps" value={log.steps + " steps"} />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="supplements" className="px-6">
+              <AccordionTrigger>Supplements</AccordionTrigger>
+              <AccordionContent>
+                {log.supplements?.length === 0 ? (
+                  <p>No supplements were prescribed for this log.</p>
+                ) : (
+                  <Table className="mt-8">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Supplement</TableHead>
+                        <TableHead className="lg:pl-5">Dosage</TableHead>
+                        <TableHead className="truncate overflow-hidden">
+                          Frequency
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {log.supplements?.map((supp, index) => (
+                        <TableRow key={supp.id}>
+                          <TableCell>name</TableCell>
+                          <TableCell>dosage</TableCell>
+                          <TableCell>frequency</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </CardFooter>
       </Card>
     </div>
   );
