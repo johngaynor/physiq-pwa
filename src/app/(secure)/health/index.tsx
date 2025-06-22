@@ -36,7 +36,9 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
     );
   }, [dailyLogs]);
 
-  const last30Days = sortedLogs.slice(-30) || [];
+  const last30Days = React.useMemo(() => {
+    return sortedLogs?.slice(-30) || [];
+  }, [sortedLogs]);
 
   const averages = React.useMemo(() => {
     if (!last30Days.length) return {};
