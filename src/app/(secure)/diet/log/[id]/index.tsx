@@ -177,7 +177,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
                     </TableHeader>
                     <TableBody>
                       {log.supplements?.map((supp, index) => (
-                        <TableRow key={supp.id}>
+                        <TableRow key={supp.id + "-" + index}>
                           <TableCell>name</TableCell>
                           <TableCell>dosage</TableCell>
                           <TableCell>frequency</TableCell>
