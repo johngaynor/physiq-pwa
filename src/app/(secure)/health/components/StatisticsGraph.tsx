@@ -45,6 +45,7 @@ export function StatisticsGraph({
   showUnit,
   primaryKey,
   singleAxis = false,
+  subtitle,
 }: HealthChartProps) {
   const startingValue = dailyLogs ? dailyLogs.find((d) => d[primaryKey]) : null;
   const endingValue = dailyLogs
@@ -74,7 +75,9 @@ export function StatisticsGraph({
         <CardTitle>
           {title} {showUnit ? `(${unit})` : ""}
         </CardTitle>
-        <CardDescription>Showing ___ for the last month</CardDescription>
+        <CardDescription>
+          {/* Showing ___ for the last month */}
+        </CardDescription>
       </CardHeader>
       <CardContent className="ms:p-2">
         <ChartContainer
@@ -150,8 +153,8 @@ export function StatisticsGraph({
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none font-medium">
-              You are {diff >= 0 ? "up" : "down"} {Math.abs(diff)} {unit} over
-              the last month
+              You are {diff >= 0 ? "up" : "down"} {Math.abs(diff)} {unit}{" "}
+              {subtitle ?? "over the last month"}
               {diff >= 0 ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (

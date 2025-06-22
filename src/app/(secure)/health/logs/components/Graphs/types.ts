@@ -32,4 +32,5 @@ export type HealthChartProps = {
   rounding: number;
   showUnit?: boolean;
   singleAxis?: boolean;
+  subtitle?: string;
 };
