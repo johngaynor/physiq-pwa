@@ -19,6 +19,7 @@ function mapStateToProps(state: RootState) {
     dailyLogs: state.health.dailyLogs,
     dailyLogsLoading: state.health.dailyLogsLoading,
     deleteDietLogLoading: state.diet.deleteDietLogLoading,
+    editDietLogLoading: state.diet.editDietLogLoading,
     supplements: state.health.supplements,
     supplementsLoading: state.health.supplementsLoading,
   };
@@ -44,6 +45,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
   supplementsLoading,
   getSupplements,
   editDietLog,
+  editDietLogLoading,
 }) => {
   const [editLog, setEditLog] = React.useState<boolean>(false);
   React.useEffect(() => {
@@ -74,7 +76,8 @@ const DietLog: React.FC<PropsFromRedux> = ({
     dietLogsLoading ||
     dailyLogsLoading ||
     deleteDietLogLoading ||
-    supplementsLoading
+    supplementsLoading ||
+    editDietLogLoading
   ) {
     return <LogLoadingPage />;
   } else if (editLog && log) {

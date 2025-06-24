@@ -117,12 +117,7 @@ const DietLogForm = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit, (formErrors) => {
-        console.log("Form validation failed:", formErrors);
-      })}
-      className="w-full mb-20"
-    >
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full mb-20">
       {/* General */}
       <SectionWrapper
         title="General"
