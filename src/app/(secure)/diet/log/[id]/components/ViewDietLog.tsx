@@ -29,6 +29,7 @@ function mapStateToProps(state: RootState) {
   return {
     dietLogs: state.diet.dietLogs,
     dailyLogs: state.health.dailyLogs,
+    supplements: state.health.supplements,
   };
 }
 
@@ -39,7 +40,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const ViewDietLog: React.FC<
   PropsFromRedux & { setEditLog: (edit: boolean) => void }
-> = ({ dietLogs, dailyLogs, deleteDietLog, setEditLog }) => {
+> = ({ dietLogs, dailyLogs, supplements, deleteDietLog, setEditLog }) => {
   const params = useParams();
   const router = useRouter();
 
@@ -176,13 +177,18 @@ const ViewDietLog: React.FC<
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {log.supplements?.map((supp, index) => (
-                        <TableRow key={supp.id + "-" + index}>
-                          <TableCell>name</TableCell>
-                          <TableCell>dosage</TableCell>
-                          <TableCell>frequency</TableCell>
-                        </TableRow>
-                      ))}
+                      {log.supplements?.map((supp, index) => {
+                        const supplement = supplements?.find(
+                          (s) => s.id === supp.supplementId
+                        );
+                        return (
+                          <TableRow key={supp.id + "-" + index}>
+                            <TableCell>{supplement?.name}</TableCell>
+                            <TableCell>{supp.dosage}</TableCell>
+                            <TableCell>{supp.frequency}</TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 )}
