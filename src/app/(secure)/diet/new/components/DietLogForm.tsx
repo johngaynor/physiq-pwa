@@ -32,10 +32,12 @@ const DietLogForm = ({
   latestLog,
   supplements,
   onSubmit,
+  editLog,
 }: {
   latestLog?: any;
   supplements?: Supplement[];
   onSubmit: (data: DietLogFormData) => void;
+  editLog?: DietLogFormData | null;
 }) => {
   // form setup
   const {
