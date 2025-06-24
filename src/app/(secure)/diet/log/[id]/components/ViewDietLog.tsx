@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { StatisticsGraph } from "@/app/(secure)/health/components/StatisticsGraph";
 import { H3, Button } from "@/components/ui";
-import { Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -37,11 +37,9 @@ const connector = connect(mapStateToProps, {
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const ViewDietLog: React.FC<PropsFromRedux> = ({
-  dietLogs,
-  dailyLogs,
-  deleteDietLog,
-}) => {
+const ViewDietLog: React.FC<
+  PropsFromRedux & { setEditLog: (edit: boolean) => void }
+> = ({ dietLogs, dailyLogs, deleteDietLog, setEditLog }) => {
   const params = useParams();
   const router = useRouter();
 
@@ -108,18 +106,27 @@ const ViewDietLog: React.FC<PropsFromRedux> = ({
           <div>
             <div className="mb-6 flex justify-between items-center">
               <H3>Diet Change #{log.id}</H3>
-              <Button
-                className="ml-2"
-                variant="outline"
-                onClick={() => {
-                  if (log.id) {
-                    deleteDietLog(log.id);
-                    router.push("/diet");
-                  }
-                }}
-              >
-                <Trash className=" font-extrabold" />
-              </Button>
+              <div>
+                <Button
+                  className="ml-2"
+                  variant="outline"
+                  onClick={() => setEditLog(true)}
+                >
+                  <Edit className="font-extrabold" />
+                </Button>
+                <Button
+                  className="ml-2"
+                  variant="outline"
+                  onClick={() => {
+                    if (log.id) {
+                      deleteDietLog(log.id);
+                      router.push("/diet");
+                    }
+                  }}
+                >
+                  <Trash className="font-extrabold" />
+                </Button>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               <FieldValue title="Effective Date" value={log.effectiveDate} />

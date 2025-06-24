@@ -32,12 +32,12 @@ const DietLogForm = ({
   latestLog,
   supplements,
   onSubmit,
-  editLog,
+  log,
 }: {
   latestLog?: any;
   supplements?: Supplement[];
   onSubmit: (data: DietLogFormData) => void;
-  editLog?: DietLogFormData | null;
+  log?: DietLogFormData | null;
 }) => {
   // form setup
   const {
@@ -54,6 +54,8 @@ const DietLogForm = ({
       effectiveDate: DateTime.now().toISODate(),
     },
   });
+
+  console.log("log to edit", log);
   // field array for supplements
   const { fields, append, remove } = useFieldArray({
     control,

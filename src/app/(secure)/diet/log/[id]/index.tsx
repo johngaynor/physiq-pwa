@@ -7,6 +7,7 @@ import { getDailyLogs } from "@/app/(secure)/health/state/actions";
 import { useParams } from "next/navigation";
 import LogLoadingPage from "../../components/LogLoadingPage";
 import ViewDietLog from "./components/ViewDietLog";
+// import DietLogForm from "../../new/components/DietLogForm";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -33,6 +34,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
   getDailyLogs,
   deleteDietLogLoading,
 }) => {
+  const [editLog, setEditLog] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
     if (!dailyLogs && !dailyLogsLoading) getDailyLogs();
@@ -53,12 +55,14 @@ const DietLog: React.FC<PropsFromRedux> = ({
     return dietLogs?.find((log) => log.id === logId);
   }, [dietLogs, logId]); // need this to edit
 
-  console.log(log);
-
   if (dietLogsLoading || dailyLogsLoading || deleteDietLogLoading) {
     return <LogLoadingPage />;
-  } else {
-    return <ViewDietLog />;
+  } else if (editLog && log) {
+    // return <DietLogForm />;
+    return <h1>edit</h1>;
+  }
+  {
+    return <ViewDietLog setEditLog={setEditLog} />;
   }
 };
 

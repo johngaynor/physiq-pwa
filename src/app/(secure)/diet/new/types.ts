@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const dietLogSchema = z.object({
+  id: z.number().optional(),
   protein: z.string().min(1, "Protein is required"),
   fat: z.string().min(1, "Fat is required"),
   carbs: z.string().min(1, "Carbs are required"),
