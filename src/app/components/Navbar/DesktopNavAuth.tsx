@@ -24,11 +24,13 @@ export default function DesktopNavAuth() {
 
   const segments = pathname.split("/").filter(Boolean);
   const path = segments[0]
-    ? segments[0].charAt(0).toUpperCase() + segments[0].slice(1)
+    ? segments[0] === "checkins"
+      ? "Check Ins"
+      : segments[0].charAt(0).toUpperCase() + segments[0].slice(1)
     : "Dashboard";
 
   function onTabChange(value: string) {
-    router.push(`/${value.toLowerCase()}`);
+    router.push(`/${value.toLowerCase().replace(" ", "")}`);
   }
 
   return (
@@ -82,7 +84,7 @@ export default function DesktopNavAuth() {
           {TabComponent("Dashboard")}
           {TabComponent("Health")}
           {TabComponent("Diet")}
-          {TabComponent("Reports")}
+          {TabComponent("Check Ins")}
           {TabComponent("Apps")}
         </TabsList>
       </Tabs>

@@ -1,13 +1,10 @@
 import React from "react";
 import PageTemplate from "../components/Templates/PageTemplate";
-// import DietDashboard from "./index";
 
-const title = "Reports";
+const title = "Check Ins";
 
 export default function Page() {
-  return (
-    <PageTemplate title={title}>{/* <DietDashboard /> */}reports</PageTemplate>
-  );
+  return <PageTemplate title={title}>Check Ins</PageTemplate>;
 }
 
 export const metadata = {
