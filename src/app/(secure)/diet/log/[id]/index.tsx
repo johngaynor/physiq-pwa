@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import { FieldValue } from "../../components/FieldValues";
 import { useRouter } from "next/navigation";
+import LogLoadingPage from "../../components/LogLoadingPage";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -98,7 +99,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
   }, [dailyLogs, log, nextLog]);
 
   if (dietLogsLoading || dailyLogsLoading || deleteDietLogLoading) {
-    return <h1>loading...</h1>;
+    return <LogLoadingPage />;
   } else if (!log) {
     return (
       <div className="w-full">
@@ -114,7 +115,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
     );
   }
   return (
-    <div className="w-full">
+    <div className="w-full mb-20">
       <Card className="w-full rounded-sm p-0">
         <CardContent className="flex flex-col md:flex-row justify-between grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           <div>
