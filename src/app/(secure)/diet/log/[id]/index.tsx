@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../store/reducer";
-import { getDietLogs } from "../../state/actions";
+import { getDietLogs, editDietLog } from "../../state/actions";
 import {
   getDailyLogs,
   getSupplements,
@@ -10,7 +10,7 @@ import {
 import { useParams } from "next/navigation";
 import LogLoadingPage from "../../components/LogLoadingPage";
 import ViewDietLog from "./components/ViewDietLog";
-// import DietLogForm from "../../new/components/DietLogForm";
+import DietLogForm from "../../new/components/DietLogForm";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -28,6 +28,7 @@ const connector = connect(mapStateToProps, {
   getDietLogs,
   getDailyLogs,
   getSupplements,
+  editDietLog,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -42,6 +43,7 @@ const DietLog: React.FC<PropsFromRedux> = ({
   supplements,
   supplementsLoading,
   getSupplements,
+  editDietLog,
 }) => {
   const [editLog, setEditLog] = React.useState<boolean>(false);
   React.useEffect(() => {
@@ -76,8 +78,17 @@ const DietLog: React.FC<PropsFromRedux> = ({
   ) {
     return <LogLoadingPage />;
   } else if (editLog && log) {
-    // return <DietLogForm />;
-    return <h1>edit</h1>;
+    return (
+      <DietLogForm
+        onSubmit={(values) => {
+          editDietLog(values);
+          setEditLog(false);
+        }}
+        supplements={supplements || []}
+        log={log}
+        setEditLog={setEditLog}
+      />
+    );
   }
   {
     return <ViewDietLog setEditLog={setEditLog} />;

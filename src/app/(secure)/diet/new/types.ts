@@ -1,32 +1,44 @@
 import { z } from "zod";
 
-export const dietLogSchema = z.object({
+// 1. Raw schema for form input types
+export const dietLogRawSchema = z.object({
   id: z.number().optional(),
   protein: z.string().min(1, "Protein is required"),
-  fat: z.string().min(1, "Fat is required"),
   carbs: z.string().min(1, "Carbs are required"),
-  water: z.string().min(1, "Water intake is required"),
-  effectiveDate: z
-    .string()
-    .regex(
-      /^\d{4}-\d{2}-\d{2}$/,
-      "Effective date must be in YYYY-MM-DD format"
-    ),
+  fat: z.string().min(1, "Fat is required"),
+  water: z.string().min(1, "Water is required"),
+  effectiveDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   notes: z.string().min(1, "Notes are required"),
-  phase: z.enum(["Cut", "Maintenance", "Bulk"], {
-    errorMap: () => ({ message: "Phase is required" }),
-  }),
-  cardioMinutes: z.string().min(1, "Cardio minutes are required"),
+  phase: z.enum(["Cut", "Maintenance", "Bulk"]),
+  cardioMinutes: z.string().min(1, "Cardio minutes required"),
   cardio: z.string().min(1, "Cardio is required"),
   steps: z.string().min(1, "Steps are required"),
   supplements: z.array(
     z.object({
       supplementId: z.number(),
-      dosage: z.string().min(1, "Dosage is required"),
-      frequency: z.string().min(1, "Frequency is required"),
+      dosage: z.string().min(1),
+      frequency: z.string().min(1),
     })
   ),
-  calories: z.number().optional(),
+  calories: z.string().optional(),
 });
 
-export type DietLogFormData = z.infer<typeof dietLogSchema>;
+// 2. Transformed schema for validation/output
+export const dietLogSchema = dietLogRawSchema.transform((data) => ({
+  ...data,
+  id: data.id,
+  protein: Math.round(parseFloat(data.protein) * 2) / 2,
+  carbs: Math.round(parseFloat(data.carbs) * 2) / 2,
+  fat: Math.round(parseFloat(data.fat) * 2) / 2,
+  calories:
+    parseFloat(data.protein) * 4 +
+    parseFloat(data.carbs) * 4 +
+    parseFloat(data.fat) * 9,
+  water: Math.round(parseFloat(data.water)),
+  steps: Math.round(parseFloat(data.steps)),
+  cardioMinutes: Math.round(parseFloat(data.cardioMinutes)),
+}));
+
+// 3. Types
+export type DietLogRawFormData = z.infer<typeof dietLogRawSchema>; // use in `useForm`
+export type DietLogFormData = z.infer<typeof dietLogSchema>; // use on submit

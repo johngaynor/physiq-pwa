@@ -23,9 +23,14 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Trash } from "lucide-react";
-import { DietLogSupplement } from "../../state/types";
+import { DietLog, DietLogSupplement } from "../../state/types";
 import { Supplement } from "@/app/(secure)/health/state/types";
-import { dietLogSchema, DietLogFormData } from "../types";
+import {
+  DietLogFormData,
+  dietLogSchema,
+  DietLogRawFormData,
+  dietLogRawSchema,
+} from "../types";
 import { DateTime } from "luxon";
 
 const DietLogForm = ({
@@ -33,11 +38,13 @@ const DietLogForm = ({
   supplements,
   onSubmit,
   log,
+  setEditLog,
 }: {
-  latestLog?: any;
+  latestLog?: DietLog | null;
   supplements?: Supplement[];
   onSubmit: (data: DietLogFormData) => void;
-  log?: DietLogFormData | null;
+  log?: DietLog | null;
+  setEditLog?: (edit: boolean) => void;
 }) => {
   // form setup
   const {
@@ -47,15 +54,26 @@ const DietLogForm = ({
     watch,
     reset,
     formState: { errors },
-  } = useForm<DietLogFormData>({
-    resolver: zodResolver(dietLogSchema),
-    defaultValues: {
-      supplements: [],
-      effectiveDate: DateTime.now().toISODate(),
-    },
+  } = useForm<DietLogRawFormData>({
+    resolver: zodResolver(dietLogRawSchema),
+    defaultValues: log
+      ? {
+          ...log,
+          protein: log.protein?.toString() || "",
+          carbs: log.carbs?.toString() || "",
+          fat: log.fat?.toString() || "",
+          water: log.water?.toString() || "",
+          steps: log.steps?.toString() || "",
+          cardioMinutes: log.cardioMinutes?.toString() || "",
+          calories: log.calories?.toString() || "",
+          supplements: (log.supplements as DietLogSupplement[]) ?? [],
+        }
+      : {
+          supplements: [],
+          effectiveDate: DateTime.now().toISODate(),
+        },
   });
 
-  console.log("log to edit", log);
   // field array for supplements
   const { fields, append, remove } = useFieldArray({
     control,
@@ -89,15 +107,41 @@ const DietLogForm = ({
     (s) => !selectedSupplements.some((sel) => sel.supplementId === s.id)
   );
 
+  const handleFormSubmit = (rawData: DietLogRawFormData) => {
+    try {
+      const parsed = dietLogSchema.parse(rawData);
+      onSubmit(parsed);
+    } catch (err) {
+      console.error("Zod parse failed", err);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full mb-20">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit, (formErrors) => {
+        console.log("Form validation failed:", formErrors);
+      })}
+      className="w-full mb-20"
+    >
       {/* General */}
       <SectionWrapper
         title="General"
         action={
-          <Button variant="outline" onClick={copyFromLastLog} type="button">
-            Copy from Last Log
-          </Button>
+          <div>
+            {setEditLog && (
+              <Button
+                variant="outline"
+                onClick={() => setEditLog(false)}
+                type="button"
+                className="mr-4"
+              >
+                Cancel
+              </Button>
+            )}
+            <Button variant="outline" onClick={copyFromLastLog} type="button">
+              Copy from Last Log
+            </Button>
+          </div>
         }
       >
         <InputWrapper error={errors.effectiveDate?.message}>
@@ -181,7 +225,7 @@ const DietLogForm = ({
           <Label htmlFor="water">Water (oz)</Label>
           <Input
             id="water"
-            type="number"
+            type="text"
             placeholder="Enter water oz..."
             {...register("water")}
           />
@@ -202,7 +246,7 @@ const DietLogForm = ({
           <Label htmlFor="cardioMinutes">Cardio (min / week)</Label>
           <Input
             id="cardioMinutes"
-            type="number"
+            type="text"
             placeholder="Enter minutes of cardio..."
             {...register("cardioMinutes")}
           />
@@ -211,7 +255,7 @@ const DietLogForm = ({
           <Label htmlFor="steps">Steps</Label>
           <Input
             id="steps"
-            type="number"
+            type="text"
             placeholder="Enter steps..."
             {...register("steps")}
           />
