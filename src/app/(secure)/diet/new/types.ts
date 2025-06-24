@@ -27,9 +27,9 @@ export const dietLogRawSchema = z.object({
 export const dietLogSchema = dietLogRawSchema.transform((data) => ({
   ...data,
   id: data.id,
-  protein: Math.round(parseFloat(data.protein) * 2) / 2,
-  carbs: Math.round(parseFloat(data.carbs) * 2) / 2,
-  fat: Math.round(parseFloat(data.fat) * 2) / 2,
+  protein: Math.round(parseFloat(data.protein)),
+  carbs: Math.round(parseFloat(data.carbs)),
+  fat: Math.round(parseFloat(data.fat)),
   calories:
     parseFloat(data.protein) * 4 +
     parseFloat(data.carbs) * 4 +

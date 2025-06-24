@@ -225,7 +225,7 @@ const DietLogForm = ({
           <Label htmlFor="water">Water (oz)</Label>
           <Input
             id="water"
-            type="text"
+            type="number"
             placeholder="Enter water oz..."
             {...register("water")}
           />
@@ -246,7 +246,7 @@ const DietLogForm = ({
           <Label htmlFor="cardioMinutes">Cardio (min / week)</Label>
           <Input
             id="cardioMinutes"
-            type="text"
+            type="number"
             placeholder="Enter minutes of cardio..."
             {...register("cardioMinutes")}
           />
@@ -255,7 +255,7 @@ const DietLogForm = ({
           <Label htmlFor="steps">Steps</Label>
           <Input
             id="steps"
-            type="text"
+            type="number"
             placeholder="Enter steps..."
             {...register("steps")}
           />
