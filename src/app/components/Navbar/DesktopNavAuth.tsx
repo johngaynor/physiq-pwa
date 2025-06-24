@@ -82,6 +82,7 @@ export default function DesktopNavAuth() {
           {TabComponent("Dashboard")}
           {TabComponent("Health")}
           {TabComponent("Diet")}
+          {TabComponent("Reports")}
           {TabComponent("Apps")}
         </TabsList>
       </Tabs>
