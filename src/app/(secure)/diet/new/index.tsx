@@ -66,16 +66,14 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
   function onSubmit(data: DietLogFormData) {
     const formattedLog: DietLog = {
       ...data,
-      protein: parseFloat(data.protein),
-      fat: parseFloat(data.fat),
-      carbs: parseFloat(data.carbs),
-      water: parseFloat(data.water),
-      cardioMinutes: parseFloat(data.cardioMinutes),
-      steps: parseFloat(data.steps),
+      protein: data.protein,
+      fat: data.fat,
+      carbs: data.carbs,
+      water: data.water,
+      cardioMinutes: data.cardioMinutes,
+      steps: data.steps,
       calories:
-        (parseFloat(data.protein) || 0) * 4 +
-        (parseFloat(data.carbs) || 0) * 4 +
-        (parseFloat(data.fat) || 0) * 9,
+        (data.protein || 0) * 4 + (data.carbs || 0) * 4 + (data.fat || 0) * 9,
     };
 
     editDietLog(formattedLog).then((data) =>
