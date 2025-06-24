@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { FieldValue } from "./FieldValues";
 import { useRouter } from "next/navigation";
+import ConfirmDeleteLog from "./ConfirmDeleteLog";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -115,18 +116,19 @@ const ViewDietLog: React.FC<
                 >
                   <Edit className="font-extrabold" />
                 </Button>
-                <Button
-                  className="ml-2"
-                  variant="outline"
-                  onClick={() => {
+                <ConfirmDeleteLog
+                  trigger={
+                    <Button className="ml-2" variant="outline">
+                      <Trash className="font-extrabold" />
+                    </Button>
+                  }
+                  onConfirm={() => {
                     if (log.id) {
                       deleteDietLog(log.id);
                       router.push("/diet");
                     }
                   }}
-                >
-                  <Trash className="font-extrabold" />
-                </Button>
+                />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
