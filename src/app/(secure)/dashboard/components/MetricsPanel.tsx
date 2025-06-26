@@ -6,8 +6,8 @@ import { DashboardButton } from "./DashboardButton";
 import {
   WeightForm,
   BodyfatForm,
-  CaloriesForm,
   // SleepForm,
+  CaloriesForm,
   StepsForm,
   WaterForm,
 } from "@/app/(secure)/health/logs/components/Forms";
@@ -21,6 +21,7 @@ import {
 } from "../../health/state/actions";
 import { convertTime } from "../../../components/Time";
 import { DateTime } from "luxon";
+import { DrawerWrapper } from "./DrawerForms/DrawerWrapper";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -73,7 +74,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
 
   return (
     <div className="w-full md:w-[400px] shrink-0">
-      <div className="grid grid-cols-2 grid-rows-2 gap-2 p-2 h-full w-full border-2 rounded-md">
+      <div className="grid grid-cols-2 gap-2 p-2 h-full w-full border-2 rounded-md">
         <WeightForm
           Trigger={
             <DashboardButton
@@ -201,12 +202,34 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
             editDailyCalories(today, Number(values.calories))
           }
         />
-        {/* Removing training temporarily */}
-        {/* <DashboardButton
-          header="Training"
-          subheader="Today's training"
-          onClick={() => alert("functionality not here yet womp womp")}
-        /> */}
+        <DrawerWrapper
+          header="Edit Calories"
+          subheader="Add/Subtract your calories on the day."
+          currentValue={todayLog?.calories || 0}
+          onUpdate={(newValue: number) => {
+            editDailyCalories(today, newValue);
+          }}
+          description="Use the buttons to add or subtract, or enter a custom value."
+          Trigger={
+            <DashboardButton
+              header="Calories - NEW"
+              subheader={
+                dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"
+              }
+              data={
+                todayLog?.calories
+                  ? `${Math.floor(todayLog.calories)} cal`
+                  : "0 cal"
+              }
+              loading={
+                !dailyLogs ||
+                dailyLogsLoading ||
+                editCaloriesLoading ||
+                dietLogLoading
+              }
+            />
+          }
+        />
       </div>
     </div>
   );
