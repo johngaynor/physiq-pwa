@@ -103,7 +103,6 @@ export const DrawerWrapper: React.FC<{
                 size="lg"
                 onClick={handleSubtract}
                 className="h-12 w-12 rounded-full"
-                disabled={replaceMode}
               >
                 -
               </Button>
@@ -123,7 +122,6 @@ export const DrawerWrapper: React.FC<{
                 size="lg"
                 onClick={handleAdd}
                 className="h-12 w-12 rounded-full"
-                disabled={replaceMode}
               >
                 +
               </Button>
