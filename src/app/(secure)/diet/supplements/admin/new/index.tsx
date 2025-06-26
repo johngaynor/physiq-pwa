@@ -6,6 +6,7 @@ import { RootState } from "../../../../../store/reducer";
 function mapStateToProps(state: RootState) {
   return {
     // Add any state you need here
+    supplements: state.health.supplements,
   };
 }
 
