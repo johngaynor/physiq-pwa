@@ -86,6 +86,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               loading={!dailyLogs || dailyLogsLoading || editWeightLoading}
             />
           }
+          defaultReplace
         />
         <DrawerWrapper
           header="Add/Subtract Steps"
@@ -103,6 +104,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               loading={!dailyLogs || dailyLogsLoading || editStepsLoading}
             />
           }
+          defaultReplace
         />
         {/* sleep, currently no form */}
         <DashboardButton
@@ -128,6 +130,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               loading={!dailyLogs || dailyLogsLoading || editBodyfatLoading}
             />
           }
+          defaultReplace
         />
         <DrawerWrapper
           header="Add/Subtract Water"

@@ -10,6 +10,7 @@ import {
   DrawerFooter,
 } from "@/components/ui/drawer";
 import { Button, Input } from "@/components/ui";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const DrawerWrapper: React.FC<{
   header: string;
@@ -17,6 +18,7 @@ export const DrawerWrapper: React.FC<{
   currentValue: number;
   Trigger: React.ReactNode;
   increment?: number;
+  defaultReplace?: boolean;
   onUpdate: (value: number) => void;
 }> = ({
   header,
@@ -25,9 +27,11 @@ export const DrawerWrapper: React.FC<{
   Trigger,
   onUpdate,
   increment = 1,
+  defaultReplace = false,
 }) => {
   const [inputValue, setInputValue] = useState("0");
   const [isOpen, setIsOpen] = useState(false);
+  const [replaceMode, setReplaceMode] = useState(defaultReplace);
 
   const handleAdd = () => {
     const currentVal = parseFloat(inputValue) || 0;
@@ -71,6 +75,15 @@ export const DrawerWrapper: React.FC<{
 
   const handleCancel = () => {
     setInputValue("0");
+    setReplaceMode(defaultReplace);
+    setIsOpen(false);
+  };
+
+  const handleSave = () => {
+    const formValue = parseFloat(inputValue) || 0;
+    onUpdate(formValue);
+    setInputValue("0");
+    setReplaceMode(defaultReplace);
     setIsOpen(false);
   };
 
@@ -90,6 +103,7 @@ export const DrawerWrapper: React.FC<{
                 size="lg"
                 onClick={handleSubtract}
                 className="h-12 w-12 rounded-full"
+                disabled={replaceMode}
               >
                 -
               </Button>
@@ -109,24 +123,44 @@ export const DrawerWrapper: React.FC<{
                 size="lg"
                 onClick={handleAdd}
                 className="h-12 w-12 rounded-full"
+                disabled={replaceMode}
               >
                 +
               </Button>
             </div>
           </div>
           <DrawerFooter>
-            <div className="flex gap-2">
-              <Button
-                onClick={handleSubtractValue}
-                variant="secondary"
-                className="flex-1"
+            <div className="flex items-center justify-center space-x-2 mb-2">
+              <Checkbox
+                id="replace-mode"
+                checked={replaceMode}
+                onCheckedChange={(checked) =>
+                  setReplaceMode(checked as boolean)
+                }
+              />
+              <label
+                htmlFor="replace-mode"
+                className="text-sm text-muted-foreground cursor-pointer"
               >
-                Subtract
-              </Button>
-              <Button onClick={handleAddValue} className="flex-1">
-                Add
-              </Button>
+                Replace current value instead of add/subtract
+              </label>
             </div>
+            {replaceMode ? (
+              <Button onClick={handleSave}>Save</Button>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleSubtractValue}
+                  variant="secondary"
+                  className="flex-1"
+                >
+                  Subtract
+                </Button>
+                <Button onClick={handleAddValue} className="flex-1">
+                  Add
+                </Button>
+              </div>
+            )}
             <DrawerClose asChild>
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
