@@ -119,7 +119,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           onUpdate={(newValue: number) => {
             editDailyBodyfat(today, newValue);
           }}
-          increment={0.1}
+          increment={0.5}
           Trigger={
             <DashboardButton
               header="Bodyfat %"
@@ -163,7 +163,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           increment={100}
           Trigger={
             <DashboardButton
-              header="Calories - NEW"
+              header="Calories"
               subheader={
                 dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"
               }

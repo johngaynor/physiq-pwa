@@ -31,13 +31,13 @@ export const DrawerWrapper: React.FC<{
 
   const handleAdd = () => {
     const currentVal = parseFloat(inputValue) || 0;
-    const newValue = currentVal + increment;
+    const newValue = Math.round((currentVal + increment) * 10) / 10; // Round to 1 decimal place
     setInputValue(newValue.toString());
   };
 
   const handleSubtract = () => {
     const currentVal = parseFloat(inputValue) || 0;
-    const newValue = Math.max(0, currentVal - increment); // Prevent negative values
+    const newValue = Math.max(0, Math.round((currentVal - increment) * 10) / 10); // Prevent negative values and round
     setInputValue(newValue.toString());
   };
 
