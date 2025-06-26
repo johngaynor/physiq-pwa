@@ -37,7 +37,10 @@ export const DrawerWrapper: React.FC<{
 
   const handleSubtract = () => {
     const currentVal = parseFloat(inputValue) || 0;
-    const newValue = Math.max(0, Math.round((currentVal - increment) * 10) / 10); // Prevent negative values and round
+    const newValue = Math.max(
+      0,
+      Math.round((currentVal - increment) * 10) / 10
+    ); // Prevent negative values and round
     setInputValue(newValue.toString());
   };
 
@@ -75,7 +78,7 @@ export const DrawerWrapper: React.FC<{
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>{Trigger}</DrawerTrigger>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm">
+        <div className="mx-auto w-full max-w-sm pb-10">
           <DrawerHeader>
             <DrawerTitle>{header}</DrawerTitle>
             <DrawerDescription>{subheader}</DrawerDescription>
