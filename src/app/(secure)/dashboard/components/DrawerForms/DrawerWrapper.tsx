@@ -16,48 +16,58 @@ export const DrawerWrapper: React.FC<{
   subheader: string;
   currentValue: number;
   Trigger: React.ReactNode;
-  description: string;
+  increment?: number;
   onUpdate: (value: number) => void;
-}> = ({ header, subheader, currentValue, Trigger, onUpdate, description }) => {
-  const [value, setValue] = useState(currentValue);
-  const [inputValue, setInputValue] = useState(currentValue.toString());
+}> = ({
+  header,
+  subheader,
+  currentValue,
+  Trigger,
+  onUpdate,
+  increment = 1,
+}) => {
+  const [inputValue, setInputValue] = useState("0");
   const [isOpen, setIsOpen] = useState(false);
 
-  // Update local state when currentValue changes
-  React.useEffect(() => {
-    setValue(currentValue);
-    setInputValue(currentValue.toString());
-  }, [currentValue]);
-
   const handleAdd = () => {
-    const newValue = value + 1;
-    setValue(newValue);
+    const currentVal = parseFloat(inputValue) || 0;
+    const newValue = currentVal + increment;
     setInputValue(newValue.toString());
   };
 
   const handleSubtract = () => {
-    const newValue = Math.max(0, value - 1); // Prevent negative values
-    setValue(newValue);
+    const currentVal = parseFloat(inputValue) || 0;
+    const newValue = Math.max(0, currentVal - increment); // Prevent negative values
     setInputValue(newValue.toString());
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
-    setInputValue(inputVal);
     const numVal = parseFloat(inputVal);
-    if (!isNaN(numVal) && numVal >= 0) {
-      setValue(numVal);
+
+    // Only allow non-negative values
+    if (inputVal === "" || (!isNaN(numVal) && numVal >= 0)) {
+      setInputValue(inputVal);
     }
   };
 
-  const handleSave = () => {
-    onUpdate(value);
+  const handleAddValue = () => {
+    const formValue = parseFloat(inputValue) || 0;
+    onUpdate(currentValue + formValue);
+    setInputValue("0");
+    setIsOpen(false);
+  };
+
+  const handleSubtractValue = () => {
+    const formValue = parseFloat(inputValue) || 0;
+    const newValue = Math.max(0, currentValue - formValue);
+    onUpdate(newValue);
+    setInputValue("0");
     setIsOpen(false);
   };
 
   const handleCancel = () => {
-    setValue(currentValue);
-    setInputValue(currentValue.toString());
+    setInputValue("0");
     setIsOpen(false);
   };
 
@@ -68,9 +78,7 @@ export const DrawerWrapper: React.FC<{
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
             <DrawerTitle>{header}</DrawerTitle>
-            <DrawerDescription>
-              Use the buttons to add or subtract, or enter a custom value.
-            </DrawerDescription>
+            <DrawerDescription>{subheader}</DrawerDescription>
           </DrawerHeader>
           <div className="p-4 pb-0">
             <div className="flex items-center justify-center space-x-4 mb-4">
@@ -104,7 +112,18 @@ export const DrawerWrapper: React.FC<{
             </div>
           </div>
           <DrawerFooter>
-            <Button onClick={handleSave}>Save</Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleSubtractValue}
+                variant="secondary"
+                className="flex-1"
+              >
+                Subtract
+              </Button>
+              <Button onClick={handleAddValue} className="flex-1">
+                Add
+              </Button>
+            </div>
             <DrawerClose asChild>
               <Button variant="outline" onClick={handleCancel}>
                 Cancel

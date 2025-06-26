@@ -7,7 +7,6 @@ import {
   WeightForm,
   BodyfatForm,
   // SleepForm,
-  CaloriesForm,
   StepsForm,
   WaterForm,
 } from "@/app/(secure)/health/logs/components/Forms";
@@ -175,41 +174,15 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
             editDailyWater(today, Number(values.water))
           }
         />
-        <CaloriesForm
-          Trigger={
-            <DashboardButton
-              header="Calories"
-              subheader={
-                dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"
-              }
-              data={
-                todayLog?.calories
-                  ? `${Math.floor(todayLog.calories)} cal`
-                  : "0 cal"
-              }
-              loading={
-                !dailyLogs ||
-                dailyLogsLoading ||
-                editCaloriesLoading ||
-                dietLogLoading
-              }
-            />
-          }
-          initialValues={{
-            calories: todayLog?.calories || 0,
-          }}
-          handleSubmit={(values: { calories: number | string }) =>
-            editDailyCalories(today, Number(values.calories))
-          }
-        />
+        {/* calories */}
         <DrawerWrapper
-          header="Edit Calories"
-          subheader="Add/Subtract your calories on the day."
+          header="Add/Subtract Calories"
+          subheader="Track your calories throughout the day."
           currentValue={todayLog?.calories || 0}
           onUpdate={(newValue: number) => {
             editDailyCalories(today, newValue);
           }}
-          description="Use the buttons to add or subtract, or enter a custom value."
+          increment={100}
           Trigger={
             <DashboardButton
               header="Calories - NEW"
