@@ -70,8 +70,20 @@ const Dashboard: React.FC<PropsFromRedux> = ({
 
   return (
     <PageTemplate title="Today">
-      <MetricsPanel />
-      <SupplementsPanel />
+      <div className="w-full flex flex-col md:flex-row gap-4 mb-20">
+        <MetricsPanel />
+        <div className="w-full gap-4 flex flex-col">
+          <SupplementsPanel />
+          <div className="rounded-md h-1/2 flex justify-center items-center w-full w-max-lg grid grid-cols-2 gap-4">
+            <div className="border-2 rounded-md flex justify-center items-center w-full h-full">
+              hi
+            </div>
+            <div className="border-2 rounded-md flex justify-center items-center w-full h-full">
+              hi
+            </div>
+          </div>
+        </div>
+      </div>
     </PageTemplate>
   );
 };

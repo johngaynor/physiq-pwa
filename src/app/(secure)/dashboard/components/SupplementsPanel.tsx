@@ -40,8 +40,14 @@ const Metrics: React.FC<PropsFromRedux> = ({
   const today = DateTime.now().toISODate();
 
   return (
-    <div className="w-full">
-      <div className="border-2 p-2 rounded-md min-h-[100px] flex justify-center items-center mb-20 w-full w-max-lg">
+    <div className="border-2 p-2 rounded-md h-1/2 w-full w-max-lg overflow-hidden">
+      <div
+        className={`${
+          dietSupplements && dietSupplements.length > 6
+            ? "overflow-y-auto"
+            : "overflow-hidden"
+        } h-full`}
+      >
         {!supplements ||
         !supplementLogs ||
         supplementsLoading ||
@@ -80,7 +86,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
               ))}
             </TableBody>
           </Table>
-        ) : (
+        ) : dietSupplements && dietSupplements.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
@@ -122,8 +128,27 @@ const Metrics: React.FC<PropsFromRedux> = ({
                   <TableCell className="lg:pl-5">{supp.dosage}</TableCell>
                 </TableRow>
               ))}
+              {Array.from({
+                length: Math.max(0, 7 - dietSupplements.length),
+              }).map((_, index) => (
+                <TableRow key={"supp-empty-" + index} className="h-8">
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell className="hidden lg:table-cell truncate overflow-hidden"></TableCell>
+                  <TableCell className="lg:pl-5"></TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center text-muted-foreground">
+              <p>No supplements configured</p>
+              <p className="text-sm mt-1">
+                Add supplements to your diet plan to track them here
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
