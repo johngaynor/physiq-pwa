@@ -3,13 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { DashboardButton } from "./DashboardButton";
-import {
-  WeightForm,
-  BodyfatForm,
-  // SleepForm,
-  StepsForm,
-  WaterForm,
-} from "@/app/(secure)/health/logs/components/Forms";
+
 import {
   editDailyWeight,
   editDailySteps,
@@ -74,7 +68,14 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
   return (
     <div className="w-full md:w-[400px] shrink-0">
       <div className="grid grid-cols-2 gap-2 p-2 h-full w-full border-2 rounded-md">
-        <WeightForm
+        <DrawerWrapper
+          header="Add/Subtract Weight"
+          subheader="Track your weight."
+          currentValue={todayLog?.weight || 0}
+          onUpdate={(newValue: number) => {
+            editDailyWeight(today, newValue);
+          }}
+          increment={0.1}
           Trigger={
             <DashboardButton
               header="Weight"
@@ -85,14 +86,15 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               loading={!dailyLogs || dailyLogsLoading || editWeightLoading}
             />
           }
-          initialValues={{
-            weight: todayLog?.weight || "",
-          }}
-          handleSubmit={(values: { weight: number | string }) =>
-            editDailyWeight(today, Number(values.weight))
-          }
         />
-        <StepsForm
+        <DrawerWrapper
+          header="Add/Subtract Steps"
+          subheader="Track your steps from yesterday."
+          currentValue={yesterdayLog?.steps || 0}
+          onUpdate={(newValue: number) => {
+            editDailySteps(yesterday, newValue);
+          }}
+          increment={1000}
           Trigger={
             <DashboardButton
               header="Steps"
@@ -101,33 +103,8 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               loading={!dailyLogs || dailyLogsLoading || editStepsLoading}
             />
           }
-          initialValues={{
-            steps: yesterdayLog?.steps || "",
-          }}
-          handleSubmit={(values: { steps: number | string }) =>
-            editDailySteps(yesterday, Number(values.steps))
-          }
         />
-        {/* Temporarily removing sleep form and replacing with button */}
-        {/* <SleepForm
-          Trigger={
-            <DashboardButton
-              header="Sleep"
-              subheader="last night"
-              data={convertTime(todayLog?.totalSleep || 0)}
-              loading={!dailyLogs || dailyLogsLoading}
-            />
-          }
-          initialValues={{
-            totalSleep: todayLog?.totalSleep || "",
-            totalBed: todayLog?.totalBed || "",
-            awakeQty: todayLog?.awakeQty || "",
-            lightQty: todayLog?.lightQty || "",
-            deepQty: todayLog?.deepQty || "",
-            remQty: todayLog?.remQty || "",
-          }}
-          handleSubmit={handleSubmitSleep}
-        /> */}
+        {/* sleep, currently no form */}
         <DashboardButton
           header="Sleep"
           subheader="last night"
@@ -135,7 +112,14 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           loading={!dailyLogs || dailyLogsLoading || editSleepLoading}
           onClick={() => getDailySleep(today)}
         />
-        <BodyfatForm
+        <DrawerWrapper
+          header="Add/Subtract Bodyfat"
+          subheader="Track your bodyfat percentage."
+          currentValue={todayLog?.bodyfat || 0}
+          onUpdate={(newValue: number) => {
+            editDailyBodyfat(today, newValue);
+          }}
+          increment={0.1}
           Trigger={
             <DashboardButton
               header="Bodyfat %"
@@ -144,14 +128,15 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               loading={!dailyLogs || dailyLogsLoading || editBodyfatLoading}
             />
           }
-          initialValues={{
-            bodyfat: todayLog?.bodyfat || "",
-          }}
-          handleSubmit={(values: { bodyfat: number | string }) =>
-            editDailyBodyfat(today, Number(values.bodyfat))
-          }
         />
-        <WaterForm
+        <DrawerWrapper
+          header="Add/Subtract Water"
+          subheader="Track your water intake throughout the day."
+          currentValue={todayLog?.water || 0}
+          onUpdate={(newValue: number) => {
+            editDailyWater(today, newValue);
+          }}
+          increment={8}
           Trigger={
             <DashboardButton
               header="Water"
@@ -167,14 +152,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               }
             />
           }
-          initialValues={{
-            water: todayLog?.water || "",
-          }}
-          handleSubmit={(values: { water: number | string }) =>
-            editDailyWater(today, Number(values.water))
-          }
         />
-        {/* calories */}
         <DrawerWrapper
           header="Add/Subtract Calories"
           subheader="Track your calories throughout the day."
