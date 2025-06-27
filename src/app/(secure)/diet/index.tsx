@@ -45,6 +45,17 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
     );
   }, [dietLogs]);
 
+  const filteredLogs = React.useMemo(() => {
+    if (!search) return sortedLogs;
+    return sortedLogs.filter(
+      (log) =>
+        log.phase?.toLowerCase().includes(search.toLowerCase()) ||
+        log.cardio?.toLowerCase().includes(search.toLowerCase()) ||
+        log.notes?.toLowerCase().includes(search.toLowerCase()) ||
+        log.effectiveDate.includes(search)
+    );
+  }, [sortedLogs, search]);
+
   if (dietLogsLoading) {
     return <DashboardLoadingPage />;
   } else
@@ -55,6 +66,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
             id="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search diet logs..."
             className="col-span-3"
             type="text"
           />
@@ -72,7 +84,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
           <CardContent className="p-0">
             <Table>
               <TableBody>
-                {sortedLogs?.map((log, index) => (
+                {filteredLogs?.map((log, index) => (
                   <TableRow
                     key={log.id}
                     onClick={() => router.push(`/diet/log/${log.id}`)}
@@ -128,6 +140,13 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
                     </TableCell>
                   </TableRow>
                 ))}
+                {filteredLogs?.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                      {search ? "No diet logs found matching your search." : "No diet logs yet. Create your first one!"}
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </CardContent>
