@@ -38,19 +38,22 @@ export const DrawerWrapper: React.FC<{
   useEffect(() => {
     const handleViewportChange = () => {
       // Detect if virtual keyboard is open on mobile
-      const initialViewportHeight = window.visualViewport?.height || window.innerHeight;
-      const currentViewportHeight = window.visualViewport?.height || window.innerHeight;
+      const currentViewportHeight =
+        window.visualViewport?.height || window.innerHeight;
       const heightDifference = window.innerHeight - currentViewportHeight;
-      
+
       // If viewport height reduced by more than 150px, likely keyboard is open
       setIsKeyboardOpen(heightDifference > 150);
     };
 
     // Listen for viewport changes (mobile keyboard open/close)
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener("resize", handleViewportChange);
       return () => {
-        window.visualViewport?.removeEventListener('resize', handleViewportChange);
+        window.visualViewport?.removeEventListener(
+          "resize",
+          handleViewportChange
+        );
       };
     }
   }, []);
@@ -58,9 +61,9 @@ export const DrawerWrapper: React.FC<{
   // Prevent body scroll when drawer is open (helps with mobile positioning)
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
       return () => {
-        document.body.style.overflow = 'unset';
+        document.body.style.overflow = "unset";
       };
     }
   }, [isOpen]);
@@ -93,10 +96,10 @@ export const DrawerWrapper: React.FC<{
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     // Scroll input into view on mobile when focused
     setTimeout(() => {
-      e.target.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center',
-        inline: 'nearest'
+      e.target.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
       });
     }, 300); // Wait for keyboard animation
   };
@@ -133,8 +136,12 @@ export const DrawerWrapper: React.FC<{
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>{Trigger}</DrawerTrigger>
-      <DrawerContent className={`${isKeyboardOpen ? 'pb-0' : ''}`}>
-        <div className={`mx-auto w-full max-w-sm ${isKeyboardOpen ? 'pb-4' : 'pb-10'}`}>
+      <DrawerContent className={`${isKeyboardOpen ? "pb-0" : ""}`}>
+        <div
+          className={`mx-auto w-full max-w-sm ${
+            isKeyboardOpen ? "pb-4" : "pb-10"
+          }`}
+        >
           <DrawerHeader>
             <DrawerTitle>{header}</DrawerTitle>
             <DrawerDescription>{subheader}</DrawerDescription>
