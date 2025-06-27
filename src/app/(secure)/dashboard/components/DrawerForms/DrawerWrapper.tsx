@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -32,6 +32,38 @@ export const DrawerWrapper: React.FC<{
   const [inputValue, setInputValue] = useState("0");
   const [isOpen, setIsOpen] = useState(false);
   const [replaceMode, setReplaceMode] = useState(defaultReplace);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  // Handle mobile keyboard behavior
+  useEffect(() => {
+    const handleViewportChange = () => {
+      // Detect if virtual keyboard is open on mobile
+      const initialViewportHeight = window.visualViewport?.height || window.innerHeight;
+      const currentViewportHeight = window.visualViewport?.height || window.innerHeight;
+      const heightDifference = window.innerHeight - currentViewportHeight;
+      
+      // If viewport height reduced by more than 150px, likely keyboard is open
+      setIsKeyboardOpen(heightDifference > 150);
+    };
+
+    // Listen for viewport changes (mobile keyboard open/close)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      return () => {
+        window.visualViewport?.removeEventListener('resize', handleViewportChange);
+      };
+    }
+  }, []);
+
+  // Prevent body scroll when drawer is open (helps with mobile positioning)
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isOpen]);
 
   const handleAdd = () => {
     const currentVal = parseFloat(inputValue) || 0;
@@ -56,6 +88,17 @@ export const DrawerWrapper: React.FC<{
     if (inputVal === "" || (!isNaN(numVal) && numVal >= 0)) {
       setInputValue(inputVal);
     }
+  };
+
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Scroll input into view on mobile when focused
+    setTimeout(() => {
+      e.target.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+      });
+    }, 300); // Wait for keyboard animation
   };
 
   const handleAddValue = () => {
@@ -90,8 +133,8 @@ export const DrawerWrapper: React.FC<{
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>{Trigger}</DrawerTrigger>
-      <DrawerContent>
-        <div className="mx-auto w-full max-w-sm pb-10">
+      <DrawerContent className={`${isKeyboardOpen ? 'pb-0' : ''}`}>
+        <div className={`mx-auto w-full max-w-sm ${isKeyboardOpen ? 'pb-4' : 'pb-10'}`}>
           <DrawerHeader>
             <DrawerTitle>{header}</DrawerTitle>
             <DrawerDescription>{subheader}</DrawerDescription>
@@ -112,9 +155,12 @@ export const DrawerWrapper: React.FC<{
                   type="number"
                   value={inputValue}
                   onChange={handleInputChange}
+                  onFocus={handleInputFocus}
                   className="text-center"
                   min="0"
                   step="0.1"
+                  inputMode="decimal"
+                  autoComplete="off"
                 />
               </div>
               <Button
