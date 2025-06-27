@@ -88,6 +88,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
                   <TableRow
                     key={log.id}
                     onClick={() => router.push(`/diet/log/${log.id}`)}
+                    className="cursor-pointer"
                   >
                     <TableCell className="pl-8">
                       {DateTime.fromISO(log.effectiveDate).toFormat(

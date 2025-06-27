@@ -90,7 +90,7 @@ const CheckInsDashboard: React.FC<PropsFromRedux> = ({
                   <TableRow
                     key={checkIn.id}
                     onClick={() => router.push(`/checkins/${checkIn.id}`)}
-                    className="cursor-pointer hover:bg-gray-50"
+                    className="cursor-pointer"
                   >
                     <TableCell className="pl-8">
                       {DateTime.fromISO(checkIn.date).toFormat("LLL d, yyyy")}
