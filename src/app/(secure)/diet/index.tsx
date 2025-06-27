@@ -142,8 +142,13 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
                 ))}
                 {filteredLogs?.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                      {search ? "No diet logs found matching your search." : "No diet logs yet. Create your first one!"}
+                    <TableCell
+                      colSpan={5}
+                      className="text-center py-8 text-gray-500"
+                    >
+                      {search
+                        ? "No diet logs found matching your search."
+                        : "No diet logs yet. Create your first one!"}
                     </TableCell>
                   </TableRow>
                 )}
