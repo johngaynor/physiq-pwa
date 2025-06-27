@@ -13,8 +13,17 @@ import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-function TabComponent(value: string) {
-  return <TabsTrigger value={value}>{value}</TabsTrigger>;
+function TabComponent(value: string, isActive: boolean, onClick: () => void) {
+  return (
+    <TabsTrigger
+      value={value}
+      onClick={onClick}
+      data-state={isActive ? "active" : "inactive"}
+      className="cursor-pointer"
+    >
+      {value}
+    </TabsTrigger>
+  );
 }
 
 export default function DesktopNavAuth() {
@@ -29,8 +38,9 @@ export default function DesktopNavAuth() {
       : segments[0].charAt(0).toUpperCase() + segments[0].slice(1)
     : "Dashboard";
 
-  function onTabChange(value: string) {
-    router.push(`/${value.toLowerCase().replace(" ", "")}`);
+  function navigateToTab(tabName: string) {
+    const route = tabName.toLowerCase().replace(" ", "");
+    router.push(`/${route === "dashboard" ? "" : route}`);
   }
 
   return (
@@ -78,14 +88,19 @@ export default function DesktopNavAuth() {
         defaultValue="overview"
         className="w-full pt-16 px-5 dark:bg-[#060B1C]"
         value={path}
-        onValueChange={onTabChange}
       >
         <TabsList className="flex bg-transparent p-0">
-          {TabComponent("Dashboard")}
-          {TabComponent("Health")}
-          {TabComponent("Diet")}
-          {TabComponent("Check Ins")}
-          {TabComponent("Apps")}
+          {TabComponent("Dashboard", path === "Dashboard", () =>
+            navigateToTab("Dashboard")
+          )}
+          {TabComponent("Health", path === "Health", () =>
+            navigateToTab("Health")
+          )}
+          {TabComponent("Diet", path === "Diet", () => navigateToTab("Diet"))}
+          {TabComponent("Check Ins", path === "Check Ins", () =>
+            navigateToTab("Check Ins")
+          )}
+          {TabComponent("Apps", path === "Apps", () => navigateToTab("Apps"))}
         </TabsList>
       </Tabs>
     </>
