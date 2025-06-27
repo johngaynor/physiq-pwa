@@ -237,7 +237,7 @@ const CheckInForm = ({
           <Controller
             name="attachments"
             control={control}
-            render={({ field: { onChange, value } }) => (
+            render={({ field: { onChange } }) => (
               <Input
                 id="attachments"
                 type="file"
