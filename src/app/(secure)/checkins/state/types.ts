@@ -17,19 +17,10 @@ export type CheckInAttachment = {
 
 export type CheckIn = {
   id?: number;
-  userId?: string;
   date: string; // varchar(10) - likely YYYY-MM-DD format
-  hormones?: string;
-  phase?: string;
-  timeline?: string;
   cheats?: string; // mediumtext
   comments?: string; // mediumtext
   training?: string;
-  avgTotalSleep?: number; // decimal(10,2)
-  avgTotalBed?: number; // decimal(10,2)
-  avgRecoveryIndex?: number; // decimal(10,2)
-  avgRemQty?: number; // decimal(10,2)
-  avgDeepQty?: number; // decimal(10,2)
   attachments?: CheckInAttachment[] | null;
 };
 
