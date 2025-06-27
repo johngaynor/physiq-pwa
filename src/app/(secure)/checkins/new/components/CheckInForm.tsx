@@ -3,19 +3,9 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SectionWrapper, InputWrapper } from "./FormWrappers";
-import { Input, Label, Button, H3 } from "@/components/ui";
+import { Input, Label, Button } from "@/components/ui";
 import Link from "next/link";
 import { Info } from "lucide-react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-  SelectContent,
-  SelectLabel,
-  SelectItem,
-} from "@/components/ui/select";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { CheckIn } from "../../state/types";
 import { DietLog } from "../../../diet/state/types";
 import {
