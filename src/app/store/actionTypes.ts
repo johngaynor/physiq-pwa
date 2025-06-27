@@ -46,3 +46,10 @@ export const FETCH_EDIT_DIET_LOG = "FETCH_EDIT_DIET_LOG" as const;
 export const LOAD_EDIT_DIET_LOG = "LOAD_EDIT_DIET_LOG" as const;
 export const FETCH_DELETE_DIET_LOG = "FETCH_DELETE_DIET_LOG" as const;
 export const LOAD_DELETE_DIET_LOG = "LOAD_DELETE_DIET_LOG" as const;
+// Checkins
+export const FETCH_CHECKINS = "FETCH_CHECKINS" as const;
+export const LOAD_CHECKINS = "LOAD_CHECKINS" as const;
+export const FETCH_EDIT_CHECKIN = "FETCH_EDIT_CHECKIN" as const;
+export const LOAD_EDIT_CHECKIN = "LOAD_EDIT_CHECKIN" as const;
+export const FETCH_DELETE_CHECKIN = "FETCH_DELETE_CHECKIN" as const;
+export const LOAD_DELETE_CHECKIN = "LOAD_DELETE_CHECKIN" as const;
