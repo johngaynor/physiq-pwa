@@ -27,13 +27,11 @@ import {
 import { DateTime } from "luxon";
 
 const CheckInForm = ({
-  latestCheckIn,
   onSubmit,
   checkIn,
   setEditCheckIn,
   dietLogs,
 }: {
-  latestCheckIn?: CheckIn | null;
   onSubmit: (data: CheckInFormData) => void;
   checkIn?: CheckIn | null;
   setEditCheckIn?: (edit: boolean) => void;
@@ -90,17 +88,6 @@ const CheckInForm = ({
     return previousLog || null;
   }, [watchedDate, dietLogs]);
 
-  function copyFromLastCheckIn() {
-    if (!latestCheckIn) return;
-
-    reset({
-      date: DateTime.now().toISODate(),
-      training: latestCheckIn.training || "",
-      cheats: latestCheckIn.cheats || "",
-      attachments: latestCheckIn.attachments || [],
-    });
-  }
-
   const handleFormSubmit = (rawData: CheckInRawFormData) => {
     try {
       const parsed = checkInSchema.parse(rawData);
@@ -117,25 +104,15 @@ const CheckInForm = ({
       <SectionWrapper
         title="General"
         action={
-          <div>
-            {setEditCheckIn && (
-              <Button
-                variant="outline"
-                onClick={() => setEditCheckIn(false)}
-                type="button"
-                className="mr-4"
-              >
-                Cancel
-              </Button>
-            )}
+          setEditCheckIn && (
             <Button
               variant="outline"
-              onClick={copyFromLastCheckIn}
+              onClick={() => setEditCheckIn(false)}
               type="button"
             >
-              Copy from Last Check-In
+              Cancel
             </Button>
-          </div>
+          )
         }
       >
         <InputWrapper error={errors.date?.message}>
@@ -190,9 +167,9 @@ const CheckInForm = ({
           }
         >
           <InputWrapper>
-            <Label htmlFor="dietLog-date">Date</Label>
+            <Label htmlFor="dietLog-effectiveDate">Effective Date</Label>
             <Input
-              id="dietLog-date"
+              id="dietLog-effectiveDate"
               value={applicableDietLog.effectiveDate}
               disabled
               className="bg-gray-50"

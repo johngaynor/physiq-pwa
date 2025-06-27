@@ -3,7 +3,6 @@ import { z } from "zod";
 // 1. Raw schema for form input types
 export const checkInRawSchema = z.object({
   id: z.number().optional(),
-  userId: z.string().optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   cheats: z.string().optional(),
   comments: z.string().optional(),

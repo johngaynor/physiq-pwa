@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
-import { editCheckIn, getCheckIns } from "../state/actions";
+import { editCheckIn } from "../state/actions";
 import { getDietLogs } from "../../diet/state/actions";
 import CheckInFormLoadingPage from "./components/CheckInFormLoadingPage";
 import CheckInForm from "./components/CheckInForm";
@@ -56,13 +56,7 @@ const CheckInFormWrapper: React.FC<PropsFromRedux> = ({
 
   if (editCheckInLoading || dietLogsLoading) {
     return <CheckInFormLoadingPage />;
-  } else
-    return (
-      <CheckInForm
-        onSubmit={onSubmit}
-        dietLogs={dietLogs || []}
-      />
-    );
+  } else return <CheckInForm onSubmit={onSubmit} dietLogs={dietLogs || []} />;
 };
 
 export default connector(CheckInFormWrapper);
