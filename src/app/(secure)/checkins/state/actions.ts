@@ -20,7 +20,7 @@ export const getCheckIns = () => {
 
 export const editCheckIn = (values: CheckIn) => {
   return api
-    .route("/api/checkin")
+    .route("/api/checkins")
     .fetch(() => ({ type: FETCH_EDIT_CHECKIN }))
     .load((data: { existing: boolean; checkIn: CheckIn }) => ({
       type: LOAD_EDIT_CHECKIN,
@@ -33,7 +33,7 @@ export const editCheckIn = (values: CheckIn) => {
 
 export const deleteCheckIn = (id: number) => {
   return api
-    .route(`/api/checkin/${id}`)
+    .route(`/api/checkins/${id}`)
     .fetch(() => ({ type: FETCH_DELETE_CHECKIN }))
     .load(() => ({
       type: LOAD_DELETE_CHECKIN,

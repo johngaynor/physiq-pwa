@@ -37,6 +37,7 @@ const CheckInForm = ({
   setEditCheckIn?: (edit: boolean) => void;
   dietLogs: DietLog[];
 }) => {
+  const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
   // form setup
   const {
     register,
@@ -152,7 +153,6 @@ const CheckInForm = ({
           />
         </InputWrapper>
       </SectionWrapper>
-
       {/* Applicable Diet Log Info */}
       {applicableDietLog && (
         <SectionWrapper
@@ -239,8 +239,117 @@ const CheckInForm = ({
             />
           </InputWrapper>
         </SectionWrapper>
-      )}
+      )}{" "}
+      {/* Attachments Upload */}
+      <SectionWrapper title="Attachments">
+        <InputWrapper>
+          <Label htmlFor="attachments">Upload Files</Label>
+          <Controller
+            name="attachments"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                id="attachments"
+                type="file"
+                multiple
+                accept="image/*,video/*,.pdf,.doc,.docx"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files || []);
+                  setSelectedFiles(files);
+                  // For now, we'll just store the file names
+                  // In a real implementation, you'd upload to S3 and get the filenames
+                  const attachments = files.map((file) => ({
+                    s3Filename: file.name, // This would be the S3 key after upload
+                  }));
+                  onChange(attachments);
+                }}
+                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+            )}
+          />
+          {errors.attachments && (
+            <p className="text-sm text-red-600 mt-1">
+              {errors.attachments.message}
+            </p>
+          )}
+        </InputWrapper>
 
+        {/* Display selected files */}
+        {watch("attachments") && watch("attachments")!.length > 0 && (
+          <div className="mt-6">
+            <div className="grid grid-cols-3 gap-4">
+              {watch("attachments")?.map((attachment, index) => {
+                const file = selectedFiles[index];
+                const isImage = file?.type.startsWith("image/");
+
+                return (
+                  <div
+                    key={index}
+                    className="w-32 h-32 border rounded-lg p-2 bg-gray-50 relative group hover:bg-gray-100 transition-colors"
+                  >
+                    {/* Image Preview */}
+                    {isImage && file && (
+                      <div className="w-full h-full mb-1">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={file.name}
+                          className="w-full h-full object-cover rounded border"
+                        />
+                      </div>
+                    )}
+
+                    {/* Non-image file icon/placeholder */}
+                    {!isImage && file && (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 mb-1">
+                        <div className="text-4xl mb-2">📄</div>
+                        <div className="text-sm text-center font-medium truncate w-full px-1">
+                          {file.type.split("/")[1]?.toUpperCase() || "FILE"}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* File Info Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="text-sm truncate">
+                        {attachment.s3Filename}
+                      </div>
+                      {file && (
+                        <div className="text-xs opacity-75">
+                          {(file.size / 1024).toFixed(1)} KB
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Remove Button */}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const currentAttachments = watch("attachments") || [];
+                        const newAttachments = currentAttachments.filter(
+                          (_, i) => i !== index
+                        );
+                        const newFiles = selectedFiles.filter(
+                          (_, i) => i !== index
+                        );
+                        setSelectedFiles(newFiles);
+                        reset({
+                          ...watch(),
+                          attachments: newAttachments,
+                        });
+                      }}
+                      className="absolute top-2 right-2 h-8 w-8 p-0 bg-red-500 hover:bg-red-600 text-white border-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      ×
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </SectionWrapper>
       <Button type="submit" variant="outline">
         Submit Check-In
       </Button>
