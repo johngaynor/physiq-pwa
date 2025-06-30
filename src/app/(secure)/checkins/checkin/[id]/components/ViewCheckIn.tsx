@@ -43,7 +43,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   deleteCheckIn,
   attachments = [],
 }) => {
-  console.log("Attachments received:", attachments);
   const router = useRouter();
 
   if (!checkIn) {
@@ -156,12 +155,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                     );
                     // Use the signed URL from backend
                     const imageUrl = attachment.url;
-
-                    console.log(`Attachment ${index}:`, {
-                      isImage,
-                      imageUrl,
-                      filename: attachment.filename,
-                    });
 
                     return (
                       <div
