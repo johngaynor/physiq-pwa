@@ -15,6 +15,7 @@ import {
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import ConfirmDeleteCheckIn from "./ConfirmDeleteCheckIn";
 
 function mapStateToProps(state: RootState) {
@@ -42,7 +43,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   deleteCheckIn,
   attachments = [],
 }) => {
-  console.log(attachments);
+  console.log("Attachments received:", attachments);
   const router = useRouter();
 
   if (!checkIn) {
@@ -149,26 +150,74 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                   Attachments ({attachments.length})
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {attachments.map((attachment, index) => (
-                    <div
-                      key={attachment.id || index}
-                      className="relative group border rounded-lg overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors"
-                    >
-                      {/* For now, we'll show a placeholder since we don't have the actual file content */}
-                      <div className="aspect-square flex flex-col items-center justify-center p-4">
-                        <div className="text-4xl mb-2">📄</div>
-                        <div className="text-sm text-center font-medium truncate w-full">
-                          {attachment.s3Filename}
+                  {attachments.map((attachment, index) => {
+                    const isImage = attachment.filename?.match(
+                      /\.(jpg|jpeg|png|gif|webp)$/i
+                    );
+                    // Use the signed URL from backend
+                    const imageUrl = attachment.url;
+
+                    console.log(`Attachment ${index}:`, {
+                      isImage,
+                      imageUrl,
+                      filename: attachment.filename,
+                    });
+
+                    return (
+                      <div
+                        key={attachment.id || index}
+                        className="relative group border rounded-lg overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="aspect-square relative">
+                          {isImage && imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={
+                                attachment.filename || `Attachment ${index + 1}`
+                              }
+                              fill
+                              className="object-cover rounded-lg"
+                              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                              unoptimized={true}
+                              onError={(e) => {
+                                console.error(
+                                  `Image failed to load: ${attachment.filename}`,
+                                  e
+                                );
+                                // Fallback to file icon if image fails to load
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = "none";
+                                const parent = target.parentElement;
+                                if (parent) {
+                                  parent.innerHTML = `
+                                    <div class="flex flex-col items-center justify-center h-full p-4">
+                                      <div class="text-4xl mb-2">📄</div>
+                                      <div class="text-sm text-center font-medium truncate w-full">
+                                        ${attachment.filename || "Unknown file"}
+                                      </div>
+                                    </div>
+                                  `;
+                                }
+                              }}
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center justify-center h-full p-4">
+                              <div className="text-4xl mb-2">📄</div>
+                              <div className="text-sm text-center font-medium truncate w-full">
+                                {attachment.filename || "Unknown file"}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        {/* File info overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="text-xs truncate">
+                            {attachment.filename}
+                          </div>
                         </div>
                       </div>
-                      {/* File info overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="text-xs truncate">
-                          {attachment.s3Filename}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}

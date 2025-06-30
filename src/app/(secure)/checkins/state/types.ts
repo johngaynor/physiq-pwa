@@ -15,6 +15,8 @@ export type CheckInAttachment = {
   checkInId?: number;
   s3Filename?: string;
   poseId?: number;
+  url?: string;
+  filename?: string;
 };
 
 export type CheckIn = {
