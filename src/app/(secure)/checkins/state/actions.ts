@@ -5,9 +5,11 @@ import {
   LOAD_EDIT_CHECKIN,
   FETCH_DELETE_CHECKIN,
   LOAD_DELETE_CHECKIN,
+  FETCH_CHECKIN_ATTACHMENTS,
+  LOAD_CHECKIN_ATTACHMENTS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { CheckIn } from "./types";
+import { CheckIn, CheckInAttachment } from "./types";
 
 export const getCheckIns = () => {
   return api
@@ -60,4 +62,17 @@ export const deleteCheckIn = (id: number) => {
     }))
     .error("Error deleting checkin")
     .delete();
+};
+
+export const getCheckInAttachments = (checkInId: number) => {
+  return api
+    .route(`/api/checkins/${checkInId}/attachments`)
+    .fetch(() => ({ type: FETCH_CHECKIN_ATTACHMENTS, checkInId }))
+    .load((data: CheckInAttachment[]) => ({
+      type: LOAD_CHECKIN_ATTACHMENTS,
+      checkInId,
+      attachments: data,
+    }))
+    .error("Error fetching check-in attachments")
+    .get();
 };

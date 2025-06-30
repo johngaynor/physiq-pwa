@@ -5,6 +5,8 @@ import {
   LOAD_EDIT_CHECKIN,
   FETCH_DELETE_CHECKIN,
   LOAD_DELETE_CHECKIN,
+  FETCH_CHECKIN_ATTACHMENTS,
+  LOAD_CHECKIN_ATTACHMENTS,
 } from "../../../store/actionTypes";
 
 // data object types
@@ -21,7 +23,7 @@ export type CheckIn = {
   cheats?: string; // mediumtext
   comments?: string; // mediumtext
   training?: string;
-  attachments?: CheckInAttachment[] | null;
+  // Note: attachments are now fetched separately
 };
 
 // action types
@@ -34,11 +36,20 @@ export type Action =
       data: { existing: boolean; checkIn: CheckIn };
     }
   | { type: typeof FETCH_DELETE_CHECKIN }
-  | { type: typeof LOAD_DELETE_CHECKIN; id: number };
+  | { type: typeof LOAD_DELETE_CHECKIN; id: number }
+  | { type: typeof FETCH_CHECKIN_ATTACHMENTS; checkInId: number }
+  | {
+      type: typeof LOAD_CHECKIN_ATTACHMENTS;
+      checkInId: number;
+      attachments: CheckInAttachment[];
+    };
 
 export interface CheckInState {
   checkIns: CheckIn[] | null;
   checkInsLoading: boolean;
   editCheckInLoading?: boolean;
   deleteCheckInLoading?: boolean;
+  attachments: CheckInAttachment[];
+  attachmentsLoading: boolean;
+  attachmentsId: number | null;
 }

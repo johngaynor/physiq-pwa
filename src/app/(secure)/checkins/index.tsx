@@ -112,13 +112,6 @@ const CheckInsDashboard: React.FC<PropsFromRedux> = ({
                         </div>
                       )}
                     </TableCell>
-                    <TableCell>
-                      {checkIn.attachments && checkIn.attachments.length > 0 && (
-                        <Badge variant="outline" className="text-blue-500 border-blue-500">
-                          {checkIn.attachments.length} {checkIn.attachments.length === 1 ? 'file' : 'files'}
-                        </Badge>
-                      )}
-                    </TableCell>
                     <TableCell className="text-sm truncate overflow-hidden max-w-[300px] pr-8">
                       {checkIn.comments}
                     </TableCell>
@@ -126,8 +119,13 @@ const CheckInsDashboard: React.FC<PropsFromRedux> = ({
                 ))}
                 {filteredCheckIns?.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center py-8 text-gray-500">
-                      {search ? "No check-ins found matching your search." : "No check-ins yet. Create your first one!"}
+                    <TableCell
+                      colSpan={3}
+                      className="text-center py-8 text-gray-500"
+                    >
+                      {search
+                        ? "No check-ins found matching your search."
+                        : "No check-ins yet. Create your first one!"}
                     </TableCell>
                   </TableRow>
                 )}

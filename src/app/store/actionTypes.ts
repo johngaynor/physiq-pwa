@@ -53,3 +53,6 @@ export const FETCH_EDIT_CHECKIN = "FETCH_EDIT_CHECKIN" as const;
 export const LOAD_EDIT_CHECKIN = "LOAD_EDIT_CHECKIN" as const;
 export const FETCH_DELETE_CHECKIN = "FETCH_DELETE_CHECKIN" as const;
 export const LOAD_DELETE_CHECKIN = "LOAD_DELETE_CHECKIN" as const;
+// Check-in Attachments
+export const FETCH_CHECKIN_ATTACHMENTS = "FETCH_CHECKIN_ATTACHMENTS" as const;
+export const LOAD_CHECKIN_ATTACHMENTS = "LOAD_CHECKIN_ATTACHMENTS" as const;

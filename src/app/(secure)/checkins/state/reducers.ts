@@ -5,6 +5,8 @@ import {
   LOAD_EDIT_CHECKIN,
   FETCH_DELETE_CHECKIN,
   LOAD_DELETE_CHECKIN,
+  FETCH_CHECKIN_ATTACHMENTS,
+  LOAD_CHECKIN_ATTACHMENTS,
 } from "../../../store/actionTypes";
 import type { CheckInState, Action } from "./types";
 
@@ -13,6 +15,9 @@ const DEFAULT_STATE: CheckInState = {
   checkInsLoading: false,
   editCheckInLoading: false,
   deleteCheckInLoading: false,
+  attachments: [],
+  attachmentsLoading: false,
+  attachmentsId: null,
 };
 
 export default function checkInReducer(
@@ -69,6 +74,20 @@ export default function checkInReducer(
         checkIns: state.checkIns
           ? state.checkIns.filter((checkIn) => checkIn.id !== action.id)
           : null,
+        attachments: [],
+        attachmentsId: null,
+      };
+    case FETCH_CHECKIN_ATTACHMENTS:
+      return {
+        ...state,
+        attachmentsLoading: true,
+      };
+    case LOAD_CHECKIN_ATTACHMENTS:
+      return {
+        ...state,
+        attachments: action.attachments,
+        attachmentsLoading: false,
+        attachmentsId: action.checkInId,
       };
     default:
       return state;
