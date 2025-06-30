@@ -89,7 +89,9 @@ const CheckInsDashboard: React.FC<PropsFromRedux> = ({
                 {filteredCheckIns?.map((checkIn, index) => (
                   <TableRow
                     key={checkIn.id}
-                    onClick={() => router.push(`/checkins/${checkIn.id}`)}
+                    onClick={() =>
+                      router.push(`/checkins/checkin/${checkIn.id}`)
+                    }
                     className="cursor-pointer"
                   >
                     <TableCell className="pl-8">

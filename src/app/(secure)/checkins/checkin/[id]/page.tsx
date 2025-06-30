@@ -1,5 +1,5 @@
 import React from "react";
-import PageTemplate from "../../components/Templates/PageTemplate";
+import PageTemplate from "../../../components/Templates/PageTemplate";
 import CheckIn from "./index";
 
 const title = "Check-In";

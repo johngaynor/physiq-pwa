@@ -1,13 +1,13 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../../../store/reducer";
-import { getCheckIns, editCheckIn } from "../state/actions";
-import { getDietLogs } from "../../diet/state/actions";
+import { RootState } from "../../../../store/reducer";
+import { getCheckIns, editCheckIn } from "../../state/actions";
+import { getDietLogs } from "../../../diet/state/actions";
 import { useParams } from "next/navigation";
-import CheckInFormLoadingPage from "../new/components/CheckInFormLoadingPage";
+import CheckInFormLoadingPage from "../../new/components/CheckInFormLoadingPage";
 import ViewCheckIn from "./components/ViewCheckIn";
-import CheckInForm from "../new/components/CheckInForm";
+import CheckInForm from "../../new/components/CheckInForm";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -77,14 +77,7 @@ const CheckIn: React.FC<PropsFromRedux> = ({
         dietLogs={dietLogs || []}
       />
     );
-  } else
-    return (
-      <ViewCheckIn
-        checkIn={checkIn}
-        setEditCheckIn={setEditCheck}
-        editCheckInLoading={editCheckInLoading}
-      />
-    );
+  } else return <ViewCheckIn checkIn={checkIn} setEditCheckIn={setEditCheck} />;
 };
 
 export default connector(CheckIn);

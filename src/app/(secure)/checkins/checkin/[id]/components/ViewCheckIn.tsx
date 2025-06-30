@@ -1,13 +1,20 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "../../../../store/reducer";
-import { deleteCheckIn } from "../../state/actions";
+import { RootState } from "../../../../../store/reducer";
+import { deleteCheckIn } from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { H3, Button } from "@/components/ui";
-import { Edit, Trash, Calendar, MessageSquare, Utensils, Dumbbell } from "lucide-react";
-import { CheckIn } from "../../state/types";
+import {
+  Edit,
+  Trash,
+  Calendar,
+  MessageSquare,
+  Utensils,
+  Dumbbell,
+} from "lucide-react";
+import { CheckIn } from "../../../state/types";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import ConfirmDeleteCheckIn from "./ConfirmDeleteCheckIn";
@@ -15,6 +22,7 @@ import ConfirmDeleteCheckIn from "./ConfirmDeleteCheckIn";
 function mapStateToProps(state: RootState) {
   return {
     checkIns: state.checkins.checkIns,
+    editCheckInLoading: state.checkins.editCheckInLoading,
   };
 }
 
@@ -26,7 +34,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 interface ViewCheckInProps extends PropsFromRedux {
   checkIn?: CheckIn;
   setEditCheckIn: (edit: boolean) => void;
-  editCheckInLoading: boolean;
 }
 
 const ViewCheckIn: React.FC<ViewCheckInProps> = ({
@@ -63,7 +70,9 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               <H3 className="mb-2">Check-In Details</H3>
               <div className="flex items-center text-gray-600 mb-2">
                 <Calendar className="h-4 w-4 mr-2" />
-                <span>{DateTime.fromISO(checkIn.date).toFormat("LLLL d, yyyy")}</span>
+                <span>
+                  {DateTime.fromISO(checkIn.date).toFormat("LLLL d, yyyy")}
+                </span>
               </div>
             </div>
             <div className="flex gap-2 mt-4 sm:mt-0">
