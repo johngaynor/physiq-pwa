@@ -2,7 +2,11 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../store/reducer";
-import { getCheckIns, editCheckIn } from "../../state/actions";
+import {
+  getCheckIns,
+  editCheckIn,
+  getCheckInAttachments,
+} from "../../state/actions";
 import { getDietLogs } from "../../../diet/state/actions";
 import { useParams } from "next/navigation";
 import CheckInFormLoadingPage from "../../new/components/CheckInFormLoadingPage";
@@ -17,6 +21,9 @@ function mapStateToProps(state: RootState) {
     editCheckInLoading: state.checkins.editCheckInLoading,
     dietLogs: state.diet.dietLogs,
     dietLogsLoading: state.diet.dietLogsLoading,
+    attachments: state.checkins.attachments,
+    attachmentsLoading: state.checkins.attachmentsLoading,
+    attachmentsId: state.checkins.attachmentsId,
   };
 }
 
@@ -24,6 +31,7 @@ const connector = connect(mapStateToProps, {
   getCheckIns,
   getDietLogs,
   editCheckIn,
+  getCheckInAttachments,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -37,6 +45,10 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   getDietLogs,
   editCheckIn,
   editCheckInLoading,
+  attachments,
+  attachmentsLoading,
+  attachmentsId,
+  getCheckInAttachments,
 }) => {
   const [editCheck, setEditCheck] = React.useState<boolean>(false);
   const params = useParams();
@@ -44,22 +56,38 @@ const CheckIn: React.FC<PropsFromRedux> = ({
 
   React.useEffect(() => {
     if (!checkIns && !checkInsLoading) getCheckIns();
-  }, [checkIns, checkInsLoading, getCheckIns]);
+    if (!dietLogs && !dietLogsLoading) getDietLogs();
+  }, [
+    checkIns,
+    checkInsLoading,
+    getCheckIns,
+    dietLogs,
+    dietLogsLoading,
+    getDietLogs,
+  ]);
 
   React.useEffect(() => {
-    if (!dietLogs && !dietLogsLoading) getDietLogs();
-  }, [dietLogs, dietLogsLoading, getDietLogs]);
+    if (checkInId && attachmentsId !== checkInId && !attachmentsLoading) {
+      getCheckInAttachments(checkInId);
+    }
+  }, [checkInId, attachmentsId, attachmentsLoading, getCheckInAttachments]);
 
   const checkIn = React.useMemo(() => {
     return checkIns?.find((c) => c.id === checkInId);
   }, [checkIns, checkInId]);
 
-  if (checkInsLoading || dietLogsLoading || deleteCheckInLoading) {
+  if (
+    checkInsLoading ||
+    dietLogsLoading ||
+    deleteCheckInLoading ||
+    editCheckInLoading ||
+    attachmentsLoading
+  ) {
     return <CheckInFormLoadingPage />;
   } else if (editCheck) {
     return (
       <CheckInForm
-        onSubmit={(data, files) => {
+        onSubmit={(data: any, files?: File[]) => {
           const formattedCheckIn = {
             ...data,
             id: checkInId,
@@ -77,7 +105,14 @@ const CheckIn: React.FC<PropsFromRedux> = ({
         dietLogs={dietLogs || []}
       />
     );
-  } else return <ViewCheckIn checkIn={checkIn} setEditCheckIn={setEditCheck} />;
+  } else
+    return (
+      <ViewCheckIn
+        checkIn={checkIn}
+        setEditCheckIn={setEditCheck}
+        attachments={attachmentsId === checkInId ? attachments : []}
+      />
+    );
 };
 
 export default connector(CheckIn);

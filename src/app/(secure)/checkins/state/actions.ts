@@ -66,7 +66,7 @@ export const deleteCheckIn = (id: number) => {
 
 export const getCheckInAttachments = (checkInId: number) => {
   return api
-    .route(`/api/checkins/${checkInId}/attachments`)
+    .route(`/api/checkins/attachments/${checkInId}`)
     .fetch(() => ({ type: FETCH_CHECKIN_ATTACHMENTS, checkInId }))
     .load((data: CheckInAttachment[]) => ({
       type: LOAD_CHECKIN_ATTACHMENTS,

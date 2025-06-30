@@ -4,7 +4,6 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
 import { deleteCheckIn } from "../../../state/actions";
 import { Card, CardContent } from "@/components/ui/card";
-import { useParams } from "next/navigation";
 import { H3, Button } from "@/components/ui";
 import {
   Edit,
@@ -13,7 +12,7 @@ import {
   Utensils,
   Dumbbell,
 } from "lucide-react";
-import { CheckIn } from "../../../state/types";
+import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import ConfirmDeleteCheckIn from "./ConfirmDeleteCheckIn";
@@ -33,6 +32,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 interface ViewCheckInProps extends PropsFromRedux {
   checkIn?: CheckIn;
   setEditCheckIn: (edit: boolean) => void;
+  attachments?: CheckInAttachment[];
 }
 
 const ViewCheckIn: React.FC<ViewCheckInProps> = ({
@@ -40,8 +40,9 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   setEditCheckIn,
   editCheckInLoading,
   deleteCheckIn,
+  attachments = [],
 }) => {
-  const params = useParams();
+  console.log(attachments);
   const router = useRouter();
 
   if (!checkIn) {
@@ -139,14 +140,49 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 </p>
               </div>
             )}
+
+            {/* Attachments */}
+            {attachments && attachments.length > 0 && (
+              <div className="space-y-4 md:col-span-2">
+                <div className="flex items-center text-lg font-semibold">
+                  <Edit className="h-5 w-5 mr-2 text-purple-600" />
+                  Attachments ({attachments.length})
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {attachments.map((attachment, index) => (
+                    <div
+                      key={attachment.id || index}
+                      className="relative group border rounded-lg overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      {/* For now, we'll show a placeholder since we don't have the actual file content */}
+                      <div className="aspect-square flex flex-col items-center justify-center p-4">
+                        <div className="text-4xl mb-2">📄</div>
+                        <div className="text-sm text-center font-medium truncate w-full">
+                          {attachment.s3Filename}
+                        </div>
+                      </div>
+                      {/* File info overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="text-xs truncate">
+                          {attachment.s3Filename}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Empty state if no content */}
-          {!checkIn.training && !checkIn.cheats && !checkIn.comments && (
-            <div className="text-center py-8 text-gray-500">
-              <p>This check-in doesn't have any additional information.</p>
-            </div>
-          )}
+          {!checkIn.training &&
+            !checkIn.cheats &&
+            !checkIn.comments &&
+            (!attachments || attachments.length === 0) && (
+              <div className="text-center py-8 text-gray-500">
+                <p>This check-in doesn't have any additional information.</p>
+              </div>
+            )}
         </CardContent>
       </Card>
     </div>

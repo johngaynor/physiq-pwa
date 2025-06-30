@@ -42,7 +42,6 @@ export default function checkInReducer(
         editCheckInLoading: true,
       };
     case LOAD_EDIT_CHECKIN:
-      console.log(action.data);
       if (action.data.existing) {
         return {
           ...state,

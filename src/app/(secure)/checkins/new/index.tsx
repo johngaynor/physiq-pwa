@@ -42,12 +42,8 @@ const CheckInFormWrapper: React.FC<PropsFromRedux> = ({
       ...data,
     };
 
-    console.log("Submitting CheckIn:", formattedCheckIn);
-    console.log("Submitting files:", files);
-
     editCheckIn(formattedCheckIn, files)
       .then((data) => {
-        console.log("CheckIn submitted successfully:", data);
         router.push(`/checkins`);
       })
       .catch((error) => {
