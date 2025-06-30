@@ -37,14 +37,15 @@ const CheckInFormWrapper: React.FC<PropsFromRedux> = ({
 
   const router = useRouter();
 
-  function onSubmit(data: CheckInFormData) {
+  function onSubmit(data: CheckInFormData, files?: File[]) {
     const formattedCheckIn: CheckIn = {
       ...data,
     };
 
     console.log("Submitting CheckIn:", formattedCheckIn);
+    console.log("Submitting files:", files);
 
-    editCheckIn(formattedCheckIn)
+    editCheckIn(formattedCheckIn, files)
       .then((data) => {
         console.log("CheckIn submitted successfully:", data);
         router.push(`/checkins`);

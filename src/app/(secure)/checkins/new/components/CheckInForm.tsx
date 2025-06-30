@@ -22,7 +22,7 @@ const CheckInForm = ({
   setEditCheckIn,
   dietLogs,
 }: {
-  onSubmit: (data: CheckInFormData) => void;
+  onSubmit: (data: CheckInFormData, files?: File[]) => void;
   checkIn?: CheckIn | null;
   setEditCheckIn?: (edit: boolean) => void;
   dietLogs: DietLog[];
@@ -82,8 +82,7 @@ const CheckInForm = ({
   const handleFormSubmit = (rawData: CheckInRawFormData) => {
     try {
       const parsed = checkInSchema.parse(rawData);
-      console.log("CheckIn form submission:", parsed);
-      onSubmit(parsed);
+      onSubmit(parsed, selectedFiles);
     } catch (err) {
       console.error("Zod parse failed", err);
     }

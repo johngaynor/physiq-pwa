@@ -18,7 +18,26 @@ export const getCheckIns = () => {
     .get();
 };
 
-export const editCheckIn = (values: CheckIn) => {
+export const editCheckIn = (values: CheckIn, files?: File[]) => {
+  const formData = new FormData();
+
+  // Add the checkin data as individual fields
+  Object.entries(values).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(
+        key,
+        typeof value === "object" ? JSON.stringify(value) : String(value)
+      );
+    }
+  });
+
+  // Add files with the field name "images"
+  if (files && files.length > 0) {
+    files.forEach((file) => {
+      formData.append("images", file);
+    });
+  }
+
   return api
     .route("/api/checkins")
     .fetch(() => ({ type: FETCH_EDIT_CHECKIN }))
@@ -27,7 +46,7 @@ export const editCheckIn = (values: CheckIn) => {
       data,
     }))
     .error("Error editing checkin")
-    .data(values)
+    .data(formData)
     .post();
 };
 
