@@ -3,12 +3,11 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
 import { deleteCheckIn } from "../../../state/actions";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { H3, Button } from "@/components/ui";
 import {
   Edit,
-  Trash,
   Calendar,
   MessageSquare,
   Utensils,
