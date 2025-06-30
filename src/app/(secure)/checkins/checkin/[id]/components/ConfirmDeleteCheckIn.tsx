@@ -14,12 +14,10 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface ConfirmDeleteCheckInProps {
-  checkInId: number;
   onDelete: () => void;
 }
 
 export default function ConfirmDeleteCheckIn({
-  checkInId,
   onDelete,
 }: ConfirmDeleteCheckInProps) {
   return (
@@ -34,7 +32,8 @@ export default function ConfirmDeleteCheckIn({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            You cannot restore a check-in after it has been deleted. This action will permanently remove this check-in and all its associated data.
+            You cannot restore a check-in after it has been deleted. This action
+            will permanently remove this check-in and all its associated data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -86,7 +86,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 Edit
               </Button>
               <ConfirmDeleteCheckIn
-                checkInId={checkIn.id!}
                 onDelete={() => {
                   deleteCheckIn(checkIn.id!)
                     .then(() => {

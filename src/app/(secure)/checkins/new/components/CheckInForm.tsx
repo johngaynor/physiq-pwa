@@ -142,91 +142,90 @@ const CheckInForm = ({
       </SectionWrapper>
       {/* Applicable Diet Log Info */}
       {applicableDietLog && (
-        <></>
-        // <SectionWrapper
-        //   title="Diet Log Information"
-        //   action={
-        //     <Link href={`/diet/log/${applicableDietLog.id}`}>
-        //       <Button variant="outline" size="sm" type="button">
-        //         <Info className="h-4 w-4 mr-2" />
-        //         View Details
-        //       </Button>
-        //     </Link>
-        //   }
-        // >
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-effectiveDate">Effective Date</Label>
-        //     <Input
-        //       id="dietLog-effectiveDate"
-        //       value={applicableDietLog.effectiveDate}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-phase">Phase</Label>
-        //     <Input
-        //       id="dietLog-phase"
-        //       value={applicableDietLog.phase || "Not specified"}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-calories">Calories</Label>
-        //     <Input
-        //       id="dietLog-calories"
-        //       value={applicableDietLog.calories || "Not calculated"}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-protein">Protein (g)</Label>
-        //     <Input
-        //       id="dietLog-protein"
-        //       value={applicableDietLog.protein}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-carbs">Carbs (g)</Label>
-        //     <Input
-        //       id="dietLog-carbs"
-        //       value={applicableDietLog.carbs}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-fat">Fat (g)</Label>
-        //     <Input
-        //       id="dietLog-fat"
-        //       value={applicableDietLog.fat}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-water">Water (oz)</Label>
-        //     <Input
-        //       id="dietLog-water"
-        //       value={applicableDietLog.water}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        //   <InputWrapper>
-        //     <Label htmlFor="dietLog-steps">Steps</Label>
-        //     <Input
-        //       id="dietLog-steps"
-        //       value={applicableDietLog.steps}
-        //       disabled
-        //       className="bg-gray-50"
-        //     />
-        //   </InputWrapper>
-        // </SectionWrapper>
+        <SectionWrapper
+          title="Diet Log Information"
+          action={
+            <Link href={`/diet/log/${applicableDietLog.id}`}>
+              <Button variant="outline" size="sm" type="button">
+                <Info className="h-4 w-4 mr-2" />
+                View Details
+              </Button>
+            </Link>
+          }
+        >
+          <InputWrapper>
+            <Label htmlFor="dietLog-effectiveDate">Effective Date</Label>
+            <Input
+              id="dietLog-effectiveDate"
+              value={applicableDietLog.effectiveDate}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="dietLog-phase">Phase</Label>
+            <Input
+              id="dietLog-phase"
+              value={applicableDietLog.phase || "Not specified"}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="dietLog-calories">Calories</Label>
+            <Input
+              id="dietLog-calories"
+              value={applicableDietLog.calories || "Not calculated"}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="dietLog-protein">Protein (g)</Label>
+            <Input
+              id="dietLog-protein"
+              value={applicableDietLog.protein}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="dietLog-carbs">Carbs (g)</Label>
+            <Input
+              id="dietLog-carbs"
+              value={applicableDietLog.carbs}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="dietLog-fat">Fat (g)</Label>
+            <Input
+              id="dietLog-fat"
+              value={applicableDietLog.fat}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="dietLog-water">Water (oz)</Label>
+            <Input
+              id="dietLog-water"
+              value={applicableDietLog.water}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label htmlFor="dietLog-steps">Steps</Label>
+            <Input
+              id="dietLog-steps"
+              value={applicableDietLog.steps}
+              disabled
+              className="bg-gray-50"
+            />
+          </InputWrapper>
+        </SectionWrapper>
       )}
       {/* Attachments Upload */}
       <SectionWrapper title="Attachments">
