@@ -221,7 +221,9 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
             !checkIn.comments &&
             (!attachments || attachments.length === 0) && (
               <div className="text-center py-8 text-gray-500">
-                <p>This check-in doesn't have any additional information.</p>
+                <p>
+                  This check-in doesn&apos;t have any additional information.
+                </p>
               </div>
             )}
         </CardContent>
