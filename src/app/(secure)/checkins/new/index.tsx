@@ -43,7 +43,7 @@ const CheckInFormWrapper: React.FC<PropsFromRedux> = ({
     };
 
     editCheckIn(formattedCheckIn, files)
-      .then((data) => {
+      .then(() => {
         router.push(`/checkins`);
       })
       .catch((error) => {
