@@ -8,6 +8,7 @@ import {
   getCheckInAttachments,
 } from "../../state/actions";
 import { getDietLogs } from "../../../diet/state/actions";
+import { getDailyLogs } from "../../../health/state/actions";
 import { useParams } from "next/navigation";
 import CheckInFormLoadingPage from "../../new/components/CheckInFormLoadingPage";
 import ViewCheckIn from "./components/ViewCheckIn";
@@ -21,6 +22,8 @@ function mapStateToProps(state: RootState) {
     editCheckInLoading: state.checkins.editCheckInLoading,
     dietLogs: state.diet.dietLogs,
     dietLogsLoading: state.diet.dietLogsLoading,
+    dailyLogs: state.health.dailyLogs,
+    dailyLogsLoading: state.health.dailyLogsLoading,
     attachments: state.checkins.attachments,
     attachmentsLoading: state.checkins.attachmentsLoading,
     attachmentsId: state.checkins.attachmentsId,
@@ -30,6 +33,7 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, {
   getCheckIns,
   getDietLogs,
+  getDailyLogs,
   editCheckIn,
   getCheckInAttachments,
 });
@@ -43,6 +47,9 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   dietLogs,
   dietLogsLoading,
   getDietLogs,
+  dailyLogs,
+  dailyLogsLoading,
+  getDailyLogs,
   editCheckIn,
   editCheckInLoading,
   attachments,
@@ -57,6 +64,7 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   React.useEffect(() => {
     if (!checkIns && !checkInsLoading) getCheckIns();
     if (!dietLogs && !dietLogsLoading) getDietLogs();
+    if (!dailyLogs && !dailyLogsLoading) getDailyLogs();
   }, [
     checkIns,
     checkInsLoading,
@@ -64,6 +72,9 @@ const CheckIn: React.FC<PropsFromRedux> = ({
     dietLogs,
     dietLogsLoading,
     getDietLogs,
+    dailyLogs,
+    dailyLogsLoading,
+    getDailyLogs,
   ]);
 
   React.useEffect(() => {
@@ -79,6 +90,7 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   if (
     checkInsLoading ||
     dietLogsLoading ||
+    dailyLogsLoading ||
     deleteCheckInLoading ||
     editCheckInLoading ||
     attachmentsLoading
@@ -96,7 +108,7 @@ const CheckIn: React.FC<PropsFromRedux> = ({
             .then(() => {
               setEditCheck(false);
             })
-            .catch((error) => {
+            .catch((error: any) => {
               console.error("Error updating check-in:", error);
             });
         }}
