@@ -14,6 +14,8 @@ import {
   Camera,
 } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
+import { DailyLog } from "@/app/(secure)/health/state/types";
+import { getDailyLogs } from "@/app/(secure)/health/state/actions";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -24,11 +26,14 @@ function mapStateToProps(state: RootState) {
   return {
     checkIns: state.checkins.checkIns,
     editCheckInLoading: state.checkins.editCheckInLoading,
+    dailyLogs: state.health.dailyLogs,
+    dailyLogsLoading: state.health.dailyLogsLoading,
   };
 }
 
 const connector = connect(mapStateToProps, {
   deleteCheckIn,
+  getDailyLogs,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -44,8 +49,25 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   editCheckInLoading,
   deleteCheckIn,
   attachments = [],
+  dailyLogs,
+  dailyLogsLoading,
+  getDailyLogs,
 }) => {
   const router = useRouter();
+
+  // Fetch daily logs when component mounts
+  React.useEffect(() => {
+    if (!dailyLogs && !dailyLogsLoading) {
+      getDailyLogs();
+    }
+  }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
+
+  // Console log daily logs when they're available
+  React.useEffect(() => {
+    if (dailyLogs) {
+      console.log("Daily logs:", dailyLogs);
+    }
+  }, [dailyLogs]);
 
   if (!checkIn) {
     return (
