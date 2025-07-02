@@ -10,19 +10,87 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
 import { Download, Camera } from "lucide-react";
+import { DietLog } from "@/app/(secure)/diet/state/types";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
   photos?: string[];
+  healthStats?: Record<
+    string,
+    { day7Avg: number | null; day30Avg: number | null }
+  >;
+  dietLog?: DietLog | null;
 }
 
 const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   children,
   // photos,
+  healthStats,
+  dietLog,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  console.log("Diet Log in Modal:", dietLog);
+
+  // Helper function to format metric values
+  const formatMetricValue = (metric: string, value: number | null): string => {
+    if (value === null) return "No data";
+
+    switch (metric) {
+      case "calories":
+        return `${Math.round(value).toLocaleString()}`;
+      case "water":
+        return `${value.toFixed(1)} oz`;
+      case "steps":
+        return `${Math.round(value).toLocaleString()}`;
+      case "totalSleep":
+        return `${(value / 60).toFixed(1)} hrs`; // Convert minutes to hours
+      case "weight":
+        return `${value.toFixed(1)} lbs`;
+      default:
+        return `${value.toFixed(1)}`;
+    }
+  };
+
+  // Helper function to get metric display name
+  const getMetricDisplayName = (metric: string): string => {
+    switch (metric) {
+      case "calories":
+        return "Calories";
+      case "water":
+        return "Water";
+      case "steps":
+        return "Steps";
+      case "totalSleep":
+        return "Sleep";
+      case "weight":
+        return "Weight";
+      default:
+        return metric;
+    }
+  };
+
+  // Helper function to get goal value from diet log
+  const getGoalValue = (metric: string): string => {
+    if (!dietLog) return "-";
+    
+    switch (metric) {
+      case "calories":
+        return dietLog.calories ? `${dietLog.calories.toLocaleString()}` : "-";
+      case "water":
+        return dietLog.water ? `${dietLog.water} oz` : "-";
+      case "steps":
+        return dietLog.steps ? `${dietLog.steps.toLocaleString()}` : "-";
+      case "totalSleep":
+        return "8 hrs"; // Default sleep goal
+      case "weight":
+        return "-"; // Weight doesn't have a specific goal
+      default:
+        return "-";
+    }
+  };
 
   const generateImage = async () => {
     if (!contentRef.current) return;
@@ -240,13 +308,23 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                     }}
                   >
                     <div>
-                      <strong>Current Weight:</strong> 185 lbs
+                      <strong>Weight (7-day avg):</strong>{" "}
+                      {healthStats?.weight?.day7Avg
+                        ? formatMetricValue(
+                            "weight",
+                            healthStats.weight.day7Avg
+                          )
+                        : "No data"}
                     </div>
                     <div>
-                      <strong>Body Fat:</strong> 15.2%
+                      <strong>Steps (7-day avg):</strong>{" "}
+                      {healthStats?.steps?.day7Avg
+                        ? formatMetricValue("steps", healthStats.steps.day7Avg)
+                        : "No data"}
                     </div>
                     <div>
-                      <strong>Last Updated:</strong> Today
+                      <strong>Last Updated:</strong>{" "}
+                      {new Date().toLocaleDateString()}
                     </div>
                   </div>
                 </div>
@@ -363,7 +441,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                             border: "1px solid #d8b4fe",
                           }}
                         >
-                          Actual
+                          7-Day Avg
                         </th>
                         <th
                           style={{
@@ -374,7 +452,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                             border: "1px solid #d8b4fe",
                           }}
                         >
-                          Last 30
+                          30-Day Avg
                         </th>
                         <th
                           style={{
@@ -390,261 +468,68 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{ backgroundColor: "#ffffff" }}>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Calories
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          2000
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          2150
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          1980
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            fontSize: "11px",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Higher than goal, higher than last 30
-                        </td>
-                      </tr>
-                      <tr style={{ backgroundColor: "#f9fafb" }}>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Water
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          8 cups
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          7 cups
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          6.5 cups
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            fontSize: "11px",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Below goal, above last 30
-                        </td>
-                      </tr>
-                      <tr style={{ backgroundColor: "#ffffff" }}>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Steps
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          10,000
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          12,500
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          9,800
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            fontSize: "11px",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Above goal, higher than last 30
-                        </td>
-                      </tr>
-                      <tr style={{ backgroundColor: "#f9fafb" }}>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Sleep
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          8 hrs
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          7.5 hrs
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          7.2 hrs
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            fontSize: "11px",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Below goal, above last 30
-                        </td>
-                      </tr>
-                      <tr style={{ backgroundColor: "#ffffff" }}>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Body Fat %
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          15%
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          15.2%
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            color: "#374151",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          15.8%
-                        </td>
-                        <td
-                          style={{
-                            padding: "6px 8px",
-                            color: "#374151",
-                            fontSize: "11px",
-                            border: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Slightly above goal, improving
-                        </td>
-                      </tr>
+                      {healthStats &&
+                        Object.entries(healthStats).map(
+                          ([metric, stats], index) => (
+                            <tr
+                              key={metric}
+                              style={{
+                                backgroundColor:
+                                  index % 2 === 0 ? "#ffffff" : "#f9fafb",
+                              }}
+                            >
+                              <td
+                                style={{
+                                  padding: "6px 8px",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {getMetricDisplayName(metric)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "6px 8px",
+                                  textAlign: "center",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {getGoalValue(metric)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "6px 8px",
+                                  textAlign: "center",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {formatMetricValue(metric, stats.day7Avg)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "6px 8px",
+                                  textAlign: "center",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {formatMetricValue(metric, stats.day30Avg)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "6px 8px",
+                                  color: "#374151",
+                                  fontSize: "11px",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                7-day vs 30-day average
+                              </td>
+                            </tr>
+                          )
+                        )}
                     </tbody>
                   </table>
                 </div>

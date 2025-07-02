@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
+import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -64,6 +65,7 @@ interface ViewCheckInProps extends PropsFromRedux {
   setEditCheckIn: (edit: boolean) => void;
   attachments?: CheckInAttachment[];
   dailyLogs: DailyLog[] | null;
+  dietLog?: DietLog | null;
 }
 
 const ViewCheckIn: React.FC<ViewCheckInProps> = ({
@@ -72,6 +74,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   deleteCheckIn,
   attachments = [],
   dailyLogs = [],
+  dietLog,
 }) => {
   const router = useRouter();
 
@@ -107,8 +110,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
     return acc;
   }, {} as Record<(typeof metrics)[number], { day7Avg: number | null; day30Avg: number | null }>);
 
-  console.log("Health Statistics:", healthStats);
-
   return (
     <div className="w-full mb-20">
       <Card className="w-full rounded-sm p-0">
@@ -135,6 +136,8 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                     return isImage && attachment.url;
                   })
                   .map((attachment) => attachment.url!)}
+                healthStats={healthStats}
+                dietLog={dietLog}
               >
                 <Button variant="outline" size="sm">
                   <Camera className="h-4 w-4 mr-2" />

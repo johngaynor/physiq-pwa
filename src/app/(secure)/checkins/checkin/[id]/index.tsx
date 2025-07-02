@@ -83,9 +83,25 @@ const CheckIn: React.FC<PropsFromRedux> = ({
     }
   }, [checkInId, attachmentsId, attachmentsLoading, getCheckInAttachments]);
 
+  // find applicable check-in
   const checkIn = React.useMemo(() => {
-    return checkIns?.find((c) => c.id === checkInId);
+    return checkIns?.find((c: any) => c.id === checkInId);
   }, [checkIns, checkInId]);
+
+  // find applicable diet log
+  const dietLog = React.useMemo(() => {
+    if (!checkIn || !dietLogs || dietLogs.length === 0) return null;
+
+    const checkInDate = checkIn.date;
+    const sortedDietLogs = [...dietLogs].sort((a: any, b: any) =>
+      b.effectiveDate.localeCompare(a.effectiveDate)
+    );
+    const applicableLog = sortedDietLogs.find((log: any) => {
+      return log.effectiveDate <= checkInDate;
+    });
+
+    return applicableLog || null;
+  }, [checkIn, dietLogs]);
 
   if (
     checkInsLoading ||
@@ -123,6 +139,7 @@ const CheckIn: React.FC<PropsFromRedux> = ({
         checkIn={checkIn}
         setEditCheckIn={setEditCheck}
         attachments={attachmentsId === checkInId ? attachments : []}
+        dietLog={dietLog}
       />
     );
 };
