@@ -62,7 +62,7 @@ const StatisticsCard: React.FC<{
 }> = ({ title, icon, average7Day, average30Day, unit }) => {
   const formatValue = (value: number | null, unit: string): string => {
     if (value === null) return "No data";
-    
+
     // Format based on unit and value size
     if (unit === "steps") {
       return `${Math.round(value).toLocaleString()} ${unit}`;
@@ -86,15 +86,11 @@ const StatisticsCard: React.FC<{
       <div className="bg-gray-50 p-3 rounded-lg space-y-2">
         <div className="flex justify-between">
           <span className="text-sm text-gray-600">7-day average:</span>
-          <span className="font-medium">
-            {formatValue(average7Day, unit)}
-          </span>
+          <span className="font-medium">{formatValue(average7Day, unit)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-sm text-gray-600">30-day average:</span>
-          <span className="font-medium">
-            {formatValue(average30Day, unit)}
-          </span>
+          <span className="font-medium">{formatValue(average30Day, unit)}</span>
         </div>
       </div>
     </div>

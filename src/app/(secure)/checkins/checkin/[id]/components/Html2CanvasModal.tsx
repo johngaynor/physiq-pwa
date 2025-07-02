@@ -18,7 +18,7 @@ interface Html2CanvasModalProps {
 
 const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   children,
-  photos,
+  // photos,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
