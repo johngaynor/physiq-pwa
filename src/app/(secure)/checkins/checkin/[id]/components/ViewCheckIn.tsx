@@ -12,6 +12,11 @@ import {
   Utensils,
   Dumbbell,
   Camera,
+  TrendingUp,
+  Droplets,
+  Footprints,
+  Moon,
+  Scale,
 } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
@@ -21,6 +26,80 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ConfirmDeleteCheckIn from "./ConfirmDeleteCheckIn";
 import Html2CanvasModal from "./Html2CanvasModal";
+
+// Utility functions for calculating statistics
+const calculateMetricAverage = (
+  dailyLogs: DailyLog[] | null,
+  metricField: keyof DailyLog,
+  days: number
+): number | null => {
+  if (!dailyLogs || dailyLogs.length === 0) return null;
+
+  const now = DateTime.now();
+  const cutoffDate = now.minus({ days });
+
+  const relevantLogs = dailyLogs.filter((log) => {
+    const logDate = DateTime.fromISO(log.date);
+    return logDate >= cutoffDate && logDate <= now;
+  });
+
+  const validValues = relevantLogs
+    .map((log) => log[metricField] as number)
+    .filter((value) => value !== null && value !== undefined && !isNaN(value));
+
+  if (validValues.length === 0) return null;
+
+  const sum = validValues.reduce((acc, value) => acc + value, 0);
+  return sum / validValues.length;
+};
+
+const StatisticsCard: React.FC<{
+  title: string;
+  icon: React.ReactNode;
+  average7Day: number | null;
+  average30Day: number | null;
+  unit: string;
+}> = ({ title, icon, average7Day, average30Day, unit }) => {
+  const formatValue = (value: number | null, unit: string): string => {
+    if (value === null) return "No data";
+    
+    // Format based on unit and value size
+    if (unit === "steps") {
+      return `${Math.round(value).toLocaleString()} ${unit}`;
+    } else if (unit === "cal") {
+      return `${Math.round(value).toLocaleString()} ${unit}`;
+    } else if (unit === "hrs") {
+      return `${value.toFixed(1)} ${unit}`;
+    } else if (unit === "lbs") {
+      return `${value.toFixed(1)} ${unit}`;
+    } else {
+      return `${value.toFixed(1)} ${unit}`;
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center text-lg font-semibold">
+        {icon}
+        {title}
+      </div>
+      <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+        <div className="flex justify-between">
+          <span className="text-sm text-gray-600">7-day average:</span>
+          <span className="font-medium">
+            {formatValue(average7Day, unit)}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-sm text-gray-600">30-day average:</span>
+          <span className="font-medium">
+            {formatValue(average30Day, unit)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function mapStateToProps(state: RootState) {
   return {
@@ -84,6 +163,21 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
     );
   }
 
+  // Calculate 7-day and 30-day averages for health metrics
+  const calories7DayAvg = calculateMetricAverage(dailyLogs, "calories", 7);
+  const calories30DayAvg = calculateMetricAverage(dailyLogs, "calories", 30);
+  const water7DayAvg = calculateMetricAverage(dailyLogs, "water", 7);
+  const water30DayAvg = calculateMetricAverage(dailyLogs, "water", 30);
+  const steps7DayAvg = calculateMetricAverage(dailyLogs, "steps", 7);
+  const steps30DayAvg = calculateMetricAverage(dailyLogs, "steps", 30);
+  const sleepRaw7DayAvg = calculateMetricAverage(dailyLogs, "totalSleep", 7);
+  const sleepRaw30DayAvg = calculateMetricAverage(dailyLogs, "totalSleep", 30);
+  // Convert sleep from minutes to hours if needed
+  const sleep7DayAvg = sleepRaw7DayAvg ? sleepRaw7DayAvg / 60 : null;
+  const sleep30DayAvg = sleepRaw30DayAvg ? sleepRaw30DayAvg / 60 : null;
+  const weight7DayAvg = calculateMetricAverage(dailyLogs, "weight", 7);
+  const weight30DayAvg = calculateMetricAverage(dailyLogs, "weight", 30);
+
   return (
     <div className="w-full mb-20">
       <Card className="w-full rounded-sm p-0">
@@ -138,6 +232,71 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               />
             </div>
           </div>
+
+          {/* Health Statistics */}
+          {dailyLogsLoading ? (
+            <div className="mb-6">
+              <div className="flex items-center text-xl font-semibold mb-4">
+                <TrendingUp className="h-5 w-5 mr-2 text-blue-600" />
+                Health Statistics
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...Array(5)].map((_, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : dailyLogs && dailyLogs.length > 0 ? (
+            <div className="mb-6">
+              <div className="flex items-center text-xl font-semibold mb-4">
+                <TrendingUp className="h-5 w-5 mr-2 text-blue-600" />
+                Health Statistics
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <StatisticsCard
+                  title="Calories"
+                  icon={<Utensils className="h-5 w-5 mr-2 text-orange-600" />}
+                  average7Day={calories7DayAvg}
+                  average30Day={calories30DayAvg}
+                  unit="cal"
+                />
+                <StatisticsCard
+                  title="Water"
+                  icon={<Droplets className="h-5 w-5 mr-2 text-blue-600" />}
+                  average7Day={water7DayAvg}
+                  average30Day={water30DayAvg}
+                  unit="oz"
+                />
+                <StatisticsCard
+                  title="Steps"
+                  icon={<Footprints className="h-5 w-5 mr-2 text-green-600" />}
+                  average7Day={steps7DayAvg}
+                  average30Day={steps30DayAvg}
+                  unit="steps"
+                />
+                <StatisticsCard
+                  title="Sleep"
+                  icon={<Moon className="h-5 w-5 mr-2 text-purple-600" />}
+                  average7Day={sleep7DayAvg}
+                  average30Day={sleep30DayAvg}
+                  unit="hrs"
+                />
+                <StatisticsCard
+                  title="Weight"
+                  icon={<Scale className="h-5 w-5 mr-2 text-red-600" />}
+                  average7Day={weight7DayAvg}
+                  average30Day={weight30DayAvg}
+                  unit="lbs"
+                />
+              </div>
+            </div>
+          ) : null}
 
           {/* Content Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

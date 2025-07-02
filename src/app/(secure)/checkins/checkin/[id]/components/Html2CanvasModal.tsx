@@ -134,7 +134,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   };
 
   return (
-    <Dialog open={true} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-6 w-[1000px]">
         <DialogHeader>
