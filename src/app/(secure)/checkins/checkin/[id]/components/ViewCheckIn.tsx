@@ -11,12 +11,14 @@ import {
   MessageSquare,
   Utensils,
   Dumbbell,
+  Camera,
 } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ConfirmDeleteCheckIn from "./ConfirmDeleteCheckIn";
+import Html2CanvasModal from "./Html2CanvasModal";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -76,6 +78,12 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               </div>
             </div>
             <div className="flex gap-2 mt-4 sm:mt-0">
+              <Html2CanvasModal>
+                <Button variant="outline" size="sm">
+                  <Camera className="h-4 w-4 mr-2" />
+                  Generate Report
+                </Button>
+              </Html2CanvasModal>
               <Button
                 variant="outline"
                 size="sm"

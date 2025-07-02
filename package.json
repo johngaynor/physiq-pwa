@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.511.0",
     "luxon": "^3.6.1",
     "next": "15.3.2",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/html2canvas": "^0.5.35",
     "@types/luxon": "^3.6.2",
     "@types/node": "^20",
     "@types/react": "^19",
