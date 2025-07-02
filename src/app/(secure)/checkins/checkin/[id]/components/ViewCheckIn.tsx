@@ -78,7 +78,18 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               </div>
             </div>
             <div className="flex gap-2 mt-4 sm:mt-0">
-              <Html2CanvasModal>
+              <Html2CanvasModal 
+                photos={attachments
+                  ?.filter(attachment => {
+                    // Only include image attachments
+                    const isImage = attachment.filename?.match(
+                      /\.(jpg|jpeg|png|gif|webp)$/i
+                    );
+                    return isImage && attachment.url;
+                  })
+                  .map(attachment => attachment.url!)
+                }
+              >
                 <Button variant="outline" size="sm">
                   <Camera className="h-4 w-4 mr-2" />
                   Generate Report

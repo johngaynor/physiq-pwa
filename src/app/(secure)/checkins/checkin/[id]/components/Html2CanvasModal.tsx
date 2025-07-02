@@ -13,9 +13,13 @@ import { Download, Camera } from "lucide-react";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
+  photos?: string[];
 }
 
-const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
+const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
+  children,
+  photos,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -102,7 +106,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-6">
+      <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-6 w-[1000px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Camera className="h-5 w-5" />
@@ -128,141 +132,258 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
               ref={contentRef}
               style={{
                 backgroundColor: "#ffffff",
-                width: "816px", // 8.5 inches at 96 DPI
-                height: "1056px", // 11 inches at 96 DPI
-                padding: "48px", // ~0.5 inch margins
-                boxSizing: "border-box",
-                border: "1px solid #e5e7eb",
                 fontFamily: "Arial, sans-serif",
-                position: "relative",
                 transform: "scale(0.85)", // Scale down slightly to fit better in modal
                 transformOrigin: "top center",
               }}
             >
-              {/* Header */}
-              <div
-                style={{
-                  textAlign: "center",
-                  borderBottom: "2px solid #1f2937",
-                  paddingBottom: "20px",
-                  marginBottom: "30px",
-                }}
-              >
-                <h1
+              {/* Photo Pages - Dynamic mapping */}
+              {photos && photos.length > 0 ? (
+                photos.map((photo, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      width: "816px", // 8.5 inches at 96 DPI
+                      height: "1056px", // 11 inches at 96 DPI
+                      padding: "48px", // ~0.5 inch margins
+                      boxSizing: "border-box",
+                      border: "1px solid #e5e7eb",
+                      position: "relative",
+                      pageBreakAfter: "always",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {/* Header */}
+                    <div
+                      style={{
+                        textAlign: "center",
+                        borderBottom: "2px solid #1f2937",
+                        paddingBottom: "20px",
+                        marginBottom: "30px",
+                      }}
+                    >
+                      <h1
+                        style={{
+                          fontSize: "28px",
+                          fontWeight: "bold",
+                          color: "#1f2937",
+                          marginBottom: "8px",
+                          marginTop: "0",
+                        }}
+                      >
+                        Check-In Report - Photo {index + 1}
+                      </h1>
+                      <p
+                        style={{
+                          color: "#4b5563",
+                          fontSize: "16px",
+                          margin: "0",
+                        }}
+                      >
+                        Generated on {new Date().toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    {/* Full Page Photo */}
+                    <div
+                      style={{
+                        flex: "1",
+                        backgroundColor: "#f8fafc",
+                        border: "2px solid #e2e8f0",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <img
+                        src={photo}
+                        alt={`Check-in Photo ${index + 1}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </div>
+
+                    {/* Footer */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: "24px",
+                        left: "48px",
+                        right: "48px",
+                        textAlign: "center",
+                        borderTop: "1px solid #e5e7eb",
+                        paddingTop: "12px",
+                        fontSize: "12px",
+                        color: "#6b7280",
+                      }}
+                    >
+                      Generated by Physiq Web App • Page {index + 1} of{" "}
+                      {photos.length + 2}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                // No photos available
+                <div
                   style={{
-                    fontSize: "28px",
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    marginBottom: "8px",
-                    marginTop: "0",
+                    width: "816px",
+                    height: "1056px",
+                    padding: "48px",
+                    boxSizing: "border-box",
+                    border: "1px solid #e5e7eb",
+                    position: "relative",
+                    pageBreakAfter: "always",
+                    display: "flex",
+                    flexDirection: "column",
                   }}
                 >
-                  Check-In Report
-                </h1>
-                <p
-                  style={{
-                    color: "#4b5563",
-                    fontSize: "16px",
-                    margin: "0",
-                  }}
-                >
-                  Generated on {new Date().toLocaleDateString()}
-                </p>
-              </div>
+                  {/* Header */}
+                  <div
+                    style={{
+                      textAlign: "center",
+                      borderBottom: "2px solid #1f2937",
+                      paddingBottom: "20px",
+                      marginBottom: "30px",
+                    }}
+                  >
+                    <h1
+                      style={{
+                        fontSize: "28px",
+                        fontWeight: "bold",
+                        color: "#1f2937",
+                        marginBottom: "8px",
+                        marginTop: "0",
+                      }}
+                    >
+                      Check-In Report - Photos
+                    </h1>
+                    <p
+                      style={{
+                        color: "#4b5563",
+                        fontSize: "16px",
+                        margin: "0",
+                      }}
+                    >
+                      Generated on {new Date().toLocaleDateString()}
+                    </p>
+                  </div>
 
-              {/* ...existing content... */}
+                  {/* No Photos Message */}
+                  <div
+                    style={{
+                      flex: "1",
+                      backgroundColor: "#f8fafc",
+                      border: "2px solid #e2e8f0",
+                      borderRadius: "8px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "24px",
+                        color: "#64748b",
+                        fontWeight: "600",
+                        textAlign: "center",
+                      }}
+                    >
+                      No Photos Available
+                    </div>
+                  </div>
 
-              {/* Main Content Grid */}
+                  {/* Footer */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "24px",
+                      left: "48px",
+                      right: "48px",
+                      textAlign: "center",
+                      borderTop: "1px solid #e5e7eb",
+                      paddingTop: "12px",
+                      fontSize: "12px",
+                      color: "#6b7280",
+                    }}
+                  >
+                    Generated by Physiq Web App • Page 1 of 3
+                  </div>
+                </div>
+              )}
+
+              {/* Page 4 - Health Metrics and General Info */}
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "24px",
-                  height: "calc(100% - 120px)", // Account for header
+                  width: "816px",
+                  height: "1056px",
+                  padding: "48px",
+                  boxSizing: "border-box",
+                  border: "1px solid #e5e7eb",
+                  position: "relative",
+                  pageBreakAfter: "always",
                 }}
               >
-                {/* Left Column */}
+                {/* Header */}
+                <div
+                  style={{
+                    textAlign: "center",
+                    borderBottom: "2px solid #1f2937",
+                    paddingBottom: "20px",
+                    marginBottom: "30px",
+                  }}
+                >
+                  <h1
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: "bold",
+                      color: "#1f2937",
+                      marginBottom: "8px",
+                      marginTop: "0",
+                    }}
+                  >
+                    Health Metrics & Information
+                  </h1>
+                  <p
+                    style={{
+                      color: "#4b5563",
+                      fontSize: "16px",
+                      margin: "0",
+                    }}
+                  >
+                    Generated on {new Date().toLocaleDateString()}
+                  </p>
+                </div>
+
+                {/* Content */}
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: "20px",
+                    gap: "30px",
                   }}
                 >
-                  {/* Photos Section */}
-                  <div
-                    style={{
-                      backgroundColor: "#f8fafc",
-                      padding: "16px",
-                      borderRadius: "8px",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <h2
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        color: "#1f2937",
-                        marginTop: "0",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      Photos
-                    </h2>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: "8px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          backgroundColor: "#e2e8f0",
-                          height: "80px",
-                          borderRadius: "4px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "12px",
-                          color: "#64748b",
-                        }}
-                      >
-                        Photo 1
-                      </div>
-                      <div
-                        style={{
-                          backgroundColor: "#e2e8f0",
-                          height: "80px",
-                          borderRadius: "4px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "12px",
-                          color: "#64748b",
-                        }}
-                      >
-                        Photo 2
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Health Metrics */}
                   <div
                     style={{
                       backgroundColor: "#f0fdf4",
-                      padding: "16px",
-                      borderRadius: "8px",
-                      border: "1px solid #bbf7d0",
+                      padding: "24px",
+                      borderRadius: "12px",
+                      border: "2px solid #bbf7d0",
                     }}
                   >
                     <h2
                       style={{
-                        fontSize: "18px",
+                        fontSize: "24px",
                         fontWeight: "600",
                         color: "#166534",
                         marginTop: "0",
-                        marginBottom: "12px",
+                        marginBottom: "20px",
                       }}
                     >
                       Health Metrics
@@ -271,13 +392,16 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: "8px",
+                        gap: "15px",
+                        fontSize: "18px",
                       }}
                     >
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
+                          borderBottom: "1px solid #bbf7d0",
+                          paddingBottom: "10px",
                         }}
                       >
                         <span style={{ color: "#374151" }}>Weight:</span>
@@ -289,6 +413,8 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
+                          borderBottom: "1px solid #bbf7d0",
+                          paddingBottom: "10px",
                         }}
                       >
                         <span style={{ color: "#374151" }}>Body Fat:</span>
@@ -314,33 +440,33 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
                   <div
                     style={{
                       backgroundColor: "#fef3c7",
-                      padding: "16px",
-                      borderRadius: "8px",
-                      border: "1px solid #fcd34d",
+                      padding: "24px",
+                      borderRadius: "12px",
+                      border: "2px solid #fcd34d",
                     }}
                   >
                     <h2
                       style={{
-                        fontSize: "18px",
+                        fontSize: "24px",
                         fontWeight: "600",
                         color: "#92400e",
                         marginTop: "0",
-                        marginBottom: "12px",
+                        marginBottom: "20px",
                       }}
                     >
                       General Information
                     </h2>
                     <div
                       style={{
-                        fontSize: "14px",
+                        fontSize: "18px",
                         color: "#374151",
-                        lineHeight: "1.5",
+                        lineHeight: "1.8",
                       }}
                     >
-                      <p style={{ margin: "0 0 8px 0" }}>
+                      <p style={{ margin: "0 0 15px 0" }}>
                         <strong>Training:</strong> Upper body strength training
                       </p>
-                      <p style={{ margin: "0 0 8px 0" }}>
+                      <p style={{ margin: "0 0 15px 0" }}>
                         <strong>Sleep:</strong> 7.5 hours
                       </p>
                       <p style={{ margin: "0" }}>
@@ -348,33 +474,24 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
                       </p>
                     </div>
                   </div>
-                </div>
 
-                {/* Right Column */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "20px",
-                  }}
-                >
                   {/* Weight Graph */}
                   <div
                     style={{
                       backgroundColor: "#eff6ff",
-                      padding: "16px",
-                      borderRadius: "8px",
-                      border: "1px solid #bfdbfe",
-                      height: "200px",
+                      padding: "24px",
+                      borderRadius: "12px",
+                      border: "2px solid #bfdbfe",
+                      height: "250px",
                     }}
                   >
                     <h2
                       style={{
-                        fontSize: "18px",
+                        fontSize: "24px",
                         fontWeight: "600",
                         color: "#1e40af",
                         marginTop: "0",
-                        marginBottom: "12px",
+                        marginBottom: "20px",
                       }}
                     >
                       Weight Progress (30 Days)
@@ -382,329 +499,391 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({ children }) => {
                     <div
                       style={{
                         backgroundColor: "#ffffff",
-                        height: "calc(100% - 40px)",
-                        borderRadius: "4px",
-                        border: "1px solid #e5e7eb",
+                        height: "calc(100% - 60px)",
+                        borderRadius: "8px",
+                        border: "2px solid #e5e7eb",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "12px",
+                        fontSize: "18px",
                         color: "#64748b",
                       }}
                     >
                       [Weight Graph Placeholder]
                     </div>
                   </div>
+                </div>
 
-                  {/* Statistics Table */}
-                  <div
-                    style={{
-                      backgroundColor: "#faf5ff",
-                      padding: "16px",
-                      borderRadius: "8px",
-                      border: "1px solid #e9d5ff",
-                      flex: "1",
-                    }}
-                  >
-                    <h2
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: "600",
-                        color: "#6b21a8",
-                        marginTop: "0",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      Statistics
-                    </h2>
-                    <table
-                      style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        fontSize: "13px",
-                      }}
-                    >
-                      <thead>
-                        <tr style={{ backgroundColor: "#e9d5ff" }}>
-                          <th
-                            style={{
-                              padding: "8px",
-                              textAlign: "left",
-                              color: "#6b21a8",
-                              fontWeight: "600",
-                            }}
-                          >
-                            Metric
-                          </th>
-                          <th
-                            style={{
-                              padding: "8px",
-                              textAlign: "center",
-                              color: "#6b21a8",
-                              fontWeight: "600",
-                            }}
-                          >
-                            Goal
-                          </th>
-                          <th
-                            style={{
-                              padding: "8px",
-                              textAlign: "center",
-                              color: "#6b21a8",
-                              fontWeight: "600",
-                            }}
-                          >
-                            Actual
-                          </th>
-                          <th
-                            style={{
-                              padding: "8px",
-                              textAlign: "center",
-                              color: "#6b21a8",
-                              fontWeight: "600",
-                            }}
-                          >
-                            Last 30
-                          </th>
-                          <th
-                            style={{
-                              padding: "8px",
-                              textAlign: "left",
-                              color: "#6b21a8",
-                              fontWeight: "600",
-                            }}
-                          >
-                            Comments
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr style={{ backgroundColor: "#ffffff" }}>
-                          <td style={{ padding: "6px 8px", color: "#374151" }}>
-                            Calories
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            2000
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            2150
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            1980
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              color: "#374151",
-                              fontSize: "11px",
-                            }}
-                          >
-                            Higher than goal, higher than last 30
-                          </td>
-                        </tr>
-                        <tr style={{ backgroundColor: "#f9fafb" }}>
-                          <td style={{ padding: "6px 8px", color: "#374151" }}>
-                            Water
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            8 cups
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            7 cups
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            6.5 cups
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              color: "#374151",
-                              fontSize: "11px",
-                            }}
-                          >
-                            Below goal, above last 30
-                          </td>
-                        </tr>
-                        <tr style={{ backgroundColor: "#ffffff" }}>
-                          <td style={{ padding: "6px 8px", color: "#374151" }}>
-                            Steps
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            10,000
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            12,500
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            9,800
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              color: "#374151",
-                              fontSize: "11px",
-                            }}
-                          >
-                            Above goal, higher than last 30
-                          </td>
-                        </tr>
-                        <tr style={{ backgroundColor: "#f9fafb" }}>
-                          <td style={{ padding: "6px 8px", color: "#374151" }}>
-                            Sleep
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            8 hrs
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            7.5 hrs
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            7.2 hrs
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              color: "#374151",
-                              fontSize: "11px",
-                            }}
-                          >
-                            Below goal, above last 30
-                          </td>
-                        </tr>
-                        <tr style={{ backgroundColor: "#ffffff" }}>
-                          <td style={{ padding: "6px 8px", color: "#374151" }}>
-                            Body Fat %
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            15%
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            15.2%
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              textAlign: "center",
-                              color: "#374151",
-                            }}
-                          >
-                            15.8%
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              color: "#374151",
-                              fontSize: "11px",
-                            }}
-                          >
-                            Slightly above goal, improving
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                {/* Footer */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "24px",
+                    left: "48px",
+                    right: "48px",
+                    textAlign: "center",
+                    borderTop: "1px solid #e5e7eb",
+                    paddingTop: "12px",
+                    fontSize: "12px",
+                    color: "#6b7280",
+                  }}
+                >
+                  Generated by Physiq Web App • Page {(photos?.length || 0) + 1}{" "}
+                  of {(photos?.length || 0) + 2}
                 </div>
               </div>
 
-              {/* Footer */}
+              {/* Page 5 - Statistics Table */}
               <div
                 style={{
-                  position: "absolute",
-                  bottom: "24px",
-                  left: "48px",
-                  right: "48px",
-                  textAlign: "center",
-                  borderTop: "1px solid #e5e7eb",
-                  paddingTop: "12px",
-                  fontSize: "12px",
-                  color: "#6b7280",
+                  width: "816px",
+                  height: "1056px",
+                  padding: "48px",
+                  boxSizing: "border-box",
+                  border: "1px solid #e5e7eb",
+                  position: "relative",
                 }}
               >
-                Generated by Physiq Web App • Page 1 of 1
+                {/* Header */}
+                <div
+                  style={{
+                    textAlign: "center",
+                    borderBottom: "2px solid #1f2937",
+                    paddingBottom: "20px",
+                    marginBottom: "30px",
+                  }}
+                >
+                  <h1
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: "bold",
+                      color: "#1f2937",
+                      marginBottom: "8px",
+                      marginTop: "0",
+                    }}
+                  >
+                    Statistics Summary
+                  </h1>
+                  <p
+                    style={{
+                      color: "#4b5563",
+                      fontSize: "16px",
+                      margin: "0",
+                    }}
+                  >
+                    Generated on {new Date().toLocaleDateString()}
+                  </p>
+                </div>
+
+                {/* Statistics Table */}
+                <div
+                  style={{
+                    backgroundColor: "#faf5ff",
+                    padding: "24px",
+                    borderRadius: "12px",
+                    border: "2px solid #e9d5ff",
+                    flex: "1",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "600",
+                      color: "#6b21a8",
+                      marginTop: "0",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    Statistics
+                  </h2>
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      fontSize: "16px",
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: "#e9d5ff" }}>
+                        <th
+                          style={{
+                            padding: "12px",
+                            textAlign: "left",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                          }}
+                        >
+                          Metric
+                        </th>
+                        <th
+                          style={{
+                            padding: "12px",
+                            textAlign: "center",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                          }}
+                        >
+                          Goal
+                        </th>
+                        <th
+                          style={{
+                            padding: "12px",
+                            textAlign: "center",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                          }}
+                        >
+                          Actual
+                        </th>
+                        <th
+                          style={{
+                            padding: "12px",
+                            textAlign: "center",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                          }}
+                        >
+                          Last 30
+                        </th>
+                        <th
+                          style={{
+                            padding: "12px",
+                            textAlign: "left",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                          }}
+                        >
+                          Comments
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ backgroundColor: "#ffffff" }}>
+                        <td style={{ padding: "10px 12px", color: "#374151" }}>
+                          Calories
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          2000
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          2150
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          1980
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            color: "#374151",
+                            fontSize: "14px",
+                          }}
+                        >
+                          Higher than goal, higher than last 30
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#f9fafb" }}>
+                        <td style={{ padding: "10px 12px", color: "#374151" }}>
+                          Water
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          8 cups
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          7 cups
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          6.5 cups
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            color: "#374151",
+                            fontSize: "14px",
+                          }}
+                        >
+                          Below goal, above last 30
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#ffffff" }}>
+                        <td style={{ padding: "10px 12px", color: "#374151" }}>
+                          Steps
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          10,000
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          12,500
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          9,800
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            color: "#374151",
+                            fontSize: "14px",
+                          }}
+                        >
+                          Above goal, higher than last 30
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#f9fafb" }}>
+                        <td style={{ padding: "10px 12px", color: "#374151" }}>
+                          Sleep
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          8 hrs
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          7.5 hrs
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          7.2 hrs
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            color: "#374151",
+                            fontSize: "14px",
+                          }}
+                        >
+                          Below goal, above last 30
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#ffffff" }}>
+                        <td style={{ padding: "10px 12px", color: "#374151" }}>
+                          Body Fat %
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          15%
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          15.2%
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            textAlign: "center",
+                            color: "#374151",
+                          }}
+                        >
+                          15.8%
+                        </td>
+                        <td
+                          style={{
+                            padding: "10px 12px",
+                            color: "#374151",
+                            fontSize: "14px",
+                          }}
+                        >
+                          Slightly above goal, improving
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Footer */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "24px",
+                    left: "48px",
+                    right: "48px",
+                    textAlign: "center",
+                    borderTop: "1px solid #e5e7eb",
+                    paddingTop: "12px",
+                    fontSize: "12px",
+                    color: "#6b7280",
+                  }}
+                >
+                  Generated by Physiq Web App • Page {(photos?.length || 0) + 2}{" "}
+                  of {(photos?.length || 0) + 2}
+                </div>
               </div>
             </div>
           </div>
