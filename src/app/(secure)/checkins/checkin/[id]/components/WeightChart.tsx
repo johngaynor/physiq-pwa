@@ -75,7 +75,7 @@ export const WeightChart: React.FC<WeightChartProps> = ({
   }
 
   return (
-    <div style={{ height: `${height}px`, width: "80%" }}>
+    <div style={{ height: `${height}px`, width: "70%" }}>
       <ChartContainer config={chartConfig}>
         <LineChart
           data={weightData}

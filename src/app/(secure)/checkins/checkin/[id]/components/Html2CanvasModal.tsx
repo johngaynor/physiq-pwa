@@ -163,7 +163,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         const canvasRatio = canvasWidth / canvasHeight;
 
         // Add margins
-        const margin = 10; // 10mm margins
+        const margin = 2; // 2mm margins
         const maxWidth = pageWidth - margin * 2;
         const maxHeight = pageHeight - margin * 2;
         const maxRatio = maxWidth / maxHeight;
@@ -252,9 +252,8 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                 style={{
                   width: "816px", // 8.5 inches at 96 DPI
                   height: "1056px", // 11 inches at 96 DPI
-                  padding: "48px", // ~0.5 inch margins
+                  padding: "24px",
                   boxSizing: "border-box",
-                  border: "1px solid #e5e7eb",
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
