@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef, useState } from "react";
-// Import html2canvas-pro instead of regular html2canvas
 import html2canvas from "html2canvas-pro";
 import {
   Dialog,
@@ -96,6 +95,60 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
       default:
         return "-";
     }
+  };
+
+  // Helper function to get numeric goal value
+  const getNumericGoalValue = (metric: string): number | null => {
+    if (!dietLog) return null;
+
+    switch (metric) {
+      case "calories":
+        return dietLog.calories || null;
+      case "water":
+        return dietLog.water || null;
+      case "steps":
+        return dietLog.steps || null;
+      case "totalSleep":
+        return 8 * 60; // 8 hours in minutes
+      case "weight":
+        return null; // Weight doesn't have a specific goal
+      default:
+        return null;
+    }
+  };
+
+  // Helper function to calculate trends
+  const getTrends = (
+    metric: string,
+    stats: { day7Avg: number | null; day30Avg: number | null }
+  ): string => {
+    const goalValue = getNumericGoalValue(metric);
+    const currentAvg = stats.day7Avg; // Using 7-day average as "current"
+    const thirtyDayAvg = stats.day30Avg;
+
+    if (!currentAvg) return "No data";
+
+    let trends = [];
+
+    // Trend from goal
+    if (goalValue !== null) {
+      const goalDiff = currentAvg - goalValue;
+      const goalTrend = goalDiff >= 0 ? "increase" : "decrease";
+      trends.push(`${goalTrend} vs goal`);
+    } else {
+      trends.push("no goal");
+    }
+
+    // Trend from 30-day average
+    if (thirtyDayAvg !== null) {
+      const avgDiff = currentAvg - thirtyDayAvg;
+      const avgTrend = avgDiff >= 0 ? "increase" : "decrease";
+      trends.push(`${avgTrend} vs 30d`);
+    } else {
+      trends.push("no 30d");
+    }
+
+    return trends.join(", ");
   };
 
   const generateImage = async () => {
@@ -209,7 +262,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   };
 
   return (
-    <Dialog open={true} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-6 w-[1000px]">
         <DialogHeader>
@@ -312,7 +365,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       marginBottom: "8px",
                     }}
                   >
-                    Weight Progress (30 Days)
+                    Weight Log (30 Days)
                   </h2>
                   <div
                     style={{
@@ -331,7 +384,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                   </div>
                 </div>
 
-                {/* Health Statistics Summary - Changed to Green */}
+                {/* Health Statistics Summary */}
                 <div
                   style={{
                     backgroundColor: "#f0fdf4",
@@ -350,7 +403,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       marginBottom: "12px",
                     }}
                   >
-                    Health Statistics Summary
+                    Health Metrics Summary
                   </h2>
                   <table
                     style={{
@@ -405,6 +458,19 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                         >
                           30-Day Avg
                         </th>
+                        <th
+                          style={{
+                            padding: "5px",
+                            textAlign: "center",
+                            color: "#166534",
+                            fontWeight: "600",
+                            border: "1px solid #86efac",
+                            width: "200px",
+                            fontSize: "11px",
+                          }}
+                        >
+                          Trends
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -456,6 +522,17 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                                 }}
                               >
                                 {formatMetricValue(metric, stats.day30Avg)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "5px 6px",
+                                  textAlign: "center",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                  fontSize: "11px",
+                                }}
+                              >
+                                {getTrends(metric, stats)}
                               </td>
                             </tr>
                           )
