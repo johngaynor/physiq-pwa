@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui";
 import { Download, Camera } from "lucide-react";
 import { DietLog } from "@/app/(secure)/diet/state/types";
+import { CheckIn } from "../../../state/types";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ interface Html2CanvasModalProps {
     { day7Avg: number | null; day30Avg: number | null }
   >;
   dietLog?: DietLog | null;
+  checkIn?: CheckIn;
 }
 
 const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
@@ -27,12 +29,11 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   // photos,
   healthStats,
   dietLog,
+  checkIn,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
-
-  console.log("Diet Log in Modal:", dietLog);
 
   // Helper function to format metric values
   const formatMetricValue = (metric: string, value: number | null): string => {
@@ -75,7 +76,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   // Helper function to get goal value from diet log
   const getGoalValue = (metric: string): string => {
     if (!dietLog) return "-";
-    
+
     switch (metric) {
       case "calories":
         return dietLog.calories ? `${dietLog.calories.toLocaleString()}` : "-";
@@ -283,32 +284,33 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                 <div
                   style={{
                     backgroundColor: "#f0fdf4",
-                    padding: "20px",
+                    padding: "16px",
                     borderRadius: "8px",
                     border: "2px solid #bbf7d0",
-                    marginBottom: "20px",
+                    marginBottom: "16px",
                   }}
                 >
                   <h2
                     style={{
-                      fontSize: "20px",
+                      fontSize: "18px",
                       fontWeight: "600",
                       color: "#166534",
                       marginTop: "0",
-                      marginBottom: "15px",
+                      marginBottom: "12px",
                     }}
                   >
                     Health Metrics Overview
                   </h2>
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontSize: "14px",
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr 1fr",
+                      gap: "12px",
+                      fontSize: "13px",
                     }}
                   >
                     <div>
-                      <strong>Weight (7-day avg):</strong>{" "}
+                      <strong>Weight (7-day):</strong>{" "}
                       {healthStats?.weight?.day7Avg
                         ? formatMetricValue(
                             "weight",
@@ -317,36 +319,230 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                         : "No data"}
                     </div>
                     <div>
-                      <strong>Steps (7-day avg):</strong>{" "}
+                      <strong>Steps (7-day):</strong>{" "}
                       {healthStats?.steps?.day7Avg
                         ? formatMetricValue("steps", healthStats.steps.day7Avg)
                         : "No data"}
                     </div>
                     <div>
-                      <strong>Last Updated:</strong>{" "}
-                      {new Date().toLocaleDateString()}
+                      <strong>Date:</strong>{" "}
+                      {checkIn?.date
+                        ? new Date(checkIn.date).toLocaleDateString()
+                        : new Date().toLocaleDateString()}
                     </div>
                   </div>
                 </div>
 
-                {/* Weight Graph */}
+                {/* Statistics Table - More Compact */}
                 <div
                   style={{
-                    backgroundColor: "#eff6ff",
-                    padding: "20px",
+                    backgroundColor: "#faf5ff",
+                    padding: "16px",
                     borderRadius: "8px",
-                    border: "2px solid #bfdbfe",
-                    marginBottom: "20px",
-                    height: "180px",
+                    border: "2px solid #e9d5ff",
+                    marginBottom: "16px",
                   }}
                 >
                   <h2
                     style={{
-                      fontSize: "18px",
+                      fontSize: "16px",
                       fontWeight: "600",
-                      color: "#1e40af",
+                      color: "#6b21a8",
                       marginTop: "0",
-                      marginBottom: "15px",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    Health Statistics Summary
+                  </h2>
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      fontSize: "11px",
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: "#e9d5ff" }}>
+                        <th
+                          style={{
+                            padding: "6px",
+                            textAlign: "left",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                            border: "1px solid #d8b4fe",
+                          }}
+                        >
+                          Metric
+                        </th>
+                        <th
+                          style={{
+                            padding: "6px",
+                            textAlign: "center",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                            border: "1px solid #d8b4fe",
+                          }}
+                        >
+                          Goal
+                        </th>
+                        <th
+                          style={{
+                            padding: "6px",
+                            textAlign: "center",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                            border: "1px solid #d8b4fe",
+                          }}
+                        >
+                          7-Day Avg
+                        </th>
+                        <th
+                          style={{
+                            padding: "6px",
+                            textAlign: "center",
+                            color: "#6b21a8",
+                            fontWeight: "600",
+                            border: "1px solid #d8b4fe",
+                          }}
+                        >
+                          30-Day Avg
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {healthStats &&
+                        Object.entries(healthStats).map(
+                          ([metric, stats], index) => (
+                            <tr
+                              key={metric}
+                              style={{
+                                backgroundColor:
+                                  index % 2 === 0 ? "#ffffff" : "#f9fafb",
+                              }}
+                            >
+                              <td
+                                style={{
+                                  padding: "5px 6px",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {getMetricDisplayName(metric)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "5px 6px",
+                                  textAlign: "center",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {getGoalValue(metric)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "5px 6px",
+                                  textAlign: "center",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {formatMetricValue(metric, stats.day7Avg)}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "5px 6px",
+                                  textAlign: "center",
+                                  color: "#374151",
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              >
+                                {formatMetricValue(metric, stats.day30Avg)}
+                              </td>
+                            </tr>
+                          )
+                        )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Check-In Comments Section */}
+                {(checkIn?.comments ||
+                  checkIn?.cheats ||
+                  checkIn?.training) && (
+                  <div
+                    style={{
+                      backgroundColor: "#eff6ff",
+                      padding: "16px",
+                      borderRadius: "8px",
+                      border: "2px solid #bfdbfe",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    <h2
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        color: "#1e40af",
+                        marginTop: "0",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      Check-In Notes
+                    </h2>
+                    <div style={{ fontSize: "12px", lineHeight: "1.4" }}>
+                      {checkIn?.training && (
+                        <div style={{ marginBottom: "8px" }}>
+                          <strong style={{ color: "#1e40af" }}>
+                            Training:
+                          </strong>
+                          <br />
+                          <span style={{ color: "#374151" }}>
+                            {checkIn.training}
+                          </span>
+                        </div>
+                      )}
+                      {checkIn?.cheats && (
+                        <div style={{ marginBottom: "8px" }}>
+                          <strong style={{ color: "#dc2626" }}>Cheats:</strong>
+                          <br />
+                          <span style={{ color: "#374151" }}>
+                            {checkIn.cheats}
+                          </span>
+                        </div>
+                      )}
+                      {checkIn?.comments && (
+                        <div style={{ marginBottom: "8px" }}>
+                          <strong style={{ color: "#16a34a" }}>
+                            Comments:
+                          </strong>
+                          <br />
+                          <span style={{ color: "#374151" }}>
+                            {checkIn.comments}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Weight Graph - Reduced Size */}
+                <div
+                  style={{
+                    backgroundColor: "#fef3c7",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "2px solid #fbbf24",
+                    flex: "1",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#d97706",
+                      marginTop: "0",
+                      marginBottom: "12px",
                     }}
                   >
                     Weight Progress (30 Days)
@@ -360,7 +556,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "14px",
+                      fontSize: "12px",
                       color: "#64748b",
                       position: "relative",
                     }}
@@ -379,163 +575,9 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                     </div>
                   </div>
                 </div>
-
-                {/* Statistics Table */}
-                <div
-                  style={{
-                    backgroundColor: "#faf5ff",
-                    padding: "20px",
-                    borderRadius: "8px",
-                    border: "2px solid #e9d5ff",
-                    flex: "1",
-                  }}
-                >
-                  <h2
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "600",
-                      color: "#6b21a8",
-                      marginTop: "0",
-                      marginBottom: "15px",
-                    }}
-                  >
-                    Statistics Summary
-                  </h2>
-                  <table
-                    style={{
-                      width: "100%",
-                      borderCollapse: "collapse",
-                      fontSize: "12px",
-                    }}
-                  >
-                    <thead>
-                      <tr style={{ backgroundColor: "#e9d5ff" }}>
-                        <th
-                          style={{
-                            padding: "8px",
-                            textAlign: "left",
-                            color: "#6b21a8",
-                            fontWeight: "600",
-                            border: "1px solid #d8b4fe",
-                          }}
-                        >
-                          Metric
-                        </th>
-                        <th
-                          style={{
-                            padding: "8px",
-                            textAlign: "center",
-                            color: "#6b21a8",
-                            fontWeight: "600",
-                            border: "1px solid #d8b4fe",
-                          }}
-                        >
-                          Goal
-                        </th>
-                        <th
-                          style={{
-                            padding: "8px",
-                            textAlign: "center",
-                            color: "#6b21a8",
-                            fontWeight: "600",
-                            border: "1px solid #d8b4fe",
-                          }}
-                        >
-                          7-Day Avg
-                        </th>
-                        <th
-                          style={{
-                            padding: "8px",
-                            textAlign: "center",
-                            color: "#6b21a8",
-                            fontWeight: "600",
-                            border: "1px solid #d8b4fe",
-                          }}
-                        >
-                          30-Day Avg
-                        </th>
-                        <th
-                          style={{
-                            padding: "8px",
-                            textAlign: "left",
-                            color: "#6b21a8",
-                            fontWeight: "600",
-                            border: "1px solid #d8b4fe",
-                          }}
-                        >
-                          Comments
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {healthStats &&
-                        Object.entries(healthStats).map(
-                          ([metric, stats], index) => (
-                            <tr
-                              key={metric}
-                              style={{
-                                backgroundColor:
-                                  index % 2 === 0 ? "#ffffff" : "#f9fafb",
-                              }}
-                            >
-                              <td
-                                style={{
-                                  padding: "6px 8px",
-                                  color: "#374151",
-                                  border: "1px solid #e5e7eb",
-                                }}
-                              >
-                                {getMetricDisplayName(metric)}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "6px 8px",
-                                  textAlign: "center",
-                                  color: "#374151",
-                                  border: "1px solid #e5e7eb",
-                                }}
-                              >
-                                {getGoalValue(metric)}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "6px 8px",
-                                  textAlign: "center",
-                                  color: "#374151",
-                                  border: "1px solid #e5e7eb",
-                                }}
-                              >
-                                {formatMetricValue(metric, stats.day7Avg)}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "6px 8px",
-                                  textAlign: "center",
-                                  color: "#374151",
-                                  border: "1px solid #e5e7eb",
-                                }}
-                              >
-                                {formatMetricValue(metric, stats.day30Avg)}
-                              </td>
-                              <td
-                                style={{
-                                  padding: "6px 8px",
-                                  color: "#374151",
-                                  fontSize: "11px",
-                                  border: "1px solid #e5e7eb",
-                                }}
-                              >
-                                7-day vs 30-day average
-                              </td>
-                            </tr>
-                          )
-                        )}
-                    </tbody>
-                  </table>
-                </div>
               </div>
 
-              {/* Second page with the same content */}
+              {/* Second page placeholder - can be removed or used for additional content */}
               <div
                 style={{
                   width: "816px", // 8.5 inches at 96 DPI
@@ -550,16 +592,15 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                   justifyContent: "center",
                 }}
               >
-                <h1
-                  style={{
-                    fontSize: "48px",
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    margin: "0",
-                  }}
-                >
-                  hi
-                </h1>
+                <div style={{ textAlign: "center", color: "#9ca3af" }}>
+                  <h2 style={{ fontSize: "24px", marginBottom: "16px" }}>
+                    Additional Content
+                  </h2>
+                  <p style={{ fontSize: "16px" }}>
+                    This page can be used for photos, graphs, or additional
+                    notes.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

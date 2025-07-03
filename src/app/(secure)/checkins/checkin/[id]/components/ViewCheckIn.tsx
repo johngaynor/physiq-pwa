@@ -138,6 +138,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                   .map((attachment) => attachment.url!)}
                 healthStats={healthStats}
                 dietLog={dietLog}
+                checkIn={checkIn}
               >
                 <Button variant="outline" size="sm">
                   <Camera className="h-4 w-4 mr-2" />
@@ -282,16 +283,11 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
           </div>
 
           {/* Empty state if no content */}
-          {!checkIn.training &&
-            !checkIn.cheats &&
-            !checkIn.comments &&
-            (!attachments || attachments.length === 0) && (
-              <div className="text-center py-8 text-gray-500">
-                <p>
-                  This check-in doesn&apos;t have any additional information.
-                </p>
-              </div>
-            )}
+          {!checkIn.training && (!attachments || attachments.length === 0) && (
+            <div className="text-center py-8 text-gray-500">
+              <p>This check-in doesn&apos;t have any additional information.</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
