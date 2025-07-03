@@ -29,7 +29,7 @@ interface Html2CanvasModalProps {
 
 const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   children,
-  // photos,
+  photos,
   healthStats,
   dietLog,
   checkIn,
@@ -300,6 +300,110 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                 margin: "20px 0",
               }}
             >
+              {/* Photo Pages - One photo per page */}
+              {photos &&
+                photos.length > 0 &&
+                photos.map((photo, index) => (
+                  <div
+                    key={`photo-${index}`}
+                    style={{
+                      width: "816px", // 8.5 inches at 96 DPI
+                      height: "1056px", // 11 inches at 96 DPI
+                      padding: "24px",
+                      boxSizing: "border-box",
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "column",
+                      backgroundColor: "#ffffff",
+                      WebkitPrintColorAdjust: "exact",
+                      printColorAdjust: "exact",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {/* Photo Header */}
+                    <div
+                      style={{
+                        textAlign: "center",
+                        borderBottom: "2px solid #1f2937",
+                        paddingBottom: "20px",
+                        marginBottom: "30px",
+                      }}
+                    >
+                      <h1
+                        style={{
+                          fontSize: "28px",
+                          fontWeight: "bold",
+                          color: "#1f2937",
+                          marginBottom: "8px",
+                          marginTop: "0",
+                        }}
+                      >
+                        Progress Photo {index + 1}
+                      </h1>
+                      <p
+                        style={{
+                          color: "#4b5563",
+                          fontSize: "16px",
+                          margin: "0",
+                        }}
+                      >
+                        {new Date().toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    {/* Photo Container */}
+                    <div
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#f9fafb",
+                        borderRadius: "8px",
+                        border: "2px solid #e5e7eb",
+                        padding: "20px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <img
+                        src={photo}
+                        alt={`Progress photo ${index + 1}`}
+                        style={{
+                          maxWidth: "100%",
+                          maxHeight: "100%",
+                          objectFit: "contain",
+                          borderRadius: "4px",
+                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                        }}
+                        crossOrigin="anonymous"
+                      />
+                    </div>
+
+                    {/* Photo Footer */}
+                    <div
+                      style={{
+                        textAlign: "center",
+                        marginTop: "20px",
+                        padding: "12px",
+                        backgroundColor: "#f0f9ff",
+                        borderRadius: "6px",
+                        border: "1px solid #bae6fd",
+                      }}
+                    >
+                      <p
+                        style={{
+                          color: "#0369a1",
+                          fontSize: "14px",
+                          margin: "0",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Photo {index + 1} of {photos.length}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+
               {/* Health Metrics Report Page */}
               <div
                 style={{
@@ -600,32 +704,6 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
-
-              {/* Second page placeholder - can be removed or used for additional content */}
-              <div
-                style={{
-                  width: "816px", // 8.5 inches at 96 DPI
-                  height: "1056px", // 11 inches at 96 DPI
-                  padding: "48px", // ~0.5 inch margins
-                  boxSizing: "border-box",
-                  border: "1px solid #e5e7eb",
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div style={{ textAlign: "center", color: "#9ca3af" }}>
-                  <h2 style={{ fontSize: "24px", marginBottom: "16px" }}>
-                    Additional Content
-                  </h2>
-                  <p style={{ fontSize: "16px" }}>
-                    This page can be used for photos, graphs, or additional
-                    notes.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
