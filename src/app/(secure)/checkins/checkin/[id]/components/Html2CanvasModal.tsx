@@ -12,7 +12,9 @@ import {
 import { Button } from "@/components/ui";
 import { Download, Camera } from "lucide-react";
 import { DietLog } from "@/app/(secure)/diet/state/types";
+import { DailyLog } from "@/app/(secure)/health/state/types";
 import { CheckIn } from "../../../state/types";
+import WeightChart from "./WeightChart";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
@@ -23,6 +25,7 @@ interface Html2CanvasModalProps {
   >;
   dietLog?: DietLog | null;
   checkIn?: CheckIn;
+  dailyLogs?: DailyLog[] | null;
 }
 
 const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
@@ -31,6 +34,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   healthStats,
   dietLog,
   checkIn,
+  dailyLogs,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -126,14 +130,14 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
           allowTaint: true,
           logging: true, // Enable logging to debug issues
           scale: 2, // Higher scale for better quality
-          backgroundColor: '#ffffff',
+          backgroundColor: "#ffffff",
           // Remove forced dimensions to let html2canvas calculate naturally
-          // width: 816, 
+          // width: 816,
           // height: 1056,
           // html2canvas-pro specific options
           ignoreElements: (element: Element) => {
             // Only skip actual problematic elements
-            return element.tagName === 'SCRIPT';
+            return element.tagName === "SCRIPT";
           },
           // Better CSS support in pro version
           foreignObjectRendering: false, // Try without foreign object rendering first
@@ -205,7 +209,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={true} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-6 w-[1000px]">
         <DialogHeader>
@@ -235,7 +239,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                 backgroundColor: "#ffffff",
                 fontFamily: "Arial, sans-serif",
                 // Remove transform scale that might cause positioning issues
-                // transform: "scale(0.85)", 
+                // transform: "scale(0.85)",
                 // transformOrigin: "top center",
                 WebkitPrintColorAdjust: "exact",
                 printColorAdjust: "exact",
@@ -290,11 +294,11 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                   </p>
                 </div>
 
-                {/* Weight Progress - Moved to Top */}
+                {/* Weight Progress  */}
                 <div
                   style={{
                     backgroundColor: "#fef3c7",
-                    padding: "16px",
+                    padding: "12px",
                     borderRadius: "8px",
                     border: "2px solid #fbbf24",
                     marginBottom: "16px",
@@ -306,7 +310,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       fontWeight: "600",
                       color: "#d97706",
                       marginTop: "0",
-                      marginBottom: "12px",
+                      marginBottom: "8px",
                     }}
                   >
                     Weight Progress (30 Days)
@@ -314,29 +318,17 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                   <div
                     style={{
                       backgroundColor: "#ffffff",
-                      height: "120px",
+                      height: "300px",
                       borderRadius: "6px",
                       border: "1px solid #e5e7eb",
+                      overflow: "hidden",
+                      padding: "2px",
                       display: "flex",
-                      alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "12px",
-                      color: "#64748b",
-                      position: "relative",
+                      alignItems: "center",
                     }}
                   >
-                    {/* Simple ASCII-style graph placeholder */}
-                    <div style={{ fontFamily: "monospace", lineHeight: "1.2" }}>
-                      190 ├─●─────●───────●─────●─────●───
-                      <br />
-                      185 ├───●─────●─────●───●─────●─────
-                      <br />
-                      180 ├─────────────────────────────●─
-                      <br />
-                      175 └─────────────────────────────── <br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;Week 1&nbsp;&nbsp;Week
-                      2&nbsp;&nbsp;Week 3&nbsp;&nbsp;Week 4
-                    </div>
+                    <WeightChart dailyLogs={dailyLogs || []} height={296} />
                   </div>
                 </div>
 

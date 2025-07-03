@@ -139,6 +139,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 healthStats={healthStats}
                 dietLog={dietLog}
                 checkIn={checkIn}
+                dailyLogs={dailyLogs}
               >
                 <Button variant="outline" size="sm">
                   <Camera className="h-4 w-4 mr-2" />
