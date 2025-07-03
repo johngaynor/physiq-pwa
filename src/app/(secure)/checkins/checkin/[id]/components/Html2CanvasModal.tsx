@@ -128,7 +128,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
     if (!currentAvg) return "No data";
 
-    let trends = [];
+    const trends = [];
 
     // Trend from goal
     if (goalValue !== null) {
