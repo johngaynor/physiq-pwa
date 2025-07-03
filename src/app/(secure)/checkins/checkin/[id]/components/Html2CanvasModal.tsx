@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
-import html2canvas from "html2canvas";
+// Import html2canvas-pro instead of regular html2canvas
+import html2canvas from "html2canvas-pro";
 import {
   Dialog,
   DialogContent,
@@ -119,37 +120,38 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
           pdf.addPage();
         }
 
-        // Generate canvas for each individual page
+        // Generate canvas for each individual page using html2canvas-pro
         const canvas = await html2canvas(pageElement, {
           useCORS: true,
           allowTaint: true,
-          logging: false,
+          logging: true, // Enable logging to debug issues
+          scale: 2, // Higher scale for better quality
+          backgroundColor: '#ffffff',
+          // Remove forced dimensions to let html2canvas calculate naturally
+          // width: 816, 
+          // height: 1056,
+          // html2canvas-pro specific options
+          ignoreElements: (element: Element) => {
+            // Only skip actual problematic elements
+            return element.tagName === 'SCRIPT';
+          },
+          // Better CSS support in pro version
+          foreignObjectRendering: false, // Try without foreign object rendering first
           onclone: (clonedDoc: Document) => {
-            // Add CSS to override problematic color functions
+            // Enable print color adjustment - this is the only CSS override we need
             const style = clonedDoc.createElement("style");
             style.textContent = `
               * {
-                color: rgb(31, 41, 55) !important;
-                background-color: rgb(255, 255, 255) !important;
-                border-color: rgb(229, 231, 235) !important;
-              }
-              h1 {
-                color: rgb(31, 41, 55) !important;
-                background-color: transparent !important;
-              }
-              /* Override any oklch, hsl, or other unsupported color functions */
-              [style*="oklch"], [class*="text-"], [class*="bg-"], [class*="border-"] {
-                color: rgb(31, 41, 55) !important;
-                background-color: rgb(255, 255, 255) !important;
-                border-color: rgb(229, 231, 235) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
               }
             `;
             clonedDoc.head.appendChild(style);
           },
-        } as any);
+        });
 
-        // Convert canvas to image data
-        const imgData = canvas.toDataURL("image/png", 0.95); // Slightly compressed
+        // Convert canvas to image data with high quality
+        const imgData = canvas.toDataURL("image/png", 1.0); // Maximum quality
 
         // Calculate dimensions to fit the page properly
         const canvasWidth = canvas.width;
@@ -232,8 +234,13 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
               style={{
                 backgroundColor: "#ffffff",
                 fontFamily: "Arial, sans-serif",
-                transform: "scale(0.85)", // Scale down slightly to fit better in modal
-                transformOrigin: "top center",
+                // Remove transform scale that might cause positioning issues
+                // transform: "scale(0.85)", 
+                // transformOrigin: "top center",
+                WebkitPrintColorAdjust: "exact",
+                printColorAdjust: "exact",
+                // Add some margin for better modal display
+                margin: "20px 0",
               }}
             >
               {/* Health Metrics Report Page */}
@@ -247,6 +254,9 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
+                  backgroundColor: "#ffffff",
+                  WebkitPrintColorAdjust: "exact",
+                  printColorAdjust: "exact",
                 }}
               >
                 {/* Header */}
@@ -280,7 +290,57 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                   </p>
                 </div>
 
-                {/* Health Metrics Summary */}
+                {/* Weight Progress - Moved to Top */}
+                <div
+                  style={{
+                    backgroundColor: "#fef3c7",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "2px solid #fbbf24",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#d97706",
+                      marginTop: "0",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    Weight Progress (30 Days)
+                  </h2>
+                  <div
+                    style={{
+                      backgroundColor: "#ffffff",
+                      height: "120px",
+                      borderRadius: "6px",
+                      border: "1px solid #e5e7eb",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "12px",
+                      color: "#64748b",
+                      position: "relative",
+                    }}
+                  >
+                    {/* Simple ASCII-style graph placeholder */}
+                    <div style={{ fontFamily: "monospace", lineHeight: "1.2" }}>
+                      190 ├─●─────●───────●─────●─────●───
+                      <br />
+                      185 ├───●─────●─────●───●─────●─────
+                      <br />
+                      180 ├─────────────────────────────●─
+                      <br />
+                      175 └─────────────────────────────── <br />
+                      &nbsp;&nbsp;&nbsp;&nbsp;Week 1&nbsp;&nbsp;Week
+                      2&nbsp;&nbsp;Week 3&nbsp;&nbsp;Week 4
+                    </div>
+                  </div>
+                </div>
+
+                {/* Health Statistics Summary - Changed to Green */}
                 <div
                   style={{
                     backgroundColor: "#f0fdf4",
@@ -292,62 +352,9 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                 >
                   <h2
                     style={{
-                      fontSize: "18px",
-                      fontWeight: "600",
-                      color: "#166534",
-                      marginTop: "0",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    Health Metrics Overview
-                  </h2>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr 1fr",
-                      gap: "12px",
-                      fontSize: "13px",
-                    }}
-                  >
-                    <div>
-                      <strong>Weight (7-day):</strong>{" "}
-                      {healthStats?.weight?.day7Avg
-                        ? formatMetricValue(
-                            "weight",
-                            healthStats.weight.day7Avg
-                          )
-                        : "No data"}
-                    </div>
-                    <div>
-                      <strong>Steps (7-day):</strong>{" "}
-                      {healthStats?.steps?.day7Avg
-                        ? formatMetricValue("steps", healthStats.steps.day7Avg)
-                        : "No data"}
-                    </div>
-                    <div>
-                      <strong>Date:</strong>{" "}
-                      {checkIn?.date
-                        ? new Date(checkIn.date).toLocaleDateString()
-                        : new Date().toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Statistics Table - More Compact */}
-                <div
-                  style={{
-                    backgroundColor: "#faf5ff",
-                    padding: "16px",
-                    borderRadius: "8px",
-                    border: "2px solid #e9d5ff",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <h2
-                    style={{
                       fontSize: "16px",
                       fontWeight: "600",
-                      color: "#6b21a8",
+                      color: "#166534",
                       marginTop: "0",
                       marginBottom: "12px",
                     }}
@@ -362,14 +369,14 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                     }}
                   >
                     <thead>
-                      <tr style={{ backgroundColor: "#e9d5ff" }}>
+                      <tr style={{ backgroundColor: "#bbf7d0" }}>
                         <th
                           style={{
                             padding: "6px",
                             textAlign: "left",
-                            color: "#6b21a8",
+                            color: "#166534",
                             fontWeight: "600",
-                            border: "1px solid #d8b4fe",
+                            border: "1px solid #86efac",
                           }}
                         >
                           Metric
@@ -378,9 +385,9 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           style={{
                             padding: "6px",
                             textAlign: "center",
-                            color: "#6b21a8",
+                            color: "#166534",
                             fontWeight: "600",
-                            border: "1px solid #d8b4fe",
+                            border: "1px solid #86efac",
                           }}
                         >
                           Goal
@@ -389,9 +396,9 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           style={{
                             padding: "6px",
                             textAlign: "center",
-                            color: "#6b21a8",
+                            color: "#166534",
                             fontWeight: "600",
-                            border: "1px solid #d8b4fe",
+                            border: "1px solid #86efac",
                           }}
                         >
                           7-Day Avg
@@ -400,9 +407,9 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           style={{
                             padding: "6px",
                             textAlign: "center",
-                            color: "#6b21a8",
+                            color: "#166534",
                             fontWeight: "600",
-                            border: "1px solid #d8b4fe",
+                            border: "1px solid #86efac",
                           }}
                         >
                           30-Day Avg
@@ -525,56 +532,6 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                     </div>
                   </div>
                 )}
-
-                {/* Weight Graph - Reduced Size */}
-                <div
-                  style={{
-                    backgroundColor: "#fef3c7",
-                    padding: "16px",
-                    borderRadius: "8px",
-                    border: "2px solid #fbbf24",
-                    flex: "1",
-                  }}
-                >
-                  <h2
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#d97706",
-                      marginTop: "0",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    Weight Progress (30 Days)
-                  </h2>
-                  <div
-                    style={{
-                      backgroundColor: "#ffffff",
-                      height: "120px",
-                      borderRadius: "6px",
-                      border: "1px solid #e5e7eb",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "12px",
-                      color: "#64748b",
-                      position: "relative",
-                    }}
-                  >
-                    {/* Simple ASCII-style graph placeholder */}
-                    <div style={{ fontFamily: "monospace", lineHeight: "1.2" }}>
-                      190 ├─●─────●───────●─────●─────●───
-                      <br />
-                      185 ├───●─────●─────●───●─────●─────
-                      <br />
-                      180 ├─────────────────────────────●─
-                      <br />
-                      175 └─────────────────────────────── <br />
-                      &nbsp;&nbsp;&nbsp;&nbsp;Week 1&nbsp;&nbsp;Week
-                      2&nbsp;&nbsp;Week 3&nbsp;&nbsp;Week 4
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Second page placeholder - can be removed or used for additional content */}
