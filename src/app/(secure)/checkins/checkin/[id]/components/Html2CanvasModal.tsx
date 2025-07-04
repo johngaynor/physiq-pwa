@@ -14,7 +14,6 @@ import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { CheckIn } from "../../../state/types";
 import WeightChart from "./WeightChart";
-import { DateTime } from "luxon";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
@@ -320,10 +319,6 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
     }
   };
 
-  const todayLog = dailyLogs?.find(
-    (log) => log.date === DateTime.now().toISODate()
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -401,7 +396,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           marginTop: "0",
                         }}
                       >
-                        Gaynor Check-ins {checkIn?.date}
+                        Progress Photo {index + 1}
                       </h1>
                       <p
                         style={{
@@ -410,12 +405,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           margin: "0",
                         }}
                       >
-                        {todayLog && todayLog.weight && todayLog.bodyfat
-                          ? todayLog.weight +
-                            "lbs - " +
-                            todayLog.bodyfat +
-                            "% bodyfat"
-                          : "--"}
+                        {new Date().toLocaleDateString()}
                       </p>
                     </div>
 
@@ -513,14 +503,14 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                 >
                   <h1
                     style={{
-                      fontSize: "28px",
+                      fontSize: "32px",
                       fontWeight: "bold",
                       color: "#1f2937",
                       marginBottom: "8px",
                       marginTop: "0",
                     }}
                   >
-                    Gaynor Check-ins {checkIn?.date}
+                    Health Metrics Report
                   </h1>
                   <p
                     style={{
@@ -529,12 +519,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       margin: "0",
                     }}
                   >
-                    {todayLog && todayLog.weight && todayLog.bodyfat
-                      ? todayLog.weight +
-                        "lbs - " +
-                        todayLog.bodyfat +
-                        "% bodyfat"
-                      : "--"}
+                    Generated on {new Date().toLocaleDateString()}
                   </p>
                 </div>
 
