@@ -178,19 +178,31 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         console.log("Preloading images...");
         await Promise.all(
           photos.map((photo) => {
-            return new Promise<void>((resolve, reject) => {
+            return new Promise<void>((resolve) => {
               const img = new Image();
-              img.crossOrigin = "anonymous";
-              img.onload = () => resolve();
-              img.onerror = () => {
-                console.warn(`Failed to preload image: ${photo}`);
-                reject(); // Continue even if some images fail
+              
+              // Set up the load handler first
+              img.onload = () => {
+                console.log(`Successfully preloaded image: ${photo}`);
+                resolve();
               };
+              
+              img.onerror = () => {
+                console.warn(`Failed to preload image: ${photo}, but continuing...`);
+                resolve(); // Resolve instead of reject to continue with other images
+              };
+              
+              // Only set crossOrigin if the image is from a different origin
+              if (!photo.startsWith(window.location.origin) && !photo.startsWith('data:')) {
+                img.crossOrigin = "anonymous";
+              }
+              
+              // Set the src last to trigger loading
               img.src = photo;
             });
           })
         );
-        console.log("Images preloaded successfully");
+        console.log("Images preloading completed");
       }
 
       // Import jsPDF dynamically to avoid SSR issues
@@ -217,7 +229,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         // Generate canvas for each individual page using html2canvas-pro
         const canvas = await html2canvas(pageElement, {
           useCORS: true,
-          allowTaint: false, // Changed from true to false for better CORS handling
+          allowTaint: true, // Allow tainted canvas for better compatibility
           logging: true, // Enable logging to debug issues
           scale: 2, // Higher scale for better quality
           backgroundColor: "#ffffff",
@@ -246,20 +258,21 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
             `;
             clonedDoc.head.appendChild(style);
 
-            // Ensure all images in the cloned document have proper CORS attributes
+            // Fix images in the cloned document
             const images = clonedDoc.querySelectorAll("img");
             images.forEach((img) => {
               if (img instanceof HTMLImageElement) {
-                img.crossOrigin = "anonymous";
-                // Force reload the image if it's not from the same origin
-                if (
-                  !img.src.startsWith(window.location.origin) &&
-                  !img.src.startsWith("data:")
-                ) {
-                  const originalSrc = img.src;
-                  img.src = "";
-                  img.src = originalSrc;
+                // Remove crossOrigin to avoid CORS issues in html2canvas
+                img.removeAttribute('crossorigin');
+                
+                // If it's a blob URL or data URL, leave it as is
+                if (img.src.startsWith('blob:') || img.src.startsWith('data:')) {
+                  return;
                 }
+                
+                // For other images, ensure they're loaded
+                const originalSrc = img.src;
+                img.src = originalSrc;
               }
             });
           },
@@ -433,18 +446,11 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           borderRadius: "4px",
                           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                         }}
-                        crossOrigin="anonymous"
                         onError={(e) => {
                           console.error(
                             `Failed to load image ${index + 1}:`,
                             photo
                           );
-                          // Try to reload without CORS if it fails
-                          const img = e.target as HTMLImageElement;
-                          if (img.crossOrigin) {
-                            img.crossOrigin = "";
-                            img.src = photo;
-                          }
                         }}
                         onLoad={() => {
                           console.log(`Image ${index + 1} loaded successfully`);
