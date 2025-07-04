@@ -175,7 +175,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
     try {
       // Preload all images to ensure they're fully loaded before capturing
       if (photos && photos.length > 0) {
-        console.log("Preloading images...");
+        // console.log("Preloading images...");
         await Promise.all(
           photos.map((photo) => {
             return new Promise<void>((resolve) => {
@@ -183,7 +183,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
               // Set up the load handler first
               img.onload = () => {
-                console.log(`Successfully preloaded image: ${photo}`);
+                // console.log(`Successfully preloaded image: ${photo}`);
                 resolve();
               };
 
@@ -207,7 +207,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
             });
           })
         );
-        console.log("Images preloading completed");
+        // console.log("Images preloading completed");
       }
 
       // Import jsPDF dynamically to avoid SSR issues
@@ -220,11 +220,11 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
       // Find all page elements (direct children of contentRef)
       const pages = Array.from(contentRef.current.children) as HTMLElement[];
-      console.log(`Found ${pages.length} pages to render`);
+      // console.log(`Found ${pages.length} pages to render`);
 
       for (let i = 0; i < pages.length; i++) {
         const pageElement = pages[i];
-        console.log(`Rendering page ${i + 1}/${pages.length}`);
+        // console.log(`Rendering page ${i + 1}/${pages.length}`);
 
         // Add new page for each page except the first
         if (i > 0) {
@@ -316,11 +316,11 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         const x = (pageWidth - imgWidth) / 2;
         const y = (pageHeight - imgHeight) / 2;
 
-        console.log(
-          `Adding page ${
-            i + 1
-          } to PDF: ${imgWidth}x${imgHeight}mm at (${x}, ${y})`
-        );
+        // console.log(
+        //   `Adding page ${
+        //     i + 1
+        //   } to PDF: ${imgWidth}x${imgHeight}mm at (${x}, ${y})`
+        // );
 
         // Add image to PDF page
         pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
@@ -330,7 +330,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
       const filename = `check-in-report-${
         new Date().toISOString().split("T")[0]
       }.pdf`;
-      console.log(`Saving PDF as: ${filename}`);
+      // console.log(`Saving PDF as: ${filename}`);
       pdf.save(filename);
     } catch (error) {
       console.error("Error generating PDF:", error);
