@@ -454,7 +454,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           borderRadius: "4px",
                           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                         }}
-                        onError={(e) => {
+                        onError={() => {
                           console.error(
                             `Failed to load image ${index + 1}:`,
                             photo
