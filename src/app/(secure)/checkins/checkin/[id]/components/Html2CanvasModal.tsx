@@ -153,21 +153,21 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   };
 
   // Helper function to convert image URL to base64
-  const convertImageToBase64 = async (url: string): Promise<string> => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch (error) {
-      console.warn(`Failed to convert image to base64: ${url}`, error);
-      return url; // Return original URL as fallback
-    }
-  };
+  // const convertImageToBase64 = async (url: string): Promise<string> => {
+  //   try {
+  //     const response = await fetch(url);
+  //     const blob = await response.blob();
+  //     return new Promise((resolve, reject) => {
+  //       const reader = new FileReader();
+  //       reader.onload = () => resolve(reader.result as string);
+  //       reader.onerror = reject;
+  //       reader.readAsDataURL(blob);
+  //     });
+  //   } catch (error) {
+  //     console.warn(`Failed to convert image to base64: ${url}`, error);
+  //     return url; // Return original URL as fallback
+  //   }
+  // };
 
   const generateImage = async () => {
     if (!contentRef.current) return;
@@ -185,7 +185,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
               img.onload = () => resolve();
               img.onerror = () => {
                 console.warn(`Failed to preload image: ${photo}`);
-                resolve(); // Continue even if some images fail
+                reject(); // Continue even if some images fail
               };
               img.src = photo;
             });
