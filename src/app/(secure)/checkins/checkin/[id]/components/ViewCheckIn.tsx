@@ -131,12 +131,18 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 photos={attachments
                   ?.filter((attachment) => {
                     // Only include image attachments
-                    const isImage = attachment.filename?.match(
+                    const isImage = attachment.s3Filename?.match(
                       /\.(jpg|jpeg|png|gif|webp)$/i
                     );
-                    return isImage && attachment.url;
+                    return isImage && (attachment.blob?.data || attachment.url);
                   })
-                  .map((attachment) => attachment.url!)}
+                  .map((attachment) => {
+                    // Use blob data if available, otherwise fall back to URL
+                    if (attachment.blob?.data && attachment.blob?.contentType) {
+                      return `data:${attachment.blob.contentType};base64,${attachment.blob.data}`;
+                    }
+                    return attachment.url!;
+                  })}
                 healthStats={healthStats}
                 dietLog={dietLog}
                 checkIn={checkIn}
