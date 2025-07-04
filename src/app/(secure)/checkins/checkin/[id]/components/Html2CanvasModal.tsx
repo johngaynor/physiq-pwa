@@ -14,6 +14,7 @@ import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { CheckIn } from "../../../state/types";
 import WeightChart from "./WeightChart";
+import { DateTime } from "luxon";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
@@ -150,23 +151,6 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
     return trends.join(", ");
   };
-
-  // Helper function to convert image URL to base64
-  // const convertImageToBase64 = async (url: string): Promise<string> => {
-  //   try {
-  //     const response = await fetch(url);
-  //     const blob = await response.blob();
-  //     return new Promise((resolve, reject) => {
-  //       const reader = new FileReader();
-  //       reader.onload = () => resolve(reader.result as string);
-  //       reader.onerror = reject;
-  //       reader.readAsDataURL(blob);
-  //     });
-  //   } catch (error) {
-  //     console.warn(`Failed to convert image to base64: ${url}`, error);
-  //     return url; // Return original URL as fallback
-  //   }
-  // };
 
   const generateImage = async () => {
     if (!contentRef.current) return;
@@ -340,6 +324,8 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
     }
   };
 
+  const todayLog = dailyLogs?.find((d) => d.date === checkIn?.date);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -417,7 +403,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           marginTop: "0",
                         }}
                       >
-                        Progress Photo {index + 1}
+                        Gaynor Check-ins {checkIn?.date}
                       </h1>
                       <p
                         style={{
@@ -426,7 +412,14 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           margin: "0",
                         }}
                       >
-                        {new Date().toLocaleDateString()}
+                        {todayLog && todayLog.weight && todayLog.bodyfat ? (
+                          <span>
+                            Weight: {todayLog.weight.toFixed(1)} lbs | Bodyfat:{" "}
+                            {todayLog.bodyfat.toFixed(1)} %
+                          </span>
+                        ) : (
+                          <span>No weight/bodyfat % data today.</span>
+                        )}
                       </p>
                     </div>
 
@@ -461,7 +454,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           );
                         }}
                         onLoad={() => {
-                          console.log(`Image ${index + 1} loaded successfully`);
+                          // console.log(`Image ${index + 1} loaded successfully`);
                         }}
                       />
                     </div>
@@ -517,14 +510,14 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                 >
                   <h1
                     style={{
-                      fontSize: "32px",
+                      fontSize: "28px",
                       fontWeight: "bold",
                       color: "#1f2937",
                       marginBottom: "8px",
                       marginTop: "0",
                     }}
                   >
-                    Health Metrics Report
+                    Gaynor Check-ins {checkIn?.date}
                   </h1>
                   <p
                     style={{
@@ -533,10 +526,16 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       margin: "0",
                     }}
                   >
-                    Generated on {new Date().toLocaleDateString()}
+                    {todayLog && todayLog.weight && todayLog.bodyfat ? (
+                      <span>
+                        Weight: {todayLog.weight} lbs | Bodyfat:{" "}
+                        {todayLog.bodyfat} %
+                      </span>
+                    ) : (
+                      <span>No weight/bodyfat % data today.</span>
+                    )}
                   </p>
                 </div>
-
                 {/* Weight Progress  */}
                 <div
                   style={{

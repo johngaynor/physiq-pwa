@@ -77,7 +77,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   dietLog,
 }) => {
   const router = useRouter();
-  console.log(attachments);
 
   if (!checkIn) {
     return (
@@ -227,7 +226,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                     const isImage = attachment.s3Filename?.match(
                       /\.(jpg|jpeg|png|gif|webp)$/i
                     );
-                    
+
                     // Use blob data if available, otherwise fall back to URL
                     let imageUrl: string | undefined;
                     if (attachment.blob?.data && attachment.blob?.contentType) {
@@ -244,10 +243,13 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                         <div className="aspect-square relative">
                           {isImage && imageUrl ? (
                             // Use regular img tag for base64 data, Next.js Image for URLs
-                            imageUrl.startsWith('data:') ? (
+                            imageUrl.startsWith("data:") ? (
                               <img
                                 src={imageUrl}
-                                alt={attachment.s3Filename || `Attachment ${index + 1}`}
+                                alt={
+                                  attachment.s3Filename ||
+                                  `Attachment ${index + 1}`
+                                }
                                 className="w-full h-full object-cover rounded-lg"
                                 onError={(e) => {
                                   console.error(
@@ -263,7 +265,10 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                                       <div class="flex flex-col items-center justify-center h-full p-4">
                                         <div class="text-4xl mb-2">📄</div>
                                         <div class="text-sm text-center font-medium truncate w-full">
-                                          ${attachment.s3Filename || "Unknown file"}
+                                          ${
+                                            attachment.s3Filename ||
+                                            "Unknown file"
+                                          }
                                         </div>
                                       </div>
                                     `;
@@ -274,7 +279,8 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                               <Image
                                 src={imageUrl}
                                 alt={
-                                  attachment.s3Filename || `Attachment ${index + 1}`
+                                  attachment.s3Filename ||
+                                  `Attachment ${index + 1}`
                                 }
                                 fill
                                 className="object-cover rounded-lg"
@@ -294,7 +300,10 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                                       <div class="flex flex-col items-center justify-center h-full p-4">
                                         <div class="text-4xl mb-2">📄</div>
                                         <div class="text-sm text-center font-medium truncate w-full">
-                                          ${attachment.s3Filename || "Unknown file"}
+                                          ${
+                                            attachment.s3Filename ||
+                                            "Unknown file"
+                                          }
                                         </div>
                                       </div>
                                     `;
