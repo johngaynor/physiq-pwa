@@ -790,6 +790,370 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                   </div>
                 )}
               </div>
+
+              {/* Diet & Supplements Report Page */}
+              <div
+                style={{
+                  width: "816px", // 8.5 inches at 96 DPI
+                  height: "1056px", // 11 inches at 96 DPI
+                  padding: "24px",
+                  boxSizing: "border-box",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  backgroundColor: "#ffffff",
+                  WebkitPrintColorAdjust: "exact",
+                  printColorAdjust: "exact",
+                }}
+              >
+                {/* Header */}
+                <div
+                  style={{
+                    textAlign: "center",
+                    borderBottom: "2px solid #1f2937",
+                    paddingBottom: "20px",
+                    marginBottom: "30px",
+                  }}
+                >
+                  <h1
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: "bold",
+                      color: "#1f2937",
+                      marginBottom: "8px",
+                      marginTop: "0",
+                    }}
+                  >
+                    Gaynor Check-ins {checkIn?.date}
+                  </h1>
+                  <p
+                    style={{
+                      color: "#4b5563",
+                      fontSize: "16px",
+                      margin: "0",
+                    }}
+                  >
+                    {todayLog && todayLog.weight && todayLog.bodyfat ? (
+                      <span>
+                        Weight: {todayLog.weight} lbs | Bodyfat:{" "}
+                        {todayLog.bodyfat} %
+                      </span>
+                    ) : (
+                      <span>No weight/bodyfat % data today.</span>
+                    )}
+                  </p>
+                </div>
+                {/* Diet Log Summary */}
+                <div
+                  style={{
+                    backgroundColor: "#f3f4f6",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "2px solid #a855f7",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#7c3aed",
+                      marginTop: "0",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    Diet and Activity (Effective {dietLog?.effectiveDate})
+                  </h2>
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      fontSize: "12px",
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: "#ddd6fe" }}>
+                        <th
+                          style={{
+                            padding: "8px",
+                            textAlign: "left",
+                            color: "#7c3aed",
+                            fontWeight: "600",
+                            border: "1px solid #c4b5fd",
+                          }}
+                        >
+                          Metric
+                        </th>
+                        <th
+                          style={{
+                            padding: "8px",
+                            textAlign: "center",
+                            color: "#7c3aed",
+                            fontWeight: "600",
+                            border: "1px solid #c4b5fd",
+                          }}
+                        >
+                          Target Value
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ backgroundColor: "#ffffff" }}>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          Calories
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            textAlign: "center",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {dietLog?.calories
+                            ? `${dietLog.calories.toLocaleString()}`
+                            : "Not set"}
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#f9fafb" }}>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          Protein (g)
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            textAlign: "center",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {dietLog?.protein ? `${dietLog.protein}g` : "Not set"}
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#ffffff" }}>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          Carbohydrates (g)
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            textAlign: "center",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {dietLog?.carbs ? `${dietLog.carbs}g` : "Not set"}
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#f9fafb" }}>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          Fat (g)
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            textAlign: "center",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {dietLog?.fat ? `${dietLog.fat}g` : "Not set"}
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#ffffff" }}>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          Water (oz)
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            textAlign: "center",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {dietLog?.water ? `${dietLog.water} oz` : "Not set"}
+                        </td>
+                      </tr>
+                      <tr style={{ backgroundColor: "#f9fafb" }}>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          Steps
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 8px",
+                            textAlign: "center",
+                            color: "#374151",
+                            border: "1px solid #e5e7eb",
+                          }}
+                        >
+                          {dietLog?.steps
+                            ? `${dietLog.steps.toLocaleString()}`
+                            : "Not set"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Supplements Summary */}
+                <div
+                  style={{
+                    backgroundColor: "#fef2f2",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "2px solid #ef4444",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#dc2626",
+                      marginTop: "0",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    Supplements (Effective {dietLog?.effectiveDate})
+                  </h2>
+                  {dietLog?.supplements && dietLog.supplements.length > 0 ? (
+                    <table
+                      style={{
+                        width: "100%",
+                        borderCollapse: "collapse",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <thead>
+                        <tr style={{ backgroundColor: "#fecaca" }}>
+                          <th
+                            style={{
+                              padding: "8px",
+                              textAlign: "left",
+                              color: "#dc2626",
+                              fontWeight: "600",
+                              border: "1px solid #fca5a5",
+                            }}
+                          >
+                            Supplement Name
+                          </th>
+                          <th
+                            style={{
+                              padding: "8px",
+                              textAlign: "center",
+                              color: "#dc2626",
+                              fontWeight: "600",
+                              border: "1px solid #fca5a5",
+                            }}
+                          >
+                            Dosage
+                          </th>
+                          <th
+                            style={{
+                              padding: "8px",
+                              textAlign: "center",
+                              color: "#dc2626",
+                              fontWeight: "600",
+                              border: "1px solid #fca5a5",
+                            }}
+                          >
+                            Frequency
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {dietLog.supplements.map((supplement, index) => (
+                          <tr
+                            key={index}
+                            style={{
+                              backgroundColor:
+                                index % 2 === 0 ? "#ffffff" : "#f9fafb",
+                            }}
+                          >
+                            <td
+                              style={{
+                                padding: "6px 8px",
+                                color: "#374151",
+                                border: "1px solid #e5e7eb",
+                              }}
+                            >
+                              {supplement.name || "Unknown"}
+                            </td>
+                            <td
+                              style={{
+                                padding: "6px 8px",
+                                textAlign: "center",
+                                color: "#374151",
+                                border: "1px solid #e5e7eb",
+                              }}
+                            >
+                              {supplement.dosage || "Not specified"}
+                            </td>
+                            <td
+                              style={{
+                                padding: "6px 8px",
+                                textAlign: "center",
+                                color: "#374151",
+                                border: "1px solid #e5e7eb",
+                              }}
+                            >
+                              {supplement.frequency || "Not specified"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        padding: "20px",
+                        color: "#6b7280",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      No supplements currently prescribed
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
