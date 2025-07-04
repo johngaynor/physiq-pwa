@@ -174,24 +174,42 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
     setIsGenerating(true);
     try {
-      // Preload all images to ensure they're fully loaded before capturing
+      // Convert all photos to base64 to avoid CORS issues
+      let convertedPhotos: string[] = [];
       if (photos && photos.length > 0) {
-        console.log("Preloading images...");
-        await Promise.all(
-          photos.map((photo) => {
-            return new Promise<void>((resolve, reject) => {
-              const img = new Image();
-              img.crossOrigin = "anonymous";
-              img.onload = () => resolve();
-              img.onerror = () => {
-                console.warn(`Failed to preload image: ${photo}`);
-                resolve(); // Continue even if some images fail
-              };
-              img.src = photo;
-            });
+        console.log("Converting images to base64...");
+        convertedPhotos = await Promise.all(
+          photos.map(async (photo) => {
+            try {
+              const base64Photo = await convertImageToBase64(photo);
+              console.log(
+                `Successfully converted image to base64: ${photo.substring(
+                  0,
+                  50
+                )}...`
+              );
+              return base64Photo;
+            } catch (error) {
+              console.warn(
+                `Failed to convert image to base64, using original URL: ${photo}`,
+                error
+              );
+              return photo; // Fallback to original URL
+            }
           })
         );
-        console.log("Images preloaded successfully");
+        console.log("Images converted to base64 successfully");
+
+        // Update the images in the DOM with base64 versions
+        const images = contentRef.current.querySelectorAll("img");
+        images.forEach((img, index) => {
+          if (index < convertedPhotos.length) {
+            img.src = convertedPhotos[index];
+          }
+        });
+
+        // Wait a moment for DOM to update
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
       // Import jsPDF dynamically to avoid SSR issues
@@ -217,8 +235,8 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
         // Generate canvas for each individual page using html2canvas-pro
         const canvas = await html2canvas(pageElement, {
-          useCORS: true,
-          allowTaint: false, // Changed from true to false for better CORS handling
+          useCORS: false, // Disable CORS since we're using base64 images
+          allowTaint: true, // Allow base64 images
           logging: true, // Enable logging to debug issues
           scale: 2, // Higher scale for better quality
           backgroundColor: "#ffffff",
@@ -247,20 +265,15 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
             `;
             clonedDoc.head.appendChild(style);
 
-            // Ensure all images in the cloned document have proper CORS attributes
+            // Ensure all images in the cloned document are using base64 data
             const images = clonedDoc.querySelectorAll("img");
-            images.forEach((img) => {
-              if (img instanceof HTMLImageElement) {
-                img.crossOrigin = "anonymous";
-                // Force reload the image if it's not from the same origin
-                if (
-                  !img.src.startsWith(window.location.origin) &&
-                  !img.src.startsWith("data:")
-                ) {
-                  const originalSrc = img.src;
-                  img.src = "";
-                  img.src = originalSrc;
-                }
+            images.forEach((img, index) => {
+              if (
+                img instanceof HTMLImageElement &&
+                index < convertedPhotos.length
+              ) {
+                img.src = convertedPhotos[index];
+                img.crossOrigin = ""; // Remove crossOrigin for base64 images
               }
             });
           },
@@ -445,7 +458,10 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                         }}
                         crossOrigin="anonymous"
                         onError={(e) => {
-                          console.error(`Failed to load image ${index + 1}:`, photo);
+                          console.error(
+                            `Failed to load image ${index + 1}:`,
+                            photo
+                          );
                           // Try to reload without CORS if it fails
                           const img = e.target as HTMLImageElement;
                           if (img.crossOrigin) {
