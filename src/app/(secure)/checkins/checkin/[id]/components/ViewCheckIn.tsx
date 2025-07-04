@@ -26,11 +26,12 @@ import Html2CanvasModal from "./Html2CanvasModal";
 const calculateMetricAverage = (
   dailyLogs: DailyLog[] | null,
   metricField: keyof DailyLog,
-  days: number
+  days: number,
+  checkInDate: string | null
 ): number | null => {
   if (!dailyLogs || dailyLogs.length === 0) return null;
 
-  const now = DateTime.now();
+  const now = DateTime.fromISO(checkInDate || DateTime.now().toISO());
   const cutoffDate = now.minus({ days });
 
   const relevantLogs = dailyLogs.filter((log) => {
@@ -104,8 +105,8 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
 
   const healthStats = metrics.reduce((acc, metric) => {
     acc[metric] = {
-      day7Avg: calculateMetricAverage(dailyLogs, metric, 7),
-      day30Avg: calculateMetricAverage(dailyLogs, metric, 30),
+      day7Avg: calculateMetricAverage(dailyLogs, metric, 7, checkIn.date),
+      day30Avg: calculateMetricAverage(dailyLogs, metric, 30, checkIn.date),
     };
     return acc;
   }, {} as Record<(typeof metrics)[number], { day7Avg: number | null; day30Avg: number | null }>);

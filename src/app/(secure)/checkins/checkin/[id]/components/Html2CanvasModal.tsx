@@ -51,7 +51,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
       case "steps":
         return `${Math.round(value).toLocaleString()}`;
       case "totalSleep":
-        return `${(value / 60).toFixed(1)} hrs`; // Convert minutes to hours
+        return `${value.toFixed(1)} hrs`; // Convert minutes to hours
       case "weight":
         return `${value.toFixed(1)} lbs`;
       default:
