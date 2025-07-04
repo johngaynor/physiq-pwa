@@ -152,11 +152,48 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
     return trends.join(", ");
   };
 
+  // Helper function to convert image URL to base64
+  const convertImageToBase64 = async (url: string): Promise<string> => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.warn(`Failed to convert image to base64: ${url}`, error);
+      return url; // Return original URL as fallback
+    }
+  };
+
   const generateImage = async () => {
     if (!contentRef.current) return;
 
     setIsGenerating(true);
     try {
+      // Preload all images to ensure they're fully loaded before capturing
+      if (photos && photos.length > 0) {
+        console.log("Preloading images...");
+        await Promise.all(
+          photos.map((photo) => {
+            return new Promise<void>((resolve, reject) => {
+              const img = new Image();
+              img.crossOrigin = "anonymous";
+              img.onload = () => resolve();
+              img.onerror = () => {
+                console.warn(`Failed to preload image: ${photo}`);
+                resolve(); // Continue even if some images fail
+              };
+              img.src = photo;
+            });
+          })
+        );
+        console.log("Images preloaded successfully");
+      }
+
       // Import jsPDF dynamically to avoid SSR issues
       const { jsPDF } = await import("jspdf");
 
@@ -181,30 +218,51 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         // Generate canvas for each individual page using html2canvas-pro
         const canvas = await html2canvas(pageElement, {
           useCORS: true,
-          allowTaint: true,
+          allowTaint: false, // Changed from true to false for better CORS handling
           logging: true, // Enable logging to debug issues
           scale: 2, // Higher scale for better quality
           backgroundColor: "#ffffff",
-          // Remove forced dimensions to let html2canvas calculate naturally
-          // width: 816,
-          // height: 1056,
           // html2canvas-pro specific options
           ignoreElements: (element: Element) => {
             // Only skip actual problematic elements
             return element.tagName === "SCRIPT";
           },
           // Better CSS support in pro version
-          foreignObjectRendering: false, // Try without foreign object rendering first
+          foreignObjectRendering: false,
+          // Additional options for better image handling
+          imageTimeout: 15000, // Wait up to 15 seconds for images to load
           onclone: (clonedDoc: Document) => {
-            // Enable print color adjustment - this is the only CSS override we need
+            // Enable print color adjustment and fix image issues
             const style = clonedDoc.createElement("style");
             style.textContent = `
               * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
               }
+              img {
+                max-width: 100% !important;
+                max-height: 100% !important;
+                object-fit: contain !important;
+              }
             `;
             clonedDoc.head.appendChild(style);
+
+            // Ensure all images in the cloned document have proper CORS attributes
+            const images = clonedDoc.querySelectorAll("img");
+            images.forEach((img) => {
+              if (img instanceof HTMLImageElement) {
+                img.crossOrigin = "anonymous";
+                // Force reload the image if it's not from the same origin
+                if (
+                  !img.src.startsWith(window.location.origin) &&
+                  !img.src.startsWith("data:")
+                ) {
+                  const originalSrc = img.src;
+                  img.src = "";
+                  img.src = originalSrc;
+                }
+              }
+            });
           },
         });
 
@@ -386,6 +444,18 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                         }}
                         crossOrigin="anonymous"
+                        onError={(e) => {
+                          console.error(`Failed to load image ${index + 1}:`, photo);
+                          // Try to reload without CORS if it fails
+                          const img = e.target as HTMLImageElement;
+                          if (img.crossOrigin) {
+                            img.crossOrigin = "";
+                            img.src = photo;
+                          }
+                        }}
+                        onLoad={() => {
+                          console.log(`Image ${index + 1} loaded successfully`);
+                        }}
                       />
                     </div>
 
