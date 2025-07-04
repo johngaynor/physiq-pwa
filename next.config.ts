@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/checkins/checkin",
-        destination: "/checkin",
+        destination: "/checkins",
         permanent: true,
       },
     ];
