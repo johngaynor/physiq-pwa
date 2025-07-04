@@ -12,7 +12,7 @@ export type DietLogSupplement = {
   id?: number;
   logId?: number;
   supplementId: number;
-  name: string;
+  name?: string;
   dosage: string;
   frequency: string;
 };
