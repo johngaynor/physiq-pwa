@@ -14,7 +14,6 @@ import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { CheckIn } from "../../../state/types";
 import WeightChart from "./WeightChart";
-import { DateTime } from "luxon";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
