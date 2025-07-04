@@ -180,23 +180,28 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
           photos.map((photo) => {
             return new Promise<void>((resolve) => {
               const img = new Image();
-              
+
               // Set up the load handler first
               img.onload = () => {
                 console.log(`Successfully preloaded image: ${photo}`);
                 resolve();
               };
-              
+
               img.onerror = () => {
-                console.warn(`Failed to preload image: ${photo}, but continuing...`);
+                console.warn(
+                  `Failed to preload image: ${photo}, but continuing...`
+                );
                 resolve(); // Resolve instead of reject to continue with other images
               };
-              
+
               // Only set crossOrigin if the image is from a different origin
-              if (!photo.startsWith(window.location.origin) && !photo.startsWith('data:')) {
+              if (
+                !photo.startsWith(window.location.origin) &&
+                !photo.startsWith("data:")
+              ) {
                 img.crossOrigin = "anonymous";
               }
-              
+
               // Set the src last to trigger loading
               img.src = photo;
             });
@@ -263,13 +268,16 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
             images.forEach((img) => {
               if (img instanceof HTMLImageElement) {
                 // Remove crossOrigin to avoid CORS issues in html2canvas
-                img.removeAttribute('crossorigin');
-                
+                img.removeAttribute("crossorigin");
+
                 // If it's a blob URL or data URL, leave it as is
-                if (img.src.startsWith('blob:') || img.src.startsWith('data:')) {
+                if (
+                  img.src.startsWith("blob:") ||
+                  img.src.startsWith("data:")
+                ) {
                   return;
                 }
-                
+
                 // For other images, ensure they're loaded
                 const originalSrc = img.src;
                 img.src = originalSrc;
