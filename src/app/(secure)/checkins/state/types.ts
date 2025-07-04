@@ -17,6 +17,12 @@ export type CheckInAttachment = {
   poseId?: number;
   url?: string;
   filename?: string;
+  blob?: {
+    contentType: string;
+    data: string; // base64 encoded image data
+    lastModified: string;
+    size: number;
+  };
 };
 
 export type CheckIn = {

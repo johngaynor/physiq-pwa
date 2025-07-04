@@ -77,6 +77,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   dietLog,
 }) => {
   const router = useRouter();
+  console.log(attachments);
 
   if (!checkIn) {
     return (
@@ -217,11 +218,17 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {attachments.map((attachment, index) => {
-                    const isImage = attachment.filename?.match(
+                    const isImage = attachment.s3Filename?.match(
                       /\.(jpg|jpeg|png|gif|webp)$/i
                     );
-                    // Use the signed URL from backend
-                    const imageUrl = attachment.url;
+                    
+                    // Use blob data if available, otherwise fall back to URL
+                    let imageUrl: string | undefined;
+                    if (attachment.blob?.data && attachment.blob?.contentType) {
+                      imageUrl = `data:${attachment.blob.contentType};base64,${attachment.blob.data}`;
+                    } else {
+                      imageUrl = attachment.url;
+                    }
 
                     return (
                       <div
@@ -230,41 +237,70 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                       >
                         <div className="aspect-square relative">
                           {isImage && imageUrl ? (
-                            <Image
-                              src={imageUrl}
-                              alt={
-                                attachment.filename || `Attachment ${index + 1}`
-                              }
-                              fill
-                              className="object-cover rounded-lg"
-                              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                              unoptimized={true}
-                              onError={(e) => {
-                                console.error(
-                                  `Image failed to load: ${attachment.filename}`,
-                                  e
-                                );
-                                // Fallback to file icon if image fails to load
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = "none";
-                                const parent = target.parentElement;
-                                if (parent) {
-                                  parent.innerHTML = `
-                                    <div class="flex flex-col items-center justify-center h-full p-4">
-                                      <div class="text-4xl mb-2">📄</div>
-                                      <div class="text-sm text-center font-medium truncate w-full">
-                                        ${attachment.filename || "Unknown file"}
+                            // Use regular img tag for base64 data, Next.js Image for URLs
+                            imageUrl.startsWith('data:') ? (
+                              <img
+                                src={imageUrl}
+                                alt={attachment.s3Filename || `Attachment ${index + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                                onError={(e) => {
+                                  console.error(
+                                    `Image failed to load: ${attachment.s3Filename}`,
+                                    e
+                                  );
+                                  // Fallback to file icon if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = "none";
+                                  const parent = target.parentElement;
+                                  if (parent) {
+                                    parent.innerHTML = `
+                                      <div class="flex flex-col items-center justify-center h-full p-4">
+                                        <div class="text-4xl mb-2">📄</div>
+                                        <div class="text-sm text-center font-medium truncate w-full">
+                                          ${attachment.s3Filename || "Unknown file"}
+                                        </div>
                                       </div>
-                                    </div>
-                                  `;
+                                    `;
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <Image
+                                src={imageUrl}
+                                alt={
+                                  attachment.s3Filename || `Attachment ${index + 1}`
                                 }
-                              }}
-                            />
+                                fill
+                                className="object-cover rounded-lg"
+                                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                unoptimized={true}
+                                onError={(e) => {
+                                  console.error(
+                                    `Image failed to load: ${attachment.s3Filename}`,
+                                    e
+                                  );
+                                  // Fallback to file icon if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = "none";
+                                  const parent = target.parentElement;
+                                  if (parent) {
+                                    parent.innerHTML = `
+                                      <div class="flex flex-col items-center justify-center h-full p-4">
+                                        <div class="text-4xl mb-2">📄</div>
+                                        <div class="text-sm text-center font-medium truncate w-full">
+                                          ${attachment.s3Filename || "Unknown file"}
+                                        </div>
+                                      </div>
+                                    `;
+                                  }
+                                }}
+                              />
+                            )
                           ) : (
                             <div className="flex flex-col items-center justify-center h-full p-4">
                               <div className="text-4xl mb-2">📄</div>
                               <div className="text-sm text-center font-medium truncate w-full">
-                                {attachment.filename || "Unknown file"}
+                                {attachment.s3Filename || "Unknown file"}
                               </div>
                             </div>
                           )}
@@ -272,7 +308,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                         {/* File info overlay */}
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <div className="text-xs truncate">
-                            {attachment.filename}
+                            {attachment.s3Filename}
                           </div>
                         </div>
                       </div>
