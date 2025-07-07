@@ -7,9 +7,11 @@ import {
   LOAD_DELETE_CHECKIN,
   FETCH_CHECKIN_ATTACHMENTS,
   LOAD_CHECKIN_ATTACHMENTS,
+  FETCH_POSES,
+  LOAD_POSES,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { CheckIn, CheckInAttachment } from "./types";
+import { CheckIn, CheckInAttachment, Pose } from "./types";
 
 export const getCheckIns = () => {
   return api
@@ -74,5 +76,14 @@ export const getCheckInAttachments = (checkInId: number) => {
       attachments: data,
     }))
     .error("Error fetching check-in attachments")
+    .get();
+};
+
+export const getPoses = () => {
+  return api
+    .route("/api/checkins/poses")
+    .fetch(() => ({ type: FETCH_POSES }))
+    .load((data: Pose[]) => ({ type: LOAD_POSES, data }))
+    .error("Error fetching poses")
     .get();
 };

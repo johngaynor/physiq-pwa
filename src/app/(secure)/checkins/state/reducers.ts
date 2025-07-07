@@ -7,6 +7,8 @@ import {
   LOAD_DELETE_CHECKIN,
   FETCH_CHECKIN_ATTACHMENTS,
   LOAD_CHECKIN_ATTACHMENTS,
+  FETCH_POSES,
+  LOAD_POSES,
 } from "../../../store/actionTypes";
 import type { CheckInState, Action } from "./types";
 
@@ -18,6 +20,8 @@ const DEFAULT_STATE: CheckInState = {
   attachments: [],
   attachmentsLoading: false,
   attachmentsId: null,
+  poses: null,
+  posesLoading: false,
 };
 
 export default function checkInReducer(
@@ -73,6 +77,17 @@ export default function checkInReducer(
         attachments: action.attachments,
         attachmentsLoading: false,
         attachmentsId: action.checkInId,
+      };
+    case FETCH_POSES:
+      return {
+        ...state,
+        posesLoading: true,
+      };
+    case LOAD_POSES:
+      return {
+        ...state,
+        posesLoading: false,
+        poses: action.data,
       };
     default:
       return state;

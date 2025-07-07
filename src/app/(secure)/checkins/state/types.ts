@@ -7,9 +7,16 @@ import {
   LOAD_DELETE_CHECKIN,
   FETCH_CHECKIN_ATTACHMENTS,
   LOAD_CHECKIN_ATTACHMENTS,
+  FETCH_POSES,
+  LOAD_POSES,
 } from "../../../store/actionTypes";
 
 // data object types
+export type Pose = {
+  id: number;
+  name: string;
+};
+
 export type CheckInAttachment = {
   id?: number;
   checkInId?: number;
@@ -50,7 +57,9 @@ export type Action =
       type: typeof LOAD_CHECKIN_ATTACHMENTS;
       checkInId: number;
       attachments: CheckInAttachment[];
-    };
+    }
+  | { type: typeof FETCH_POSES }
+  | { type: typeof LOAD_POSES; data: Pose[] };
 
 export interface CheckInState {
   checkIns: CheckIn[] | null;
@@ -60,4 +69,6 @@ export interface CheckInState {
   attachments: CheckInAttachment[];
   attachmentsLoading: boolean;
   attachmentsId: number | null;
+  poses: Pose[] | null;
+  posesLoading: boolean;
 }

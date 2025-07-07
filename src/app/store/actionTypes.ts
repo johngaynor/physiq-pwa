@@ -56,3 +56,6 @@ export const LOAD_DELETE_CHECKIN = "LOAD_DELETE_CHECKIN" as const;
 // Check-in Attachments
 export const FETCH_CHECKIN_ATTACHMENTS = "FETCH_CHECKIN_ATTACHMENTS" as const;
 export const LOAD_CHECKIN_ATTACHMENTS = "LOAD_CHECKIN_ATTACHMENTS" as const;
+// Poses
+export const FETCH_POSES = "FETCH_POSES" as const;
+export const LOAD_POSES = "LOAD_POSES" as const;

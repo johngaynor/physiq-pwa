@@ -13,7 +13,7 @@ import {
   Dumbbell,
   Camera,
 } from "lucide-react";
-import { CheckIn, CheckInAttachment } from "../../../state/types";
+import { CheckIn, CheckInAttachment, Pose } from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DateTime } from "luxon";
@@ -53,6 +53,7 @@ function mapStateToProps(state: RootState) {
   return {
     checkIns: state.checkins.checkIns,
     dailyLogs: state.health.dailyLogs,
+    poses: state.checkins.poses,
   };
 }
 
@@ -67,6 +68,7 @@ interface ViewCheckInProps extends PropsFromRedux {
   attachments?: CheckInAttachment[];
   dailyLogs: DailyLog[] | null;
   dietLog?: DietLog | null;
+  poses: Pose[] | null;
 }
 
 const ViewCheckIn: React.FC<ViewCheckInProps> = ({
