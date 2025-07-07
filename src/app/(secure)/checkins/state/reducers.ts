@@ -42,20 +42,11 @@ export default function checkInReducer(
         editCheckInLoading: true,
       };
     case LOAD_EDIT_CHECKIN:
-      if (action.data.existing) {
-        return {
-          ...state,
-          editCheckInLoading: false,
-          checkIns: null,
-        };
-      } else
-        return {
-          ...state,
-          editCheckInLoading: false,
-          checkIns: state.checkIns
-            ? [...state.checkIns, action.data.checkIn]
-            : [action.data.checkIn],
-        };
+      return {
+        ...state,
+        editCheckInLoading: false,
+        checkIns: null,
+      };
     case FETCH_DELETE_CHECKIN:
       return {
         ...state,

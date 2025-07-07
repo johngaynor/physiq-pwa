@@ -83,10 +83,21 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   }, [checkIns, checkInId]);
 
   React.useEffect(() => {
-    if (checkInId && checkIn && attachmentsId !== checkInId && !attachmentsLoading) {
+    if (
+      checkInId &&
+      checkIn &&
+      attachmentsId !== checkInId &&
+      !attachmentsLoading
+    ) {
       getCheckInAttachments(checkInId);
     }
-  }, [checkInId, checkIn, attachmentsId, attachmentsLoading, getCheckInAttachments]);
+  }, [
+    checkInId,
+    checkIn,
+    attachmentsId,
+    attachmentsLoading,
+    getCheckInAttachments,
+  ]);
 
   // find applicable diet log
   const dietLog = React.useMemo(() => {
