@@ -196,8 +196,13 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
       // Import jsPDF dynamically to avoid SSR issues
       const { jsPDF } = await import("jspdf");
 
-      // Create new PDF document (A4 size: 210 x 297 mm)
-      const pdf = new jsPDF("portrait", "mm", "a4");
+      // Create new PDF document (A4 size: 210 x 297 mm) with compression enabled
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true, // Enable PDF compression
+      });
       const pageWidth = 210;
       const pageHeight = 297;
 
@@ -218,8 +223,8 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         const canvas = await html2canvas(pageElement, {
           useCORS: true,
           allowTaint: true, // Allow tainted canvas for better compatibility
-          logging: true, // Enable logging to debug issues
-          scale: 2, // Higher scale for better quality
+          logging: false, // Disable logging for better performance
+          scale: 1.5, // Higher scale for better quality while keeping reasonable file size
           backgroundColor: "#ffffff",
           // html2canvas-pro specific options
           ignoreElements: (element: Element) => {
@@ -270,7 +275,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         });
 
         // Convert canvas to image data with high quality
-        const imgData = canvas.toDataURL("image/png", 1.0); // Maximum quality
+        const imgData = canvas.toDataURL("image/jpeg", 0.95); // Use JPEG with 95% quality for excellent image quality
 
         // Calculate dimensions to fit the page properly
         const canvasWidth = canvas.width;
@@ -305,8 +310,17 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         //   } to PDF: ${imgWidth}x${imgHeight}mm at (${x}, ${y})`
         // );
 
-        // Add image to PDF page
-        pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+        // Add image to PDF page with high quality
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          x,
+          y,
+          imgWidth,
+          imgHeight,
+          undefined,
+          "SLOW"
+        ); // Use JPEG format with highest quality compression
       }
 
       // Save the PDF
