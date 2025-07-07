@@ -342,7 +342,10 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-6 w-[1000px]">
+      <DialogContent
+        className="!max-w-none !w-[80vw] max-h-[80vh] overflow-y-auto p-6"
+        style={{ width: "80vw", maxWidth: "80vw" }}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Camera className="h-5 w-5" />
