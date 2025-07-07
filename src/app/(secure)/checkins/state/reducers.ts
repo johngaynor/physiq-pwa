@@ -46,12 +46,7 @@ export default function checkInReducer(
         return {
           ...state,
           editCheckInLoading: false,
-          checkIns:
-            state.checkIns?.map((checkIn) =>
-              checkIn.id === action.data.checkIn.id
-                ? action.data.checkIn
-                : checkIn
-            ) || null,
+          checkIns: null,
         };
       } else
         return {

@@ -77,16 +77,16 @@ const CheckIn: React.FC<PropsFromRedux> = ({
     getDailyLogs,
   ]);
 
-  React.useEffect(() => {
-    if (checkInId && attachmentsId !== checkInId && !attachmentsLoading) {
-      getCheckInAttachments(checkInId);
-    }
-  }, [checkInId, attachmentsId, attachmentsLoading, getCheckInAttachments]);
-
   // find applicable check-in
   const checkIn = React.useMemo(() => {
     return checkIns?.find((c: any) => c.id === checkInId);
   }, [checkIns, checkInId]);
+
+  React.useEffect(() => {
+    if (checkInId && checkIn && attachmentsId !== checkInId && !attachmentsLoading) {
+      getCheckInAttachments(checkInId);
+    }
+  }, [checkInId, checkIn, attachmentsId, attachmentsLoading, getCheckInAttachments]);
 
   // find applicable diet log
   const dietLog = React.useMemo(() => {
