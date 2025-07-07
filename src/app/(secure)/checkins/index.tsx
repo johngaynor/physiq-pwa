@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DateTime } from "luxon";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ListLoadingPage from "../components/Templates/ListLoadingPage";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -52,14 +53,7 @@ const CheckInsDashboard: React.FC<PropsFromRedux> = ({
   }, [sortedCheckIns, search]);
 
   if (checkInsLoading) {
-    return (
-      <div className="w-full">
-        <div className="animate-pulse">
-          <div className="h-10 bg-gray-200 rounded mb-4"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-        </div>
-      </div>
-    );
+    return <ListLoadingPage />;
   } else
     return (
       <div className="w-full">

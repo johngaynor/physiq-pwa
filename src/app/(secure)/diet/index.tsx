@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { DateTime } from "luxon";
 import { Plus } from "lucide-react";
-import DashboardLoadingPage from "./components/DashboardLoadingPage";
+import ListLoadingPage from "../components/Templates/ListLoadingPage";
 import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
@@ -57,7 +57,7 @@ const DietDashboard: React.FC<PropsFromRedux> = ({
   }, [sortedLogs, search]);
 
   if (dietLogsLoading) {
-    return <DashboardLoadingPage />;
+    return <ListLoadingPage />;
   } else
     return (
       <div className="w-full">

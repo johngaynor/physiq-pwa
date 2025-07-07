@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function DashboardLoadingPage() {
+export default function ListLoadingPage() {
   return (
     <Card className="w-full rounded-sm p-0">
       <CardContent>
