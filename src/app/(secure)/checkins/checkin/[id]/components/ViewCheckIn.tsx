@@ -124,30 +124,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
     });
   }, [dailyLogs, checkIn, lastCheckIn]);
 
-  // Helper function to prepare weight data for chart
-  const getWeightData = () => {
-    if (!dailyLogs || !checkIn) return [];
-
-    const checkInDate = DateTime.fromISO(checkIn.date);
-    const thirtyDaysAgo = checkInDate.minus({ days: 30 });
-
-    const weightData = dailyLogs
-      .filter((log) => {
-        const logDate = DateTime.fromISO(log.date);
-        return logDate >= thirtyDaysAgo && logDate <= checkInDate && log.weight;
-      })
-      .map((log) => ({
-        date: DateTime.fromISO(log.date).toFormat("MMM dd"),
-        weight: log.weight,
-        fullDate: log.date,
-      }))
-      .sort((a, b) => a.fullDate.localeCompare(b.fullDate));
-
-    return weightData;
-  };
-
-  const weightData = getWeightData();
-
   if (!checkIn) {
     return (
       <div className="w-full">
@@ -274,38 +250,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 )}
                 {checkIn.comments && (
                   <FieldValue title="Comments" value={checkIn.comments} />
-                )}
-              </div>
-            )}
-            {/* Health Stats Summary */}
-            {(healthStats.weight.day7Avg ||
-              healthStats.weight.day30Avg ||
-              healthStats.calories.day7Avg ||
-              healthStats.steps.day7Avg) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {healthStats.weight.day7Avg && (
-                  <FieldValue
-                    title="Avg Weight (7 days)"
-                    value={`${healthStats.weight.day7Avg.toFixed(1)} lbs`}
-                  />
-                )}
-                {healthStats.weight.day30Avg && (
-                  <FieldValue
-                    title="Avg Weight (30 days)"
-                    value={`${healthStats.weight.day30Avg.toFixed(1)} lbs`}
-                  />
-                )}
-                {healthStats.calories.day7Avg && (
-                  <FieldValue
-                    title="Avg Calories (7 days)"
-                    value={`${Math.round(healthStats.calories.day7Avg)} cal`}
-                  />
-                )}
-                {healthStats.steps.day7Avg && (
-                  <FieldValue
-                    title="Avg Steps (7 days)"
-                    value={`${Math.round(healthStats.steps.day7Avg)} steps`}
-                  />
                 )}
               </div>
             )}
