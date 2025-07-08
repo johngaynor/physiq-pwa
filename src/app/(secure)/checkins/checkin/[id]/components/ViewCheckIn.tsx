@@ -113,7 +113,6 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
       return start ? date > start && date <= end : date <= end;
     });
   }, [dailyLogs, checkIn, lastCheckIn]);
-  console.log(dietLog);
 
   if (!checkIn) {
     return (
@@ -253,9 +252,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               </AccordionTrigger>
               <AccordionContent>
                 {!dietLog ? (
-                  <div className="py-4">
-                    No diet log found for this check-in.
-                  </div>
+                  <i>No diet log found for this check-in.</i>
                 ) : (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
@@ -300,17 +297,19 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 )}
               </AccordionContent>
             </AccordionItem>
-            {attachments && attachments.length > 0 && (
-              <AccordionItem value="attachments" className="px-6">
-                <AccordionTrigger>
-                  <div className="flex items-center">
-                    <Camera className="h-5 w-5 mr-2" />
-                    Photos ({attachments.length})
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
-                    {attachments.map((attachment, index) => {
+            <AccordionItem value="attachments" className="px-6">
+              <AccordionTrigger>
+                <div className="flex items-center">
+                  <Camera className="h-5 w-5 mr-2" />
+                  Photos ({attachments ? attachments.length : 0})
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
+                  {!attachments || attachments.length === 0 ? (
+                    <i>No photos found for this check-in.</i>
+                  ) : (
+                    attachments.map((attachment, index) => {
                       const isImage = attachment.s3Filename?.match(
                         /\.(jpg|jpeg|png|gif|webp)$/i
                       );
@@ -419,11 +418,11 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                           </div>
                         </div>
                       );
-                    })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            )}
+                    })
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
         </CardFooter>
       </Card>
