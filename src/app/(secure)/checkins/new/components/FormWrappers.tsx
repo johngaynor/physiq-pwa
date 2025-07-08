@@ -1,6 +1,13 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { H3 } from "@/components/ui";
+import { H3, Label } from "@/components/ui";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 
 export function SectionWrapper({
   title,
@@ -31,12 +38,31 @@ export function SectionWrapper({
 export function InputWrapper({
   children,
   error,
+  tooltip,
+  label,
 }: {
   children: React.ReactNode;
   error?: string;
+  tooltip?: string;
+  label?: string;
 }) {
   return (
-    <div className="grid w-full items-center gap-3 relative pb-3">
+    <div className="grid w-full items-center gap-2 relative pb-3">
+      <div className="flex gap-2">
+        {label && <Label htmlFor={label.toLowerCase()}>{label}</Label>}
+        {tooltip && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-4 w-4 text-gray-200 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
       {children}
       {error && (
         <p className="text-sm text-red-500 absolute -bottom-4">{error}</p>

@@ -103,8 +103,11 @@ const CheckInForm = ({
           )
         }
       >
-        <InputWrapper error={errors.date?.message}>
-          <Label htmlFor="date">Date (YYYY-MM-DD)</Label>
+        <InputWrapper
+          error={errors.date?.message}
+          label="Date"
+          tooltip="Must be in YYYY-MM-DD format."
+        >
           <Input
             id="date"
             type="text"
@@ -112,8 +115,11 @@ const CheckInForm = ({
             {...register("date")}
           />
         </InputWrapper>
-        <InputWrapper error={errors.comments?.message}>
-          <Label htmlFor="comments">Comments</Label>
+        <InputWrapper
+          error={errors.comments?.message}
+          label="Comments"
+          tooltip="Overall comments/thoughts from the week (mood, energy, etc.)."
+        >
           <Input
             id="comments"
             type="text"
@@ -121,8 +127,11 @@ const CheckInForm = ({
             {...register("comments")}
           />
         </InputWrapper>
-        <InputWrapper error={errors.cheats?.message}>
-          <Label htmlFor="cheats">Cheats</Label>
+        <InputWrapper
+          error={errors.cheats?.message}
+          tooltip="PLEASE BE HONEST! This is necessary for making accurate changes."
+          label="Cheats"
+        >
           <Input
             id="cheats"
             type="text"
@@ -130,8 +139,11 @@ const CheckInForm = ({
             {...register("cheats")}
           />
         </InputWrapper>
-        <InputWrapper error={errors.training?.message}>
-          <Label htmlFor="training">Training</Label>
+        <InputWrapper
+          error={errors.training?.message}
+          label="Training"
+          tooltip="Style and days per week."
+        >
           <Input
             id="training"
             type="text"
