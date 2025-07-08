@@ -12,6 +12,7 @@ import {
   Utensils,
   Dumbbell,
   Camera,
+  Edit3,
 } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
@@ -21,6 +22,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ConfirmDeleteCheckIn from "./ConfirmDeleteCheckIn";
 import Html2CanvasModal from "./Html2CanvasModal";
+import EditPosesModal from "./EditPosesModal";
 
 // Utility functions for calculating statistics
 const calculateMetricAverage = (
@@ -162,6 +164,14 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                   Generate Report
                 </Button>
               </Html2CanvasModal>
+              {attachments && attachments.length > 0 && (
+                <EditPosesModal attachments={attachments}>
+                  <Button variant="outline" size="sm">
+                    <Edit3 className="h-4 w-4 mr-2" />
+                    Edit Poses
+                  </Button>
+                </EditPosesModal>
+              )}
               <Button
                 variant="outline"
                 size="sm"
