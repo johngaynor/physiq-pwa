@@ -448,9 +448,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               <AccordionContent>
                 <div className="space-y-4 pt-4">
                   {checkInComments.length === 0 ? (
-                    <div className="text-center py-4">
-                      <i>No comments found for this check-in.</i>
-                    </div>
+                    <i>No comments found for this check-in.</i>
                   ) : (
                     checkInComments.map(
                       (comment: CheckInComment, index: number) => (
