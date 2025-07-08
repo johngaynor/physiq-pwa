@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { CheckInAttachment, Pose } from "../../../state/types";
+import { CheckInAttachment } from "../../../state/types";
 import { Edit3 } from "lucide-react";
 
 function mapStateToProps(state: RootState) {
