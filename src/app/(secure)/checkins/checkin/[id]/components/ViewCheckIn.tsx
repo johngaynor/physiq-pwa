@@ -5,8 +5,18 @@ import { RootState } from "../../../../../store/reducer";
 import { deleteCheckIn } from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { H3, Button } from "@/components/ui";
-import { Edit, Camera, FileSpreadsheet, Carrot } from "lucide-react";
-import { CheckIn, CheckInAttachment } from "../../../state/types";
+import {
+  Edit,
+  Camera,
+  FileSpreadsheet,
+  Carrot,
+  MessageSquare,
+} from "lucide-react";
+import {
+  CheckIn,
+  CheckInAttachment,
+  CheckInComment,
+} from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DateTime } from "luxon";
@@ -56,6 +66,7 @@ function mapStateToProps(state: RootState) {
     checkIns: state.checkins.checkIns,
     dailyLogs: state.health.dailyLogs,
     poses: state.checkins.poses,
+    comments: state.checkins.comments,
   };
 }
 
@@ -81,8 +92,12 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   dietLog,
   poses,
   checkIns,
+  comments,
 }) => {
   const router = useRouter();
+
+  // Get comments for this specific check-in (no need to fetch here, passed as prop)
+  const checkInComments = comments || [];
 
   // Helper function to get pose name by ID
   const getPoseName = (poseId?: number): string => {
@@ -419,6 +434,44 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                         </div>
                       );
                     })
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="comments" className="px-6">
+              <AccordionTrigger>
+                <div className="flex items-center">
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  Comments ({checkInComments.length})
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-4 pt-4">
+                  {checkInComments.length === 0 ? (
+                    <div className="text-center py-4">
+                      <i>No comments found for this check-in.</i>
+                    </div>
+                  ) : (
+                    checkInComments.map(
+                      (comment: CheckInComment, index: number) => (
+                        <div
+                          key={comment.id || index}
+                          className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500"
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="text-sm text-gray-600">
+                              User ID: {comment.userId}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {DateTime.fromISO(comment.date).toFormat(
+                                "MMM d, yyyy 'at' h:mm a"
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-gray-800">{comment.comment}</div>
+                        </div>
+                      )
+                    )
                   )}
                 </div>
               </AccordionContent>

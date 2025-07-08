@@ -7,6 +7,7 @@ import {
   editCheckIn,
   getCheckInAttachments,
   getPoses,
+  getCheckInComments,
 } from "../../state/actions";
 import { getDietLogs } from "../../../diet/state/actions";
 import { getDailyLogs } from "../../../health/state/actions";
@@ -30,6 +31,9 @@ function mapStateToProps(state: RootState) {
     attachmentsId: state.checkins.attachmentsId,
     poses: state.checkins.poses,
     posesLoading: state.checkins.posesLoading,
+    comments: state.checkins.comments,
+    commentsLoading: state.checkins.commentsLoading,
+    commentsId: state.checkins.commentsId,
   };
 }
 
@@ -40,6 +44,7 @@ const connector = connect(mapStateToProps, {
   editCheckIn,
   getCheckInAttachments,
   getPoses,
+  getCheckInComments,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -63,6 +68,10 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   poses,
   posesLoading,
   getPoses,
+  comments,
+  commentsLoading,
+  commentsId,
+  getCheckInComments,
 }) => {
   const [editCheck, setEditCheck] = React.useState<boolean>(false);
   const params = useParams();
@@ -110,6 +119,12 @@ const CheckIn: React.FC<PropsFromRedux> = ({
     getCheckInAttachments,
   ]);
 
+  React.useEffect(() => {
+    if (checkInId && checkIn && commentsId !== checkInId && !commentsLoading) {
+      getCheckInComments(checkInId);
+    }
+  }, [checkInId, checkIn, commentsId, commentsLoading, getCheckInComments]);
+
   // find applicable diet log
   const dietLog = React.useMemo(() => {
     if (!checkIn || !dietLogs || dietLogs.length === 0) return null;
@@ -132,7 +147,8 @@ const CheckIn: React.FC<PropsFromRedux> = ({
     deleteCheckInLoading ||
     editCheckInLoading ||
     attachmentsLoading ||
-    posesLoading
+    posesLoading ||
+    commentsLoading
   ) {
     return <CheckInFormLoadingPage />;
   } else if (editCheck) {
