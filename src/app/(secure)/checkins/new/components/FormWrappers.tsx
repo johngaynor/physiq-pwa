@@ -40,16 +40,22 @@ export function InputWrapper({
   error,
   tooltip,
   label,
+  unit,
 }: {
   children: React.ReactNode;
   error?: string;
   tooltip?: string;
   label?: string;
+  unit?: string;
 }) {
   return (
     <div className="grid w-full items-center gap-2 relative pb-3">
       <div className="flex gap-2">
-        {label && <Label htmlFor={label.toLowerCase()}>{label}</Label>}
+        {label && (
+          <Label htmlFor={label.toLowerCase().replace(/\s+/g, "-")}>
+            {label} {unit && `(${unit})`}
+          </Label>
+        )}
         {tooltip && (
           <TooltipProvider>
             <Tooltip>

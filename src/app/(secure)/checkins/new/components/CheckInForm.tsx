@@ -3,7 +3,7 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SectionWrapper, InputWrapper } from "./FormWrappers";
-import { Input, Label, Button } from "@/components/ui";
+import { Input, Button } from "@/components/ui";
 import Link from "next/link";
 import { Info } from "lucide-react";
 import { CheckIn } from "../../state/types";
@@ -106,7 +106,7 @@ const CheckInForm = ({
         <InputWrapper
           error={errors.date?.message}
           label="Date"
-          tooltip="Must be in YYYY-MM-DD format."
+          unit="YYYY-MM-DD"
         >
           <Input
             id="date"
@@ -165,73 +165,68 @@ const CheckInForm = ({
             </Link>
           }
         >
-          <InputWrapper>
-            <Label htmlFor="dietLog-effectiveDate">Effective Date</Label>
+          <InputWrapper
+            label="Effective Date"
+            tooltip="This is the diet log that applies to the check-in date. If you need to change it, please edit the diet log first."
+          >
             <Input
-              id="dietLog-effectiveDate"
+              id="effective-date"
               value={applicableDietLog.effectiveDate}
               disabled
               className="bg-gray-50"
             />
           </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="dietLog-phase">Phase</Label>
+          <InputWrapper label="Phase" tooltip="Cut, Bulk, or Maintenance.">
             <Input
-              id="dietLog-phase"
+              id="phase"
               value={applicableDietLog.phase || "Not specified"}
               disabled
               className="bg-gray-50"
             />
           </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="dietLog-calories">Calories</Label>
+          <InputWrapper label="Calories">
             <Input
-              id="dietLog-calories"
+              id="calories"
               value={applicableDietLog.calories || "Not calculated"}
               disabled
               className="bg-gray-50"
             />
           </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="dietLog-protein">Protein (g)</Label>
+          <InputWrapper label="Protein" unit="g">
             <Input
-              id="dietLog-protein"
+              id="protein"
               value={applicableDietLog.protein}
               disabled
               className="bg-gray-50"
             />
           </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="dietLog-carbs">Carbs (g)</Label>
+          <InputWrapper label="Carbs" unit="g">
             <Input
-              id="dietLog-carbs"
+              id="carbs"
               value={applicableDietLog.carbs}
               disabled
               className="bg-gray-50"
             />
           </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="dietLog-fat">Fat (g)</Label>
+          <InputWrapper label="Fat" unit="g">
             <Input
-              id="dietLog-fat"
+              id="fat"
               value={applicableDietLog.fat}
               disabled
               className="bg-gray-50"
             />
           </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="dietLog-water">Water (oz)</Label>
+          <InputWrapper label="Water" unit="oz">
             <Input
-              id="dietLog-water"
+              id="water"
               value={applicableDietLog.water}
               disabled
               className="bg-gray-50"
             />
           </InputWrapper>
-          <InputWrapper>
-            <Label htmlFor="dietLog-steps">Steps</Label>
+          <InputWrapper label="Steps">
             <Input
-              id="dietLog-steps"
+              id="steps"
               value={applicableDietLog.steps}
               disabled
               className="bg-gray-50"
@@ -242,8 +237,10 @@ const CheckInForm = ({
       {/* Attachments Upload - Only show for new check-ins */}
       {!checkIn && (
         <SectionWrapper title="Attachments">
-          <InputWrapper>
-            <Label htmlFor="attachments">Upload Files</Label>
+          <InputWrapper
+            label="Attachments"
+            tooltip="Upload photos of mandatory poses for your check-in."
+          >
             <Controller
               name="attachments"
               control={control}
