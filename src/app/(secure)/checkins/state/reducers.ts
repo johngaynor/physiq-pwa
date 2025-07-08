@@ -58,6 +58,8 @@ export default function checkInReducer(
         ...state,
         editCheckInLoading: false,
         checkIns: null,
+        attachmentsId: null,
+        commentsId: null,
       };
     case FETCH_DELETE_CHECKIN:
       return {
