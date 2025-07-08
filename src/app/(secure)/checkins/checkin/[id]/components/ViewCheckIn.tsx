@@ -5,17 +5,7 @@ import { RootState } from "../../../../../store/reducer";
 import { deleteCheckIn } from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { H3, Button } from "@/components/ui";
-import {
-  Edit,
-  // Calendar,
-  // MessageSquare,
-  // Utensils,
-  // Dumbbell,
-  Camera,
-  FileSpreadsheet,
-  // ChevronDown,
-  // Trash,
-} from "lucide-react";
+import { Edit, Camera, FileSpreadsheet } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { DietLog } from "@/app/(secure)/diet/state/types";
@@ -31,7 +21,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FieldValue } from "./FieldValue";
+import { FieldValue } from "@/app/(secure)/diet/log/[id]/components/FieldValues";
 import { StatisticsGraph } from "@/app/(secure)/health/components/StatisticsGraph";
 
 // Utility functions for calculating statistics
@@ -262,7 +252,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 <AccordionTrigger>
                   <div className="flex items-center">
                     <Camera className="h-5 w-5 mr-2 text-purple-600" />
-                    Attachments ({attachments.length})
+                    Photos ({attachments.length})
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
