@@ -68,7 +68,6 @@ interface ViewCheckInProps extends PropsFromRedux {
   attachments?: CheckInAttachment[];
   dailyLogs: DailyLog[] | null;
   dietLog?: DietLog | null;
-  poses: Pose[] | null;
 }
 
 const ViewCheckIn: React.FC<ViewCheckInProps> = ({
@@ -78,8 +77,16 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   attachments = [],
   dailyLogs = [],
   dietLog,
+  poses,
 }) => {
   const router = useRouter();
+
+  // Helper function to get pose name by ID
+  const getPoseName = (poseId?: number): string => {
+    if (!poseId || !poses) return "Missing pose label";
+    const pose = poses.find((p) => p.id === poseId);
+    return pose?.name || "Missing pose label";
+  };
 
   if (!checkIn) {
     return (
@@ -264,14 +271,14 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                                   target.style.display = "none";
                                   const parent = target.parentElement;
                                   if (parent) {
+                                    const poseName = getPoseName(
+                                      attachment.poseId
+                                    );
                                     parent.innerHTML = `
                                       <div class="flex flex-col items-center justify-center h-full p-4">
                                         <div class="text-4xl mb-2">📄</div>
                                         <div class="text-sm text-center font-medium truncate w-full">
-                                          ${
-                                            attachment.s3Filename ||
-                                            "Unknown file"
-                                          }
+                                          ${poseName}
                                         </div>
                                       </div>
                                     `;
@@ -299,14 +306,14 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                                   target.style.display = "none";
                                   const parent = target.parentElement;
                                   if (parent) {
+                                    const poseName = getPoseName(
+                                      attachment.poseId
+                                    );
                                     parent.innerHTML = `
                                       <div class="flex flex-col items-center justify-center h-full p-4">
                                         <div class="text-4xl mb-2">📄</div>
                                         <div class="text-sm text-center font-medium truncate w-full">
-                                          ${
-                                            attachment.s3Filename ||
-                                            "Unknown file"
-                                          }
+                                          ${poseName}
                                         </div>
                                       </div>
                                     `;
@@ -318,7 +325,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                             <div className="flex flex-col items-center justify-center h-full p-4">
                               <div className="text-4xl mb-2">📄</div>
                               <div className="text-sm text-center font-medium truncate w-full">
-                                {attachment.s3Filename || "Unknown file"}
+                                {getPoseName(attachment.poseId)}
                               </div>
                             </div>
                           )}
@@ -326,7 +333,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                         {/* File info overlay */}
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <div className="text-xs truncate">
-                            {attachment.s3Filename}
+                            {getPoseName(attachment.poseId)}
                           </div>
                         </div>
                       </div>
