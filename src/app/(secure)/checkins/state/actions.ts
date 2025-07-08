@@ -9,6 +9,8 @@ import {
   LOAD_CHECKIN_ATTACHMENTS,
   FETCH_POSES,
   LOAD_POSES,
+  FETCH_ASSIGN_CHECKIN_POSE,
+  LOAD_ASSIGN_CHECKIN_POSE,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { CheckIn, CheckInAttachment, Pose } from "./types";
@@ -86,4 +88,19 @@ export const getPoses = () => {
     .load((data: Pose[]) => ({ type: LOAD_POSES, data }))
     .error("Error fetching poses")
     .get();
+};
+
+export const assignPose = (attachmentId: number, poseId: number) => {
+  return api
+    .route(`/api/checkins/attachments/${attachmentId}/pose`)
+    .fetch(() => ({ type: FETCH_ASSIGN_CHECKIN_POSE, attachmentId, poseId }))
+    .load((data: CheckInAttachment) => ({
+      type: LOAD_ASSIGN_CHECKIN_POSE,
+      attachmentId,
+      poseId,
+      attachment: data,
+    }))
+    .error("Error assigning pose to attachment")
+    .data({ poseId })
+    .post();
 };

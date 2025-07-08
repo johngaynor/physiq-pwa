@@ -9,6 +9,8 @@ import {
   LOAD_CHECKIN_ATTACHMENTS,
   FETCH_POSES,
   LOAD_POSES,
+  FETCH_ASSIGN_CHECKIN_POSE,
+  LOAD_ASSIGN_CHECKIN_POSE,
 } from "../../../store/actionTypes";
 import type { CheckInState, Action } from "./types";
 
@@ -22,6 +24,7 @@ const DEFAULT_STATE: CheckInState = {
   attachmentsId: null,
   poses: null,
   posesLoading: false,
+  assignPoseLoading: false,
 };
 
 export default function checkInReducer(
@@ -88,6 +91,22 @@ export default function checkInReducer(
         ...state,
         posesLoading: false,
         poses: action.data,
+      };
+    case FETCH_ASSIGN_CHECKIN_POSE:
+      return {
+        ...state,
+        assignPoseLoading: true,
+      };
+    case LOAD_ASSIGN_CHECKIN_POSE:
+      return {
+        ...state,
+        assignPoseLoading: false,
+        // Update the attachment in the attachments array with the new poseId
+        attachments: state.attachments.map((attachment) =>
+          attachment.id === action.attachmentId
+            ? { ...attachment, poseId: action.poseId }
+            : attachment
+        ),
       };
     default:
       return state;

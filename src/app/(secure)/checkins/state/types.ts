@@ -9,6 +9,8 @@ import {
   LOAD_CHECKIN_ATTACHMENTS,
   FETCH_POSES,
   LOAD_POSES,
+  FETCH_ASSIGN_CHECKIN_POSE,
+  LOAD_ASSIGN_CHECKIN_POSE,
 } from "../../../store/actionTypes";
 
 // data object types
@@ -59,7 +61,18 @@ export type Action =
       attachments: CheckInAttachment[];
     }
   | { type: typeof FETCH_POSES }
-  | { type: typeof LOAD_POSES; data: Pose[] };
+  | { type: typeof LOAD_POSES; data: Pose[] }
+  | {
+      type: typeof FETCH_ASSIGN_CHECKIN_POSE;
+      attachmentId: number;
+      poseId: number;
+    }
+  | {
+      type: typeof LOAD_ASSIGN_CHECKIN_POSE;
+      attachmentId: number;
+      poseId: number;
+      attachment: CheckInAttachment;
+    };
 
 export interface CheckInState {
   checkIns: CheckIn[] | null;
@@ -71,4 +84,5 @@ export interface CheckInState {
   attachmentsId: number | null;
   poses: Pose[] | null;
   posesLoading: boolean;
+  assignPoseLoading: boolean;
 }
