@@ -11,6 +11,8 @@ import {
   LOAD_POSES,
   FETCH_ASSIGN_CHECKIN_POSE,
   LOAD_ASSIGN_CHECKIN_POSE,
+  FETCH_CHECKIN_COMMENTS,
+  LOAD_CHECKIN_COMMENTS,
 } from "../../../store/actionTypes";
 import type { CheckInState, Action } from "./types";
 
@@ -25,6 +27,9 @@ const DEFAULT_STATE: CheckInState = {
   poses: null,
   posesLoading: false,
   assignPoseLoading: false,
+  comments: [],
+  commentsLoading: false,
+  commentsId: null,
 };
 
 export default function checkInReducer(
@@ -107,6 +112,18 @@ export default function checkInReducer(
             ? { ...attachment, poseId: action.poseId }
             : attachment
         ),
+      };
+    case FETCH_CHECKIN_COMMENTS:
+      return {
+        ...state,
+        commentsLoading: true,
+      };
+    case LOAD_CHECKIN_COMMENTS:
+      return {
+        ...state,
+        comments: action.comments,
+        commentsLoading: false,
+        commentsId: action.checkInId,
       };
     default:
       return state;

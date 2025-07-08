@@ -11,12 +11,23 @@ import {
   LOAD_POSES,
   FETCH_ASSIGN_CHECKIN_POSE,
   LOAD_ASSIGN_CHECKIN_POSE,
+  FETCH_CHECKIN_COMMENTS,
+  LOAD_CHECKIN_COMMENTS,
 } from "../../../store/actionTypes";
 
 // data object types
 export type Pose = {
   id: number;
   name: string;
+};
+
+export type CheckInComment = {
+  id: number;
+  checkInId: number;
+  userId: string;
+  name: string;
+  date: string;
+  comment: string;
 };
 
 export type CheckInAttachment = {
@@ -72,6 +83,12 @@ export type Action =
       attachmentId: number;
       poseId: number;
       attachment: CheckInAttachment;
+    }
+  | { type: typeof FETCH_CHECKIN_COMMENTS; checkInId: number }
+  | {
+      type: typeof LOAD_CHECKIN_COMMENTS;
+      checkInId: number;
+      comments: CheckInComment[];
     };
 
 export interface CheckInState {
@@ -85,4 +102,7 @@ export interface CheckInState {
   poses: Pose[] | null;
   posesLoading: boolean;
   assignPoseLoading: boolean;
+  comments: CheckInComment[];
+  commentsLoading: boolean;
+  commentsId: number | null;
 }

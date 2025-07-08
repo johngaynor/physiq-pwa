@@ -11,9 +11,11 @@ import {
   LOAD_POSES,
   FETCH_ASSIGN_CHECKIN_POSE,
   LOAD_ASSIGN_CHECKIN_POSE,
+  FETCH_CHECKIN_COMMENTS,
+  LOAD_CHECKIN_COMMENTS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { CheckIn, CheckInAttachment, Pose } from "./types";
+import { CheckIn, CheckInAttachment, Pose, CheckInComment } from "./types";
 
 export const getCheckIns = () => {
   return api
@@ -103,4 +105,17 @@ export const assignPose = (attachmentId: number, poseId: number) => {
     .error("Error assigning pose to attachment")
     .data({ poseId })
     .post();
+};
+
+export const getCheckInComments = (checkInId: number) => {
+  return api
+    .route(`/api/checkins/comments/${checkInId}`)
+    .fetch(() => ({ type: FETCH_CHECKIN_COMMENTS, checkInId }))
+    .load((data: CheckInComment[]) => ({
+      type: LOAD_CHECKIN_COMMENTS,
+      checkInId,
+      comments: data,
+    }))
+    .error("Error fetching check-in comments")
+    .get();
 };

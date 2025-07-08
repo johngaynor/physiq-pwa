@@ -62,3 +62,6 @@ export const LOAD_POSES = "LOAD_POSES" as const;
 // Assign Pose to Check-in
 export const FETCH_ASSIGN_CHECKIN_POSE = "FETCH_ASSIGN_CHECKIN_POSE" as const;
 export const LOAD_ASSIGN_CHECKIN_POSE = "LOAD_ASSIGN_CHECKIN_POSE" as const;
+// Check-in Comments
+export const FETCH_CHECKIN_COMMENTS = "FETCH_CHECKIN_COMMENTS" as const;
+export const LOAD_CHECKIN_COMMENTS = "LOAD_CHECKIN_COMMENTS" as const;
