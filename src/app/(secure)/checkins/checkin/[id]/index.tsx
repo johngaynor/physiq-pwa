@@ -31,7 +31,6 @@ function mapStateToProps(state: RootState) {
     attachmentsId: state.checkins.attachmentsId,
     poses: state.checkins.poses,
     posesLoading: state.checkins.posesLoading,
-    comments: state.checkins.comments,
     commentsLoading: state.checkins.commentsLoading,
     commentsId: state.checkins.commentsId,
   };
@@ -68,7 +67,6 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   poses,
   posesLoading,
   getPoses,
-  comments,
   commentsLoading,
   commentsId,
   getCheckInComments,
