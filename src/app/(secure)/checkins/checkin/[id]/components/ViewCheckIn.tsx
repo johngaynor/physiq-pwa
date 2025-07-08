@@ -7,14 +7,14 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { H3, Button } from "@/components/ui";
 import {
   Edit,
-  Calendar,
-  MessageSquare,
-  Utensils,
-  Dumbbell,
+  // Calendar,
+  // MessageSquare,
+  // Utensils,
+  // Dumbbell,
   Camera,
   Edit3,
-  ChevronDown,
-  Trash,
+  // ChevronDown,
+  // Trash,
 } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
