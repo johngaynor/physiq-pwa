@@ -113,6 +113,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
       return start ? date > start && date <= end : date <= end;
     });
   }, [dailyLogs, checkIn, lastCheckIn]);
+  console.log(dietLog);
 
   if (!checkIn) {
     return (
@@ -230,19 +231,15 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               />
               <FieldValue title="Check-in ID" value={`#${checkIn.id}`} />
             </div>
-            {(checkIn.training || checkIn.cheats || checkIn.comments) && (
-              <div className="py-4">
-                {checkIn.training && (
-                  <FieldValue title="Training" value={checkIn.training} />
-                )}
-                {checkIn.cheats && (
-                  <FieldValue title="Cheats" value={checkIn.cheats} />
-                )}
-                {checkIn.comments && (
-                  <FieldValue title="Comments" value={checkIn.comments} />
-                )}
-              </div>
-            )}
+            <div className="py-4">
+              <FieldValue title="Training" value={checkIn.training || "--"} />
+              <FieldValue
+                title="Cheats"
+                value={checkIn.cheats || "--"}
+                className="py-4"
+              />
+              <FieldValue title="Comments" value={checkIn.comments || "--"} />
+            </div>
           </div>
         </CardContent>
         <CardFooter className="p-0">
@@ -251,7 +248,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               <AccordionItem value="attachments" className="px-6">
                 <AccordionTrigger>
                   <div className="flex items-center">
-                    <Camera className="h-5 w-5 mr-2 text-purple-600" />
+                    <Camera className="h-5 w-5 mr-2" />
                     Photos ({attachments.length})
                   </div>
                 </AccordionTrigger>
