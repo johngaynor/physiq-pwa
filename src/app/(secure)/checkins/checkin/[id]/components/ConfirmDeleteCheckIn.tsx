@@ -23,9 +23,8 @@ export default function ConfirmDeleteCheckIn({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Trash className="h-4 w-4 mr-2" />
-          Delete
+        <Button variant="outline" className="ml-2">
+          <Trash className="font-extrabold" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

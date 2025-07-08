@@ -12,7 +12,7 @@ import {
   // Utensils,
   // Dumbbell,
   Camera,
-  Edit3,
+  FileSpreadsheet,
   // ChevronDown,
   // Trash,
 } from "lucide-react";
@@ -31,16 +31,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { FieldValue } from "./FieldValue";
+import { StatisticsGraph } from "@/app/(secure)/health/components/StatisticsGraph";
 
 // Utility functions for calculating statistics
 const calculateMetricAverage = (
@@ -123,16 +115,14 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   const filteredDailyLogs = React.useMemo(() => {
     if (!dailyLogs || !checkIn) return [];
 
-    const start = checkIn.date;
-    const end = lastCheckIn ? lastCheckIn.date : null;
+    const end = checkIn.date;
+    const start = lastCheckIn ? lastCheckIn.date : null;
 
     return dailyLogs.filter((dl) => {
       const date = dl.date;
-      return end ? date >= start && date < end : date >= start;
+      return start ? date > start && date <= end : date <= end;
     });
   }, [dailyLogs, checkIn, lastCheckIn]);
-
-  console.log(filteredDailyLogs);
 
   // Helper function to prepare weight data for chart
   const getWeightData = () => {
@@ -195,47 +185,16 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
       <Card className="w-full rounded-sm p-0">
         <CardContent className="flex flex-col md:flex-row justify-between grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           <div>
-            {weightData.length > 0 ? (
-              <div className="h-80">
-                <h4 className="text-lg font-semibold mb-4">
-                  Weight Progress (Last 30 Days)
-                </h4>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={weightData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fontSize: 12 }}
-                      angle={-45}
-                      textAnchor="end"
-                      height={60}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12 }}
-                      domain={["dataMin - 2", "dataMax + 2"]}
-                    />
-                    <Tooltip
-                      labelFormatter={(label) => `Date: ${label}`}
-                      formatter={(value: any) => [value, "Weight (lbs)"]}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="weight"
-                      stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="h-80 flex items-center justify-center bg-gray-50 rounded-lg">
-                <p className="text-gray-500">
-                  No weight data available for the last 30 days
-                </p>
-              </div>
-            )}
+            <StatisticsGraph
+              dailyLogs={filteredDailyLogs}
+              title="Weight Changes this Check-In"
+              unit="lbs"
+              dataKeys={["weight"]}
+              showUnit
+              rounding={2}
+              primaryKey="weight"
+              subtitle="this check-in"
+            />
           </div>
           <div>
             <div className="mb-6 flex justify-between items-center">
@@ -267,16 +226,14 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                   checkIn={checkIn}
                   dailyLogs={dailyLogs}
                 >
-                  <Button variant="outline" size="sm">
-                    <Camera className="h-4 w-4 mr-2" />
-                    Generate Report
+                  <Button variant="outline">
+                    <FileSpreadsheet className="font-extrabold" />
                   </Button>
                 </Html2CanvasModal>
                 {attachments && attachments.length > 0 && (
                   <EditPosesModal attachments={attachments}>
-                    <Button className="ml-2" variant="outline" size="sm">
-                      <Edit3 className="h-4 w-4 mr-2" />
-                      Edit Poses
+                    <Button className="ml-2" variant="outline">
+                      <Camera className="font-extrabold" />
                     </Button>
                   </EditPosesModal>
                 )}
