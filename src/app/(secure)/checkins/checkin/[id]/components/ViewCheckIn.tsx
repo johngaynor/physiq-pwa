@@ -5,7 +5,7 @@ import { RootState } from "../../../../../store/reducer";
 import { deleteCheckIn } from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { H3, Button } from "@/components/ui";
-import { Edit, Camera, FileSpreadsheet } from "lucide-react";
+import { Edit, Camera, FileSpreadsheet, Carrot } from "lucide-react";
 import { CheckIn, CheckInAttachment } from "../../../state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { DietLog } from "@/app/(secure)/diet/state/types";
@@ -244,6 +244,62 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
         </CardContent>
         <CardFooter className="p-0">
           <Accordion type="single" collapsible className="border-t-1 w-full">
+            <AccordionItem value="dietlog" className="px-6">
+              <AccordionTrigger>
+                <div className="flex items-center">
+                  <Carrot className="h-5 w-5 mr-2" />
+                  Diet Log {dietLog ? ` (${dietLog.phase})` : ""}
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                {!dietLog ? (
+                  <div className="py-4">
+                    No diet log found for this check-in.
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
+                      <FieldValue
+                        title="Effective Date"
+                        value={dietLog.effectiveDate}
+                      />
+                      <FieldValue title="Phase" value={dietLog.phase || "--"} />
+                      <FieldValue
+                        title="Calories"
+                        value={dietLog.calories?.toString() || "--"}
+                      />
+                      <FieldValue
+                        title="Water"
+                        value={dietLog.water ? `${dietLog.water}oz` : "--"}
+                      />
+                      <FieldValue
+                        title="Protein"
+                        value={dietLog.protein ? `${dietLog.protein}g` : "--"}
+                      />
+                      <FieldValue
+                        title="Carbs"
+                        value={dietLog.carbs ? `${dietLog.carbs}g` : "--"}
+                      />
+                      <FieldValue
+                        title="Fat"
+                        value={dietLog.fat ? `${dietLog.fat}g` : "--"}
+                      />
+                      <FieldValue
+                        title="Cardio"
+                        value={dietLog.cardio || "--"}
+                      />
+                      <FieldValue
+                        title="Steps"
+                        value={dietLog.steps ? `${dietLog.steps} steps` : "--"}
+                      />
+                    </div>
+                    <div className="py-4">
+                      <FieldValue title="Notes" value={dietLog.notes || "--"} />
+                    </div>
+                  </>
+                )}
+              </AccordionContent>
+            </AccordionItem>
             {attachments && attachments.length > 0 && (
               <AccordionItem value="attachments" className="px-6">
                 <AccordionTrigger>
