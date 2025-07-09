@@ -2,15 +2,16 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
-import { deleteCheckIn } from "../../../state/actions";
+import { addCheckInComment, deleteCheckIn } from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { H3, Button } from "@/components/ui";
+import { H3, Button, Input } from "@/components/ui";
 import {
   Edit,
   Camera,
   FileSpreadsheet,
   Carrot,
   MessageSquare,
+  Send,
 } from "lucide-react";
 import {
   CheckIn,
@@ -67,11 +68,13 @@ function mapStateToProps(state: RootState) {
     dailyLogs: state.health.dailyLogs,
     poses: state.checkins.poses,
     comments: state.checkins.comments,
+    addCommentLoading: state.checkins.addCommentLoading,
   };
 }
 
 const connector = connect(mapStateToProps, {
   deleteCheckIn,
+  addCheckInComment,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -93,11 +96,22 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   poses,
   checkIns,
   comments,
+  addCheckInComment,
+  addCommentLoading,
 }) => {
   const router = useRouter();
+  const [newComment, setNewComment] = React.useState("");
 
-  // Get comments for this specific check-in (no need to fetch here, passed as prop)
-  const checkInComments = comments || [];
+  function addComment() {
+    if (!checkIn?.id || !newComment.trim()) return;
+    addCheckInComment(checkIn.id, newComment.trim())
+      .then(() => {
+        setNewComment("");
+      })
+      .catch((error) => {
+        console.error("Error adding comment:", error);
+      });
+  }
 
   // Helper function to get pose name by ID
   const getPoseName = (poseId?: number): string => {
@@ -442,16 +456,21 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
               <AccordionTrigger>
                 <div className="flex items-center">
                   <MessageSquare className="h-5 w-5 mr-2" />
-                  Comments ({checkInComments.length})
+                  Comments ({comments.length})
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-4 pt-4">
-                  {checkInComments.length === 0 ? (
+                  {comments.length === 0 ? (
                     <i>No comments found for this check-in.</i>
                   ) : (
-                    checkInComments.map(
-                      (comment: CheckInComment, index: number) => (
+                    comments
+                      .sort(
+                        (a, b) =>
+                          new Date(a.date).getTime() -
+                          new Date(b.date).getTime()
+                      )
+                      .map((comment: CheckInComment, index: number) => (
                         <div
                           key={comment.id || index}
                           className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500"
@@ -468,9 +487,38 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                           </div>
                           <div className="text-gray-800">{comment.comment}</div>
                         </div>
-                      )
-                    )
+                      ))
                   )}
+
+                  {/* Add comment input box */}
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex gap-2">
+                      <Input
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Add a comment..."
+                        className="flex-1"
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            addComment();
+                          }
+                        }}
+                      />
+                      <Button
+                        onClick={addComment}
+                        disabled={!newComment.trim() || addCommentLoading}
+                        size="sm"
+                        className="px-3"
+                      >
+                        {addCommentLoading ? (
+                          <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                        ) : (
+                          <Send className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
