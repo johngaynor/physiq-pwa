@@ -503,11 +503,11 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                         .map((comment: CheckInComment, index: number) => (
                           <div
                             key={comment.id || index}
-                            className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500"
+                            className="p-2 border-l-3 border-blue-500"
                           >
                             <div className="flex justify-between items-start mb-2">
-                              <div className="text-sm text-gray-600">
-                                User ID: {comment.userId}
+                              <div className="text-sm text-gray-500">
+                                {comment.name}
                               </div>
                               <div className="text-sm text-gray-500">
                                 {DateTime.fromISO(comment.date).toFormat(
@@ -515,9 +515,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                                 )}
                               </div>
                             </div>
-                            <div className="text-gray-800">
-                              {comment.comment}
-                            </div>
+                            <div>{comment.comment}</div>
                           </div>
                         ))
                     )}
