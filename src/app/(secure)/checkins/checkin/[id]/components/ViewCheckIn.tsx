@@ -101,6 +101,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
 }) => {
   const router = useRouter();
   const [newComment, setNewComment] = React.useState("");
+  const commentsContainerRef = React.useRef<HTMLDivElement>(null);
 
   function addComment() {
     if (!checkIn?.id || !newComment.trim()) return;
@@ -112,6 +113,25 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
         console.error("Error adding comment:", error);
       });
   }
+
+  // Scroll to bottom when comments change
+  React.useEffect(() => {
+    if (commentsContainerRef.current) {
+      commentsContainerRef.current.scrollTop =
+        commentsContainerRef.current.scrollHeight;
+    }
+  }, [comments]);
+
+  // Also scroll to bottom when the accordion opens (with a slight delay)
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (commentsContainerRef.current) {
+        commentsContainerRef.current.scrollTop =
+          commentsContainerRef.current.scrollHeight;
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Helper function to get pose name by ID
   const getPoseName = (poseId?: number): string => {
@@ -460,38 +480,51 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-4 pt-4">
-                  {comments.length === 0 ? (
-                    <i>No comments found for this check-in.</i>
-                  ) : (
-                    comments
-                      .sort(
-                        (a, b) =>
-                          new Date(a.date).getTime() -
-                          new Date(b.date).getTime()
-                      )
-                      .map((comment: CheckInComment, index: number) => (
-                        <div
-                          key={comment.id || index}
-                          className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500"
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <div className="text-sm text-gray-600">
-                              User ID: {comment.userId}
+                <div className="pt-4">
+                  {/* Scrollable comments container with fixed height */}
+                  <div
+                    ref={commentsContainerRef}
+                    className="h-[300px] overflow-y-auto space-y-4 pr-2"
+                    style={{ scrollBehavior: "smooth" }}
+                  >
+                    {comments.length === 0 ? (
+                      <div className="flex items-center justify-center h-full">
+                        <i className="text-gray-500">
+                          No comments found for this check-in.
+                        </i>
+                      </div>
+                    ) : (
+                      [...comments]
+                        .sort(
+                          (a, b) =>
+                            new Date(a.date).getTime() -
+                            new Date(b.date).getTime()
+                        )
+                        .map((comment: CheckInComment, index: number) => (
+                          <div
+                            key={comment.id || index}
+                            className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500"
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div className="text-sm text-gray-600">
+                                User ID: {comment.userId}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {DateTime.fromISO(comment.date).toFormat(
+                                  "MMM d, yyyy 'at' h:mm a"
+                                )}
+                              </div>
                             </div>
-                            <div className="text-sm text-gray-500">
-                              {DateTime.fromISO(comment.date).toFormat(
-                                "MMM d, yyyy 'at' h:mm a"
-                              )}
+                            <div className="text-gray-800">
+                              {comment.comment}
                             </div>
                           </div>
-                          <div className="text-gray-800">{comment.comment}</div>
-                        </div>
-                      ))
-                  )}
+                        ))
+                    )}
+                  </div>
 
-                  {/* Add comment input box */}
-                  <div className="mt-6 pt-4 border-t border-gray-200">
+                  {/* Add comment input box - fixed at bottom */}
+                  <div className="mt-4 pt-4 border-t border-gray-200">
                     <div className="flex gap-2">
                       <Input
                         value={newComment}
