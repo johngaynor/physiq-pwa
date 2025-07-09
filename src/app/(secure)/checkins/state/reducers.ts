@@ -140,9 +140,10 @@ export default function checkInReducer(
         ...state,
         addCommentLoading: false,
         // Add the new comment to the comments array if it's for the current checkIn
-        comments: state.commentsId === action.checkInId 
-          ? [...state.comments, action.comment]
-          : state.comments,
+        comments:
+          state.commentsId === action.checkInId
+            ? [...state.comments, action.comment]
+            : state.comments,
       };
     default:
       return state;
