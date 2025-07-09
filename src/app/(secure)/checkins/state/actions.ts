@@ -13,6 +13,8 @@ import {
   LOAD_ASSIGN_CHECKIN_POSE,
   FETCH_CHECKIN_COMMENTS,
   LOAD_CHECKIN_COMMENTS,
+  FETCH_ADD_CHECKIN_COMMENT,
+  LOAD_ADD_CHECKIN_COMMENT,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { CheckIn, CheckInAttachment, Pose, CheckInComment } from "./types";
@@ -118,4 +120,18 @@ export const getCheckInComments = (checkInId: number) => {
     }))
     .error("Error fetching check-in comments")
     .get();
+};
+
+export const addCheckInComment = (checkInId: number, comment: string) => {
+  return api
+    .route(`/api/checkins/comments`)
+    .fetch(() => ({ type: FETCH_ADD_CHECKIN_COMMENT, checkInId }))
+    .load((data: CheckInComment) => ({
+      type: LOAD_ADD_CHECKIN_COMMENT,
+      checkInId,
+      comment: data,
+    }))
+    .error("Error adding check-in comment")
+    .data({ checkInId, comment })
+    .post();
 };

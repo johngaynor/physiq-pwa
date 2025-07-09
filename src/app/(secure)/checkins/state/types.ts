@@ -13,6 +13,8 @@ import {
   LOAD_ASSIGN_CHECKIN_POSE,
   FETCH_CHECKIN_COMMENTS,
   LOAD_CHECKIN_COMMENTS,
+  FETCH_ADD_CHECKIN_COMMENT,
+  LOAD_ADD_CHECKIN_COMMENT,
 } from "../../../store/actionTypes";
 
 // data object types
@@ -89,6 +91,12 @@ export type Action =
       type: typeof LOAD_CHECKIN_COMMENTS;
       checkInId: number;
       comments: CheckInComment[];
+    }
+  | { type: typeof FETCH_ADD_CHECKIN_COMMENT; checkInId: number }
+  | {
+      type: typeof LOAD_ADD_CHECKIN_COMMENT;
+      checkInId: number;
+      comment: CheckInComment;
     };
 
 export interface CheckInState {
@@ -105,4 +113,5 @@ export interface CheckInState {
   comments: CheckInComment[];
   commentsLoading: boolean;
   commentsId: number | null;
+  addCommentLoading: boolean;
 }

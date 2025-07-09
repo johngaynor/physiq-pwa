@@ -103,3 +103,7 @@ export const LOAD_ASSIGN_CHECKIN_POSE = "LOAD_ASSIGN_CHECKIN_POSE" as const;
 // Check-in Comments - Fetch and manage comments on check-in entries
 export const FETCH_CHECKIN_COMMENTS = "FETCH_CHECKIN_COMMENTS" as const;
 export const LOAD_CHECKIN_COMMENTS = "LOAD_CHECKIN_COMMENTS" as const;
+
+// Add Check-in Comment - Post a new comment to a check-in
+export const FETCH_ADD_CHECKIN_COMMENT = "FETCH_ADD_CHECKIN_COMMENT" as const;
+export const LOAD_ADD_CHECKIN_COMMENT = "LOAD_ADD_CHECKIN_COMMENT" as const;

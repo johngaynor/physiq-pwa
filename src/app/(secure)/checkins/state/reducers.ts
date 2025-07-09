@@ -13,6 +13,8 @@ import {
   LOAD_ASSIGN_CHECKIN_POSE,
   FETCH_CHECKIN_COMMENTS,
   LOAD_CHECKIN_COMMENTS,
+  FETCH_ADD_CHECKIN_COMMENT,
+  LOAD_ADD_CHECKIN_COMMENT,
 } from "../../../store/actionTypes";
 import type { CheckInState, Action } from "./types";
 
@@ -30,6 +32,7 @@ const DEFAULT_STATE: CheckInState = {
   comments: [],
   commentsLoading: false,
   commentsId: null,
+  addCommentLoading: false,
 };
 
 export default function checkInReducer(
@@ -126,6 +129,20 @@ export default function checkInReducer(
         comments: action.comments,
         commentsLoading: false,
         commentsId: action.checkInId,
+      };
+    case FETCH_ADD_CHECKIN_COMMENT:
+      return {
+        ...state,
+        addCommentLoading: true,
+      };
+    case LOAD_ADD_CHECKIN_COMMENT:
+      return {
+        ...state,
+        addCommentLoading: false,
+        // Add the new comment to the comments array if it's for the current checkIn
+        comments: state.commentsId === action.checkInId 
+          ? [...state.comments, action.comment]
+          : state.comments,
       };
     default:
       return state;
