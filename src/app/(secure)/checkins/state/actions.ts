@@ -15,6 +15,8 @@ import {
   LOAD_CHECKIN_COMMENTS,
   FETCH_ADD_CHECKIN_COMMENT,
   LOAD_ADD_CHECKIN_COMMENT,
+  FETCH_SEND_CHECKIN_EMAIL,
+  LOAD_SEND_CHECKIN_EMAIL,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { CheckIn, CheckInAttachment, Pose, CheckInComment } from "./types";
@@ -133,5 +135,15 @@ export const addCheckInComment = (checkInId: number, comment: string) => {
     }))
     .error("Error adding check-in comment")
     .data({ checkInId, comment })
+    .post();
+};
+
+export const sendCheckInEmail = (checkInId: number) => {
+  return api
+    .route(`/api/checkins/send`)
+    .fetch(() => ({ type: FETCH_SEND_CHECKIN_EMAIL, checkInId }))
+    .load(() => ({ type: LOAD_SEND_CHECKIN_EMAIL }))
+    .error("Error sending check-in email")
+    .data({ checkInId })
     .post();
 };

@@ -107,3 +107,7 @@ export const LOAD_CHECKIN_COMMENTS = "LOAD_CHECKIN_COMMENTS" as const;
 // Add Check-in Comment - Post a new comment to a check-in
 export const FETCH_ADD_CHECKIN_COMMENT = "FETCH_ADD_CHECKIN_COMMENT" as const;
 export const LOAD_ADD_CHECKIN_COMMENT = "LOAD_ADD_CHECKIN_COMMENT" as const;
+
+// Send Check-in Email - Send check-in data via email
+export const FETCH_SEND_CHECKIN_EMAIL = "FETCH_SEND_CHECKIN_EMAIL" as const;
+export const LOAD_SEND_CHECKIN_EMAIL = "LOAD_SEND_CHECKIN_EMAIL" as const;

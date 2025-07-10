@@ -15,6 +15,8 @@ import {
   LOAD_CHECKIN_COMMENTS,
   FETCH_ADD_CHECKIN_COMMENT,
   LOAD_ADD_CHECKIN_COMMENT,
+  FETCH_SEND_CHECKIN_EMAIL,
+  LOAD_SEND_CHECKIN_EMAIL,
 } from "../../../store/actionTypes";
 import type { CheckInState, Action } from "./types";
 
@@ -33,6 +35,7 @@ const DEFAULT_STATE: CheckInState = {
   commentsLoading: false,
   commentsId: null,
   addCommentLoading: false,
+  sendEmailLoading: false,
 };
 
 export default function checkInReducer(
@@ -144,6 +147,16 @@ export default function checkInReducer(
           state.commentsId === action.checkInId
             ? [...state.comments, action.comment]
             : state.comments,
+      };
+    case FETCH_SEND_CHECKIN_EMAIL:
+      return {
+        ...state,
+        sendEmailLoading: true,
+      };
+    case LOAD_SEND_CHECKIN_EMAIL:
+      return {
+        ...state,
+        sendEmailLoading: false,
       };
     default:
       return state;
