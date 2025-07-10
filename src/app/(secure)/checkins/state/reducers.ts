@@ -157,6 +157,7 @@ export default function checkInReducer(
       return {
         ...state,
         sendEmailLoading: false,
+        commentsId: null,
       };
     default:
       return state;
