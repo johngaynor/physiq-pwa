@@ -141,6 +141,7 @@ export const addCheckInComment = (checkInId: number, comment: string) => {
 export const sendCheckInEmail = (
   checkInId: number,
   pdfFile?: Blob,
+  filename?: string,
   checkInDate?: string
 ) => {
   const formData = new FormData();
@@ -154,8 +155,9 @@ export const sendCheckInEmail = (
   }
 
   // Add the PDF file if provided
-  if (pdfFile) {
-    formData.append("file", pdfFile);
+  if (pdfFile && filename) {
+    formData.append("file", pdfFile, filename);
+    formData.append("filename", filename);
   }
 
   return api
