@@ -151,7 +151,7 @@ export const sendCheckInEmail = (
 
   // Add the check-in date if provided
   if (checkInDate) {
-    formData.append("checkInDate", checkInDate);
+    formData.append("date", checkInDate);
   }
 
   // Add the PDF file if provided
