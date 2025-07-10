@@ -251,9 +251,8 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                   onSendEmail={(
                     checkInId: number,
                     pdfFile: Blob,
-                    filename: string,
                     checkInDate: string
-                  ) => sendCheckInEmail(checkInId, pdfFile, filename, checkInDate)}
+                  ) => sendCheckInEmail(checkInId, pdfFile, checkInDate)}
                 >
                   <Button variant="outline">
                     <FileSpreadsheet className="font-extrabold" />

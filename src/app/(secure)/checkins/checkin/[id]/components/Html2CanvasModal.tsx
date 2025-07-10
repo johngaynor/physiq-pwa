@@ -30,7 +30,6 @@ interface Html2CanvasModalProps {
   onSendEmail?: (
     checkInId: number,
     pdfFile: Blob,
-    filename: string,
     checkInDate: string
   ) => void;
 }
@@ -475,9 +474,6 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
       // Convert PDF to blob
       const pdfBlob = pdf.output("blob");
-      const filename = `check-in-report-${
-        checkIn.date || new Date().toISOString().split("T")[0]
-      }.pdf`;
 
       // Format check-in date as "MMM dd, yyyy"
       const formattedDate = checkIn.date
@@ -486,7 +482,7 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
 
       try {
         // Use the Redux action to send the PDF
-        await onSendEmail(checkIn.id, pdfBlob, filename, formattedDate);
+        await onSendEmail(checkIn.id, pdfBlob, formattedDate);
 
         // Show success message to user
         alert("Check-in report has been generated and sent successfully!");
