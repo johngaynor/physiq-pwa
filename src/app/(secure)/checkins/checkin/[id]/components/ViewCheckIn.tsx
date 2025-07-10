@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
-import { addCheckInComment, deleteCheckIn } from "../../../state/actions";
+import { addCheckInComment, deleteCheckIn, sendCheckInEmail } from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { H3, Button, Input } from "@/components/ui";
 import {
@@ -69,12 +69,14 @@ function mapStateToProps(state: RootState) {
     poses: state.checkins.poses,
     comments: state.checkins.comments,
     addCommentLoading: state.checkins.addCommentLoading,
+    sendEmailLoading: state.checkins.sendEmailLoading,
   };
 }
 
 const connector = connect(mapStateToProps, {
   deleteCheckIn,
   addCheckInComment,
+  sendCheckInEmail,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -82,7 +84,6 @@ interface ViewCheckInProps extends PropsFromRedux {
   checkIn?: CheckIn;
   setEditCheckIn: (edit: boolean) => void;
   attachments?: CheckInAttachment[];
-  dailyLogs: DailyLog[] | null;
   dietLog?: DietLog | null;
 }
 
@@ -98,6 +99,8 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
   comments,
   addCheckInComment,
   addCommentLoading,
+  sendEmailLoading,
+  sendCheckInEmail,
 }) => {
   const router = useRouter();
   const [newComment, setNewComment] = React.useState("");
@@ -240,6 +243,10 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                   dietLog={dietLog}
                   checkIn={checkIn}
                   dailyLogs={dailyLogs}
+                  sendEmailLoading={sendEmailLoading}
+                  onSendEmail={(checkInId: number, pdfFile: Blob, filename: string) => 
+                    sendCheckInEmail(checkInId, pdfFile, filename)
+                  }
                 >
                   <Button variant="outline">
                     <FileSpreadsheet className="font-extrabold" />

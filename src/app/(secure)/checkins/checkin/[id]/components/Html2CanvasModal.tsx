@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
-import { Download, Camera } from "lucide-react";
+import { Download, Camera, Mail } from "lucide-react";
 import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { CheckIn } from "../../../state/types";
@@ -25,6 +25,8 @@ interface Html2CanvasModalProps {
   dietLog?: DietLog | null;
   checkIn?: CheckIn;
   dailyLogs?: DailyLog[] | null;
+  sendEmailLoading?: boolean;
+  onSendEmail?: (checkInId: number, pdfFile: Blob, filename: string) => void;
 }
 
 const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
@@ -34,9 +36,12 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
   dietLog,
   checkIn,
   dailyLogs,
+  sendEmailLoading = false,
+  onSendEmail,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Helper function to format metric values
@@ -337,6 +342,143 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
     }
   };
 
+  const generateAndSendEmail = async () => {
+    if (!contentRef.current || !checkIn?.id || !onSendEmail) return;
+
+    setIsSendingEmail(true);
+    try {
+      // First generate the PDF blob using the same logic as generateImage
+      // Preload all images first
+      if (photos && photos.length > 0) {
+        await Promise.all(
+          photos.map((photo) => {
+            return new Promise<void>((resolve) => {
+              const img = new Image();
+              img.onload = () => resolve();
+              img.onerror = () => resolve(); // Continue even if some images fail
+              if (!photo.startsWith(window.location.origin) && !photo.startsWith("data:")) {
+                img.crossOrigin = "anonymous";
+              }
+              img.src = photo;
+            });
+          })
+        );
+      }
+
+      // Import jsPDF dynamically
+      const { jsPDF } = await import("jspdf");
+
+      // Create PDF
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+
+      // Find all page elements
+      const pages = Array.from(contentRef.current.children) as HTMLElement[];
+
+      for (let i = 0; i < pages.length; i++) {
+        const pageElement = pages[i];
+
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        // Generate canvas for each page
+        const canvas = await html2canvas(pageElement, {
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          scale: 1.5,
+          backgroundColor: "#ffffff",
+          ignoreElements: (element: Element) => element.tagName === "SCRIPT",
+          foreignObjectRendering: false,
+          imageTimeout: 15000,
+          onclone: (clonedDoc: Document) => {
+            const style = clonedDoc.createElement("style");
+            style.textContent = `
+              * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
+              img {
+                max-width: 100% !important;
+                max-height: 100% !important;
+                object-fit: contain !important;
+              }
+            `;
+            clonedDoc.head.appendChild(style);
+
+            const images = clonedDoc.querySelectorAll("img");
+            images.forEach((img) => {
+              if (img instanceof HTMLImageElement) {
+                img.removeAttribute("crossorigin");
+                if (!img.src.startsWith("blob:") && !img.src.startsWith("data:")) {
+                  const originalSrc = img.src;
+                  img.src = originalSrc;
+                }
+              }
+            });
+          },
+        });
+
+        // Convert to image and add to PDF
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const canvasRatio = canvasWidth / canvasHeight;
+
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const margin = 2;
+        const maxWidth = pageWidth - margin * 2;
+        const maxHeight = pageHeight - margin * 2;
+        const maxRatio = maxWidth / maxHeight;
+
+        let imgWidth, imgHeight;
+        if (canvasRatio > maxRatio) {
+          imgWidth = maxWidth;
+          imgHeight = maxWidth / canvasRatio;
+        } else {
+          imgHeight = maxHeight;
+          imgWidth = maxHeight * canvasRatio;
+        }
+
+        const x = (pageWidth - imgWidth) / 2;
+        const y = (pageHeight - imgHeight) / 2;
+
+        pdf.addImage(imgData, "JPEG", x, y, imgWidth, imgHeight, undefined, "SLOW");
+      }
+
+      // Convert PDF to blob
+      const pdfBlob = pdf.output("blob");
+      const filename = `check-in-report-${checkIn.date || new Date().toISOString().split("T")[0]}.pdf`;
+
+      try {
+        // Use the Redux action to send the PDF
+        await onSendEmail(checkIn.id, pdfBlob, filename);
+        
+        // Show success message to user
+        alert("Check-in report has been generated and sent successfully!");
+        
+        // Optionally close the modal after successful send
+        setIsOpen(false);
+        
+      } catch (error) {
+        console.error("Error sending PDF:", error);
+        throw error; // Re-throw to be caught by outer try-catch
+      }
+
+    } catch (error) {
+      console.error("Error generating PDF for email:", error);
+      alert("Error generating or sending PDF. Please try again.");
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
   const todayLog = dailyLogs?.find((d) => d.date === checkIn?.date);
 
   return (
@@ -354,14 +496,24 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-3">
             <Button
               onClick={generateImage}
-              disabled={isGenerating}
+              disabled={isGenerating || isSendingEmail || sendEmailLoading}
               className="flex items-center gap-2"
+              variant="outline"
             >
               <Download className="h-4 w-4" />
               {isGenerating ? "Generating..." : "Download PDF"}
+            </Button>
+            
+            <Button
+              onClick={generateAndSendEmail}
+              disabled={isGenerating || isSendingEmail || sendEmailLoading || !checkIn?.id || !onSendEmail}
+              className="flex items-center gap-2"
+            >
+              <Mail className="h-4 w-4" />
+              {isSendingEmail || sendEmailLoading ? "Sending..." : "Send PDF via Email"}
             </Button>
           </div>
 

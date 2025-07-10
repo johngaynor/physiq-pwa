@@ -138,12 +138,23 @@ export const addCheckInComment = (checkInId: number, comment: string) => {
     .post();
 };
 
-export const sendCheckInEmail = (checkInId: number) => {
+export const sendCheckInEmail = (checkInId: number, pdfFile?: Blob, filename?: string) => {
+  const formData = new FormData();
+  
+  // Add the checkInId
+  formData.append("checkInId", checkInId.toString());
+  
+  // Add the PDF file if provided
+  if (pdfFile && filename) {
+    formData.append("file", pdfFile, filename);
+    formData.append("filename", filename);
+  }
+
   return api
     .route(`/api/checkins/send`)
     .fetch(() => ({ type: FETCH_SEND_CHECKIN_EMAIL, checkInId }))
     .load(() => ({ type: LOAD_SEND_CHECKIN_EMAIL }))
     .error("Error sending check-in email")
-    .data({ checkInId })
+    .data(formData)
     .post();
 };
