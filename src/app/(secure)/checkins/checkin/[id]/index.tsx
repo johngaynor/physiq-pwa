@@ -33,7 +33,6 @@ function mapStateToProps(state: RootState) {
     posesLoading: state.checkins.posesLoading,
     commentsLoading: state.checkins.commentsLoading,
     commentsId: state.checkins.commentsId,
-    comments: state.checkins.comments,
   };
 }
 
@@ -71,7 +70,6 @@ const CheckIn: React.FC<PropsFromRedux> = ({
   commentsLoading,
   commentsId,
   getCheckInComments,
-  comments,
 }) => {
   const [editCheck, setEditCheck] = React.useState<boolean>(false);
   const params = useParams();
