@@ -2,7 +2,11 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
-import { addCheckInComment, deleteCheckIn, sendCheckInEmail } from "../../../state/actions";
+import {
+  addCheckInComment,
+  deleteCheckIn,
+  sendCheckInEmail,
+} from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { H3, Button, Input } from "@/components/ui";
 import {
@@ -244,9 +248,11 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
                   checkIn={checkIn}
                   dailyLogs={dailyLogs}
                   sendEmailLoading={sendEmailLoading}
-                  onSendEmail={(checkInId: number, pdfFile: Blob, filename: string) => 
-                    sendCheckInEmail(checkInId, pdfFile, filename)
-                  }
+                  onSendEmail={(
+                    checkInId: number,
+                    pdfFile: Blob,
+                    filename: string
+                  ) => sendCheckInEmail(checkInId, pdfFile, filename)}
                 >
                   <Button variant="outline">
                     <FileSpreadsheet className="font-extrabold" />
