@@ -141,12 +141,18 @@ export const addCheckInComment = (checkInId: number, comment: string) => {
 export const sendCheckInEmail = (
   checkInId: number,
   pdfFile?: Blob,
-  filename?: string
+  filename?: string,
+  checkInDate?: string
 ) => {
   const formData = new FormData();
 
   // Add the checkInId
   formData.append("checkInId", checkInId.toString());
+
+  // Add the check-in date if provided
+  if (checkInDate) {
+    formData.append("checkInDate", checkInDate);
+  }
 
   // Add the PDF file if provided
   if (pdfFile && filename) {

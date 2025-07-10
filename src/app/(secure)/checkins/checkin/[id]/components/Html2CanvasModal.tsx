@@ -14,6 +14,7 @@ import { DietLog } from "@/app/(secure)/diet/state/types";
 import { DailyLog } from "@/app/(secure)/health/state/types";
 import { CheckIn } from "../../../state/types";
 import WeightChart from "./WeightChart";
+import { DateTime } from "luxon";
 
 interface Html2CanvasModalProps {
   children: React.ReactNode;
@@ -26,7 +27,12 @@ interface Html2CanvasModalProps {
   checkIn?: CheckIn;
   dailyLogs?: DailyLog[] | null;
   sendEmailLoading?: boolean;
-  onSendEmail?: (checkInId: number, pdfFile: Blob, filename: string) => void;
+  onSendEmail?: (
+    checkInId: number,
+    pdfFile: Blob,
+    filename: string,
+    checkInDate: string
+  ) => void;
 }
 
 const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
@@ -356,7 +362,10 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
               const img = new Image();
               img.onload = () => resolve();
               img.onerror = () => resolve(); // Continue even if some images fail
-              if (!photo.startsWith(window.location.origin) && !photo.startsWith("data:")) {
+              if (
+                !photo.startsWith(window.location.origin) &&
+                !photo.startsWith("data:")
+              ) {
                 img.crossOrigin = "anonymous";
               }
               img.src = photo;
@@ -415,7 +424,10 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
             images.forEach((img) => {
               if (img instanceof HTMLImageElement) {
                 img.removeAttribute("crossorigin");
-                if (!img.src.startsWith("blob:") && !img.src.startsWith("data:")) {
+                if (
+                  !img.src.startsWith("blob:") &&
+                  !img.src.startsWith("data:")
+                ) {
                   const originalSrc = img.src;
                   img.src = originalSrc;
                 }
@@ -449,28 +461,42 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
         const x = (pageWidth - imgWidth) / 2;
         const y = (pageHeight - imgHeight) / 2;
 
-        pdf.addImage(imgData, "JPEG", x, y, imgWidth, imgHeight, undefined, "SLOW");
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          x,
+          y,
+          imgWidth,
+          imgHeight,
+          undefined,
+          "SLOW"
+        );
       }
 
       // Convert PDF to blob
       const pdfBlob = pdf.output("blob");
-      const filename = `check-in-report-${checkIn.date || new Date().toISOString().split("T")[0]}.pdf`;
+      const filename = `check-in-report-${
+        checkIn.date || new Date().toISOString().split("T")[0]
+      }.pdf`;
+
+      // Format check-in date as "MMM dd, yyyy"
+      const formattedDate = checkIn.date
+        ? DateTime.fromISO(checkIn.date).toFormat("MMM dd, yyyy")
+        : DateTime.now().toFormat("MMM dd, yyyy");
 
       try {
         // Use the Redux action to send the PDF
-        await onSendEmail(checkIn.id, pdfBlob, filename);
-        
+        await onSendEmail(checkIn.id, pdfBlob, filename, formattedDate);
+
         // Show success message to user
         alert("Check-in report has been generated and sent successfully!");
-        
+
         // Optionally close the modal after successful send
         setIsOpen(false);
-        
       } catch (error) {
         console.error("Error sending PDF:", error);
         throw error; // Re-throw to be caught by outer try-catch
       }
-
     } catch (error) {
       console.error("Error generating PDF for email:", error);
       alert("Error generating or sending PDF. Please try again.");
@@ -506,14 +532,22 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
               <Download className="h-4 w-4" />
               {isGenerating ? "Generating..." : "Download PDF"}
             </Button>
-            
+
             <Button
               onClick={generateAndSendEmail}
-              disabled={isGenerating || isSendingEmail || sendEmailLoading || !checkIn?.id || !onSendEmail}
+              disabled={
+                isGenerating ||
+                isSendingEmail ||
+                sendEmailLoading ||
+                !checkIn?.id ||
+                !onSendEmail
+              }
               className="flex items-center gap-2"
             >
               <Mail className="h-4 w-4" />
-              {isSendingEmail || sendEmailLoading ? "Sending..." : "Send PDF via Email"}
+              {isSendingEmail || sendEmailLoading
+                ? "Sending..."
+                : "Send PDF via Email"}
             </Button>
           </div>
 
