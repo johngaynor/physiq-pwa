@@ -24,8 +24,8 @@ import { Edit3 } from "lucide-react";
 
 function mapStateToProps(state: RootState) {
   return {
-    poses: state.checkins.poses,
-    posesLoading: state.checkins.posesLoading,
+    poses: state.physique.poses,
+    posesLoading: state.physique.posesLoading,
     assignPoseLoading: state.checkins.assignPoseLoading,
   };
 }
