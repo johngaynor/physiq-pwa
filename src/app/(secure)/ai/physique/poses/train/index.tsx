@@ -159,8 +159,8 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
   }
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[600px]">
+    <div className="w-full mb-40">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:h-[600px]">
         {/* Left Column - File Upload */}
         <Card className="w-full rounded-sm p-0 h-full">
           <CardContent className="p-8 h-full">
