@@ -2,7 +2,7 @@ import React from "react";
 import PageTemplate from "../../../../components/Templates/PageTemplate";
 import PhysiqueDashboard from "./index";
 
-const title = "AI Training - Physique Poses";
+const title = "Pose Classification Training";
 
 export default function Page() {
   return (
