@@ -111,3 +111,7 @@ export const LOAD_ADD_CHECKIN_COMMENT = "LOAD_ADD_CHECKIN_COMMENT" as const;
 // Send Check-in Email - Send check-in data via email
 export const FETCH_SEND_CHECKIN_EMAIL = "FETCH_SEND_CHECKIN_EMAIL" as const;
 export const LOAD_SEND_CHECKIN_EMAIL = "LOAD_SEND_CHECKIN_EMAIL" as const;
+
+// Physique Pose Analysis - Analyze pose from uploaded image
+export const FETCH_ANALYZE_POSE = "FETCH_ANALYZE_POSE" as const;
+export const LOAD_ANALYZE_POSE = "LOAD_ANALYZE_POSE" as const;
