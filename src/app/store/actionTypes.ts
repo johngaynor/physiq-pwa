@@ -115,3 +115,7 @@ export const LOAD_SEND_CHECKIN_EMAIL = "LOAD_SEND_CHECKIN_EMAIL" as const;
 // Physique Pose Analysis - Analyze pose from uploaded image
 export const FETCH_ANALYZE_POSE = "FETCH_ANALYZE_POSE" as const;
 export const LOAD_ANALYZE_POSE = "LOAD_ANALYZE_POSE" as const;
+
+// Physique Pose Assignment - Assign pose classification to an image
+export const FETCH_ASSIGN_PHYSIQUE_POSE = "FETCH_ASSIGN_PHYSIQUE_POSE" as const;
+export const LOAD_ASSIGN_PHYSIQUE_POSE = "LOAD_ASSIGN_PHYSIQUE_POSE" as const;
