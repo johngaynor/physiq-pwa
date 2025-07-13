@@ -3,9 +3,11 @@ import {
   LOAD_ANALYZE_POSE,
   FETCH_ASSIGN_PHYSIQUE_POSE,
   LOAD_ASSIGN_PHYSIQUE_POSE,
+  FETCH_PHYSIQUE_POSES,
+  LOAD_PHYSIQUE_POSES,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { AnalyzePoseResult, AssignPoseResult } from "./types";
+import { AnalyzePoseResult, AssignPoseResult, Pose } from "./types";
 
 export const analyzePose = (file: File) => {
   const formData = new FormData();
@@ -36,4 +38,13 @@ export const assignPose = (filename: string, id: number) => {
     .error("Error assigning pose")
     .data({ filename, id })
     .post();
+};
+
+export const getPoses = () => {
+  return api
+    .route("/api/checkins/poses")
+    .fetch(() => ({ type: FETCH_PHYSIQUE_POSES }))
+    .load((data: Pose[]) => ({ type: LOAD_PHYSIQUE_POSES, data }))
+    .error("Error fetching poses")
+    .get();
 };

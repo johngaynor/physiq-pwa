@@ -92,10 +92,6 @@ export const LOAD_DELETE_CHECKIN = "LOAD_DELETE_CHECKIN" as const;
 export const FETCH_CHECKIN_ATTACHMENTS = "FETCH_CHECKIN_ATTACHMENTS" as const;
 export const LOAD_CHECKIN_ATTACHMENTS = "LOAD_CHECKIN_ATTACHMENTS" as const;
 
-// Poses - Fetch and manage pose reference data for photo labeling
-export const FETCH_POSES = "FETCH_POSES" as const;
-export const LOAD_POSES = "LOAD_POSES" as const;
-
 // Assign Check-in Pose - Assign pose labels to check-in attachments
 export const FETCH_ASSIGN_CHECKIN_POSE = "FETCH_ASSIGN_CHECKIN_POSE" as const;
 export const LOAD_ASSIGN_CHECKIN_POSE = "LOAD_ASSIGN_CHECKIN_POSE" as const;
@@ -119,3 +115,7 @@ export const LOAD_ANALYZE_POSE = "LOAD_ANALYZE_POSE" as const;
 // Physique Pose Assignment - Assign pose classification to an image
 export const FETCH_ASSIGN_PHYSIQUE_POSE = "FETCH_ASSIGN_PHYSIQUE_POSE" as const;
 export const LOAD_ASSIGN_PHYSIQUE_POSE = "LOAD_ASSIGN_PHYSIQUE_POSE" as const;
+
+// Physique Poses - Fetch available poses for physique classification
+export const FETCH_PHYSIQUE_POSES = "FETCH_PHYSIQUE_POSES" as const;
+export const LOAD_PHYSIQUE_POSES = "LOAD_PHYSIQUE_POSES" as const;

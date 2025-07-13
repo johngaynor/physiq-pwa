@@ -6,9 +6,9 @@ import {
   getCheckIns,
   editCheckIn,
   getCheckInAttachments,
-  getPoses,
   getCheckInComments,
 } from "../../state/actions";
+import { getPoses } from "../../../physique/state/actions";
 import { getDietLogs } from "../../../diet/state/actions";
 import { getDailyLogs } from "../../../health/state/actions";
 import { useParams } from "next/navigation";
@@ -29,8 +29,8 @@ function mapStateToProps(state: RootState) {
     attachments: state.checkins.attachments,
     attachmentsLoading: state.checkins.attachmentsLoading,
     attachmentsId: state.checkins.attachmentsId,
-    poses: state.checkins.poses,
-    posesLoading: state.checkins.posesLoading,
+    poses: state.physique.poses,
+    posesLoading: state.physique.posesLoading,
     commentsLoading: state.checkins.commentsLoading,
     commentsId: state.checkins.commentsId,
   };

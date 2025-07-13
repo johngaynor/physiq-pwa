@@ -7,8 +7,6 @@ import {
   LOAD_DELETE_CHECKIN,
   FETCH_CHECKIN_ATTACHMENTS,
   LOAD_CHECKIN_ATTACHMENTS,
-  FETCH_POSES,
-  LOAD_POSES,
   FETCH_ASSIGN_CHECKIN_POSE,
   LOAD_ASSIGN_CHECKIN_POSE,
   FETCH_CHECKIN_COMMENTS,
@@ -28,8 +26,6 @@ const DEFAULT_STATE: CheckInState = {
   attachments: [],
   attachmentsLoading: false,
   attachmentsId: null,
-  poses: null,
-  posesLoading: false,
   assignPoseLoading: false,
   comments: [],
   commentsLoading: false,
@@ -93,17 +89,6 @@ export default function checkInReducer(
         attachments: action.attachments,
         attachmentsLoading: false,
         attachmentsId: action.checkInId,
-      };
-    case FETCH_POSES:
-      return {
-        ...state,
-        posesLoading: true,
-      };
-    case LOAD_POSES:
-      return {
-        ...state,
-        posesLoading: false,
-        poses: action.data,
       };
     case FETCH_ASSIGN_CHECKIN_POSE:
       return {

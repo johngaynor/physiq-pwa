@@ -2,6 +2,14 @@ export interface PhysiqueState {
   analyzePoseLoading: boolean;
   analyzePoseResult: any | null;
   assignPoseLoading: boolean;
+  poses: Pose[] | null;
+  posesLoading: boolean;
+}
+
+export interface Pose {
+  id: number;
+  name: string;
+  description?: string;
 }
 
 export interface AnalyzePoseResult {
@@ -23,4 +31,6 @@ export type Action =
   | { type: "FETCH_ANALYZE_POSE" }
   | { type: "LOAD_ANALYZE_POSE"; data: AnalyzePoseResult }
   | { type: "FETCH_ASSIGN_PHYSIQUE_POSE" }
-  | { type: "LOAD_ASSIGN_PHYSIQUE_POSE"; data: AssignPoseResult };
+  | { type: "LOAD_ASSIGN_PHYSIQUE_POSE"; data: AssignPoseResult }
+  | { type: "FETCH_PHYSIQUE_POSES" }
+  | { type: "LOAD_PHYSIQUE_POSES"; data: Pose[] };
