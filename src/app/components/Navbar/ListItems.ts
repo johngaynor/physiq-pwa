@@ -95,7 +95,7 @@ export const HealthItems: ListItem[] = [
 export const AIItems: ListItem[] = [
   {
     title: "Physique Pose Training",
-    href: "/ai/training/physique/poses",
+    href: "/ai/physique/poses/train",
     description: "Train AI to recognize physique poses from photos.",
   },
 ];

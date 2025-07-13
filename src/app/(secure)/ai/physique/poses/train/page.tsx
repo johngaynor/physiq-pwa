@@ -1,0 +1,17 @@
+import React from "react";
+import PageTemplate from "@/app/(secure)/components/Templates/PageTemplate";
+import PhysiqueDashboard from "./index";
+
+const title = "Pose Classification Training";
+
+export default function Page() {
+  return (
+    <PageTemplate title={title}>
+      <PhysiqueDashboard />
+    </PageTemplate>
+  );
+}
+
+export const metadata = {
+  title: `${title} | Physiq`,
+};
