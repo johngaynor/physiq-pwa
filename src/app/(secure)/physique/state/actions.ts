@@ -42,7 +42,7 @@ export const assignPose = (filename: string, id: number) => {
 
 export const getPoses = () => {
   return api
-    .route("/api/checkins/poses")
+    .route("/api/physique/poses")
     .fetch(() => ({ type: FETCH_PHYSIQUE_POSES }))
     .load((data: Pose[]) => ({ type: LOAD_PHYSIQUE_POSES, data }))
     .error("Error fetching poses")
