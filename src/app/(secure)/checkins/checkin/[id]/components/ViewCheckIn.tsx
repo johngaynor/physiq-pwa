@@ -70,7 +70,7 @@ function mapStateToProps(state: RootState) {
   return {
     checkIns: state.checkins.checkIns,
     dailyLogs: state.health.dailyLogs,
-    poses: state.checkins.poses,
+    poses: state.physique.poses,
     comments: state.checkins.comments,
     addCommentLoading: state.checkins.addCommentLoading,
     sendEmailLoading: state.checkins.sendEmailLoading,
