@@ -91,3 +91,11 @@ export const HealthItems: ListItem[] = [
   //   description: "Track and monitor your sleep patterns.",
   // },
 ];
+
+export const AIItems: ListItem[] = [
+  {
+    title: "Physique Pose Training",
+    href: "/ai/training/physique/poses",
+    description: "Train AI to recognize physique poses from photos.",
+  },
+];

@@ -100,6 +100,7 @@ export default function DesktopNavAuth() {
           {TabComponent("Check Ins", path === "Check Ins", () =>
             navigateToTab("Check Ins")
           )}
+          {TabComponent("AI", path === "AI", () => navigateToTab("AI"))}
           {TabComponent("Apps", path === "Apps", () => navigateToTab("Apps"))}
         </TabsList>
       </Tabs>
