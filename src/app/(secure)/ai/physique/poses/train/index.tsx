@@ -27,6 +27,7 @@ import {
 } from "@/app/(secure)/physique/state/actions";
 import { AnalyzePoseResult } from "@/app/(secure)/physique/state/types";
 import ResultsLoadingCard from "./components/ResultsLoadingCard";
+import { toast } from "sonner";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -80,8 +81,10 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
     }
 
     try {
-      await assignPose(analysisResult.fileUploaded, parseInt(selectedPose));
-      // Optionally show success message or clear the form
+      await assignPose(
+        analysisResult.fileUploaded,
+        parseInt(selectedPose)
+      ).then(() => toast.success("Pose assigned successfully!"));
       handleClearAll();
     } catch (error) {
       console.error("Error assigning pose:", error);
@@ -218,7 +221,7 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
         {/* Right Column - Poses List and Results */}
         <div className="h-full">
           {/* Analysis Results */}
-          {analyzePoseLoading ? (
+          {analyzePoseLoading || assignPoseLoading ? (
             <ResultsLoadingCard />
           ) : analysisResult ? (
             <Card className="w-full rounded-sm p-0 h-full">
