@@ -20,7 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Upload, Loader2 } from "lucide-react";
-import { analyzePose, getPoses } from "@/app/(secure)/physique/state/actions";
+import {
+  analyzePose,
+  getPoses,
+  assignPose,
+} from "@/app/(secure)/physique/state/actions";
 import { AnalyzePoseResult } from "@/app/(secure)/physique/state/types";
 import ResultsLoadingCard from "./components/ResultsLoadingCard";
 
@@ -29,10 +33,15 @@ function mapStateToProps(state: RootState) {
     analyzePoseLoading: state.physique.analyzePoseLoading,
     poses: state.physique.poses,
     posesLoading: state.physique.posesLoading,
+    assignPoseLoading: state.physique.assignPoseLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { analyzePose, getPoses });
+const connector = connect(mapStateToProps, {
+  analyzePose,
+  getPoses,
+  assignPose,
+});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
@@ -41,6 +50,8 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
   poses,
   posesLoading,
   getPoses,
+  assignPoseLoading,
+  assignPose,
 }) => {
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
@@ -59,6 +70,22 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
     ) as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
+    }
+  };
+
+  const handleAssignPose = async () => {
+    if (!selectedPose || !analysisResult?.fileUploaded) {
+      alert("Please select a pose before submitting");
+      return;
+    }
+
+    try {
+      await assignPose(analysisResult.fileUploaded, parseInt(selectedPose));
+      // Optionally show success message or clear the form
+      handleClearAll();
+    } catch (error) {
+      console.error("Error assigning pose:", error);
+      // TODO: Handle error properly
     }
   };
 
@@ -87,6 +114,16 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
     try {
       analyzePose(selectedFile).then((data: AnalyzePoseResult) => {
         setAnalysisResult(data);
+        // Set the predicted pose as the default selection
+        if (data.analysisResult?.prediction?.predicted_class_name && poses) {
+          const predictedPose = poses.find(
+            (pose) =>
+              pose.name === data.analysisResult.prediction.predicted_class_name
+          );
+          if (predictedPose) {
+            setSelectedPose(predictedPose.id.toString());
+          }
+        }
       });
     } catch (error) {
       console.error("Error analyzing pose:", error);
@@ -170,7 +207,7 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
                       Analyzing...
                     </>
                   ) : (
-                    "Submit"
+                    "Analyze"
                   )}
                 </Button>
               </div>
@@ -203,7 +240,7 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
                     <h5 className="text-sm font-medium mb-2 p-4 pb-0">
                       All Pose Probabilities:
                     </h5>
-                    <div className="flex-1 overflow-auto">
+                    <div className="h-[350px] overflow-y-auto">
                       <Table>
                         <TableHeader>
                           <TableRow>
@@ -243,7 +280,7 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
                     </div>
                   </div>
 
-                  {/* Pose Selection and Clear */}
+                  {/* Pose Selection and Buttons */}
                   <div className="flex gap-3 items-end mt-4">
                     <div className="flex-1">
                       <label className="text-sm font-medium text-gray-700 block mb-1">
@@ -269,11 +306,25 @@ const PhysiqueDashboard: React.FC<PropsFromRedux> = ({
                       </Select>
                     </div>
                     <Button
+                      onClick={handleAssignPose}
+                      disabled={!selectedPose || assignPoseLoading}
+                      className="shrink-0"
+                    >
+                      {assignPoseLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        "Submit"
+                      )}
+                    </Button>
+                    <Button
                       variant="outline"
                       onClick={handleClearAll}
                       className="shrink-0"
                     >
-                      Clear All
+                      Reset
                     </Button>
                   </div>
                 </div>
