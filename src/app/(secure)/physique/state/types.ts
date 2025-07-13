@@ -1,6 +1,6 @@
 export interface PhysiqueState {
   analyzePoseLoading: boolean;
-  analyzePoseResult: any | null;
+  analyzePoseResult: AnalyzePoseResult | null;
   assignPoseLoading: boolean;
   poses: Pose[] | null;
   posesLoading: boolean;
@@ -13,11 +13,21 @@ export interface Pose {
 }
 
 export interface AnalyzePoseResult {
-  // TODO: Define the structure of the pose analysis result
-  // This will depend on what the backend returns
-  id?: number;
-  result?: any;
-  message?: string;
+  success: boolean;
+  fileUploaded: string;
+  analysisResult: {
+    status: string;
+    filename: string;
+    image_size: string;
+    prediction: {
+      predicted_class_index: number;
+      predicted_class_id: string;
+      predicted_class_name: string;
+      confidence: number;
+      all_probabilities: Record<string, number>;
+      all_probabilities_with_ids: Record<string, number>;
+    };
+  };
 }
 
 export interface AssignPoseResult {
