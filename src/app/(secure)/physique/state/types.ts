@@ -20,19 +20,11 @@ export interface TrainingPhoto {
   id: number;
   s3Filename: string | null;
   poseId: number;
-  location: "training";
-}
-
-export interface CheckInPhoto {
-  id: number;
-  s3Filename: string;
-  poseId: number;
-  location: "checkin";
+  location: "training" | "checkin";
 }
 
 export interface PoseTrainingPhotosResult {
-  trainingPhotos: TrainingPhoto[];
-  checkInPhotos: CheckInPhoto[];
+  photos: TrainingPhoto[];
 }
 
 export interface PoseModelDataResult {

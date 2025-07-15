@@ -44,6 +44,11 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
   console.log(poseTrainingPhotos);
   console.log(poseModelData);
 
+  // Access the photos array from the simplified structure
+  const allPhotos = poseTrainingPhotos?.photos || [];
+  const trainingPhotos = allPhotos.filter(photo => photo.location === 'training');
+  const checkInPhotos = allPhotos.filter(photo => photo.location === 'checkin');
+
   return (
     <div className="w-full mb-40">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:h-[600px]">
