@@ -41,18 +41,14 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
     if (!poseModelData && !poseModelDataLoading) getPoseModelData();
   }, [poseModelData, poseModelDataLoading, getPoseModelData]);
 
-  console.log(poseTrainingPhotos);
-  console.log(poseModelData);
-
-  // Access the photos array from the simplified structure
-  const allPhotos = poseTrainingPhotos?.photos || [];
-  const trainingPhotos = allPhotos.filter(photo => photo.location === 'training');
-  const checkInPhotos = allPhotos.filter(photo => photo.location === 'checkin');
-
   // Calculate statistics
-  const totalTrainingPhotos = allPhotos.length;
+  const totalPhotos = poseTrainingPhotos ? poseTrainingPhotos.length : 0;
   const totalCalls = poseModelData?.totalCalls || 0;
-  const userContributedPhotos = allPhotos.filter(photo => photo.s3Filename !== null).length;
+  const userContributedPhotos =
+    poseTrainingPhotos?.filter((photo) => photo.s3Filename !== null).length ||
+    0;
+
+  console.log(totalPhotos, totalCalls, userContributedPhotos);
 
   return (
     <div className="w-full mb-40">
@@ -66,13 +62,13 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {poseModelData?.model?.versionNum || 'N/A'}
+              {poseModelData?.model?.versionNum || "N/A"}
             </div>
             <div className="text-xs text-muted-foreground mt-1">
-              {poseModelData?.model?.githubRepo || 'No repo'}
+              {poseModelData?.model?.githubRepo || "No repo"}
             </div>
             <div className="text-xs text-muted-foreground">
-              Stack: {poseModelData?.model?.stack || 'Unknown'}
+              Stack: {poseModelData?.model?.stack || "Unknown"}
             </div>
           </CardContent>
         </Card>
@@ -80,11 +76,13 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
         {/* Total Training Photos Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Training Photos</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Training Photos
+            </CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalTrainingPhotos}</div>
+            <div className="text-2xl font-bold">{totalPhotos}</div>
             <p className="text-xs text-muted-foreground">
               All photos in dataset
             </p>
@@ -94,7 +92,9 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
         {/* Total Calls Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total API Calls</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total API Calls
+            </CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -108,7 +108,9 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
         {/* User Contributed Photos Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Your Contributions</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Your Contributions
+            </CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -116,33 +118,6 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
             <p className="text-xs text-muted-foreground">
               Photos you've contributed
             </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:h-[600px]">
-        {/* Left Column - Content */}
-        <Card className="w-full rounded-sm p-0 h-full">
-          <CardContent className="p-8 h-full">
-            <div className="flex flex-col items-center justify-center space-y-4 h-full">
-              <Upload className="h-12 w-12 text-gray-400" />
-              <h3 className="text-lg font-medium">Content Area</h3>
-              <p className="text-sm text-gray-500 text-center">
-                Content goes here
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Right Column - Content */}
-        <Card className="w-full rounded-sm p-0 h-full">
-          <CardContent className="p-6 h-full flex flex-col items-center justify-center">
-            <div className="text-gray-400 text-center">
-              <Upload className="h-12 w-12 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">Content Area</h3>
-              <p className="text-sm">Content goes here</p>
-            </div>
           </CardContent>
         </Card>
       </div>
