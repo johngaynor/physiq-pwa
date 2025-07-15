@@ -3,7 +3,9 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Database, BarChart3, User, GitBranch } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   getPoseTrainingPhotos,
   getPoseModelData,
@@ -32,6 +34,8 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
   getPoseTrainingPhotos,
   getPoseModelData,
 }) => {
+  const router = useRouter();
+
   React.useEffect(() => {
     if (!poseTrainingPhotos && !poseTrainingPhotosLoading)
       getPoseTrainingPhotos();
@@ -47,6 +51,10 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
   const userContributedPhotos =
     poseTrainingPhotos?.filter((photo) => photo.s3Filename !== null).length ||
     0;
+
+  const handleTrainClick = () => {
+    router.push("/ai/physique/poses/train");
+  };
 
   return (
     <div className="w-full mb-40">
@@ -118,6 +126,13 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Train Button */}
+      <div className="flex justify-end mb-4">
+        <Button onClick={handleTrainClick} variant="outline">
+          Train
+        </Button>
       </div>
     </div>
   );
