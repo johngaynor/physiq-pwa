@@ -114,7 +114,7 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
           <CardContent>
             <div className="text-2xl font-bold">{userContributedPhotos}</div>
             <p className="text-xs text-muted-foreground">
-              Photos you've contributed
+              Photos you&apos;ve contributed
             </p>
           </CardContent>
         </Card>
