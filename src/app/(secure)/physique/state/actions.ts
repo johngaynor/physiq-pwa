@@ -7,9 +7,17 @@ import {
   LOAD_PHYSIQUE_POSES,
   FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS,
   LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS,
+  FETCH_PHYSIQUE_POSE_MODEL_DATA,
+  LOAD_PHYSIQUE_POSE_MODEL_DATA,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { AnalyzePoseResult, AssignPoseResult, Pose, PoseTrainingPhotosResult } from "./types";
+import {
+  AnalyzePoseResult,
+  AssignPoseResult,
+  Pose,
+  PoseTrainingPhotosResult,
+  PoseModelDataResult,
+} from "./types";
 
 export const analyzePose = (file: File) => {
   const formData = new FormData();
@@ -55,7 +63,22 @@ export const getPoseTrainingPhotos = () => {
   return api
     .route("/api/ai/physique/poses")
     .fetch(() => ({ type: FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS }))
-    .load((data: PoseTrainingPhotosResult) => ({ type: LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS, data }))
+    .load((data: PoseTrainingPhotosResult) => ({
+      type: LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS,
+      data,
+    }))
     .error("Error fetching pose training photos")
+    .get();
+};
+
+export const getPoseModelData = () => {
+  return api
+    .route("/api/ai/physique/poses/model")
+    .fetch(() => ({ type: FETCH_PHYSIQUE_POSE_MODEL_DATA }))
+    .load((data: PoseModelDataResult) => ({
+      type: LOAD_PHYSIQUE_POSE_MODEL_DATA,
+      data,
+    }))
+    .error("Error fetching pose model data")
     .get();
 };

@@ -123,3 +123,7 @@ export const LOAD_PHYSIQUE_POSES = "LOAD_PHYSIQUE_POSES" as const;
 // Physique Pose Training Photos - Fetch training and check-in photos
 export const FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS = "FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;
 export const LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS = "LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;
+
+// Physique Pose Model Data - Fetch model statistics and information
+export const FETCH_PHYSIQUE_POSE_MODEL_DATA = "FETCH_PHYSIQUE_POSE_MODEL_DATA" as const;
+export const LOAD_PHYSIQUE_POSE_MODEL_DATA = "LOAD_PHYSIQUE_POSE_MODEL_DATA" as const;
