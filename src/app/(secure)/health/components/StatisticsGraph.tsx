@@ -46,6 +46,7 @@ export function StatisticsGraph({
   primaryKey,
   singleAxis = false,
   subtitle,
+  onClick,
 }: HealthChartProps) {
   const startingValue = dailyLogs ? dailyLogs.find((d) => d[primaryKey]) : null;
   const endingValue = dailyLogs
@@ -70,7 +71,7 @@ export function StatisticsGraph({
       ] as [number, number];
   }
   return (
-    <Card>
+    <Card onClick={onClick} className="cursor-pointer">
       <CardHeader>
         <CardTitle>
           {title} {showUnit ? `(${unit})` : ""}

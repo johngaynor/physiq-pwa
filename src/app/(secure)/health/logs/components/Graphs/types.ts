@@ -33,4 +33,5 @@ export type HealthChartProps = {
   showUnit?: boolean;
   singleAxis?: boolean;
   subtitle?: string;
+  onClick?: () => void;
 };

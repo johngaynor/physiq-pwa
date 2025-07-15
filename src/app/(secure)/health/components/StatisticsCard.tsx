@@ -10,6 +10,7 @@ type StatisticsCardProps = {
   description: string;
   positive?: boolean; // used to determine whether or not the value is positive or negative
   success?: boolean; // used to determine whether or not the value is good or bad
+  onClick?: () => void;
 };
 
 export default function StatisticsCard({
@@ -20,9 +21,13 @@ export default function StatisticsCard({
   description,
   positive = false,
   success = false,
+  onClick,
 }: StatisticsCardProps) {
   return (
-    <Card className="w-full">
+    <Card
+      className={`w-full ${onClick ? "cursor-pointer" : "cursor-default"}`}
+      onClick={onClick}
+    >
       <CardContent>
         <div className="flex items-start justify-between">
           <div>

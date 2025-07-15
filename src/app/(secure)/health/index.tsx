@@ -8,6 +8,7 @@ import { StatisticsGraph } from "./components/StatisticsGraph";
 import { DateTime } from "luxon";
 import { convertTime } from "@/app/components/Time";
 import { Skeleton } from "@/components/ui";
+import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -114,6 +115,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
       }
     : {};
 
+  const router = useRouter();
+
   if (dailyLogsLoading) {
     return (
       <div className="w-full">
@@ -151,6 +154,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             positive={diffs.weight ? diffs.weight >= 0 : false}
             success={diffs.weight ? diffs.weight >= 0 : false}
             description="Weight today"
+            onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsCard
             title="Fat Free Mass"
@@ -174,6 +178,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             positive={diffs.ffm ? diffs.ffm >= 0 : false}
             success={diffs.ffm ? diffs.ffm >= 0 : false}
             description="FFM today"
+            onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
             title="Body Fat %"
@@ -191,6 +196,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             positive={diffs.bodyfat ? diffs.bodyfat >= 0 : false}
             success={diffs.bodyfat ? diffs.bodyfat <= 0 : false}
             description="BF % today"
+            onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
             title="Sleep"
@@ -210,6 +216,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             positive={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
             success={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
             description="Sleep today"
+            onClick={() => router.push("/health/logs/sleep")}
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full pt-4">
@@ -221,6 +228,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             unit="lbs"
             showUnit
             rounding={2}
+            onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsGraph
             title="Bodyfat"
@@ -230,6 +238,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             unit="%"
             showUnit
             rounding={2}
+            onClick={() => router.push("/health/logs/bodyfat")}
           />
           {/* will want to figure out formatting for sleep */}
           <StatisticsGraph
@@ -240,6 +249,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             unit="hrs"
             rounding={2}
             singleAxis
+            onClick={() => router.push("/health/logs/sleep")}
           />
           <StatisticsGraph
             title="Steps"
@@ -249,6 +259,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             unit="steps"
             rounding={1000}
             singleAxis
+            onClick={() => router.push("/health/logs/steps")}
           />
           <StatisticsGraph
             title="Water Intake"
@@ -259,6 +270,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             showUnit
             rounding={10}
             singleAxis
+            onClick={() => router.push("/health/logs/water")}
           />
           <StatisticsGraph
             title="Caloric Intake"
@@ -269,6 +281,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             showUnit
             rounding={10}
             singleAxis
+            onClick={() => router.push("/health/logs/calories")}
           />
         </div>
       </div>
