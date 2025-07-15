@@ -1,13 +1,13 @@
 import React from "react";
 import PageTemplate from "@/app/(secure)/components/Templates/PageTemplate";
-import PoseTrainingDashboard from "./index";
+import PoseDashboard from "./index";
 
-const title = "Pose Classification Training";
+const title = "Pose Classification";
 
 export default function Page() {
   return (
     <PageTemplate title={title}>
-      <PoseTrainingDashboard />
+      <PoseDashboard />
     </PageTemplate>
   );
 }

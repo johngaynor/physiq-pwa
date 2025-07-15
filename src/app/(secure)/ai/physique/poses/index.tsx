@@ -26,7 +26,6 @@ import {
   assignPose,
 } from "@/app/(secure)/physique/state/actions";
 import { AnalyzePoseResult } from "@/app/(secure)/physique/state/types";
-import ResultsLoadingCard from "./components/ResultsLoadingCard";
 import { toast } from "sonner";
 
 function mapStateToProps(state: RootState) {
@@ -45,7 +44,7 @@ const connector = connect(mapStateToProps, {
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
+const PoseDashboard: React.FC<PropsFromRedux> = ({
   analyzePoseLoading,
   analyzePose,
   poses,
@@ -222,7 +221,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
         <div className="h-full">
           {/* Analysis Results */}
           {analyzePoseLoading || assignPoseLoading ? (
-            <ResultsLoadingCard />
+            <h1>loading</h1>
           ) : analysisResult ? (
             <Card className="w-full rounded-sm p-0 h-full">
               <CardContent className="p-6 h-full flex flex-col">
@@ -352,4 +351,4 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   );
 };
 
-export default connector(PoseTrainingDashboard);
+export default connector(PoseDashboard);
