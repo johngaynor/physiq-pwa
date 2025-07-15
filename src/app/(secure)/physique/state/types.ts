@@ -4,12 +4,33 @@ export interface PhysiqueState {
   assignPoseLoading: boolean;
   poses: Pose[] | null;
   posesLoading: boolean;
+  poseTrainingPhotos: PoseTrainingPhotosResult | null;
+  poseTrainingPhotosLoading: boolean;
 }
 
 export interface Pose {
   id: number;
   name: string;
   description?: string;
+}
+
+export interface TrainingPhoto {
+  id: number;
+  s3Filename: string | null;
+  poseId: number;
+  location: "training";
+}
+
+export interface CheckInPhoto {
+  id: number;
+  s3Filename: string;
+  poseId: number;
+  location: "checkin";
+}
+
+export interface PoseTrainingPhotosResult {
+  trainingPhotos: TrainingPhoto[];
+  checkInPhotos: CheckInPhoto[];
 }
 
 export interface AnalyzePoseResult {
@@ -43,4 +64,9 @@ export type Action =
   | { type: "FETCH_ASSIGN_PHYSIQUE_POSE" }
   | { type: "LOAD_ASSIGN_PHYSIQUE_POSE"; data: AssignPoseResult }
   | { type: "FETCH_PHYSIQUE_POSES" }
-  | { type: "LOAD_PHYSIQUE_POSES"; data: Pose[] };
+  | { type: "LOAD_PHYSIQUE_POSES"; data: Pose[] }
+  | { type: "FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS" }
+  | {
+      type: "LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS";
+      data: PoseTrainingPhotosResult;
+    };

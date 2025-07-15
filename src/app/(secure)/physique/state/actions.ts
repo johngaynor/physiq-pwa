@@ -5,9 +5,11 @@ import {
   LOAD_ASSIGN_PHYSIQUE_POSE,
   FETCH_PHYSIQUE_POSES,
   LOAD_PHYSIQUE_POSES,
+  FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS,
+  LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { AnalyzePoseResult, AssignPoseResult, Pose } from "./types";
+import { AnalyzePoseResult, AssignPoseResult, Pose, PoseTrainingPhotosResult } from "./types";
 
 export const analyzePose = (file: File) => {
   const formData = new FormData();
@@ -46,5 +48,14 @@ export const getPoses = () => {
     .fetch(() => ({ type: FETCH_PHYSIQUE_POSES }))
     .load((data: Pose[]) => ({ type: LOAD_PHYSIQUE_POSES, data }))
     .error("Error fetching poses")
+    .get();
+};
+
+export const getPoseTrainingPhotos = () => {
+  return api
+    .route("/api/ai/physique/poses")
+    .fetch(() => ({ type: FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS }))
+    .load((data: PoseTrainingPhotosResult) => ({ type: LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS, data }))
+    .error("Error fetching pose training photos")
     .get();
 };

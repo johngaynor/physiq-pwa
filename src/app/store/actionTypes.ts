@@ -119,3 +119,7 @@ export const LOAD_ASSIGN_PHYSIQUE_POSE = "LOAD_ASSIGN_PHYSIQUE_POSE" as const;
 // Physique Poses - Fetch available poses for physique classification
 export const FETCH_PHYSIQUE_POSES = "FETCH_PHYSIQUE_POSES" as const;
 export const LOAD_PHYSIQUE_POSES = "LOAD_PHYSIQUE_POSES" as const;
+
+// Physique Pose Training Photos - Fetch training and check-in photos
+export const FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS = "FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;
+export const LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS = "LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;

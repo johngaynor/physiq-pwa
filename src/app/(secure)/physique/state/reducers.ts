@@ -5,6 +5,8 @@ import {
   LOAD_ASSIGN_PHYSIQUE_POSE,
   FETCH_PHYSIQUE_POSES,
   LOAD_PHYSIQUE_POSES,
+  FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS,
+  LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS,
 } from "@/app/store/actionTypes";
 import { PhysiqueState, Action } from "./types";
 
@@ -14,6 +16,8 @@ const initialState: PhysiqueState = {
   assignPoseLoading: false,
   poses: null,
   posesLoading: false,
+  poseTrainingPhotos: null,
+  poseTrainingPhotosLoading: false,
 };
 
 export default function physiqueReducer(
@@ -57,6 +61,19 @@ export default function physiqueReducer(
         ...state,
         posesLoading: false,
         poses: action.data,
+      };
+
+    case FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS:
+      return {
+        ...state,
+        poseTrainingPhotosLoading: true,
+      };
+
+    case LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS:
+      return {
+        ...state,
+        poseTrainingPhotosLoading: false,
+        poseTrainingPhotos: action.data,
       };
 
     default:
