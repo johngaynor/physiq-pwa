@@ -4,22 +4,32 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload } from "lucide-react";
+import { getPoseTrainingPhotos } from "@/app/(secure)/physique/state/actions";
+
 function mapStateToProps(state: RootState) {
   return {
-    // Add state props here
+    poseTrainingPhotos: state.physique.poseTrainingPhotos,
+    poseTrainingPhotosLoading: state.physique.poseTrainingPhotosLoading,
   };
 }
 
 const connector = connect(mapStateToProps, {
-  // Add actions here
+  getPoseTrainingPhotos,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const PoseDashboard: React.FC<PropsFromRedux> = (
-  {
-    // Add props here
-  }
-) => {
+const PoseDashboard: React.FC<PropsFromRedux> = ({
+  poseTrainingPhotos,
+  poseTrainingPhotosLoading,
+  getPoseTrainingPhotos,
+}) => {
+  React.useEffect(() => {
+    if (!poseTrainingPhotos && !poseTrainingPhotosLoading)
+      getPoseTrainingPhotos();
+  }, [poseTrainingPhotos, poseTrainingPhotosLoading, getPoseTrainingPhotos]);
+
+  console.log(poseTrainingPhotos);
+
   return (
     <div className="w-full mb-40">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:h-[600px]">
