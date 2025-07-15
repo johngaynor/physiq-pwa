@@ -4,31 +4,45 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload } from "lucide-react";
-import { getPoseTrainingPhotos } from "@/app/(secure)/physique/state/actions";
+import {
+  getPoseTrainingPhotos,
+  getPoseModelData,
+} from "@/app/(secure)/physique/state/actions";
 
 function mapStateToProps(state: RootState) {
   return {
     poseTrainingPhotos: state.physique.poseTrainingPhotos,
     poseTrainingPhotosLoading: state.physique.poseTrainingPhotosLoading,
+    poseModelData: state.physique.poseModelData,
+    poseModelDataLoading: state.physique.poseModelDataLoading,
   };
 }
 
 const connector = connect(mapStateToProps, {
   getPoseTrainingPhotos,
+  getPoseModelData,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const PoseDashboard: React.FC<PropsFromRedux> = ({
   poseTrainingPhotos,
   poseTrainingPhotosLoading,
+  poseModelData,
+  poseModelDataLoading,
   getPoseTrainingPhotos,
+  getPoseModelData,
 }) => {
   React.useEffect(() => {
     if (!poseTrainingPhotos && !poseTrainingPhotosLoading)
       getPoseTrainingPhotos();
   }, [poseTrainingPhotos, poseTrainingPhotosLoading, getPoseTrainingPhotos]);
 
+  React.useEffect(() => {
+    if (!poseModelData && !poseModelDataLoading) getPoseModelData();
+  }, [poseModelData, poseModelDataLoading, getPoseModelData]);
+
   console.log(poseTrainingPhotos);
+  console.log(poseModelData);
 
   return (
     <div className="w-full mb-40">
