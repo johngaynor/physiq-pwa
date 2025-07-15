@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, Database, BarChart3, User, GitBranch } from "lucide-react";
+import { Database, BarChart3, User, GitBranch } from "lucide-react";
 import {
   getPoseTrainingPhotos,
   getPoseModelData,
@@ -47,8 +47,6 @@ const PoseDashboard: React.FC<PropsFromRedux> = ({
   const userContributedPhotos =
     poseTrainingPhotos?.filter((photo) => photo.s3Filename !== null).length ||
     0;
-
-  console.log(totalPhotos, totalCalls, userContributedPhotos);
 
   return (
     <div className="w-full mb-40">
