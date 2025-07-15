@@ -4,7 +4,7 @@ export interface PhysiqueState {
   assignPoseLoading: boolean;
   poses: Pose[] | null;
   posesLoading: boolean;
-  poseTrainingPhotos: PoseTrainingPhotosResult | null;
+  poseTrainingPhotos: TrainingPhoto[] | null;
   poseTrainingPhotosLoading: boolean;
   poseModelData: PoseModelDataResult | null;
   poseModelDataLoading: boolean;
@@ -22,11 +22,6 @@ export interface TrainingPhoto {
   poseId: number;
   location: "training" | "checkin";
 }
-
-export interface PoseTrainingPhotosResult {
-  photos: TrainingPhoto[];
-}
-
 export interface PoseModelDataResult {
   totalCalls: number;
   model: {
@@ -72,7 +67,7 @@ export type Action =
   | { type: "FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS" }
   | {
       type: "LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS";
-      data: PoseTrainingPhotosResult;
+      data: TrainingPhoto[];
     }
   | { type: "FETCH_PHYSIQUE_POSE_MODEL_DATA" }
   | { type: "LOAD_PHYSIQUE_POSE_MODEL_DATA"; data: PoseModelDataResult };

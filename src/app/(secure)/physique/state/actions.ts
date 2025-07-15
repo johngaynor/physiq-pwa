@@ -15,8 +15,8 @@ import {
   AnalyzePoseResult,
   AssignPoseResult,
   Pose,
-  PoseTrainingPhotosResult,
   PoseModelDataResult,
+  TrainingPhoto,
 } from "./types";
 
 export const analyzePose = (file: File) => {
@@ -63,7 +63,7 @@ export const getPoseTrainingPhotos = () => {
   return api
     .route("/api/ai/physique/poses")
     .fetch(() => ({ type: FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS }))
-    .load((data: PoseTrainingPhotosResult) => ({
+    .load((data: TrainingPhoto[]) => ({
       type: LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS,
       data,
     }))
