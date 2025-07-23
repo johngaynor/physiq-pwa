@@ -2,7 +2,6 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { getApps } from "../../(secure)/state/actions";
 import { Button, Badge, Skeleton, Input } from "@/components/ui";
 import Link from "next/link";
 import { useWindowDimensions } from "@/app/customHooks/useWindowDimensions";
@@ -14,7 +13,7 @@ function mapStateToProps(state: RootState) {
   };
 }
 
-const connector = connect(mapStateToProps, { getApps });
+const connector = connect(mapStateToProps, {});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 type AppsGridPageProps = PropsFromRedux & {
@@ -24,15 +23,10 @@ type AppsGridPageProps = PropsFromRedux & {
 const AppsGridPage: React.FC<AppsGridPageProps> = ({
   apps,
   appsLoading,
-  getApps,
   filter,
 }) => {
   const [search, setSearch] = React.useState("");
   const isMobile = useWindowDimensions("(max-width: 768px)");
-
-  React.useEffect(() => {
-    if (!apps && !appsLoading) getApps();
-  }, [apps, appsLoading, getApps]);
 
   const filteredApps = apps?.filter(
     (app) => app.link?.includes(filter) && app.link?.includes(search)
