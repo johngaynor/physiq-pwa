@@ -14,12 +14,12 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div style={{ padding: "4rem", textAlign: "center" }}>
-      <h1>Something went wrong</h1>
-      <p>{error.message}</p>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-4xl font-bold mb-4">Something went wrong</h1>
+      <p className="text-lg text-muted-foreground mb-8">{error.message}</p>
       <button
         onClick={() => reset()}
-        style={{ marginTop: "1rem", padding: "0.5rem 1rem", fontSize: "16px" }}
+        className="text-blue-400 hover:underline border border-blue-400 rounded px-4 py-2"
       >
         Try again
       </button>
