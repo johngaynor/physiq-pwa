@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { setToken } from "@/lib/apiClient";
 import { useDispatch } from "react-redux";
-import { initializeUser } from "@/app/(secure)/state/actions";
+import { initializeSession } from "@/app/(secure)/state/actions";
 import { toast } from "sonner";
 
 export default function SessionInitializer() {
@@ -13,13 +13,13 @@ export default function SessionInitializer() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const initializeSession = async () => {
+    const initialize = async () => {
       const token = await auth.getToken();
       setToken(token);
       if (isLoaded && user) {
-        // Call initializeUser and check for 'existed' property
+        // Call initializeSession and check for 'existed' property
         const result = await dispatch<any>(
-          initializeUser(
+          initializeSession(
             user.id,
             user.primaryEmailAddress?.emailAddress || "",
             user.fullName || ""
@@ -30,7 +30,7 @@ export default function SessionInitializer() {
         }
       }
     };
-    initializeSession();
+    initialize();
   }, [auth, user, isLoaded, dispatch]);
 
   return null;

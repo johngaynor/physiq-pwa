@@ -60,10 +60,6 @@ export const FETCH_HEALTH_DIET_LOGS_LATEST =
 export const LOAD_HEALTH_DIET_LOGS_LATEST =
   "LOAD_HEALTH_DIET_LOGS_LATEST" as const;
 
-// Apps - Fetch and manage application list
-export const FETCH_APPS = "FETCH_APPS" as const;
-export const LOAD_APPS = "LOAD_APPS" as const;
-
 // Diet Logs - Fetch and manage diet log entries
 export const FETCH_DIET_LOGS = "FETCH_DIET_LOGS" as const;
 export const LOAD_DIET_LOGS = "LOAD_DIET_LOGS" as const;
@@ -121,13 +117,17 @@ export const FETCH_PHYSIQUE_POSES = "FETCH_PHYSIQUE_POSES" as const;
 export const LOAD_PHYSIQUE_POSES = "LOAD_PHYSIQUE_POSES" as const;
 
 // Physique Pose Training Photos - Fetch training and check-in photos
-export const FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS = "FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;
-export const LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS = "LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;
+export const FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS =
+  "FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;
+export const LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS =
+  "LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS" as const;
 
 // Physique Pose Model Data - Fetch model statistics and information
-export const FETCH_PHYSIQUE_POSE_MODEL_DATA = "FETCH_PHYSIQUE_POSE_MODEL_DATA" as const;
-export const LOAD_PHYSIQUE_POSE_MODEL_DATA = "LOAD_PHYSIQUE_POSE_MODEL_DATA" as const;
+export const FETCH_PHYSIQUE_POSE_MODEL_DATA =
+  "FETCH_PHYSIQUE_POSE_MODEL_DATA" as const;
+export const LOAD_PHYSIQUE_POSE_MODEL_DATA =
+  "LOAD_PHYSIQUE_POSE_MODEL_DATA" as const;
 
-// Initialize User - Fetch and load user session data
-export const FETCH_INITIALIZE_USER = "FETCH_INITIALIZE_USER" as const;
-export const LOAD_INITIALIZE_USER = "LOAD_INITIALIZE_USER" as const;
+// Initialize User - Fetch and load user session data including apps
+export const FETCH_INITIALIZE_SESSION = "FETCH_INITIALIZE_SESSION" as const;
+export const LOAD_INITIALIZE_SESSION = "LOAD_INITIALIZE_SESSION" as const;

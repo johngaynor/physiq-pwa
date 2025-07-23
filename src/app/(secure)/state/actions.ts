@@ -1,27 +1,21 @@
 import {
-  FETCH_APPS,
-  LOAD_APPS,
-  FETCH_INITIALIZE_USER,
-  LOAD_INITIALIZE_USER,
+  FETCH_INITIALIZE_SESSION,
+  LOAD_INITIALIZE_SESSION,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { App } from "./types";
 
-export const getApps = () => {
+export const initializeSession = (id: string, email: string, name: string) => {
   return api
-    .route("/api/all/apps")
-    .fetch(() => ({ type: FETCH_APPS }))
-    .load((data: App[]) => ({ type: LOAD_APPS, data }))
-    .error("Error fetching available apps")
-    .get();
-};
-
-export const initializeUser = (id: string, email: string, name: string) => {
-  return api
-    .route("/api/all/user")
+    .route("/api/all/session")
     .data({ id, email, name })
-    .fetch(() => ({ type: FETCH_INITIALIZE_USER }))
-    .load((data: any) => ({ type: LOAD_INITIALIZE_USER, data }))
-    .error("Error initializing local user session")
+    .fetch(() => ({ type: FETCH_INITIALIZE_SESSION }))
+    .load((data: { apps: App[]; user: any; existed: boolean }) => ({
+      type: LOAD_INITIALIZE_SESSION,
+      data: data.user,
+      apps: data.apps,
+      existed: data.existed,
+    }))
+    .error("Error initializing session")
     .post();
 };
