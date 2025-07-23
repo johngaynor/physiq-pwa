@@ -1,22 +1,32 @@
 "use client";
 
 import { useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { setToken } from "@/lib/apiClient";
+import { useDispatch } from "react-redux";
+import { initializeUser } from "@/app/(secure)/state/actions";
 
 export default function SessionInitializer() {
   const auth = useAuth();
+  const { user, isLoaded } = useUser();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const initializeSession = async () => {
       const token = await auth.getToken();
-
-      //   console.log("token retrieved:", token);
       setToken(token);
+      if (isLoaded && user) {
+        dispatch<any>(
+          initializeUser(
+            user.id,
+            user.primaryEmailAddress?.emailAddress || "",
+            user.fullName || ""
+          )
+        );
+      }
     };
-
     initializeSession();
-  }, [auth]);
+  }, [auth, user, isLoaded, dispatch]);
 
   return null;
 }

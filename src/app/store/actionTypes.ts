@@ -127,3 +127,7 @@ export const LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS = "LOAD_PHYSIQUE_POSE_TRAINING_P
 // Physique Pose Model Data - Fetch model statistics and information
 export const FETCH_PHYSIQUE_POSE_MODEL_DATA = "FETCH_PHYSIQUE_POSE_MODEL_DATA" as const;
 export const LOAD_PHYSIQUE_POSE_MODEL_DATA = "LOAD_PHYSIQUE_POSE_MODEL_DATA" as const;
+
+// Initialize User - Fetch and load user session data
+export const FETCH_INITIALIZE_USER = "FETCH_INITIALIZE_USER" as const;
+export const LOAD_INITIALIZE_USER = "LOAD_INITIALIZE_USER" as const;

@@ -41,9 +41,9 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <SessionInitializer />
             <PullToRefresh />
             <ReduxProvider>
+              <SessionInitializer />
               <Toaster richColors theme="system" />
               <div className="relative mx-auto">
                 <NavbarWrapper>{children}</NavbarWrapper>
