@@ -2,15 +2,15 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { Input, Button } from "@/components/ui";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { DateTime } from "luxon";
-import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import ListLoadingPage from "../components/Templates/ListLoadingPage";
 import { getApps, getUsers } from "../state/actions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -36,113 +36,56 @@ const AdminConsole: React.FC<PropsFromRedux> = ({
   usersLoading,
   getUsers,
 }) => {
+  const [user, setUser] = React.useState<string | null>(null);
+
   React.useEffect(() => {
     if (!adminApps && !adminAppsLoading) getApps();
     if (!users && !usersLoading) getUsers();
   }, [adminApps, adminAppsLoading, getApps, users, usersLoading, getUsers]);
-  console.log(adminApps, adminAppsLoading);
+
+  const appCategories = adminApps?.reduce((acc, val) => {
+    const retObj = { ...acc };
+    const url = val.link.split("/");
+    const substr = url[1];
+    if (!retObj.substr) {
+      retObj[substr] = [];
+    }
+    retObj[substr].push(val);
+  }, {});
 
   if (adminAppsLoading || appsLoading || usersLoading) {
-    return <h1>loading...</h1>;
+    return (
+      <div className="w-full mb-40">
+        <Select disabled={!users} onValueChange={(value) => setUser(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a user..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">No user selected</SelectItem>
+            {users?.map((usr) => (
+              <SelectItem key={usr.id} value={usr.id}>
+                {usr.name} - {usr.email}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {!user ? (
+          <h1>Select a user to continue.</h1>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {Object.keys(appCategories)?.map((cat) => (
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{cat}</CardTitle>
+                </CardHeader>
+                <CardContent></CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    );
   }
-
-  //   const sortedApps = React.useMemo(() => {
-  //     return (
-  //       checkIns?.slice().sort((a, b) => {
-  //         return new Date(b.date).getTime() - new Date(a.date).getTime();
-  //       }) || []
-  //     );
-  //   }, [checkIns]);
-
-  //   const filteredCheckIns = React.useMemo(() => {
-  //     if (!search) return sortedCheckIns;
-  //     return sortedCheckIns.filter(
-  //       (checkIn) =>
-  //         checkIn.comments?.toLowerCase().includes(search.toLowerCase()) ||
-  //         checkIn.training?.toLowerCase().includes(search.toLowerCase()) ||
-  //         checkIn.cheats?.toLowerCase().includes(search.toLowerCase())
-  //     );
-  //   }, [sortedCheckIns, search]);
-
-  //   if (checkInsLoading) {
-  //     return <ListLoadingPage />;
-  //   } else
-  //     return (
-  //       <div className="w-full">
-  //         <div className="mb-2 flex flex-row">
-  //           <Input
-  //             id="search"
-  //             value={search}
-  //             onChange={(e) => setSearch(e.target.value)}
-  //             placeholder="Search check-ins..."
-  //             className="col-span-3"
-  //             type="text"
-  //           />
-  //           <Button
-  //             className="ml-2"
-  //             variant="outline"
-  //             onClick={() => router.push("/checkins/new")}
-  //           >
-  //             <div className="flex">
-  //               <Plus className="font-extrabold" />
-  //             </div>
-  //           </Button>
-  //         </div>
-  //         <Card className="w-full rounded-sm p-0">
-  //           <CardContent className="p-0">
-  //             <Table>
-  //               <TableBody>
-  //                 {filteredCheckIns?.map((checkIn, index) => (
-  //                   <TableRow
-  //                     key={checkIn.id}
-  //                     onClick={() =>
-  //                       router.push(`/checkins/checkin/${checkIn.id}`)
-  //                     }
-  //                     className="cursor-pointer"
-  //                   >
-  //                     <TableCell className="pl-8">
-  //                       {DateTime.fromISO(checkIn.date).toFormat("LLL d, yyyy")}
-  //                       {index === 0 && (
-  //                         <Badge variant="secondary" className="ml-2">
-  //                           Latest
-  //                         </Badge>
-  //                       )}
-  //                     </TableCell>
-  //                     <TableCell>
-  //                       {checkIn.training && (
-  //                         <div className="text-sm font-medium">
-  //                           Training: {checkIn.training}
-  //                         </div>
-  //                       )}
-  //                       {checkIn.cheats && (
-  //                         <div className="text-xs text-muted-foreground">
-  //                           Cheats: {checkIn.cheats}
-  //                         </div>
-  //                       )}
-  //                     </TableCell>
-  //                     <TableCell className="text-sm truncate overflow-hidden max-w-[300px] pr-8">
-  //                       {checkIn.comments}
-  //                     </TableCell>
-  //                   </TableRow>
-  //                 ))}
-  //                 {filteredCheckIns?.length === 0 && (
-  //                   <TableRow>
-  //                     <TableCell
-  //                       colSpan={3}
-  //                       className="text-center py-8 text-gray-500"
-  //                     >
-  //                       {search
-  //                         ? "No check-ins found matching your search."
-  //                         : "No check-ins yet. Create your first one!"}
-  //                     </TableCell>
-  //                   </TableRow>
-  //                 )}
-  //               </TableBody>
-  //             </Table>
-  //           </CardContent>
-  //         </Card>
-  //       </div>
-  //     );
 
   return <h1>admin</h1>;
 };
