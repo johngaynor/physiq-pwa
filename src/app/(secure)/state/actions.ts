@@ -1,6 +1,8 @@
 import {
   FETCH_INITIALIZE_SESSION,
   LOAD_INITIALIZE_SESSION,
+  FETCH_APPS,
+  LOAD_APPS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { App } from "./types";
@@ -18,4 +20,16 @@ export const initializeSession = (id: string, email: string, name: string) => {
     }))
     .error("Error initializing session")
     .post();
+};
+
+export const fetchApps = () => {
+  return api
+    .route("/api/all/apps")
+    .fetch(() => ({ type: FETCH_APPS }))
+    .load((data: App[]) => ({
+      type: LOAD_APPS,
+      data,
+    }))
+    .error("Error fetching apps")
+    .get();
 };

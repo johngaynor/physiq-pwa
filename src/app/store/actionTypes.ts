@@ -131,3 +131,7 @@ export const LOAD_PHYSIQUE_POSE_MODEL_DATA =
 // Initialize User - Fetch and load user session data including apps
 export const FETCH_INITIALIZE_SESSION = "FETCH_INITIALIZE_SESSION" as const;
 export const LOAD_INITIALIZE_SESSION = "LOAD_INITIALIZE_SESSION" as const;
+
+// Get Apps - Fetch all apps for admin console
+export const FETCH_APPS = "FETCH_APPS" as const;
+export const LOAD_APPS = "LOAD_APPS" as const;

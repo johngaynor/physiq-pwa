@@ -1,6 +1,8 @@
 import {
   FETCH_INITIALIZE_SESSION,
   LOAD_INITIALIZE_SESSION,
+  FETCH_APPS,
+  LOAD_APPS,
 } from "../../store/actionTypes";
 
 export type App = {
@@ -18,10 +20,14 @@ export type Action =
       user: any;
       existed: boolean;
       apps: App[];
-    };
+    }
+  | { type: typeof FETCH_APPS }
+  | { type: typeof LOAD_APPS; data: App[] };
 
 export interface AppState {
   apps: App[] | null;
   appsLoading: boolean;
   user: boolean;
+  adminApps: App[] | null;
+  adminAppsLoading: boolean;
 }
