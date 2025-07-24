@@ -10,21 +10,32 @@ import { DateTime } from "luxon";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ListLoadingPage from "../components/Templates/ListLoadingPage";
+import { fetchApps } from "../state/actions";
 
 function mapStateToProps(state: RootState) {
   return {
     apps: state.app.apps,
     appsLoading: state.app.appsLoading,
+    adminApps: state.app.adminApps,
+    adminAppsLoading: state.app.adminAppsLoading,
   };
 }
 
-const connector = connect(mapStateToProps, {});
+const connector = connect(mapStateToProps, { fetchApps });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const AdminConsole: React.FC<PropsFromRedux> = ({ apps, appsLoading }) => {
-  const [search, setSearch] = React.useState("");
+const AdminConsole: React.FC<PropsFromRedux> = ({
+  apps,
+  appsLoading,
+  adminApps,
+  adminAppsLoading,
+}) => {
+  React.useEffect(() => {
+    if (!adminApps && !adminAppsLoading) fetchApps();
+  }, [adminApps, adminAppsLoading, fetchApps]);
+  console.log(adminApps, adminAppsLoading);
 
-  console.log(apps);
+  //   console.log(apps, adminApps);
 
   //   const router = useRouter();
 
