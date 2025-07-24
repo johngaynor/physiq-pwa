@@ -15,7 +15,9 @@ export type Action =
   | { type: typeof FETCH_INITIALIZE_SESSION }
   | {
       type: typeof LOAD_INITIALIZE_SESSION;
-      data: { user: any; apps: App[]; existed: boolean };
+      user: any;
+      existed: boolean;
+      apps: App[];
     };
 
 export interface AppState {

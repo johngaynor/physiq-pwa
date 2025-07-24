@@ -21,7 +21,7 @@ export default function appReducer(
       return {
         ...state,
         user: true,
-        apps: action.data.apps,
+        apps: action.apps,
         appsLoading: false,
       };
     default:
