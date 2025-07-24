@@ -10,7 +10,7 @@ import { DateTime } from "luxon";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ListLoadingPage from "../components/Templates/ListLoadingPage";
-import { fetchApps } from "../state/actions";
+import { getApps, getUsers } from "../state/actions";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -18,10 +18,12 @@ function mapStateToProps(state: RootState) {
     appsLoading: state.app.appsLoading,
     adminApps: state.app.adminApps,
     adminAppsLoading: state.app.adminAppsLoading,
+    users: state.app.users,
+    usersLoading: state.app.usersLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { fetchApps });
+const connector = connect(mapStateToProps, { getApps, getUsers });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const AdminConsole: React.FC<PropsFromRedux> = ({
@@ -29,15 +31,20 @@ const AdminConsole: React.FC<PropsFromRedux> = ({
   appsLoading,
   adminApps,
   adminAppsLoading,
+  getApps,
+  users,
+  usersLoading,
+  getUsers,
 }) => {
   React.useEffect(() => {
-    if (!adminApps && !adminAppsLoading) fetchApps();
-  }, [adminApps, adminAppsLoading, fetchApps]);
+    if (!adminApps && !adminAppsLoading) getApps();
+    if (!users && !usersLoading) getUsers();
+  }, [adminApps, adminAppsLoading, getApps, users, usersLoading, getUsers]);
   console.log(adminApps, adminAppsLoading);
 
-  //   console.log(apps, adminApps);
-
-  //   const router = useRouter();
+  if (adminAppsLoading || appsLoading || usersLoading) {
+    return <h1>loading...</h1>;
+  }
 
   //   const sortedApps = React.useMemo(() => {
   //     return (

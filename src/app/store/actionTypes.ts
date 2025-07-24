@@ -135,3 +135,7 @@ export const LOAD_INITIALIZE_SESSION = "LOAD_INITIALIZE_SESSION" as const;
 // Get Apps - Fetch all apps for admin console
 export const FETCH_APPS = "FETCH_APPS" as const;
 export const LOAD_APPS = "LOAD_APPS" as const;
+
+// Get Users - for selection in admin console
+export const FETCH_USERS = "FETCH_USERS" as const;
+export const LOAD_USERS = "LOAD_USERS" as const;

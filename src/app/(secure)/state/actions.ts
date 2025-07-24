@@ -3,9 +3,11 @@ import {
   LOAD_INITIALIZE_SESSION,
   FETCH_APPS,
   LOAD_APPS,
+  FETCH_USERS,
+  LOAD_USERS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { App } from "./types";
+import { App, User } from "./types";
 
 export const initializeSession = (id: string, email: string, name: string) => {
   return api
@@ -22,7 +24,7 @@ export const initializeSession = (id: string, email: string, name: string) => {
     .post();
 };
 
-export const fetchApps = () => {
+export const getApps = () => {
   return api
     .route("/api/all/apps")
     .fetch(() => ({ type: FETCH_APPS }))
@@ -31,5 +33,17 @@ export const fetchApps = () => {
       data,
     }))
     .error("Error fetching apps")
+    .get();
+};
+
+export const getUsers = () => {
+  return api
+    .route("/api/all/users")
+    .fetch(() => ({ type: FETCH_USERS }))
+    .load((data: User[]) => ({
+      type: LOAD_USERS,
+      data,
+    }))
+    .error("Error fetching users")
     .get();
 };

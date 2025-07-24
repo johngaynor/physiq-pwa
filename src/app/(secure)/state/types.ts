@@ -3,6 +3,8 @@ import {
   LOAD_INITIALIZE_SESSION,
   FETCH_APPS,
   LOAD_APPS,
+  FETCH_USERS,
+  LOAD_USERS,
 } from "../../store/actionTypes";
 
 export type App = {
@@ -10,6 +12,13 @@ export type App = {
   name: string;
   description: string;
   link: string;
+};
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  admin: boolean;
 };
 
 // action types
@@ -22,7 +31,9 @@ export type Action =
       apps: App[];
     }
   | { type: typeof FETCH_APPS }
-  | { type: typeof LOAD_APPS; data: App[] };
+  | { type: typeof LOAD_APPS; data: App[] }
+  | { type: typeof FETCH_USERS }
+  | { type: typeof LOAD_USERS; data: User[] };
 
 export interface AppState {
   apps: App[] | null;
@@ -30,4 +41,6 @@ export interface AppState {
   user: boolean;
   adminApps: App[] | null;
   adminAppsLoading: boolean;
+  users: User[] | null;
+  usersLoading: boolean;
 }

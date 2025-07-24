@@ -3,6 +3,8 @@ import {
   LOAD_INITIALIZE_SESSION,
   FETCH_APPS,
   LOAD_APPS,
+  FETCH_USERS,
+  LOAD_USERS,
 } from "../../store/actionTypes";
 import type { AppState, Action } from "./types";
 
@@ -12,6 +14,8 @@ const DEFAULT_STATE: AppState = {
   user: false,
   adminApps: null,
   adminAppsLoading: false,
+  users: null,
+  usersLoading: false,
 };
 
 export default function appReducer(
@@ -36,6 +40,13 @@ export default function appReducer(
         adminApps: action.data,
         adminAppsLoading: false,
       };
+    case FETCH_USERS:
+      return {
+        ...state,
+        usersLoading: true,
+      };
+    case LOAD_USERS:
+      return { ...state, usersLoading: false, users: action.data };
     default:
       return state;
   }
