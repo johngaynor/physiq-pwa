@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -43,15 +44,18 @@ const AdminConsole: React.FC<PropsFromRedux> = ({
     if (!users && !usersLoading) getUsers();
   }, [adminApps, adminAppsLoading, getApps, users, usersLoading, getUsers]);
 
-  const appCategories = adminApps?.reduce((acc, val) => {
-    const retObj = { ...acc };
-    const url = val.link.split("/");
-    const substr = url[1];
-    if (!retObj.substr) {
-      retObj[substr] = [];
-    }
-    retObj[substr].push(val);
-  }, {});
+  const appCategories = adminApps?.reduce(
+    (acc: Record<string, typeof adminApps>, val) => {
+      const url = val.link.split("/");
+      const category = url[1];
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(val);
+      return acc;
+    },
+    {} as Record<string, typeof adminApps>
+  );
 
   if (adminAppsLoading || appsLoading || usersLoading) {
     return (
@@ -73,14 +77,27 @@ const AdminConsole: React.FC<PropsFromRedux> = ({
           <h1>Select a user to continue.</h1>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {Object.keys(appCategories)?.map((cat) => (
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{cat}</CardTitle>
-                </CardHeader>
-                <CardContent></CardContent>
-              </Card>
-            ))}
+            {appCategories &&
+              Object.keys(appCategories).map((cat) => (
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">{cat}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {appCategories[cat].map((ap) => (
+                      <div className="w-full flex flex-row justify-between p-4">
+                        <h3>{ap.name}</h3>
+                        <Checkbox
+                          checked={Boolean(apps?.find((a) => a.id))}
+                          onCheckedChange={(checked) =>
+                            console.log(`App ${ap.name} checked: ${checked}`)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
           </div>
         )}
       </div>
