@@ -78,14 +78,17 @@ const AdminConsole: React.FC<PropsFromRedux> = ({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {appCategories &&
-              Object.keys(appCategories).map((cat) => (
-                <Card>
+              Object.keys(appCategories).map((cat, i) => (
+                <Card key={"appcategory-" + i}>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">{cat}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {appCategories[cat].map((ap) => (
-                      <div className="w-full flex flex-row justify-between p-4">
+                    {appCategories[cat].map((ap, j) => (
+                      <div
+                        className="w-full flex flex-row justify-between p-4"
+                        key={"app-" + j}
+                      >
                         <h3>{ap.name}</h3>
                         <Checkbox
                           checked={Boolean(apps?.find((a) => a.id))}
