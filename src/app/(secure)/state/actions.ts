@@ -5,6 +5,9 @@ import {
   LOAD_APPS,
   FETCH_USERS,
   LOAD_USERS,
+  FETCH_APP_ACCESS,
+  LOAD_APP_ACCESS,
+  EDIT_APP_ACCESS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { App, User } from "./types";
@@ -14,11 +17,10 @@ export const initializeSession = (id: string, email: string, name: string) => {
     .route("/api/all/session")
     .data({ id, email, name })
     .fetch(() => ({ type: FETCH_INITIALIZE_SESSION }))
-    .load((data: { user: any; existed: boolean; apps: App[] }) => ({
+    .load((data: { user: User; existed: boolean }) => ({
       type: LOAD_INITIALIZE_SESSION,
       user: data.user,
       existed: data.existed,
-      apps: data.apps,
     }))
     .error("Error initializing session")
     .post();
@@ -46,4 +48,29 @@ export const getUsers = () => {
     }))
     .error("Error fetching users")
     .get();
+};
+
+export const getAppAccess = (userId: string) => {
+  return api
+    .route(`/api/all/app/access/${userId}`)
+    .fetch(() => ({ type: FETCH_APP_ACCESS }))
+    .load((data: { appAccess: App[]; appAccessId: string }) => ({
+      type: LOAD_APP_ACCESS,
+      data,
+      userId,
+    }))
+    .error("Error fetching app access")
+    .get();
+};
+
+export const editAppAccess = (userId: string, app: App, checked: boolean) => {
+  return api
+    .route("/api/all/app/access")
+    .data({ userId, app, checked })
+    .load(() => ({
+      type: EDIT_APP_ACCESS,
+      data: { userId, app, checked },
+    }))
+    .error("Error editing app access")
+    .post();
 };

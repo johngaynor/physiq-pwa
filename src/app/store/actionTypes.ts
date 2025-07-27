@@ -139,3 +139,10 @@ export const LOAD_APPS = "LOAD_APPS" as const;
 // Get Users - for selection in admin console
 export const FETCH_USERS = "FETCH_USERS" as const;
 export const LOAD_USERS = "LOAD_USERS" as const;
+
+// Get App Access - Fetch app access permissions for a user
+export const FETCH_APP_ACCESS = "FETCH_APP_ACCESS" as const;
+export const LOAD_APP_ACCESS = "LOAD_APP_ACCESS" as const;
+
+// Edit App Access - Edit access permissions for apps
+export const EDIT_APP_ACCESS = "EDIT_APP_ACCESS" as const;
