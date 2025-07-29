@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export const DrawerWrapper: React.FC<{
   header: string;
   subheader: string;
-  currentValue: number;
+  currentValue: number | string;
   Trigger: React.ReactNode;
   increment?: number;
   defaultReplace?: boolean;
@@ -29,10 +29,27 @@ export const DrawerWrapper: React.FC<{
   increment = 1,
   defaultReplace = false,
 }) => {
-  const [inputValue, setInputValue] = useState("0");
+  console.log("current value coming in:", currentValue, header, defaultReplace);
+  const [inputValue, setInputValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [replaceMode, setReplaceMode] = useState(defaultReplace);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  useEffect(() => {
+    if ((defaultReplace || replaceMode) && isOpen) {
+      if (
+        currentValue !== null &&
+        currentValue !== undefined &&
+        currentValue !== ""
+      ) {
+        setInputValue(currentValue.toString());
+      } else {
+        setInputValue("");
+      }
+    }
+  }, [currentValue, defaultReplace, replaceMode, isOpen]);
+
+  console.log({ inputValue });
 
   // Handle mobile keyboard behavior
   useEffect(() => {
@@ -106,21 +123,29 @@ export const DrawerWrapper: React.FC<{
 
   const handleAddValue = () => {
     const formValue = parseFloat(inputValue) || 0;
-    onUpdate(currentValue + formValue);
-    setInputValue("0");
+    const baseValue =
+      typeof currentValue === "number"
+        ? currentValue
+        : parseFloat(currentValue as string) || 0;
+    onUpdate(baseValue + formValue);
+    setInputValue("");
     setIsOpen(false);
   };
 
   const handleSubtractValue = () => {
     const formValue = parseFloat(inputValue) || 0;
-    const newValue = Math.max(0, currentValue - formValue);
+    const baseValue =
+      typeof currentValue === "number"
+        ? currentValue
+        : parseFloat(currentValue as string) || 0;
+    const newValue = Math.max(0, baseValue - formValue);
     onUpdate(newValue);
-    setInputValue("0");
+    setInputValue("");
     setIsOpen(false);
   };
 
   const handleCancel = () => {
-    setInputValue("0");
+    setInputValue("");
     setReplaceMode(defaultReplace);
     setIsOpen(false);
   };
@@ -128,7 +153,7 @@ export const DrawerWrapper: React.FC<{
   const handleSave = () => {
     const formValue = parseFloat(inputValue) || 0;
     onUpdate(formValue);
-    setInputValue("0");
+    setInputValue("");
     setReplaceMode(defaultReplace);
     setIsOpen(false);
   };

@@ -65,13 +65,15 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
 
+  console.log({ todayLog, yesterdayLog });
+
   return (
     <div className="w-full md:w-[400px] shrink-0">
       <div className="grid grid-cols-2 gap-2 p-2 h-full w-full border-2 rounded-md">
         <DrawerWrapper
           header="Add/Subtract Weight"
           subheader="Track your weight."
-          currentValue={todayLog?.weight || 0}
+          currentValue={todayLog?.weight || ""}
           onUpdate={(newValue: number) => {
             editDailyWeight(today, newValue);
           }}
@@ -91,7 +93,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
         <DrawerWrapper
           header="Add/Subtract Steps"
           subheader="Track your steps from yesterday."
-          currentValue={yesterdayLog?.steps || 0}
+          currentValue={yesterdayLog?.steps || ""}
           onUpdate={(newValue: number) => {
             editDailySteps(yesterday, newValue);
           }}
@@ -117,7 +119,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
         <DrawerWrapper
           header="Add/Subtract Bodyfat"
           subheader="Track your bodyfat percentage."
-          currentValue={todayLog?.bodyfat || 0}
+          currentValue={todayLog?.bodyfat || ""}
           onUpdate={(newValue: number) => {
             editDailyBodyfat(today, newValue);
           }}
