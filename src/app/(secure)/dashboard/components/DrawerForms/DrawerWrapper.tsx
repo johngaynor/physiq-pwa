@@ -170,6 +170,20 @@ export const DrawerWrapper: React.FC<{
     setIsOpen(false);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (replaceMode) {
+        handleSave();
+      } else {
+        handleAddValue();
+      }
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      handleCancel();
+    }
+  };
+
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>{Trigger}</DrawerTrigger>
@@ -206,6 +220,7 @@ export const DrawerWrapper: React.FC<{
                   step="0.1"
                   inputMode="decimal"
                   autoComplete="off"
+                  onKeyDown={handleKeyDown}
                 />
               </div>
               <Button
