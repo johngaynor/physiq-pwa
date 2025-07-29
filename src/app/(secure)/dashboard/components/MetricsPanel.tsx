@@ -65,8 +65,6 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
 
-  console.log({ todayLog, yesterdayLog });
-
   return (
     <div className="w-full md:w-[400px] shrink-0">
       <div className="grid grid-cols-2 gap-2 p-2 h-full w-full border-2 rounded-md">

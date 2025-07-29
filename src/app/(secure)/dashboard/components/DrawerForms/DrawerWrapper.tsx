@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -29,12 +29,14 @@ export const DrawerWrapper: React.FC<{
   increment = 1,
   defaultReplace = false,
 }) => {
-  console.log("current value coming in:", currentValue, header, defaultReplace);
   const [inputValue, setInputValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [replaceMode, setReplaceMode] = useState(defaultReplace);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // assign initial form value when drawer opens
   useEffect(() => {
     if ((defaultReplace || replaceMode) && isOpen) {
       if (
@@ -49,7 +51,17 @@ export const DrawerWrapper: React.FC<{
     }
   }, [currentValue, defaultReplace, replaceMode, isOpen]);
 
-  console.log({ inputValue });
+  // focus input when drawer opens
+  useEffect(() => {
+    if (isOpen) {
+      const timeout = setTimeout(() => {
+        requestAnimationFrame(() => {
+          inputRef.current?.focus();
+        });
+      }, 250); // Adjust delay if needed based on your drawer's animation timing
+      return () => clearTimeout(timeout);
+    }
+  }, [isOpen]);
 
   // Handle mobile keyboard behavior
   useEffect(() => {
@@ -183,6 +195,7 @@ export const DrawerWrapper: React.FC<{
               </Button>
               <div className="text-center">
                 <Input
+                  ref={inputRef}
                   id="custom-input"
                   type="number"
                   value={inputValue}
