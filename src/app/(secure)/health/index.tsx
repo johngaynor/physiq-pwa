@@ -7,7 +7,7 @@ import StatisticsCard from "./components/StatisticsCard";
 import { StatisticsGraph } from "./components/StatisticsGraph";
 import { DateTime } from "luxon";
 import { convertTime } from "@/app/components/Time";
-import { Skeleton } from "@/components/ui";
+import { Button, Skeleton } from "@/components/ui";
 import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
@@ -20,11 +20,24 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, { getDailyLogs });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
+const filterOptions: {
+  label: string;
+  value: "today" | "lastCheckin" | "last30" | "custom";
+}[] = [
+  { label: "Today", value: "today" },
+  { label: "Last Check-in", value: "lastCheckin" },
+  { label: "Last 30 Days", value: "last30" },
+  { label: "Custom Range", value: "custom" },
+];
+
 const HealthDashboard: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
   getDailyLogs,
 }) => {
+  const [filter, setFilter] = React.useState<
+    "today" | "lastCheckin" | "last30" | "custom"
+  >("lastCheckin");
   React.useEffect(() => {
     if (!dailyLogs && !dailyLogsLoading) getDailyLogs();
   }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
@@ -135,6 +148,18 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   } else
     return (
       <div className="w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          {filterOptions.map((option) => (
+            <Button
+              key={"button-" + option.value}
+              onClick={() => setFilter(option.value)}
+              type="button"
+              variant={option.value === filter ? "default" : "outline"}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
           <StatisticsCard
             title="Weight"

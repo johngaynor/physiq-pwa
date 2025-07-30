@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, TrendingDown } from "lucide-react";
+// import { TrendingUp, TrendingDown } from "lucide-react";
 import { LineChart, CartesianGrid, XAxis, Line, YAxis } from "recharts";
 
 import {
@@ -45,7 +45,7 @@ export function StatisticsGraph({
   showUnit,
   primaryKey,
   singleAxis = false,
-  subtitle,
+  // subtitle,
   onClick,
 }: HealthChartProps) {
   const startingValue = dailyLogs ? dailyLogs.find((d) => d[primaryKey]) : null;
@@ -53,15 +53,15 @@ export function StatisticsGraph({
     ? [...dailyLogs].reverse().find((d) => d[primaryKey])
     : null;
 
-  const diff =
-    startingValue?.[primaryKey] && endingValue?.[primaryKey]
-      ? parseFloat(
-          (
-            (endingValue[primaryKey] as number) -
-            (startingValue[primaryKey] as number)
-          ).toFixed(2)
-        )
-      : 0;
+  // const diff =
+  //   startingValue?.[primaryKey] && endingValue?.[primaryKey]
+  //     ? parseFloat(
+  //         (
+  //           (endingValue[primaryKey] as number) -
+  //           (startingValue[primaryKey] as number)
+  //         ).toFixed(2)
+  //       )
+  //     : 0;
 
   function getRoundedDomain(rounding: number) {
     return ([dataMin, dataMax]: [number, number]) =>
@@ -153,7 +153,7 @@ export function StatisticsGraph({
       <CardFooter>
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
-            <div className="flex items-center gap-2 leading-none font-medium">
+            {/* <div className="flex items-center gap-2 leading-none font-medium">
               You are {diff >= 0 ? "up" : "down"} {Math.abs(diff)} {unit}{" "}
               {subtitle ?? "over the last month"}
               {diff >= 0 ? (
@@ -161,7 +161,7 @@ export function StatisticsGraph({
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-            </div>
+            </div> */}
             <div className="text-muted-foreground flex items-center gap-2 leading-none">
               {DateTime.fromISO(
                 startingValue ? startingValue.date : ""
