@@ -45,6 +45,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   >("lastCheckIn");
   const [days, setDays] = React.useState<number>(0);
 
+  const router = useRouter();
+
   React.useEffect(() => {
     if (!dailyLogs && !dailyLogsLoading) getDailyLogs();
     if (!checkIns && !checkInsLoading) getCheckIns();
@@ -114,28 +116,32 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
         if (weight) {
           acc.weight.count += 1;
           acc.weight.val += weight;
+          acc.weight.latest = weight;
         }
         if (totalSleep) {
           acc.totalSleep.count += 1;
           acc.totalSleep.val += totalSleep;
+          acc.totalSleep.latest = totalSleep;
         }
         if (bodyfat) {
           acc.bodyfat.count += 1;
           acc.bodyfat.val += bodyfat;
+          acc.bodyfat.latest = bodyfat;
         }
         if (weight && bodyfat) {
           const ffm = weight * (1 - bodyfat / 100);
           acc.ffm.count += 1;
           acc.ffm.val += ffm;
+          acc.ffm.latest = ffm;
         }
 
         return acc;
       },
       {
-        weight: { count: 0, val: 0, avg: 0 },
-        totalSleep: { count: 0, val: 0, avg: 0 },
-        bodyfat: { count: 0, val: 0, avg: 0 },
-        ffm: { count: 0, val: 0, avg: 0 },
+        weight: { count: 0, val: 0, avg: 0, latest: 0 },
+        totalSleep: { count: 0, val: 0, avg: 0, latest: 0 },
+        bodyfat: { count: 0, val: 0, avg: 0, latest: 0 },
+        ffm: { count: 0, val: 0, avg: 0, latest: 0 },
       }
     );
 
@@ -148,7 +154,12 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
     return reduced;
   })();
 
-  const router = useRouter();
+  const statsLabel =
+    filter === "today"
+      ? "today"
+      : filter === "lastCheckIn" || filter === "last30"
+      ? `over the last ${days} day${days !== 1 ? "s" : ""}`
+      : "";
 
   if (dailyLogsLoading) {
     return (
@@ -189,10 +200,10 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "--"
             }
             stat="--"
-            subtitle={"This month"}
+            subtitle={"--"}
             positive={true}
             success={true}
-            description="Weight today"
+            description={`Weight ${statsLabel}`}
             onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsCard
@@ -203,10 +214,10 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "--"
             }
             stat="--"
-            subtitle={"This month"}
+            subtitle={"--"}
             positive={true}
             success={true}
-            description="FFM today"
+            description={`FFM ${statsLabel}`}
             onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
@@ -217,10 +228,10 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "--"
             }
             stat="--"
-            subtitle={"This month"}
+            subtitle={"--"}
             positive={true}
             success={true}
-            description="Bodyfat % today"
+            description={`Bodyfat % ${statsLabel}`}
             onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
@@ -231,10 +242,10 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "--"
             }
             stat="--"
-            subtitle={"This month"}
+            subtitle={"--"}
             positive={true}
             success={true}
-            description="Sleep today"
+            description={`Sleep ${statsLabel}`}
             onClick={() => router.push("/health/logs/sleep")}
           />
         </div>
