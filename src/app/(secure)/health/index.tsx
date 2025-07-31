@@ -10,6 +10,7 @@ import { DateTime } from "luxon";
 import { convertTime } from "@/app/components/Time";
 import { Button, Skeleton } from "@/components/ui";
 import { useRouter } from "next/navigation";
+import { stat } from "fs";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -137,10 +138,10 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
         return acc;
       },
       {
-        weight: { count: 0, val: 0, avg: 0, latest: 0 },
-        totalSleep: { count: 0, val: 0, avg: 0, latest: 0 },
-        bodyfat: { count: 0, val: 0, avg: 0, latest: 0 },
-        steps: { count: 0, val: 0, avg: 0, latest: 0 },
+        weight: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
+        totalSleep: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
+        bodyfat: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
+        steps: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
       }
     );
 
@@ -148,10 +149,13 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
 
     Object.entries(reduced).forEach(([, stat]) => {
       stat.avg = stat.count ? stat.val / stat.count : 0;
+      stat.diff = stat.latest - stat.avg;
     });
 
     return reduced;
   })();
+
+  console.log(statistics);
 
   const statsLabel =
     filter === "today"
@@ -198,8 +202,23 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 ? statistics?.weight.avg.toFixed(1) + " lbs"
                 : "--"
             }
-            stat="--"
-            subtitle={"--"}
+            stat={
+              Math.abs(statistics?.weight.diff || 0).toFixed(1) + " lbs" || "--"
+            }
+            positive={
+              statistics?.weight.diff && statistics?.weight.diff > 0
+                ? true
+                : statistics?.weight.diff === 0
+                ? undefined
+                : false
+            }
+            subtitle={`${
+              statistics?.weight.diff && statistics?.weight.diff > 0
+                ? "Trending up on"
+                : statistics?.weight.diff === 0
+                ? "This is the"
+                : "Trending down on"
+            } latest entry`}
             description={`Weight ${statsLabel}`}
             onClick={() => router.push("/health/logs/weight")}
           />
@@ -210,8 +229,23 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 ? statistics?.bodyfat.avg.toFixed(1) + "%"
                 : "--"
             }
-            stat="--"
-            subtitle={"--"}
+            stat={
+              Math.abs(statistics?.bodyfat.diff || 0).toFixed(1) + "%" || "--"
+            }
+            positive={
+              statistics?.bodyfat.diff && statistics?.bodyfat.diff > 0
+                ? true
+                : statistics?.bodyfat.diff === 0
+                ? undefined
+                : false
+            }
+            subtitle={`${
+              statistics?.bodyfat.diff && statistics?.bodyfat.diff > 0
+                ? "Trending up on"
+                : statistics?.bodyfat.diff === 0
+                ? "This is the"
+                : "Trending down on"
+            } latest entry`}
             description={`Bodyfat % ${statsLabel}`}
             onClick={() => router.push("/health/logs/bodyfat")}
           />

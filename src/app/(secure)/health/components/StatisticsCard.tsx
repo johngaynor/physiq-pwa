@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-// import { TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type StatisticsCardProps = {
@@ -19,7 +19,7 @@ export default function StatisticsCard({
   stat,
   subtitle,
   description,
-  // positive = false,
+  positive,
   // success = false,
   onClick,
 }: StatisticsCardProps) {
@@ -36,17 +36,17 @@ export default function StatisticsCard({
           </div>
           <div
             className={cn(
-              "flex items-center text-sm font-semibold rounded-full px-2 py-1 gap-1"
+              "flex items-center text-sm font-semibold rounded-full px-2 py-1 gap-1 text-green-500 bg-green-900/30"
               // success
               //   ? "text-green-500 bg-green-900/30"
               //   : "text-red-500 bg-red-900/30"
             )}
           >
-            {/* {positive ? (
+            {positive ? (
               <TrendingUp className="h-4 w-4" />
-            ) : (
+            ) : positive === undefined ? null : (
               <TrendingDown className="h-4 w-4" />
-            )} */}
+            )}
             {stat}
           </div>
         </div>
