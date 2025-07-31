@@ -206,20 +206,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsCard
-            title="Steps"
-            value={
-              statistics?.steps.avg !== 0
-                ? statistics?.steps.avg.toFixed(0) + ""
-                : "--"
-            }
-            stat="--"
-            subtitle={"--"}
-            positive={true}
-            success={true}
-            description={`Steps ${statsLabel}`}
-            onClick={() => router.push("/health/logs/steps")}
-          />
-          <StatisticsCard
             title="Body Fat %"
             value={
               statistics?.bodyfat.avg !== 0
@@ -232,6 +218,20 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             success={true}
             description={`Bodyfat % ${statsLabel}`}
             onClick={() => router.push("/health/logs/bodyfat")}
+          />
+          <StatisticsCard
+            title="Steps"
+            value={
+              statistics?.steps.avg !== 0
+                ? statistics?.steps.avg.toFixed(0) + ""
+                : "--"
+            }
+            stat="--"
+            subtitle={"--"}
+            positive={true}
+            success={true}
+            description={`Steps ${statsLabel}`}
+            onClick={() => router.push("/health/logs/steps")}
           />
           <StatisticsCard
             title="Sleep"
