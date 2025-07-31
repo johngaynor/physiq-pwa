@@ -200,8 +200,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             }
             stat="--"
             subtitle={"--"}
-            positive={true}
-            success={true}
             description={`Weight ${statsLabel}`}
             onClick={() => router.push("/health/logs/weight")}
           />
@@ -214,8 +212,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             }
             stat="--"
             subtitle={"--"}
-            positive={true}
-            success={true}
             description={`Bodyfat % ${statsLabel}`}
             onClick={() => router.push("/health/logs/bodyfat")}
           />
@@ -228,8 +224,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             }
             stat="--"
             subtitle={"--"}
-            positive={true}
-            success={true}
             description={`Steps ${statsLabel}`}
             onClick={() => router.push("/health/logs/steps")}
           />
@@ -242,8 +236,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             }
             stat="--"
             subtitle={"--"}
-            positive={true}
-            success={true}
             description={`Sleep ${statsLabel}`}
             onClick={() => router.push("/health/logs/sleep")}
           />
