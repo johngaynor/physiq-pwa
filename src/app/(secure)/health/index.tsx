@@ -3,8 +3,9 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
 import { getDailyLogs } from "./state/actions";
+import { getCheckIns } from "../checkins/state/actions";
 import StatisticsCard from "./components/StatisticsCard";
-import { StatisticsGraph } from "./components/StatisticsGraph";
+// import { StatisticsGraph } from "./components/StatisticsGraph";
 import { DateTime } from "luxon";
 import { convertTime } from "@/app/components/Time";
 import { Button, Skeleton } from "@/components/ui";
@@ -14,33 +15,47 @@ function mapStateToProps(state: RootState) {
   return {
     dailyLogs: state.health.dailyLogs,
     dailyLogsLoading: state.health.dailyLogsLoading,
+    checkIns: state.checkins.checkIns,
+    checkInsLoading: state.checkins.checkInsLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDailyLogs });
+const connector = connect(mapStateToProps, { getDailyLogs, getCheckIns });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const filterOptions: {
   label: string;
-  value: "today" | "lastCheckin" | "last30" | "custom";
+  value: "today" | "lastCheckIn" | "last30";
 }[] = [
   { label: "Today", value: "today" },
-  { label: "Last Check-in", value: "lastCheckin" },
+  { label: "Last Check-in", value: "lastCheckIn" },
   { label: "Last 30 Days", value: "last30" },
-  { label: "Custom Range", value: "custom" },
 ];
 
 const HealthDashboard: React.FC<PropsFromRedux> = ({
   dailyLogs,
   dailyLogsLoading,
   getDailyLogs,
+  checkIns,
+  checkInsLoading,
+  getCheckIns,
 }) => {
   const [filter, setFilter] = React.useState<
-    "today" | "lastCheckin" | "last30" | "custom"
-  >("lastCheckin");
+    "today" | "lastCheckIn" | "last30"
+  >("lastCheckIn");
+  const [days, setDays] = React.useState<number>(0);
+
   React.useEffect(() => {
     if (!dailyLogs && !dailyLogsLoading) getDailyLogs();
-  }, [dailyLogs, dailyLogsLoading, getDailyLogs]);
+    if (!checkIns && !checkInsLoading) getCheckIns();
+  }, [
+    dailyLogs,
+    dailyLogsLoading,
+    getDailyLogs,
+    checkIns,
+    checkInsLoading,
+    getCheckIns,
+  ]);
 
   const sortedLogs = React.useMemo(() => {
     return (
@@ -50,16 +65,51 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
     );
   }, [dailyLogs]);
 
-  const last30Days = React.useMemo(() => {
-    return sortedLogs?.slice(-30) || [];
-  }, [sortedLogs]);
+  const lastCheckIn = React.useMemo(() => {
+    if (!checkIns || !checkIns.length) return null;
+    return (
+      checkIns?.slice().sort((a, b) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      })[0] || null
+    );
+  }, [checkIns]);
 
-  const averages = React.useMemo(() => {
-    if (!last30Days.length) return {};
+  // update days based on filter
+  React.useEffect(() => {
+    switch (filter) {
+      case "today":
+        setDays(1);
+        break;
+      case "lastCheckIn":
+        if (lastCheckIn) {
+          const diff = DateTime.fromISO(lastCheckIn.date).diffNow("days").days;
+          setDays(diff <= 1 ? Math.floor(Math.abs(diff)) : 0);
+        } else {
+          setDays(0);
+        }
+        break;
+      case "last30":
+        setDays(30);
+        break;
+      default:
+        setDays(0);
+    }
+  }, [filter, lastCheckIn]);
 
-    const totals = last30Days.reduce(
-      (acc, log) => {
-        const { weight, totalSleep, bodyfat } = log;
+  const filteredLogs = React.useMemo(() => {
+    const startDate = DateTime.now().minus({ days });
+    const endDate = DateTime.now();
+
+    return sortedLogs?.filter((log) => {
+      const logDate = DateTime.fromISO(log.date);
+      return logDate >= startDate && logDate <= endDate;
+    });
+  }, [sortedLogs, days]);
+
+  const statistics = (() => {
+    const reduced = filteredLogs?.reduce(
+      (acc, val) => {
+        const { weight, totalSleep, bodyfat } = val;
 
         if (weight) {
           acc.weight.count += 1;
@@ -78,55 +128,25 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           acc.ffm.count += 1;
           acc.ffm.val += ffm;
         }
+
         return acc;
       },
       {
-        weight: { count: 0, val: 0 },
-        totalSleep: { count: 0, val: 0 },
-        bodyfat: { count: 0, val: 0 },
-        ffm: { count: 0, val: 0 },
+        weight: { count: 0, val: 0, avg: 0 },
+        totalSleep: { count: 0, val: 0, avg: 0 },
+        bodyfat: { count: 0, val: 0, avg: 0 },
+        ffm: { count: 0, val: 0, avg: 0 },
       }
     );
 
-    return {
-      weight: parseFloat((totals.weight.val / totals.weight.count).toFixed(1)),
-      totalSleep: parseFloat(
-        (totals.totalSleep.val / totals.totalSleep.count).toFixed(1)
-      ),
-      bodyfat: parseFloat(
-        (totals.bodyfat.val / totals.bodyfat.count).toFixed(1)
-      ),
-      ffm: parseFloat((totals.ffm.val / totals.ffm.count).toFixed(1)),
-    };
-  }, [last30Days]);
+    if (!reduced) return null;
 
-  const today = last30Days?.find((l) => l.date === DateTime.now().toISODate());
+    Object.entries(reduced).forEach(([key, stat]) => {
+      stat.avg = stat.count ? stat.val / stat.count : 0;
+    });
 
-  const diffs = today
-    ? {
-        weight:
-          today.weight && averages.weight
-            ? parseFloat((today.weight - averages.weight).toFixed(1))
-            : null,
-        totalSleep:
-          today.totalSleep && averages.totalSleep
-            ? parseFloat((today.totalSleep - averages.totalSleep).toFixed(1))
-            : null,
-        bodyfat:
-          today.bodyfat && averages.bodyfat
-            ? parseFloat((today.bodyfat - averages.bodyfat).toFixed(1))
-            : null,
-        ffm:
-          today.weight && today.bodyfat && averages.ffm
-            ? parseFloat(
-                (
-                  today.weight * (1 - today.bodyfat / 100) -
-                  averages.ffm
-                ).toFixed(1)
-              )
-            : null,
-      }
-    : {};
+    return reduced;
+  })();
 
   const router = useRouter();
 
@@ -148,7 +168,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   } else
     return (
       <div className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full mb-4">
           {filterOptions.map((option) => (
             <Button
               key={"button-" + option.value}
@@ -163,88 +183,62 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
           <StatisticsCard
             title="Weight"
-            value={today?.weight ? today.weight.toFixed(1) + " lbs" : "--"}
-            stat={
-              diffs.weight
-                ? `${diffs.weight >= 0 ? "+" : "-"}${Math.abs(
-                    diffs.weight
-                  )} lbs`
+            value={
+              statistics?.weight.avg !== 0
+                ? statistics?.weight.avg.toFixed(1) + " lbs"
                 : "--"
             }
-            subtitle={
-              diffs.weight
-                ? `Trending ${diffs.weight >= 0 ? "up" : "down"} this month`
-                : "--"
-            }
-            positive={diffs.weight ? diffs.weight >= 0 : false}
-            success={diffs.weight ? diffs.weight >= 0 : false}
+            stat="--"
+            subtitle={"This month"}
+            positive={true}
+            success={true}
             description="Weight today"
             onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsCard
             title="Fat Free Mass"
             value={
-              today?.weight && today.bodyfat
-                ? parseFloat(
-                    (today.weight * (1 - today.bodyfat / 100)).toFixed(1)
-                  ).toFixed(1) + " lbs"
+              statistics?.ffm.avg !== 0
+                ? statistics?.ffm.avg.toFixed(1) + " lbs"
                 : "--"
             }
-            stat={
-              diffs.ffm
-                ? `${diffs.ffm >= 0 ? "+" : "-"}${Math.abs(diffs.ffm)} lbs`
-                : "--"
-            }
-            subtitle={
-              diffs.ffm
-                ? `Trending ${diffs.ffm >= 0 ? "up" : "down"} this month`
-                : "--"
-            }
-            positive={diffs.ffm ? diffs.ffm >= 0 : false}
-            success={diffs.ffm ? diffs.ffm >= 0 : false}
+            stat="--"
+            subtitle={"This month"}
+            positive={true}
+            success={true}
             description="FFM today"
             onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
             title="Body Fat %"
-            value={today?.bodyfat ? today.bodyfat.toFixed(1) + "%" : "--"}
-            stat={
-              diffs.bodyfat
-                ? `${diffs.bodyfat >= 0 ? "+" : "-"}${Math.abs(diffs.bodyfat)}%`
+            value={
+              statistics?.bodyfat.avg !== 0
+                ? statistics?.bodyfat.avg.toFixed(1) + "%"
                 : "--"
             }
-            subtitle={
-              diffs.bodyfat
-                ? `Trending ${diffs.bodyfat >= 0 ? "up" : "down"} this month`
-                : "--"
-            }
-            positive={diffs.bodyfat ? diffs.bodyfat >= 0 : false}
-            success={diffs.bodyfat ? diffs.bodyfat <= 0 : false}
-            description="BF % today"
+            stat="--"
+            subtitle={"This month"}
+            positive={true}
+            success={true}
+            description="Bodyfat % today"
             onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
             title="Sleep"
-            value={today?.totalSleep ? convertTime(today.totalSleep) : "--"}
-            stat={
-              diffs.totalSleep
-                ? `${diffs.totalSleep >= 0 ? "+" : "-"}${convertTime(
-                    Math.abs(diffs.totalSleep)
-                  )}`
+            value={
+              statistics?.totalSleep.avg !== 0
+                ? convertTime(statistics?.totalSleep.avg || 0)
                 : "--"
             }
-            subtitle={
-              diffs.totalSleep
-                ? `Trending ${diffs.totalSleep >= 0 ? "up" : "down"} this month`
-                : "--"
-            }
-            positive={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
-            success={diffs.totalSleep ? diffs.totalSleep >= 0 : false}
+            stat="--"
+            subtitle={"This month"}
+            positive={true}
+            success={true}
             description="Sleep today"
             onClick={() => router.push("/health/logs/sleep")}
           />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full pt-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full pt-4">
           <StatisticsGraph
             title="Weight"
             dailyLogs={last30Days}
@@ -265,7 +259,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             rounding={2}
             onClick={() => router.push("/health/logs/bodyfat")}
           />
-          {/* will want to figure out formatting for sleep */}
           <StatisticsGraph
             title="Sleep"
             dailyLogs={last30Days}
@@ -308,7 +301,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             singleAxis
             onClick={() => router.push("/health/logs/calories")}
           />
-        </div>
+        </div> */}
       </div>
     );
 };
