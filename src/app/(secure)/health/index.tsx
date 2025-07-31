@@ -111,7 +111,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   const statistics = (() => {
     const reduced = filteredLogs?.reduce(
       (acc, val) => {
-        const { weight, totalSleep, bodyfat } = val;
+        const { weight, totalSleep, bodyfat, steps } = val;
 
         if (weight) {
           acc.weight.count += 1;
@@ -128,11 +128,10 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           acc.bodyfat.val += bodyfat;
           acc.bodyfat.latest = bodyfat;
         }
-        if (weight && bodyfat) {
-          const ffm = weight * (1 - bodyfat / 100);
-          acc.ffm.count += 1;
-          acc.ffm.val += ffm;
-          acc.ffm.latest = ffm;
+        if (steps) {
+          acc.steps.count += 1;
+          acc.steps.val += steps;
+          acc.steps.latest = steps;
         }
 
         return acc;
@@ -141,7 +140,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
         weight: { count: 0, val: 0, avg: 0, latest: 0 },
         totalSleep: { count: 0, val: 0, avg: 0, latest: 0 },
         bodyfat: { count: 0, val: 0, avg: 0, latest: 0 },
-        ffm: { count: 0, val: 0, avg: 0, latest: 0 },
+        steps: { count: 0, val: 0, avg: 0, latest: 0 },
       }
     );
 
@@ -207,18 +206,18 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsCard
-            title="Fat Free Mass"
+            title="Steps"
             value={
-              statistics?.ffm.avg !== 0
-                ? statistics?.ffm.avg.toFixed(1) + " lbs"
+              statistics?.steps.avg !== 0
+                ? statistics?.steps.avg.toFixed(0) + ""
                 : "--"
             }
             stat="--"
             subtitle={"--"}
             positive={true}
             success={true}
-            description={`FFM ${statsLabel}`}
-            onClick={() => router.push("/health/logs/bodyfat")}
+            description={`Steps ${statsLabel}`}
+            onClick={() => router.push("/health/logs/steps")}
           />
           <StatisticsCard
             title="Body Fat %"
