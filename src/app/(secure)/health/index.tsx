@@ -141,7 +141,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
 
     if (!reduced) return null;
 
-    Object.entries(reduced).forEach(([key, stat]) => {
+    Object.entries(reduced).forEach(([_, stat]) => {
       stat.avg = stat.count ? stat.val / stat.count : 0;
     });
 
