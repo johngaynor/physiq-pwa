@@ -21,7 +21,7 @@ import SupplementsPanel from "./components/SupplementsPanel";
 import { H1, H5 } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { DateTime } from "luxon";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
   return {
