@@ -10,7 +10,6 @@ import { DateTime } from "luxon";
 import { convertTime } from "@/app/components/Time";
 import { Button, Skeleton } from "@/components/ui";
 import { useRouter } from "next/navigation";
-import { stat } from "fs";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -154,8 +153,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
 
     return reduced;
   })();
-
-  console.log(statistics);
 
   const statsLabel =
     filter === "today"
