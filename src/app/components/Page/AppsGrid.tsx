@@ -8,8 +8,7 @@ import { useWindowDimensions } from "@/app/customHooks/useWindowDimensions";
 
 function mapStateToProps(state: RootState) {
   return {
-    apps: state.app.apps,
-    appsLoading: state.app.appsLoading,
+    user: state.app.user,
   };
 }
 
@@ -20,19 +19,15 @@ type AppsGridPageProps = PropsFromRedux & {
   filter: string;
 };
 
-const AppsGridPage: React.FC<AppsGridPageProps> = ({
-  apps,
-  appsLoading,
-  filter,
-}) => {
+const AppsGridPage: React.FC<AppsGridPageProps> = ({ user, filter }) => {
   const [search, setSearch] = React.useState("");
   const isMobile = useWindowDimensions("(max-width: 768px)");
 
-  const filteredApps = apps?.filter(
+  const filteredApps = user?.apps?.filter(
     (app) => app.link?.includes(filter) && app.link?.includes(search)
   );
 
-  if (appsLoading) {
+  if (!user || !user.apps) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
         {Array.from({ length: isMobile ? 3 : 9 }).map((_, index) => (
