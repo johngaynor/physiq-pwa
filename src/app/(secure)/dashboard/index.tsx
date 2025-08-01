@@ -21,6 +21,7 @@ import SupplementsPanel from "./components/SupplementsPanel";
 import { H1, H5 } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { DateTime } from "luxon";
+import { useRouter } from "next/router";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -70,6 +71,8 @@ const Dashboard: React.FC<PropsFromRedux> = ({
     if (!supplementLogsLoading && !supplementLogs) getSupplementLogs();
     if (!dietLogLoading && !dietLog) getLatestDietLog();
   });
+
+  const router = useRouter();
 
   return (
     <PageTemplate title="Today">
@@ -236,13 +239,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
               </button>
               <button
                 className="relative h-full w-full border-2 rounded-md flex justify-center items-center rounded-md bg-background hover:bg-accent transition"
-                onClick={() => {
-                  const today = DateTime.now().toISODate();
-                  window.open(
-                    `https://preprolabs.com/checkins/${today}`,
-                    "_blank"
-                  );
-                }}
+                onClick={() => router.push("/checkins")}
               >
                 <div className="absolute inset-0">
                   <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
