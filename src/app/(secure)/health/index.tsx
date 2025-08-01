@@ -256,8 +256,21 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 ? statistics?.steps.avg.toFixed(0) + ""
                 : "--"
             }
-            stat="--"
-            subtitle={"--"}
+            stat={Math.abs(statistics?.steps.diff || 0).toFixed(0) + "" || "--"}
+            positive={
+              statistics?.steps.diff && statistics?.steps.diff > 0
+                ? true
+                : statistics?.steps.diff === 0
+                ? undefined
+                : false
+            }
+            subtitle={`${
+              statistics?.steps.diff && statistics?.steps.diff > 0
+                ? "Trending up on"
+                : statistics?.steps.diff === 0
+                ? "This is the"
+                : "Trending down on"
+            } latest entry`}
             description={`Steps ${statsLabel}`}
             onClick={() => router.push("/health/logs/steps")}
           />
@@ -268,8 +281,25 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 ? convertTime(statistics?.totalSleep.avg || 0)
                 : "--"
             }
-            stat="--"
-            subtitle={"--"}
+            stat={
+              statistics?.totalSleep.diff !== 0
+                ? convertTime(statistics?.totalSleep.diff || 0)
+                : "--"
+            }
+            positive={
+              statistics?.totalSleep.diff && statistics?.totalSleep.diff > 0
+                ? true
+                : statistics?.totalSleep.diff === 0
+                ? undefined
+                : false
+            }
+            subtitle={`${
+              statistics?.totalSleep.diff && statistics?.totalSleep.diff > 0
+                ? "Trending up on"
+                : statistics?.totalSleep.diff === 0
+                ? "This is the"
+                : "Trending down on"
+            } latest entry`}
             description={`Sleep ${statsLabel}`}
             onClick={() => router.push("/health/logs/sleep")}
           />
