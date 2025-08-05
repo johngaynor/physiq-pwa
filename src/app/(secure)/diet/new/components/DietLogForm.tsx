@@ -3,7 +3,7 @@ import React from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SectionWrapper, InputWrapper } from "./FormWrappers";
-import { Input, Label, Button, H3 } from "@/components/ui";
+import { Input, Label, Button, H3, Combobox } from "@/components/ui";
 import {
   Select,
   SelectTrigger,
@@ -274,7 +274,16 @@ const DietLogForm = ({
         <CardContent>
           <InputWrapper>
             <Label htmlFor="phase">Add Supplements</Label>
-            <Select
+            <Combobox
+              options={
+                supplementOptions?.map((supplement) => ({
+                  value: supplement.id.toString(),
+                  label: supplement.name,
+                })) || []
+              }
+              placeholder="Search supplements..."
+              searchPlaceholder="Type to search..."
+              emptyText="No supplements found."
               onValueChange={(value) => {
                 const supp = supplements?.find(
                   (s) => s.id.toString() === value
@@ -287,24 +296,7 @@ const DietLogForm = ({
                   });
                 }
               }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Supplement..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Supplements</SelectLabel>
-                  {supplementOptions?.map((supplement) => (
-                    <SelectItem
-                      key={supplement.id}
-                      value={supplement.id.toString()}
-                    >
-                      {supplement.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            />
           </InputWrapper>
           {selectedSupplements.length ? (
             <Table className="mt-8">
