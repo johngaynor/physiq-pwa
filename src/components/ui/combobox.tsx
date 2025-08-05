@@ -56,7 +56,7 @@ export function Combobox({
         role="combobox"
         aria-expanded={open}
         className={cn(
-          "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 dark:hover:bg-input/50 w-full justify-between gap-2 bg-transparent text-sm whitespace-nowrap",
+          "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 dark:hover:bg-input/50 w-full justify-between gap-2 bg-transparent text-sm whitespace-nowrap cursor-pointer",
           !selectedOption && "text-muted-foreground"
         )}
         onClick={() => setOpen(!open)}
@@ -86,7 +86,7 @@ export function Combobox({
                   key={option.value}
                   type="button"
                   className={cn(
-                    "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 px-2 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
+                    "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 px-2 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
                     value === option.value &&
                       "bg-accent text-accent-foreground font-medium"
                   )}
