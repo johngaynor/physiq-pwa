@@ -83,7 +83,7 @@ const Supplements: React.FC<PropsFromRedux> = ({
                 <TableHead>Name</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Default Dosage</TableHead>
-                <TableHead>Priority</TableHead>
+                <TableHead>Tags</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -96,7 +96,9 @@ const Supplements: React.FC<PropsFromRedux> = ({
                     {supplement.description || "No description"}
                   </TableCell>
                   <TableCell>{supplement.dosage || "Not specified"}</TableCell>
-                  <TableCell>{supplement.priority}</TableCell>
+                  <TableCell>
+                    {supplement.tags.map((tag) => tag.name).join(", ")}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
