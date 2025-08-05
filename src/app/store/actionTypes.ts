@@ -146,3 +146,9 @@ export const LOAD_APP_ACCESS = "LOAD_APP_ACCESS" as const;
 
 // Edit App Access - Edit access permissions for apps
 export const EDIT_APP_ACCESS = "EDIT_APP_ACCESS" as const;
+
+// Supplement Tags - Fetch tags for supplements
+export const FETCH_HEALTH_SUPPLEMENT_TAGS =
+  "FETCH_HEALTH_SUPPLEMENT_TAGS" as const;
+export const LOAD_HEALTH_SUPPLEMENT_TAGS =
+  "LOAD_HEALTH_SUPPLEMENT_TAGS" as const;

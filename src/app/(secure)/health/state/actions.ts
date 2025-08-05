@@ -21,6 +21,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
   FETCH_HEALTH_DIET_LOGS_LATEST,
   LOAD_HEALTH_DIET_LOGS_LATEST,
+  FETCH_HEALTH_SUPPLEMENT_TAGS,
+  LOAD_HEALTH_SUPPLEMENT_TAGS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { DailyLog, DashboardDietLog, Supplement, SupplementLog } from "./types";
@@ -94,6 +96,15 @@ export const toggleSupplementLog = (
     .error("Error toggling health supplement log")
     .data({ date, supplementId, checked })
     .post();
+};
+
+export const getSupplementTags = () => {
+  return api
+    .route("/api/health/supplements/tags")
+    .fetch(() => ({ type: FETCH_HEALTH_SUPPLEMENT_TAGS }))
+    .load((data: Supplement[]) => ({ type: LOAD_HEALTH_SUPPLEMENT_TAGS, data }))
+    .error("Error fetching health supplement tags")
+    .get();
 };
 
 export const editDailyBodyfat = (date: string, bodyfat: number) => {

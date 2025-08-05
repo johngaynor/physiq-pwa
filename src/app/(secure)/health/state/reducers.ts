@@ -21,6 +21,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
   FETCH_HEALTH_DIET_LOGS_LATEST,
   LOAD_HEALTH_DIET_LOGS_LATEST,
+  FETCH_HEALTH_SUPPLEMENT_TAGS,
+  LOAD_HEALTH_SUPPLEMENT_TAGS,
 } from "../../../store/actionTypes";
 import type { HealthState, Action } from "./types";
 
@@ -38,6 +40,8 @@ const DEFAULT_STATE: HealthState = {
   supplementLogs: null,
   supplementLogsLoading: false,
   toggleSupplementLoading: false,
+  supplementTags: null,
+  supplementTagsLoading: false,
   dietLog: null,
   dietSupplements: null,
   dietLogLoading: false,
@@ -283,6 +287,17 @@ export default function healthReducer(
         dietLogLoading: false,
         dietLog: action.data.log,
         dietSupplements: action.data.supplements,
+      };
+    case FETCH_HEALTH_SUPPLEMENT_TAGS:
+      return {
+        ...state,
+        supplementTagsLoading: true,
+      };
+    case LOAD_HEALTH_SUPPLEMENT_TAGS:
+      return {
+        ...state,
+        supplementTagsLoading: false,
+        supplementTags: action.data,
       };
     default:
       return state;
