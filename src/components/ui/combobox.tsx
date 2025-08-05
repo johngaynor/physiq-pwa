@@ -55,7 +55,10 @@ export function Combobox({
         variant="outline"
         role="combobox"
         aria-expanded={open}
-        className="w-full justify-between"
+        className={cn(
+          "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 dark:hover:bg-input/50 w-full justify-between gap-2 bg-transparent text-sm whitespace-nowrap",
+          !selectedOption && "text-muted-foreground"
+        )}
         onClick={() => setOpen(!open)}
       >
         {selectedOption ? selectedOption.label : placeholder}
@@ -63,7 +66,7 @@ export function Combobox({
       </Button>
 
       {open && (
-        <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 absolute z-50 w-full mt-1 rounded-md border shadow-md max-h-60 overflow-auto">
           <div className="p-2">
             <Input
               placeholder={searchPlaceholder}
@@ -72,17 +75,20 @@ export function Combobox({
               className="w-full"
             />
           </div>
-          <div className="py-1">
+          <div className="p-1">
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500">{emptyText}</div>
+              <div className="text-muted-foreground px-2 py-1.5 text-sm">
+                {emptyText}
+              </div>
             ) : (
               filteredOptions.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   className={cn(
-                    "w-full px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none",
-                    value === option.value && "bg-gray-100 font-medium"
+                    "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 px-2 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
+                    value === option.value &&
+                      "bg-accent text-accent-foreground font-medium"
                   )}
                   onClick={() => handleSelect(option)}
                 >
