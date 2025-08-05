@@ -266,6 +266,7 @@ const DietLogForm = ({
             onClick={() => {
               remove();
             }}
+            type="button"
           >
             Clear All
           </Button>
