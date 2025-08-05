@@ -45,12 +45,18 @@ export type DailyLog = {
   stepsTarget?: number | null;
 };
 
+export type SupplementTag = {
+  id: number;
+  name: string;
+};
+
 export type Supplement = {
   id: number;
   name: string;
   description: string;
   dosage: string | null;
   priority: number;
+  tags: SupplementTag[];
 };
 
 export type SupplementLog = {
@@ -65,11 +71,6 @@ export type DietSupplement = {
   supplementId: number;
   dosage: string | null;
   frequency: string | null;
-};
-
-export type SupplementTag = {
-  id: number;
-  name: string;
 };
 
 export type DietLog = {
