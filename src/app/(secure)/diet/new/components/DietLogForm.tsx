@@ -32,6 +32,7 @@ import {
   dietLogRawSchema,
 } from "../types";
 import { DateTime } from "luxon";
+import { SupplementOption } from "./SupplementOption";
 
 const DietLogForm = ({
   latestLog,
@@ -279,11 +280,14 @@ const DietLogForm = ({
                 supplementOptions?.map((supplement) => ({
                   value: supplement.id.toString(),
                   label: supplement.name,
+                  description: supplement.description,
+                  tags: supplement.tags?.map((tag) => tag.name) || [],
                 })) || []
               }
               placeholder="Search supplements..."
               searchPlaceholder="Type to search..."
               emptyText="No supplements found."
+              optionComponent={SupplementOption}
               onValueChange={(value) => {
                 const supp = supplements?.find(
                   (s) => s.id.toString() === value

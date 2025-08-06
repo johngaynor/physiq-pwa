@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 interface ComboboxOption {
   value: string;
   label: string;
+  [key: string]: any; // Allow additional properties for custom components
 }
 
 interface ComboboxProps {
@@ -19,6 +20,10 @@ interface ComboboxProps {
   searchPlaceholder?: string;
   emptyText?: string;
   className?: string;
+  optionComponent?: React.ComponentType<{
+    option: ComboboxOption;
+    isSelected: boolean;
+  }>;
 }
 
 export function Combobox({
@@ -29,15 +34,29 @@ export function Combobox({
   searchPlaceholder = "Search...",
   emptyText = "No option found.",
   className,
+  optionComponent: OptionComponent,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const filteredOptions = React.useMemo(() => {
     if (!searchTerm) return options;
-    return options.filter((option) =>
-      option.label.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    return options.filter((option) => {
+      const labelMatch = option.label
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const descriptionMatch =
+        option.description && typeof option.description === "string"
+          ? option.description.toLowerCase().includes(searchTerm.toLowerCase())
+          : false;
+      const tagMatch =
+        option.tags && Array.isArray(option.tags)
+          ? option.tags.some((tag: string) =>
+              tag.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          : false;
+      return labelMatch || descriptionMatch || tagMatch;
+    });
   }, [options, searchTerm]);
 
   const selectedOption = options.find((option) => option.value === value);
@@ -86,13 +105,20 @@ export function Combobox({
                   key={option.value}
                   type="button"
                   className={cn(
-                    "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 px-2 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
+                    "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-pointer items-start gap-2 rounded-sm py-2 px-2 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground",
                     value === option.value &&
                       "bg-accent text-accent-foreground font-medium"
                   )}
                   onClick={() => handleSelect(option)}
                 >
-                  {option.label}
+                  {OptionComponent ? (
+                    <OptionComponent
+                      option={option}
+                      isSelected={value === option.value}
+                    />
+                  ) : (
+                    option.label
+                  )}
                 </button>
               ))
             )}
