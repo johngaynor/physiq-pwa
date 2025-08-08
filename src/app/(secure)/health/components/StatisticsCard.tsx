@@ -1,6 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { convertTime } from "@/app/components/Time";
 
 type StatisticsCardProps = {
   title: string;
@@ -11,6 +17,8 @@ type StatisticsCardProps = {
   positive?: boolean; // used to determine whether or not the value is positive or negative
   success?: boolean; // used to determine whether or not the value is good or bad
   onClick?: () => void;
+  values?: number[]; // array of values used in calculation
+  unit?: string; // unit for displaying values
 };
 
 export default function StatisticsCard({
@@ -22,8 +30,37 @@ export default function StatisticsCard({
   positive,
   // success = false,
   onClick,
+  values = [],
+  unit = "",
 }: StatisticsCardProps) {
-  return (
+  const tooltipContent =
+    values.length > 0 ? (
+      <Card>
+        <CardContent className="p-3">
+          <p className="font-semibold mb-2">Values used in calculation:</p>
+          <div className="grid grid-cols-3 gap-1 text-xs">
+            {values.slice(0, 9).map((val, index) => (
+              <span key={index} className="px-1 py-0.5 rounded">
+                {
+                  unit === "hrs"
+                    ? convertTime(val)
+                    : unit === ""
+                    ? val.toFixed(0) // Steps - no decimals
+                    : `${val.toFixed(1)}${unit}` // Weight, bodyfat - with decimals
+                }
+              </span>
+            ))}
+            {values.length > 9 && (
+              <span className="px-1 py-0.5 rounded text-muted-foreground flex items-center justify-center">
+                +{values.length - 9} more...
+              </span>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    ) : null;
+
+  const cardContent = (
     <Card
       className={`w-full ${onClick ? "cursor-pointer" : "cursor-default"}`}
       onClick={onClick}
@@ -64,4 +101,17 @@ export default function StatisticsCard({
       </CardContent>
     </Card>
   );
+
+  if (tooltipContent) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{cardContent}</TooltipTrigger>
+        <TooltipContent className="p-0 border-1 rounded-xl">
+          {tooltipContent}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return cardContent;
 }

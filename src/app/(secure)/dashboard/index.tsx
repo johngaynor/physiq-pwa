@@ -13,8 +13,8 @@ import {
   editDailyCalories,
   editDailyWater,
   getDailySleep,
-  getLatestDietLog,
 } from "../health/state/actions";
+import { getLatestDietLog } from "../diet/state/actions";
 import PageTemplate from "../components/Templates/PageTemplate";
 import MetricsPanel from "./components/MetricsPanel";
 import SupplementsPanel from "./components/SupplementsPanel";
@@ -31,8 +31,8 @@ function mapStateToProps(state: RootState) {
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
     supplementLogsLoading: state.health.supplementLogsLoading,
-    dietLog: state.health.dietLog,
-    dietLogLoading: state.health.dietLogLoading,
+    dietLog: state.diet.dietLog,
+    dietLogLoading: state.diet.dietLogLoading,
   };
 }
 
