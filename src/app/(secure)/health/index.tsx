@@ -117,30 +117,62 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           acc.weight.count += 1;
           acc.weight.val += weight;
           acc.weight.latest = weight;
+          acc.weight.values.push(weight);
         }
         if (totalSleep) {
           acc.totalSleep.count += 1;
           acc.totalSleep.val += totalSleep;
           acc.totalSleep.latest = totalSleep;
+          acc.totalSleep.values.push(totalSleep);
         }
         if (bodyfat) {
           acc.bodyfat.count += 1;
           acc.bodyfat.val += bodyfat;
           acc.bodyfat.latest = bodyfat;
+          acc.bodyfat.values.push(bodyfat);
         }
         if (steps) {
           acc.steps.count += 1;
           acc.steps.val += steps;
           acc.steps.latest = steps;
+          acc.steps.values.push(steps);
         }
 
         return acc;
       },
       {
-        weight: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
-        totalSleep: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
-        bodyfat: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
-        steps: { count: 0, val: 0, avg: 0, latest: 0, diff: 0 },
+        weight: {
+          count: 0,
+          val: 0,
+          avg: 0,
+          latest: 0,
+          diff: 0,
+          values: [] as number[],
+        },
+        totalSleep: {
+          count: 0,
+          val: 0,
+          avg: 0,
+          latest: 0,
+          diff: 0,
+          values: [] as number[],
+        },
+        bodyfat: {
+          count: 0,
+          val: 0,
+          avg: 0,
+          latest: 0,
+          diff: 0,
+          values: [] as number[],
+        },
+        steps: {
+          count: 0,
+          val: 0,
+          avg: 0,
+          latest: 0,
+          diff: 0,
+          values: [] as number[],
+        },
       }
     );
 
@@ -217,6 +249,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "Trending down on"
             } latest entry`}
             description={`Weight ${statsLabel}`}
+            values={statistics?.weight.values || []}
+            unit="lbs"
             onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsCard
@@ -244,6 +278,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "Trending down on"
             } latest entry`}
             description={`Bodyfat % ${statsLabel}`}
+            values={statistics?.bodyfat.values || []}
+            unit="%"
             onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
@@ -269,6 +305,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "Trending down on"
             } latest entry`}
             description={`Steps ${statsLabel}`}
+            values={statistics?.steps.values || []}
+            unit=""
             onClick={() => router.push("/health/logs/steps")}
           />
           <StatisticsCard
@@ -298,6 +336,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
                 : "Trending down on"
             } latest entry`}
             description={`Sleep ${statsLabel}`}
+            values={statistics?.totalSleep.values || []}
+            unit="hrs"
             onClick={() => router.push("/health/logs/sleep")}
           />
         </div>

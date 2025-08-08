@@ -142,8 +142,6 @@ export type Action =
       type: typeof FETCH_EDIT_HEALTH_DAILY_SLEEP;
     }
   | { type: typeof LOAD_EDIT_HEALTH_DAILY_SLEEP; data: DailyLog }
-  | { type: typeof FETCH_HEALTH_DIET_LOGS_LATEST }
-  | { type: typeof LOAD_HEALTH_DIET_LOGS_LATEST; data: DashboardDietLog }
   | { type: typeof FETCH_HEALTH_SUPPLEMENT_TAGS }
   | { type: typeof LOAD_HEALTH_SUPPLEMENT_TAGS; data: SupplementTag[] };
 export interface HealthState {
@@ -160,9 +158,6 @@ export interface HealthState {
   supplementLogs: SupplementLog[] | null;
   supplementLogsLoading: boolean;
   toggleSupplementLoading: boolean;
-  dietLog: DietLog | null;
-  dietSupplements: DietSupplement[] | null;
-  dietLogLoading: boolean;
   supplementTags: SupplementTag[] | null;
   supplementTagsLoading: boolean;
 }

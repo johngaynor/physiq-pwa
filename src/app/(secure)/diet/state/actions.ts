@@ -5,9 +5,11 @@ import {
   LOAD_EDIT_DIET_LOG,
   FETCH_DELETE_DIET_LOG,
   LOAD_DELETE_DIET_LOG,
+  FETCH_HEALTH_DIET_LOGS_LATEST,
+  LOAD_HEALTH_DIET_LOGS_LATEST,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { DietLog } from "./types";
+import { DietLog, DashboardDietLog } from "./types";
 
 export const getDietLogs = () => {
   return api
@@ -41,4 +43,16 @@ export const deleteDietLog = (id: number) => {
     }))
     .error("Error deleting diet log")
     .delete();
+};
+
+export const getLatestDietLog = () => {
+  return api
+    .route("/api/diet/log/latest")
+    .fetch(() => ({ type: FETCH_HEALTH_DIET_LOGS_LATEST }))
+    .load((data: DashboardDietLog) => ({
+      type: LOAD_HEALTH_DIET_LOGS_LATEST,
+      data,
+    }))
+    .error("Error fetching diet logs")
+    .get();
 };

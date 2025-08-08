@@ -19,13 +19,11 @@ import {
   LOAD_EDIT_HEALTH_DAILY_CALORIES,
   FETCH_EDIT_HEALTH_DAILY_SLEEP,
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
-  FETCH_HEALTH_DIET_LOGS_LATEST,
-  LOAD_HEALTH_DIET_LOGS_LATEST,
   FETCH_HEALTH_SUPPLEMENT_TAGS,
   LOAD_HEALTH_SUPPLEMENT_TAGS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { DailyLog, DashboardDietLog, Supplement, SupplementLog } from "./types";
+import { DailyLog, Supplement, SupplementLog } from "./types";
 
 export const getDailyLogs = () => {
   return api
@@ -144,17 +142,5 @@ export const getDailySleep = (date: string) => {
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_SLEEP }))
     .load((data) => ({ type: LOAD_EDIT_HEALTH_DAILY_SLEEP, data }))
     .error("Error getting daily sleep from oura")
-    .get();
-};
-
-export const getLatestDietLog = () => {
-  return api
-    .route("/api/health/diet/log/latest")
-    .fetch(() => ({ type: FETCH_HEALTH_DIET_LOGS_LATEST }))
-    .load((data: DashboardDietLog) => ({
-      type: LOAD_HEALTH_DIET_LOGS_LATEST,
-      data,
-    }))
-    .error("Error fetching diet logs")
     .get();
 };

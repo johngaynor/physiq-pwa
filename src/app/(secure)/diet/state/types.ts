@@ -5,10 +5,12 @@ import {
   LOAD_EDIT_DIET_LOG,
   FETCH_DELETE_DIET_LOG,
   LOAD_DELETE_DIET_LOG,
+  FETCH_HEALTH_DIET_LOGS_LATEST,
+  LOAD_HEALTH_DIET_LOGS_LATEST,
 } from "../../../store/actionTypes";
 
 // data object types
-export type DietLogSupplement = {
+export type DietSupplement = {
   id?: number;
   logId?: number;
   supplementId: number;
@@ -30,7 +32,12 @@ export type DietLog = {
   water: number;
   steps: number;
   phase: "Maintenance" | "Bulk" | "Cut";
-  supplements: DietLogSupplement[] | null;
+  supplements: DietSupplement[] | null;
+};
+
+export type DashboardDietLog = {
+  log: DietLog;
+  supplements: DietSupplement[];
 };
 
 // action types
@@ -43,11 +50,16 @@ export type Action =
       data: { existing: boolean; log: DietLog };
     }
   | { type: typeof FETCH_DELETE_DIET_LOG }
-  | { type: typeof LOAD_DELETE_DIET_LOG; id: number };
+  | { type: typeof LOAD_DELETE_DIET_LOG; id: number }
+  | { type: typeof FETCH_HEALTH_DIET_LOGS_LATEST }
+  | { type: typeof LOAD_HEALTH_DIET_LOGS_LATEST; data: DashboardDietLog };
 
 export interface DietState {
   dietLogs: DietLog[] | null;
   dietLogsLoading: boolean;
   editDietLogLoading?: boolean;
   deleteDietLogLoading?: boolean;
+  dietLog: DietLog | null;
+  dietSupplements: DietSupplement[] | null;
+  dietLogLoading: boolean;
 }
