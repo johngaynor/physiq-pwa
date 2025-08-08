@@ -42,9 +42,6 @@ const DEFAULT_STATE: HealthState = {
   toggleSupplementLoading: false,
   supplementTags: null,
   supplementTagsLoading: false,
-  dietLog: null,
-  dietSupplements: null,
-  dietLogLoading: false,
 };
 
 export default function healthReducer(
@@ -275,18 +272,6 @@ export default function healthReducer(
         ...state,
         editSleepLoading: false,
         dailyLogs: newSleepLogs,
-      };
-    case FETCH_HEALTH_DIET_LOGS_LATEST:
-      return {
-        ...state,
-        dietLogLoading: true,
-      };
-    case LOAD_HEALTH_DIET_LOGS_LATEST:
-      return {
-        ...state,
-        dietLogLoading: false,
-        dietLog: action.data.log,
-        dietSupplements: action.data.supplements,
       };
     case FETCH_HEALTH_SUPPLEMENT_TAGS:
       return {
