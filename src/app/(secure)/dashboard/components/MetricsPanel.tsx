@@ -26,9 +26,9 @@ function mapStateToProps(state: RootState) {
     editWaterLoading: state.health.editWaterLoading,
     editCaloriesLoading: state.health.editCaloriesLoading,
     editSleepLoading: state.health.editSleepLoading,
-    dietLog: state.health.dietLog,
-    dietLogLoading: state.health.dietLogLoading,
-    dietSupplements: state.health.dietSupplements,
+    dietLog: state.diet.dietLog,
+    dietLogLoading: state.diet.dietLogLoading,
+    dietSupplements: state.diet.dietSupplements,
   };
 }
 

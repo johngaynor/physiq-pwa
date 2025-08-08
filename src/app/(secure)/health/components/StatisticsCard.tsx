@@ -35,7 +35,7 @@ export default function StatisticsCard({
 }: StatisticsCardProps) {
   const tooltipContent =
     values.length > 0 ? (
-      <Card>
+      <Card className="p-2">
         <CardContent className="p-3">
           <p className="font-semibold mb-2">Values used in calculation:</p>
           <div className="grid grid-cols-3 gap-1 text-xs">
