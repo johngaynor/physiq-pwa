@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 // import { TrendingUp, TrendingDown } from "lucide-react";
 import { LineChart, CartesianGrid, XAxis, Line, YAxis } from "recharts";
 
@@ -22,8 +23,6 @@ import {
 import { HealthChartProps } from "../logs/components/Graphs/types";
 import { DateTime } from "luxon";
 
-const chartConfig = {} satisfies ChartConfig;
-
 const lineColors = [
   "var(--chart-1)",
   "var(--chart-2)",
@@ -32,8 +31,17 @@ const lineColors = [
 ];
 
 const dataKeyLabels: Record<string, string> = {
-  weight: "Total Weight",
-  ffm: "Fat Free Weight",
+  weight: "Body Weight",
+  ffm: "Fat Free Mass",
+  bodyfat: "Body Fat %",
+  steps: "Steps",
+  stepsTarget: "Steps Target",
+  totalSleep: "Total Sleep",
+  totalBed: "Total Bed Time",
+  water: "Water Intake",
+  waterTarget: "Water Target",
+  calories: "Calories",
+  caloriesTarget: "Calories Target",
 };
 
 export function StatisticsGraph({
@@ -48,6 +56,16 @@ export function StatisticsGraph({
   // subtitle,
   onClick,
 }: HealthChartProps) {
+  // Create chartConfig dynamically based on dataKeys
+  const chartConfig = React.useMemo(() => {
+    const config: ChartConfig = {};
+    dataKeys.forEach((key) => {
+      config[key] = {
+        label: dataKeyLabels[key] || key,
+      };
+    });
+    return config;
+  }, [dataKeys]) satisfies ChartConfig;
   const startingValue = dailyLogs ? dailyLogs.find((d) => d[primaryKey]) : null;
   const endingValue = dailyLogs
     ? [...dailyLogs].reverse().find((d) => d[primaryKey])
@@ -134,19 +152,7 @@ export function StatisticsGraph({
                 yAxisId={singleAxis ? "left" : index === 0 ? "left" : "right"}
               />
             ))}
-            <ChartLegend
-              content={
-                <ChartLegendContent
-                  payload={dataKeys.map((key, index) => ({
-                    value: key,
-                    color: lineColors[index % lineColors.length],
-                    type: "line",
-                    id: key,
-                    name: dataKeyLabels[key] ?? key,
-                  }))}
-                />
-              }
-            />
+            <ChartLegend content={<ChartLegendContent />} />
           </LineChart>
         </ChartContainer>
       </CardContent>

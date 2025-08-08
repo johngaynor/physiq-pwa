@@ -5,7 +5,7 @@ import { RootState } from "../../store/reducer";
 import { getDailyLogs } from "./state/actions";
 import { getCheckIns } from "../checkins/state/actions";
 import StatisticsCard from "./components/StatisticsCard";
-// import { StatisticsGraph } from "./components/StatisticsGraph";
+import { StatisticsGraph } from "./components/StatisticsGraph";
 import { DateTime } from "luxon";
 import { convertTime } from "@/app/components/Time";
 import { Button, Skeleton } from "@/components/ui";
@@ -341,10 +341,10 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             onClick={() => router.push("/health/logs/sleep")}
           />
         </div>
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full pt-4">
           <StatisticsGraph
             title="Weight"
-            dailyLogs={last30Days}
+            dailyLogs={filteredLogs}
             dataKeys={["weight", "ffm"]}
             primaryKey="weight"
             unit="lbs"
@@ -354,7 +354,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           />
           <StatisticsGraph
             title="Bodyfat"
-            dailyLogs={last30Days}
+            dailyLogs={filteredLogs}
             dataKeys={["bodyfat"]}
             primaryKey="bodyfat"
             unit="%"
@@ -364,7 +364,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           />
           <StatisticsGraph
             title="Sleep"
-            dailyLogs={last30Days}
+            dailyLogs={filteredLogs}
             dataKeys={["totalSleep", "totalBed"]}
             primaryKey="totalSleep"
             unit="hrs"
@@ -374,7 +374,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           />
           <StatisticsGraph
             title="Steps"
-            dailyLogs={last30Days}
+            dailyLogs={filteredLogs}
             dataKeys={["steps", "stepsTarget"]}
             primaryKey="steps"
             unit="steps"
@@ -384,7 +384,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           />
           <StatisticsGraph
             title="Water Intake"
-            dailyLogs={last30Days}
+            dailyLogs={filteredLogs}
             dataKeys={["water", "waterTarget"]}
             primaryKey="water"
             unit="oz"
@@ -395,7 +395,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           />
           <StatisticsGraph
             title="Caloric Intake"
-            dailyLogs={last30Days}
+            dailyLogs={filteredLogs}
             dataKeys={["calories", "caloriesTarget"]}
             primaryKey="calories"
             unit="cal"
@@ -404,7 +404,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
             singleAxis
             onClick={() => router.push("/health/logs/calories")}
           />
-        </div> */}
+        </div>
       </div>
     );
 };
