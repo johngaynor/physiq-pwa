@@ -20,7 +20,7 @@ function mapStateToProps(state: RootState) {
     supplementsLoading: state.health.supplementsLoading,
     supplementLogs: state.health.supplementLogs,
     supplementLogsLoading: state.health.supplementLogsLoading,
-    dietSupplements: state.health.dietSupplements,
+    dietSupplements: state.diet.dietSupplements,
   };
 }
 
