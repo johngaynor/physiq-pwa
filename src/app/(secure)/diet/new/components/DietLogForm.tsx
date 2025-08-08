@@ -23,7 +23,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Trash } from "lucide-react";
-import { DietLog, DietLogSupplement } from "../../state/types";
+import { DietLog, DietSupplement } from "../../state/types";
 import { Supplement } from "@/app/(secure)/health/state/types";
 import {
   DietLogFormData,
@@ -67,7 +67,7 @@ const DietLogForm = ({
           steps: log.steps?.toString() || "",
           cardioMinutes: log.cardioMinutes?.toString() || "",
           calories: log.calories?.toString() || "",
-          supplements: (log.supplements as DietLogSupplement[]) ?? [],
+          supplements: (log.supplements as DietSupplement[]) ?? [],
         }
       : {
           supplements: [],
@@ -95,7 +95,7 @@ const DietLogForm = ({
       cardioMinutes: latestLog.cardioMinutes?.toString() || "",
       cardio: latestLog.cardio || "",
       steps: latestLog.steps?.toString() || "",
-      supplements: (latestLog?.supplements as DietLogSupplement[]) || [],
+      supplements: (latestLog?.supplements as DietSupplement[]) || [],
     });
   }
 
