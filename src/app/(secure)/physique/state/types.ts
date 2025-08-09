@@ -1,3 +1,16 @@
+import {
+  FETCH_ANALYZE_POSE,
+  LOAD_ANALYZE_POSE,
+  FETCH_ASSIGN_PHYSIQUE_POSE,
+  LOAD_ASSIGN_PHYSIQUE_POSE,
+  FETCH_PHYSIQUE_POSES,
+  LOAD_PHYSIQUE_POSES,
+  FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS,
+  LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS,
+  FETCH_PHYSIQUE_POSE_MODEL_DATA,
+  LOAD_PHYSIQUE_POSE_MODEL_DATA,
+} from "@/app/store/actionTypes";
+
 export interface PhysiqueState {
   analyzePoseLoading: boolean;
   analyzePoseResult: AnalyzePoseResult | null;
@@ -58,16 +71,16 @@ export interface AssignPoseResult {
 }
 
 export type Action =
-  | { type: "FETCH_ANALYZE_POSE" }
-  | { type: "LOAD_ANALYZE_POSE"; data: AnalyzePoseResult }
-  | { type: "FETCH_ASSIGN_PHYSIQUE_POSE" }
-  | { type: "LOAD_ASSIGN_PHYSIQUE_POSE"; data: AssignPoseResult }
-  | { type: "FETCH_PHYSIQUE_POSES" }
-  | { type: "LOAD_PHYSIQUE_POSES"; data: Pose[] }
-  | { type: "FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS" }
+  | { type: typeof FETCH_ANALYZE_POSE }
+  | { type: typeof LOAD_ANALYZE_POSE; data: AnalyzePoseResult }
+  | { type: typeof FETCH_ASSIGN_PHYSIQUE_POSE }
+  | { type: typeof LOAD_ASSIGN_PHYSIQUE_POSE; data: AssignPoseResult }
+  | { type: typeof FETCH_PHYSIQUE_POSES }
+  | { type: typeof LOAD_PHYSIQUE_POSES; data: Pose[] }
+  | { type: typeof FETCH_PHYSIQUE_POSE_TRAINING_PHOTOS }
   | {
-      type: "LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS";
+      type: typeof LOAD_PHYSIQUE_POSE_TRAINING_PHOTOS;
       data: TrainingPhoto[];
     }
-  | { type: "FETCH_PHYSIQUE_POSE_MODEL_DATA" }
-  | { type: "LOAD_PHYSIQUE_POSE_MODEL_DATA"; data: PoseModelDataResult };
+  | { type: typeof FETCH_PHYSIQUE_POSE_MODEL_DATA }
+  | { type: typeof LOAD_PHYSIQUE_POSE_MODEL_DATA; data: PoseModelDataResult };
