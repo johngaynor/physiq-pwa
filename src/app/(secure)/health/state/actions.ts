@@ -149,7 +149,7 @@ export const getDailySleep = (date: string) => {
 
 export const getSleepLogs = () => {
   return api
-    .route("/api/health/logs/sleep")
+    .route("/api/health/sleep/logs")
     .fetch(() => ({ type: FETCH_HEALTH_SLEEP_LOGS }))
     .load((data: SleepLog[]) => ({ type: LOAD_HEALTH_SLEEP_LOGS, data }))
     .error("Error fetching sleep logs")
