@@ -154,5 +154,5 @@ export const LOAD_HEALTH_SUPPLEMENT_TAGS =
   "LOAD_HEALTH_SUPPLEMENT_TAGS" as const;
 
 // Sleep Logs - Fetch and manage sleep log entries
-export const FETCH_SLEEP_LOGS = "FETCH_SLEEP_LOGS" as const;
-export const LOAD_SLEEP_LOGS = "LOAD_SLEEP_LOGS" as const;
+export const FETCH_HEALTH_SLEEP_LOGS = "FETCH_HEALTH_SLEEP_LOGS" as const;
+export const LOAD_HEALTH_SLEEP_LOGS = "LOAD_HEALTH_SLEEP_LOGS" as const;

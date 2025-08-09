@@ -21,6 +21,8 @@ import {
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
   FETCH_HEALTH_SUPPLEMENT_TAGS,
   LOAD_HEALTH_SUPPLEMENT_TAGS,
+  FETCH_HEALTH_SLEEP_LOGS,
+  LOAD_HEALTH_SLEEP_LOGS,
 } from "../../../store/actionTypes";
 
 // data object types
@@ -90,6 +92,40 @@ export type DashboardDietLog = {
   supplements: DietSupplement[];
 };
 
+export interface SleepLog {
+  id: number;
+  userId: number;
+  date: string;
+  totalSleep: number;
+  recoveryIndex: number;
+  readinessScore: number;
+  awakeQty: number;
+  remQty: number;
+  lightQty: number;
+  deepQty: number;
+  totalBed: number;
+  bedtimeStart: string;
+  bedtimeEnd: string;
+  efficiency: number;
+  sleepScore: number;
+  timingScore: number;
+  restfulnessScore: number;
+  latency: number;
+  tags: SleepLogTag[];
+}
+
+export interface SleepLogTag {
+  id: number;
+  logId: number;
+  tagId: number;
+  tagTypeCode: string;
+  startTime: string;
+  endTime: string;
+  comment: string;
+  qty: number;
+  customName: string;
+}
+
 // action types
 export type Action =
   | { type: typeof FETCH_HEALTH_DAILY_LOGS }
@@ -141,7 +177,9 @@ export type Action =
     }
   | { type: typeof LOAD_EDIT_HEALTH_DAILY_SLEEP; data: DailyLog }
   | { type: typeof FETCH_HEALTH_SUPPLEMENT_TAGS }
-  | { type: typeof LOAD_HEALTH_SUPPLEMENT_TAGS; data: SupplementTag[] };
+  | { type: typeof LOAD_HEALTH_SUPPLEMENT_TAGS; data: SupplementTag[] }
+  | { type: typeof FETCH_HEALTH_SLEEP_LOGS }
+  | { type: typeof LOAD_HEALTH_SLEEP_LOGS; data: SleepLog[] };
 export interface HealthState {
   dailyLogs: DailyLog[] | null;
   dailyLogsLoading: boolean;
@@ -158,4 +196,6 @@ export interface HealthState {
   toggleSupplementLoading: boolean;
   supplementTags: SupplementTag[] | null;
   supplementTagsLoading: boolean;
+  sleepLogs: SleepLog[] | null;
+  sleepLogsLoading: boolean;
 }

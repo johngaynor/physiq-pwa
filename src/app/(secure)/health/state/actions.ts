@@ -21,9 +21,11 @@ import {
   LOAD_EDIT_HEALTH_DAILY_SLEEP,
   FETCH_HEALTH_SUPPLEMENT_TAGS,
   LOAD_HEALTH_SUPPLEMENT_TAGS,
+  FETCH_HEALTH_SLEEP_LOGS,
+  LOAD_HEALTH_SLEEP_LOGS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { DailyLog, Supplement, SupplementLog } from "./types";
+import { DailyLog, Supplement, SupplementLog, SleepLog } from "./types";
 
 export const getDailyLogs = () => {
   return api
@@ -142,5 +144,14 @@ export const getDailySleep = (date: string) => {
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_SLEEP }))
     .load((data) => ({ type: LOAD_EDIT_HEALTH_DAILY_SLEEP, data }))
     .error("Error getting daily sleep from oura")
+    .get();
+};
+
+export const getSleepLogs = () => {
+  return api
+    .route("/api/health/logs/sleep")
+    .fetch(() => ({ type: FETCH_HEALTH_SLEEP_LOGS }))
+    .load((data: SleepLog[]) => ({ type: LOAD_HEALTH_SLEEP_LOGS, data }))
+    .error("Error fetching sleep logs")
     .get();
 };
