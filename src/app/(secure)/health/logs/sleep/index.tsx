@@ -7,7 +7,6 @@ import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
 import { SleepForm } from "../components/Forms";
-import { DateTime } from "luxon";
 import LogsLoadingPage from "../components/Pages/LogsLoadingPage";
 
 function mapStateToProps(state: RootState) {
