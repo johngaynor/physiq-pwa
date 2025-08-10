@@ -158,15 +158,19 @@ export const getSleepLogs = () => {
     .get();
 };
 
-export const editSleepLog = (id: number | undefined, values: any) => {
+export const editSleepLog = (
+  id: number | undefined,
+  date: string,
+  values: any
+) => {
   return api
     .route("/api/health/sleep/log")
+    .data({ id, date, ...values })
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_SLEEP_LOG }))
     .load((data: { existing: boolean; log: SleepLog }) => ({
       type: LOAD_EDIT_HEALTH_SLEEP_LOG,
       data,
     }))
     .error("Error editing sleep log")
-    .data({ id, ...values })
     .post();
 };

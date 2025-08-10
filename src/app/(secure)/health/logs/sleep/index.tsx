@@ -9,6 +9,7 @@ import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
 import { SleepForm } from "../components/Forms";
 import LogsLoadingPage from "../components/Pages/LogsLoadingPage";
 import { convertTime } from "@/app/components/Time";
+import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -36,9 +37,10 @@ const SleepLog: React.FC<PropsFromRedux> = ({
     }
   }, [sleepLogs, sleepLogsLoading, getSleepLogs]);
 
-  const isoDate = date?.toLocaleDateString("sv-SE", {
-    timeZone: "America/New_York",
-  });
+  const isoDate =
+    date?.toLocaleDateString("sv-SE", {
+      timeZone: "America/New_York",
+    }) || DateTime.now().toISODate();
 
   const activeLog = sleepLogs?.find((log) => log.date === isoDate);
 
@@ -89,7 +91,9 @@ const SleepLog: React.FC<PropsFromRedux> = ({
             restfulnessScore: activeLog?.restfulnessScore || "",
             latency: activeLog?.latency || "",
           }}
-          handleSubmit={(values) => editSleepLog(activeLog?.id, values)}
+          handleSubmit={(values) =>
+            editSleepLog(activeLog?.id, isoDate, values)
+          }
         />
       </div>
       <div className="w-full md:pb-0 pb-10">
