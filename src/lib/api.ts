@@ -25,10 +25,16 @@ async function apiCall<T>(
 
     return response.data;
   } catch (err: any) {
-    toast.error(
-      err?.response?.data?.error ||
-        "An error occurred while processing your request."
-    );
+    let errorMessage = "An error occurred while processing your request.";
+
+    if (err?.response?.status === 403) {
+      // probably app access denied
+      errorMessage = "You are not authorized to access this route.";
+    } else if (err?.response?.data?.error) {
+      errorMessage = err.response.data.error;
+    }
+
+    toast.error(errorMessage);
     throw err;
   }
 }
