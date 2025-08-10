@@ -158,7 +158,7 @@ export const getSleepLogs = () => {
     .get();
 };
 
-export const editSleepLog = (id: number, values: Partial<SleepLog>) => {
+export const editSleepLog = (id: number | undefined, values: any) => {
   return api
     .route("/api/health/sleep/log")
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_SLEEP_LOG }))

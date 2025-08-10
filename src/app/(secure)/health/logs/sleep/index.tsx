@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
-import { getSleepLogs } from "../../state/actions";
+import { getSleepLogs, editSleepLog } from "../../state/actions";
 import { Button, Calendar, H1, H3 } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
@@ -14,16 +14,19 @@ function mapStateToProps(state: RootState) {
   return {
     sleepLogs: state.health.sleepLogs,
     sleepLogsLoading: state.health.sleepLogsLoading,
+    editSleepLogLoading: state.health.editSleepLogLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getSleepLogs });
+const connector = connect(mapStateToProps, { getSleepLogs, editSleepLog });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const SleepLog: React.FC<PropsFromRedux> = ({
   sleepLogs,
   sleepLogsLoading,
   getSleepLogs,
+  editSleepLogLoading,
+  editSleepLog,
 }) => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
@@ -39,7 +42,7 @@ const SleepLog: React.FC<PropsFromRedux> = ({
 
   const activeLog = sleepLogs?.find((log) => log.date === isoDate);
 
-  if (sleepLogsLoading) return <LogsLoadingPage />;
+  if (sleepLogsLoading || editSleepLogLoading) return <LogsLoadingPage />;
 
   return (
     <>
@@ -86,12 +89,7 @@ const SleepLog: React.FC<PropsFromRedux> = ({
             restfulnessScore: activeLog?.restfulnessScore || "",
             latency: activeLog?.latency || "",
           }}
-          handleSubmit={(values) =>
-            alert(
-              "Sorry, this feature is not implemented yet!" +
-                JSON.stringify(values)
-            )
-          }
+          handleSubmit={(values) => editSleepLog(activeLog?.id, values)}
         />
       </div>
       <div className="w-full md:pb-0 pb-10">
