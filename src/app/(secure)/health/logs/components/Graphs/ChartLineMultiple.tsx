@@ -75,8 +75,6 @@ export function ChartLineMultiple({
     }
   }, [activeChart, sortedLogs, dailyLogs]);
 
-  console.log(filteredData, dataKey);
-
   const averages = React.useMemo(() => {
     function average(vals: (number | undefined | null)[]) {
       const validData = vals.filter((v): v is number => typeof v === "number");
