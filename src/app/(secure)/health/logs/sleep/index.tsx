@@ -47,7 +47,7 @@ const SleepLog: React.FC<PropsFromRedux> = ({
   if (sleepLogsLoading || editSleepLogLoading) return <LogsLoadingPage />;
 
   return (
-    <>
+    <div className="flex w-full gap-2 md:flex-row flex-col">
       <div className="flex flex-col gap-4">
         <Calendar
           mode="single"
@@ -105,7 +105,7 @@ const SleepLog: React.FC<PropsFromRedux> = ({
           rounding={1}
         />
       </div>
-    </>
+    </div>
   );
 };
 
