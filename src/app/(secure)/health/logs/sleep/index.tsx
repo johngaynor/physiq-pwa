@@ -71,11 +71,20 @@ const SleepLog: React.FC<PropsFromRedux> = ({
           }
           initialValues={{
             totalSleep: activeLog?.totalSleep || "",
-            totalBed: activeLog?.totalBed || "",
+            recoveryIndex: activeLog?.recoveryIndex || "",
+            readinessScore: activeLog?.readinessScore || "",
             awakeQty: activeLog?.awakeQty || "",
-            lightQty: activeLog?.lightQty || "",
             remQty: activeLog?.remQty || "",
+            lightQty: activeLog?.lightQty || "",
             deepQty: activeLog?.deepQty || "",
+            totalBed: activeLog?.totalBed || "",
+            bedtimeStart: activeLog?.bedtimeStart || "",
+            bedtimeEnd: activeLog?.bedtimeEnd || "",
+            efficiency: activeLog?.efficiency || "",
+            sleepScore: activeLog?.sleepScore || "",
+            timingScore: activeLog?.timingScore || "",
+            restfulnessScore: activeLog?.restfulnessScore || "",
+            latency: activeLog?.latency || "",
           }}
           handleSubmit={(values) =>
             alert(

@@ -1,17 +1,44 @@
 import React from "react";
 import { Input, Label } from "@/components/ui";
 import { FormWrapper } from "./FormWrapper";
+import { z } from "zod";
+
+const sleepFormSchema = z.object({
+  totalSleep: z.number().min(0),
+  recoveryIndex: z.number().min(0).max(100),
+  readinessScore: z.number().min(0).max(100),
+  awakeQty: z.number().min(0),
+  remQty: z.number().min(0),
+  lightQty: z.number().min(0),
+  deepQty: z.number().min(0),
+  totalBed: z.number().min(0),
+  bedtimeStart: z.string(),
+  bedtimeEnd: z.string(),
+  efficiency: z.number().min(0),
+  sleepScore: z.number().min(0).max(100),
+  timingScore: z.number().min(0).max(100),
+  restfulnessScore: z.number().min(0).max(100),
+  latency: z.number().min(0),
+});
 
 type SleepFormValues = {
-  totalBed: number | string;
-  totalSleep: number | string;
-  awakeQty: number | string;
-  lightQty: number | string;
-  remQty: number | string;
-  deepQty: number | string;
+  totalSleep: string | number;
+  recoveryIndex: string | number;
+  readinessScore: string | number;
+  awakeQty: string | number;
+  remQty: string | number;
+  lightQty: string | number;
+  deepQty: string | number;
+  totalBed: string | number;
+  bedtimeStart: string;
+  bedtimeEnd: string;
+  efficiency: string | number;
+  sleepScore: string | number;
+  timingScore: string | number;
+  restfulnessScore: string | number;
+  latency: string | number;
 };
 
-// not currently in use
 export function SleepForm({
   Trigger,
   handleSubmit,
@@ -41,6 +68,7 @@ export function SleepForm({
               onChange={handleChange}
               className="col-span-3"
               type="number"
+              step="0.1"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -53,9 +81,33 @@ export function SleepForm({
               onChange={handleChange}
               className="col-span-3"
               type="number"
+              step="0.1"
             />
           </div>
-
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="recoveryIndex" className="text-right">
+              Recovery Index
+            </Label>
+            <Input
+              id="recoveryIndex"
+              value={values.recoveryIndex}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="readinessScore" className="text-right">
+              Readiness Score
+            </Label>
+            <Input
+              id="readinessScore"
+              value={values.readinessScore}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="awakeQty" className="text-right">
               Awake Qty
@@ -66,18 +118,7 @@ export function SleepForm({
               onChange={handleChange}
               className="col-span-3"
               type="number"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="lightQty" className="text-right">
-              Light Qty
-            </Label>
-            <Input
-              id="lightQty"
-              value={values.lightQty}
-              onChange={handleChange}
-              className="col-span-3"
-              type="number"
+              step="0.1"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -90,6 +131,20 @@ export function SleepForm({
               onChange={handleChange}
               className="col-span-3"
               type="number"
+              step="0.1"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="lightQty" className="text-right">
+              Light Qty
+            </Label>
+            <Input
+              id="lightQty"
+              value={values.lightQty}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+              step="0.1"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -99,6 +154,92 @@ export function SleepForm({
             <Input
               id="deepQty"
               value={values.deepQty}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+              step="0.1"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="bedtimeStart" className="text-right">
+              Bedtime Start
+            </Label>
+            <Input
+              id="bedtimeStart"
+              value={values.bedtimeStart}
+              onChange={handleChange}
+              className="col-span-3"
+              type="time"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="bedtimeEnd" className="text-right">
+              Bedtime End
+            </Label>
+            <Input
+              id="bedtimeEnd"
+              value={values.bedtimeEnd}
+              onChange={handleChange}
+              className="col-span-3"
+              type="time"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="efficiency" className="text-right">
+              Efficiency
+            </Label>
+            <Input
+              id="efficiency"
+              value={values.efficiency}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+              step="0.1"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="sleepScore" className="text-right">
+              Sleep Score
+            </Label>
+            <Input
+              id="sleepScore"
+              value={values.sleepScore}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="timingScore" className="text-right">
+              Timing Score
+            </Label>
+            <Input
+              id="timingScore"
+              value={values.timingScore}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="restfulnessScore" className="text-right">
+              Restfulness Score
+            </Label>
+            <Input
+              id="restfulnessScore"
+              value={values.restfulnessScore}
+              onChange={handleChange}
+              className="col-span-3"
+              type="number"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="latency" className="text-right">
+              Latency
+            </Label>
+            <Input
+              id="latency"
+              value={values.latency}
               onChange={handleChange}
               className="col-span-3"
               type="number"

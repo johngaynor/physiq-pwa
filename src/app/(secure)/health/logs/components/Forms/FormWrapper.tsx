@@ -53,12 +53,12 @@ export function FormWrapper<T>({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{Trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] top-[20%] translate-y-0">
+      <DialogContent className="sm:max-w-[600px] top-[20%] translate-y-0 max-h-[500px] flex flex-col">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-4 flex-1 overflow-y-auto">
           {children(formValues, handleChange)}
         </div>
         <DialogFooter>
