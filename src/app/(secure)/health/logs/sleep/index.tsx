@@ -8,6 +8,7 @@ import { CirclePlus } from "lucide-react";
 import { ChartLineMultiple } from "../components/Graphs/ChartLineMultiple";
 import { SleepForm } from "../components/Forms";
 import LogsLoadingPage from "../components/Pages/LogsLoadingPage";
+import { convertTime } from "@/app/components/Time";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -55,7 +56,11 @@ const SleepLog: React.FC<PropsFromRedux> = ({
           Trigger={
             <Button variant="outline" className="w-full h-20">
               {activeLog ? (
-                <H1>EDIT SLEEP</H1>
+                <H1>
+                  {activeLog.totalSleep
+                    ? convertTime(activeLog.totalSleep)
+                    : "--"}
+                </H1>
               ) : (
                 <div className="flex">
                   <CirclePlus className="size-8 font-extrabold" />
@@ -72,19 +77,20 @@ const SleepLog: React.FC<PropsFromRedux> = ({
             remQty: activeLog?.remQty || "",
             deepQty: activeLog?.deepQty || "",
           }}
-          handleSubmit={(values) => {
-            console.log("Sleep form values:", values);
-            console.log("Selected date:", isoDate);
-            console.log("Active log:", activeLog);
-          }}
+          handleSubmit={(values) =>
+            alert(
+              "Sorry, this feature is not implemented yet!" +
+                JSON.stringify(values)
+            )
+          }
         />
       </div>
       <div className="w-full md:pb-0 pb-10">
         <ChartLineMultiple
           dailyLogs={sleepLogs}
           title="Daily Total Sleep"
-          unit="TEST"
           dataKey="totalSleep"
+          unit=""
           rounding={1}
         />
       </div>

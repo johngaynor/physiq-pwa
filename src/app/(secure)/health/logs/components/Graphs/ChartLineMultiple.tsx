@@ -20,6 +20,7 @@ import {
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { DateTime } from "luxon";
 import { ChartProps } from "./types";
+import { convertTime } from "@/app/components/Time";
 
 const chartConfig = {
   today: {
@@ -46,9 +47,12 @@ export function ChartLineMultiple({
   dataKey,
   rounding,
   showUnit = false,
-}: ChartProps) {
+}: ChartProps & { isTime?: boolean }) {
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("last30");
+
+  // Determine if this is a time-based chart based on the dataKey
+  const isTime = dataKey === "totalSleep" || dataKey === "totalBed";
 
   const sortedLogs = React.useMemo(() => {
     return (
@@ -71,6 +75,8 @@ export function ChartLineMultiple({
     }
   }, [activeChart, sortedLogs, dailyLogs]);
 
+  console.log(filteredData, dataKey);
+
   const averages = React.useMemo(() => {
     function average(vals: (number | undefined | null)[]) {
       const validData = vals.filter((v): v is number => typeof v === "number");
@@ -91,7 +97,7 @@ export function ChartLineMultiple({
         .map((d) => d[dataKey] as number | undefined | null) ?? [];
 
     return {
-      today: sortedLogs[sortedLogs.length - 1]?.[dataKey] ?? "--",
+      today: (sortedLogs[sortedLogs.length - 1]?.[dataKey] as number) ?? 0,
       last7: average(last7Data),
       last30: average(last30Data),
     };
@@ -144,7 +150,11 @@ export function ChartLineMultiple({
                   {chartConfig[chart].label}
                 </span>
                 <span className="text-lg leading-none font-bold sm:text-3xl w-auto md:w-36">
-                  {averages[key as keyof typeof averages].toLocaleString()}{" "}
+                  {(() => {
+                    const value = averages[key as keyof typeof averages];
+                    if (value === 0) return "--";
+                    return isTime ? convertTime(value) : value.toLocaleString();
+                  })()}{" "}
                   {showUnit ? unit : ""}
                 </span>
               </button>
@@ -198,7 +208,8 @@ export function ChartLineMultiple({
         <div className="flex w-full items-start gap-2 text-sm -mt-4 py-5">
           <div className="flex flex-col lg:flex-row items-start gap-2 w-full">
             <div className="flex items-center gap-2 leading-none font-medium">
-              Trending {diff >= 0 ? "up" : "down"} by {Math.abs(diff)} {unit}{" "}
+              Trending {diff >= 0 ? "up" : "down"} by{" "}
+              {isTime ? convertTime(Math.abs(diff)) : Math.abs(diff)} {unit}{" "}
               {activeChart !== "today" ? "over the last" : ""}{" "}
               {labels[activeChart]}
               {diff >= 0 ? (
