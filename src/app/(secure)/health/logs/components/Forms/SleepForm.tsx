@@ -48,13 +48,51 @@ export function SleepForm({
   handleSubmit: (values: SleepFormValues) => void;
   initialValues: SleepFormValues;
 }) {
+  const handleFormSubmit = (values: SleepFormValues) => {
+    try {
+      // Convert string values to numbers for validation
+      const numericValues = {
+        ...values,
+        totalSleep: Number(values.totalSleep),
+        recoveryIndex: Number(values.recoveryIndex),
+        readinessScore: Number(values.readinessScore),
+        awakeQty: Number(values.awakeQty),
+        remQty: Number(values.remQty),
+        lightQty: Number(values.lightQty),
+        deepQty: Number(values.deepQty),
+        totalBed: Number(values.totalBed),
+        efficiency: Number(values.efficiency),
+        sleepScore: Number(values.sleepScore),
+        timingScore: Number(values.timingScore),
+        restfulnessScore: Number(values.restfulnessScore),
+        latency: Number(values.latency),
+      };
+
+      // Validate with Zod schema
+      const validatedData = sleepFormSchema.parse(numericValues);
+
+      // Pass validated data to the original handler
+      handleSubmit(validatedData as SleepFormValues);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const errorMessages = error.errors
+          .map((err) => `${err.path.join(".")}: ${err.message}`)
+          .join("\n");
+        alert(`Validation Error:\n${errorMessages}`);
+      } else {
+        alert("An unexpected error occurred");
+      }
+    }
+  };
+
   return (
     <FormWrapper<SleepFormValues>
       Trigger={Trigger}
       title="Log Sleep"
       description="Record last night's sleep."
       initialValues={initialValues}
-      onSubmit={handleSubmit}
+      onSubmit={handleFormSubmit}
     >
       {(values, handleChange) => (
         <>
