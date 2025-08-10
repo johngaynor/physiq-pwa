@@ -23,6 +23,8 @@ import {
   LOAD_HEALTH_SUPPLEMENT_TAGS,
   FETCH_HEALTH_SLEEP_LOGS,
   LOAD_HEALTH_SLEEP_LOGS,
+  FETCH_EDIT_HEALTH_SLEEP_LOG,
+  LOAD_EDIT_HEALTH_SLEEP_LOG,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { DailyLog, Supplement, SupplementLog, SleepLog } from "./types";
@@ -154,4 +156,17 @@ export const getSleepLogs = () => {
     .load((data: SleepLog[]) => ({ type: LOAD_HEALTH_SLEEP_LOGS, data }))
     .error("Error fetching sleep logs")
     .get();
+};
+
+export const editSleepLog = (id: number, values: Partial<SleepLog>) => {
+  return api
+    .route("/api/health/sleep/log")
+    .fetch(() => ({ type: FETCH_EDIT_HEALTH_SLEEP_LOG }))
+    .load((data: { existing: boolean; log: SleepLog }) => ({
+      type: LOAD_EDIT_HEALTH_SLEEP_LOG,
+      data,
+    }))
+    .error("Error editing sleep log")
+    .data({ id, ...values })
+    .post();
 };

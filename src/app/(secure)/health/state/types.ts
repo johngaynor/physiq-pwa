@@ -23,6 +23,8 @@ import {
   LOAD_HEALTH_SUPPLEMENT_TAGS,
   FETCH_HEALTH_SLEEP_LOGS,
   LOAD_HEALTH_SLEEP_LOGS,
+  FETCH_EDIT_HEALTH_SLEEP_LOG,
+  LOAD_EDIT_HEALTH_SLEEP_LOG,
 } from "../../../store/actionTypes";
 
 // data object types
@@ -179,7 +181,14 @@ export type Action =
   | { type: typeof FETCH_HEALTH_SUPPLEMENT_TAGS }
   | { type: typeof LOAD_HEALTH_SUPPLEMENT_TAGS; data: SupplementTag[] }
   | { type: typeof FETCH_HEALTH_SLEEP_LOGS }
-  | { type: typeof LOAD_HEALTH_SLEEP_LOGS; data: SleepLog[] };
+  | { type: typeof LOAD_HEALTH_SLEEP_LOGS; data: SleepLog[] }
+  | {
+      type: typeof FETCH_EDIT_HEALTH_SLEEP_LOG;
+    }
+  | {
+      type: typeof LOAD_EDIT_HEALTH_SLEEP_LOG;
+      data: { existing: boolean; log: SleepLog };
+    };
 export interface HealthState {
   dailyLogs: DailyLog[] | null;
   dailyLogsLoading: boolean;
@@ -198,4 +207,5 @@ export interface HealthState {
   supplementTagsLoading: boolean;
   sleepLogs: SleepLog[] | null;
   sleepLogsLoading: boolean;
+  editSleepLogLoading: boolean;
 }

@@ -23,6 +23,8 @@ import {
   LOAD_HEALTH_SUPPLEMENT_TAGS,
   FETCH_HEALTH_SLEEP_LOGS,
   LOAD_HEALTH_SLEEP_LOGS,
+  FETCH_EDIT_HEALTH_SLEEP_LOG,
+  LOAD_EDIT_HEALTH_SLEEP_LOG,
 } from "../../../store/actionTypes";
 import type { HealthState, Action } from "./types";
 
@@ -44,6 +46,7 @@ const DEFAULT_STATE: HealthState = {
   supplementTagsLoading: false,
   sleepLogs: null,
   sleepLogsLoading: false,
+  editSleepLogLoading: false,
 };
 
 export default function healthReducer(
@@ -297,6 +300,29 @@ export default function healthReducer(
         sleepLogsLoading: false,
         sleepLogs: action.data,
       };
+    case FETCH_EDIT_HEALTH_SLEEP_LOG:
+      return {
+        ...state,
+        editSleepLogLoading: true,
+      };
+    case LOAD_EDIT_HEALTH_SLEEP_LOG:
+      if (action.data.existing) {
+        return {
+          ...state,
+          editSleepLogLoading: false,
+          sleepLogs:
+            state.sleepLogs?.map((log) =>
+              log.id === action.data.log.id ? action.data.log : log
+            ) || null,
+        };
+      } else
+        return {
+          ...state,
+          editSleepLogLoading: false,
+          sleepLogs: state.sleepLogs
+            ? [...state.sleepLogs, action.data.log]
+            : [action.data.log],
+        };
     default:
       return state;
   }
