@@ -90,9 +90,9 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       {/* Fixed Header with Navigation and Calendar */}
-      <div className="fixed top-0 left-0 right-0 z-50">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background">
         {/* Top Navigation */}
         <div className="flex items-center justify-between p-4 pt-8">
           <Menu className="w-6 h-6" />
@@ -142,8 +142,8 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
         </div>
       </div>
 
-      {/* Scrollable Content with increased top padding */}
-      <div className="pt-44 flex-1 flex flex-col">
+      {/* Scrollable Content with proper top padding */}
+      <div className="flex-1 flex flex-col overflow-y-auto">
         {/* Main Content Area - Motivational Quote */}
         <div className="flex-1 flex items-center justify-center px-8">
           <div className="text-center">
@@ -163,7 +163,7 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
         </div>
 
         {/* Refresh Calendar Button */}
-        <div className="px-4 mb-8">
+        <div className="px-4 pb-8">
           <Button
             onClick={handleRefreshCalendar}
             variant="outline"
@@ -172,16 +172,14 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
             Refresh Calendar
           </Button>
         </div>
-
-        {/* Floating Plus Button */}
-        <div className="fixed bottom-24 right-6">
-          <Button
-            className="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg"
-            size="icon"
-          >
-            <Plus className="w-6 h-6" />
-          </Button>
-        </div>
+      </div>
+      <div className="fixed bottom-24 right-6">
+        <Button
+          className="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg"
+          size="icon"
+        >
+          <Plus className="w-6 h-6" />
+        </Button>
       </div>
     </div>
   );
