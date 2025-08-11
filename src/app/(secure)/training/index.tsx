@@ -25,30 +25,42 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, {});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const motivationalQuotes = [
+const verses = [
   {
-    text: "Never give up, never give in, and when the upper hand is ours, may we have the ability to handle the win with the dignity that we absorbed the loss.",
-    author: "Doug Williams",
+    text: "So whether you eat or drink or whatever you do, do all to the glory of God.",
+    verse: "1 Corinthians 10:31",
   },
   {
-    text: "The only way to achieve the impossible is to believe it is possible.",
-    author: "Charles Kingsleigh",
+    text: "Do you not know that your bodies are temples of the Holy Spirit… Therefore honor God with your bodies.",
+    verse: "1 Corinthians 6:19–20",
   },
   {
-    text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-    author: "Winston Churchill",
+    text: "For physical training is of some value, but godliness has value for all things…",
+    verse: "1 Timothy 4:8",
   },
   {
-    text: "Don't watch the clock; do what it does. Keep going.",
-    author: "Sam Levenson",
+    text: "And whatever you do, whether in word or deed, do it all in the name of the Lord Jesus…",
+    verse: "Colossians 3:17",
+  },
+  {
+    text: "Similarly, anyone who competes as an athlete does not receive the victor’s crown except by competing according to the rules.",
+    verse: "2 Timothy 2:5",
+  },
+  {
+    text: "No discipline seems pleasant at the time, but painful. Later on, however, it produces a harvest of righteousness…",
+    verse: "Hebrews 12:11",
+  },
+  {
+    text: "A wise man is full of strength, and a man of knowledge enhances his might.",
+    verse: "Proverbs 24:5",
   },
 ];
 
 const Training: React.FC<PropsFromRedux> = ({}) => {
   const [currentDate, setCurrentDate] = React.useState(DateTime.now());
   const [selectedDate, setSelectedDate] = React.useState(DateTime.now());
-  const [currentQuote] = React.useState(
-    motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]
+  const [currentVerse] = React.useState(
+    verses[Math.floor(Math.random() * verses.length)]
   );
 
   // Generate calendar days for the current week
@@ -143,10 +155,10 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
             </div>
 
             {/* Quote Text */}
-            <p className="text-lg leading-relaxed mb-6">{currentQuote.text}</p>
+            <p className="text-lg leading-relaxed mb-6">{currentVerse.text}</p>
 
             {/* Author */}
-            <p className="font-semibold text-lg">{currentQuote.author}</p>
+            <p className="font-semibold text-lg">{currentVerse.verse}</p>
           </div>
         </div>
 
