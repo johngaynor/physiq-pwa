@@ -98,7 +98,7 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
           <Menu className="w-6 h-6" />
           <div className="flex items-center space-x-2">
             <span className="text-xl font-bold">
-              {currentDate.toFormat("MMM").toUpperCase()} '
+              {currentDate.toFormat("MMM").toUpperCase()} &apos;
               {currentDate.toFormat("yy")}
             </span>
             <ChevronDown className="w-5 h-5" />
