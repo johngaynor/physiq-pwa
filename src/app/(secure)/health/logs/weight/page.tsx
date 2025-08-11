@@ -5,7 +5,7 @@ import WeightLog from "./index";
 
 export default function Page() {
   return (
-    <PageTemplate title="Weight Log">
+    <PageTemplate title="Weight Log" showTitleMobile>
       <WeightLog />
     </PageTemplate>
   );

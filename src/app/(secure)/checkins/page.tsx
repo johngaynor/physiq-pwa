@@ -6,7 +6,7 @@ const title = "Check Ins";
 
 export default function Page() {
   return (
-    <PageTemplate title={title}>
+    <PageTemplate title={title} showTitleMobile>
       <CheckInsDashboard />
     </PageTemplate>
   );

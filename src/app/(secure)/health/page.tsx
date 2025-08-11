@@ -6,7 +6,7 @@ const title = "Health Metrics";
 
 export default function Page() {
   return (
-    <PageTemplate title={title}>
+    <PageTemplate title={title} showTitleMobile>
       <HealthDashboard />
     </PageTemplate>
   );

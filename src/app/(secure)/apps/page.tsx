@@ -6,7 +6,7 @@ const title = "All Applications";
 
 export default function Page() {
   return (
-    <PageTemplate title={title}>
+    <PageTemplate title={title} showTitleMobile>
       <AppsGrid filter="" />
     </PageTemplate>
   );

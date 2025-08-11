@@ -6,7 +6,7 @@ const title = "Supplements Manager";
 
 export default function Page() {
   return (
-    <PageTemplate title={title}>
+    <PageTemplate title={title} showTitleMobile>
       <SupplementsManager />
     </PageTemplate>
   );

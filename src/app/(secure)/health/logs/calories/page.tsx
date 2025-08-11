@@ -5,7 +5,7 @@ import CalorieLog from "@/app/(secure)/health/logs/calories";
 
 export default function Page() {
   return (
-    <PageTemplate title="Caloric Intake Log">
+    <PageTemplate title="Caloric Intake Log" showTitleMobile>
       <CalorieLog />
     </PageTemplate>
   );

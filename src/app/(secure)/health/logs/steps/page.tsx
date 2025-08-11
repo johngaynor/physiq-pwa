@@ -5,7 +5,7 @@ import StepsLog from "@/app/(secure)/health/logs/steps";
 
 export default function Page() {
   return (
-    <PageTemplate title="Steps Log">
+    <PageTemplate title="Steps Log" showTitleMobile>
       <StepsLog />
     </PageTemplate>
   );

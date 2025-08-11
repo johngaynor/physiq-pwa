@@ -5,7 +5,7 @@ import BodyfatLog from "@/app/(secure)/health/logs/bodyfat";
 
 export default function Page() {
   return (
-    <PageTemplate title="Bodyfat Log">
+    <PageTemplate title="Bodyfat Log" showTitleMobile>
       <BodyfatLog />
     </PageTemplate>
   );

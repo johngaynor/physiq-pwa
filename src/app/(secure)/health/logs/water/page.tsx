@@ -5,7 +5,7 @@ import WaterLog from "@/app/(secure)/health/logs/water";
 
 export default function Page() {
   return (
-    <PageTemplate title="Water Intake Log">
+    <PageTemplate title="Water Intake Log" showTitleMobile>
       <WaterLog />
     </PageTemplate>
   );

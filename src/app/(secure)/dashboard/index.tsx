@@ -75,7 +75,7 @@ const Dashboard: React.FC<PropsFromRedux> = ({
   const router = useRouter();
 
   return (
-    <PageTemplate title="Today">
+    <PageTemplate title="Today" showTitleMobile>
       <div className="w-full flex flex-col gap-4 mb-20">
         {/* Mobile layout (below md/768px) - everything stacked vertically */}
         <div className="flex flex-col gap-4 md:hidden">

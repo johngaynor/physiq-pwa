@@ -15,6 +15,7 @@ import { RootState } from "@/app/store/reducer";
 
 type PageTemplateProps = {
   title: string;
+  showTitleMobile?: boolean;
   children: React.ReactNode;
 };
 
@@ -61,7 +62,11 @@ function matchRoute(
   return prefixMatch?.appId;
 }
 
-export default function PageTemplate({ children, title }: PageTemplateProps) {
+export default function PageTemplate({
+  children,
+  showTitleMobile = false,
+  title,
+}: PageTemplateProps) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
   const user = useSelector((state: RootState) => state.app.user);
@@ -76,9 +81,15 @@ export default function PageTemplate({ children, title }: PageTemplateProps) {
 
   return (
     <div>
-      <div className="border-b py-4 mb-6">
+      <div className="border-b">
         <div className="flex flex-col md:flex-row items-center max-w-6xl mx-auto px-5">
-          <H1 className="py-4 align-left md:w-auto w-full">{title}</H1>
+          <H1
+            className={`py-6 align-left md:w-auto w-full md:flex ${
+              showTitleMobile ? "flex" : "hidden"
+            }`}
+          >
+            {title}
+          </H1>
           <Breadcrumb className="pt-4 pl-3 md:block hidden">
             <BreadcrumbList>
               {segments.map((segment, idx) => {
@@ -103,7 +114,11 @@ export default function PageTemplate({ children, title }: PageTemplateProps) {
           </Breadcrumb>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row gap-4 max-w-6xl mx-auto px-5">
+      <div
+        className={`flex flex-col md:flex-row gap-4 max-w-6xl mx-auto md:px-5 ${
+          showTitleMobile ? "pt-4 px-5" : "pt-0"
+        }`}
+      >
         {!apps
           ? "loading..."
           : !authed

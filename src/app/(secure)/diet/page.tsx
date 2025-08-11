@@ -6,7 +6,7 @@ const title = "Diet";
 
 export default function Page() {
   return (
-    <PageTemplate title={title}>
+    <PageTemplate title={title} showTitleMobile>
       <DietDashboard />
     </PageTemplate>
   );

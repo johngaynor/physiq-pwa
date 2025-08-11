@@ -6,7 +6,7 @@ const title = "New Check-In";
 
 export default function Page() {
   return (
-    <PageTemplate title={title}>
+    <PageTemplate title={title} showTitleMobile>
       <CheckInFormWrapper />
     </PageTemplate>
   );
