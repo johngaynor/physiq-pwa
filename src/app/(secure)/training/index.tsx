@@ -2,23 +2,24 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { Button, H1, H2, H3 } from "@/components/ui";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui";
 import {
-  Calendar,
+  // Calendar,
   Plus,
   ChevronDown,
   Menu,
   Bell,
-  Dumbbell,
-  Target,
-  TrendingUp,
-  Award,
+  // Dumbbell,
+  // Target,
+  // TrendingUp,
+  // Award,
 } from "lucide-react";
 import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {
-  return {};
+  return {
+    user: state.app.user,
+  };
 }
 
 const connector = connect(mapStateToProps, {});
@@ -58,13 +59,13 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
 
   const today = DateTime.now();
 
-  const handlePrevWeek = () => {
-    setCurrentDate(currentDate.minus({ weeks: 1 }));
-  };
+  // const handlePrevWeek = () => {
+  //   setCurrentDate(currentDate.minus({ weeks: 1 }));
+  // };
 
-  const handleNextWeek = () => {
-    setCurrentDate(currentDate.plus({ weeks: 1 }));
-  };
+  // const handleNextWeek = () => {
+  //   setCurrentDate(currentDate.plus({ weeks: 1 }));
+  // };
 
   const handleToday = () => {
     const now = DateTime.now();
@@ -77,99 +78,98 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 pt-16">
-        <Menu className="w-6 h-6" />
-        <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold">
-            {currentDate.toFormat("MMM").toUpperCase()} '{currentDate.toFormat("yy")}
-          </span>
-          <ChevronDown className="w-5 h-5" />
-        </div>
-        <div className="flex items-center space-x-3">
-          <Button
-            onClick={handleToday}
-            variant="outline"
-            className="text-white border-gray-600 hover:bg-gray-800"
-          >
-            TODAY
-          </Button>
-          <Bell className="w-6 h-6" />
-        </div>
-      </div>
-
-      {/* Weekly Calendar */}
-      <div className="px-4 mb-8">
-        <div className="flex justify-between items-center">
-          {weekDays.map((day, index) => {
-            const isSelected = day.hasSame(selectedDate, "day");
-            const isToday = day.hasSame(today, "day");
-            
-            return (
-              <div
-                key={index}
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => setSelectedDate(day)}
-              >
-                <span className="text-sm text-gray-400 mb-2">
-                  {day.toFormat("dd")}
-                </span>
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    isSelected || isToday
-                      ? "bg-white"
-                      : "bg-transparent"
-                  }`}
-                />
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-4 border-b border-gray-700"></div>
-      </div>
-
-      {/* Main Content Area - Motivational Quote */}
-      <div className="flex-1 flex items-center justify-center px-8">
-        <div className="text-center">
-          {/* Quote Icon */}
-          <div className="flex justify-center mb-8">
-            <div className="w-12 h-12 bg-cyan-400 rounded-lg flex items-center justify-center transform rotate-12">
-              <div className="w-8 h-8 bg-cyan-300 rounded-sm transform -rotate-6"></div>
-            </div>
+    <div className="min-h-screen flex flex-col">
+      {/* Fixed Header with Navigation and Calendar */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        {/* Top Navigation */}
+        <div className="flex items-center justify-between p-4 pt-8">
+          <Menu className="w-6 h-6" />
+          <div className="flex items-center space-x-2">
+            <span className="text-xl font-bold">
+              {currentDate.toFormat("MMM").toUpperCase()} '
+              {currentDate.toFormat("yy")}
+            </span>
+            <ChevronDown className="w-5 h-5" />
           </div>
-          
-          {/* Quote Text */}
-          <p className="text-lg leading-relaxed mb-6 text-gray-300">
-            {currentQuote.text}
-          </p>
-          
-          {/* Author */}
-          <p className="text-white font-semibold text-lg">
-            {currentQuote.author}
-          </p>
+          <div className="flex items-center space-x-3">
+            <Button
+              onClick={handleToday}
+              variant="outline"
+              className="border-gray-600 hover:bg-gray-800"
+            >
+              TODAY
+            </Button>
+            <Bell className="w-6 h-6" />
+          </div>
+        </div>
+
+        {/* Weekly Calendar */}
+        <div className="pb-4">
+          <div className="flex justify-between items-center px-4">
+            {weekDays.map((day, index) => {
+              const isSelected = day.hasSame(selectedDate, "day");
+              const isToday = day.hasSame(today, "day");
+
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col items-center cursor-pointer"
+                  onClick={() => setSelectedDate(day)}
+                >
+                  <span className="text-sm mb-2">{day.toFormat("dd")}</span>
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      isSelected || isToday ? "bg-primary" : "bg-transparent"
+                    }`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-4 border-b"></div>
         </div>
       </div>
 
-      {/* Refresh Calendar Button */}
-      <div className="px-4 mb-8">
-        <Button
-          onClick={handleRefreshCalendar}
-          variant="outline"
-          className="w-full text-blue-400 border-blue-400 hover:bg-blue-900/20"
-        >
-          Refresh Calendar
-        </Button>
-      </div>
+      {/* Scrollable Content with increased top padding */}
+      <div className="pt-44 flex-1 flex flex-col">
+        {/* Main Content Area - Motivational Quote */}
+        <div className="flex-1 flex items-center justify-center px-8">
+          <div className="text-center">
+            {/* Quote Icon */}
+            <div className="flex justify-center mb-8">
+              <div className="w-12 h-12 bg-cyan-400 rounded-lg flex items-center justify-center transform rotate-12">
+                <div className="w-8 h-8 bg-cyan-300 rounded-sm transform -rotate-6"></div>
+              </div>
+            </div>
 
-      {/* Floating Plus Button */}
-      <div className="fixed bottom-24 right-6">
-        <Button
-          className="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg"
-          size="icon"
-        >
-          <Plus className="w-6 h-6" />
-        </Button>
+            {/* Quote Text */}
+            <p className="text-lg leading-relaxed mb-6">{currentQuote.text}</p>
+
+            {/* Author */}
+            <p className="font-semibold text-lg">{currentQuote.author}</p>
+          </div>
+        </div>
+
+        {/* Refresh Calendar Button */}
+        <div className="px-4 mb-8">
+          <Button
+            onClick={handleRefreshCalendar}
+            variant="outline"
+            className="w-full text-blue-400 border-blue-400 hover:bg-blue-900/20"
+          >
+            Refresh Calendar
+          </Button>
+        </div>
+
+        {/* Floating Plus Button */}
+        <div className="fixed bottom-24 right-6">
+          <Button
+            className="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg"
+            size="icon"
+          >
+            <Plus className="w-6 h-6" />
+          </Button>
+        </div>
       </div>
     </div>
   );
