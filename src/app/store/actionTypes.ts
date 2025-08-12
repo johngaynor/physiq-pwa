@@ -173,3 +173,15 @@ export const LOAD_EDIT_EXERCISE = "LOAD_EDIT_EXERCISE" as const;
 // Exercises - Manage deleting exercise
 export const FETCH_DELETE_EXERCISE = "FETCH_DELETE_EXERCISE" as const;
 export const LOAD_DELETE_EXERCISE = "LOAD_DELETE_EXERCISE" as const;
+
+// Gyms - Fetch and manage gyms
+export const FETCH_GYMS = "FETCH_GYMS" as const;
+export const LOAD_GYMS = "LOAD_GYMS" as const;
+
+// Gyms - Manage editing gyms
+export const FETCH_EDIT_GYM = "FETCH_EDIT_GYM" as const;
+export const LOAD_EDIT_GYM = "LOAD_EDIT_GYM" as const;
+
+// Gyms - Manage deleting gym
+export const FETCH_DELETE_GYM = "FETCH_DELETE_GYM" as const;
+export const LOAD_DELETE_GYM = "LOAD_DELETE_GYM" as const;
