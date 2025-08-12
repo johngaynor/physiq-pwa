@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import { ExerciseForm } from "./components/ExerciseForm";
+import type { Exercise } from "../state/types";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -53,23 +55,24 @@ const Exercises: React.FC<PropsFromRedux> = ({
     );
   }, [exercises, search]);
 
-  const handleEdit = (exerciseId: number) => {
-    // TODO: Implement edit functionality - could open a modal or navigate to edit page
-    console.log("Edit exercise:", exerciseId);
+  const handleEdit = (exercise: Exercise) => {
+    // This function is no longer needed since we handle edit inline
   };
 
   const handleDelete = (exerciseId: number) => {
-    // TODO: Add confirmation dialog
     if (window.confirm("Are you sure you want to delete this exercise?")) {
       deleteExercise(exerciseId);
     }
   };
 
-  const handleAddNew = () => {
-    // TODO: Navigate to add new exercise or open modal
-    console.log("Add new exercise");
+  const handleSubmitNew = (values: { name: string }) => {
+    editExercise(null, values.name);
   };
 
+  const createEditHandler =
+    (exercise: Exercise) => (values: { name: string }) => {
+      editExercise(exercise.id, values.name);
+    };
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
       {/* Search and Add Button */}
@@ -82,14 +85,18 @@ const Exercises: React.FC<PropsFromRedux> = ({
           className="flex-1"
           type="text"
         />
-        <Button
-          variant="outline"
-          onClick={handleAddNew}
-          className="flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Add Exercise
-        </Button>
+        <ExerciseForm
+          Trigger={
+            <Button variant="outline" className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Add Exercise
+            </Button>
+          }
+          title="Add New Exercise"
+          description="Create a new exercise for your training routines."
+          initialValues={{ name: "" }}
+          onSubmit={handleSubmitNew}
+        />
       </div>
 
       {/* Exercises Table */}
@@ -139,15 +146,22 @@ const Exercises: React.FC<PropsFromRedux> = ({
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(exercise.id)}
-                          className="h-8 w-8 p-0"
-                        >
-                          <Pencil className="h-4 w-4" />
-                          <span className="sr-only">Edit exercise</span>
-                        </Button>
+                        <ExerciseForm
+                          Trigger={
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                            >
+                              <Pencil className="h-4 w-4" />
+                              <span className="sr-only">Edit exercise</span>
+                            </Button>
+                          }
+                          title="Edit Exercise"
+                          description="Update the exercise name."
+                          initialValues={{ name: exercise.name }}
+                          onSubmit={createEditHandler(exercise)}
+                        />
                         <Button
                           variant="ghost"
                           size="sm"
