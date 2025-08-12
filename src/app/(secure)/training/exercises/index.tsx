@@ -55,10 +55,6 @@ const Exercises: React.FC<PropsFromRedux> = ({
     );
   }, [exercises, search]);
 
-  const handleEdit = (exercise: Exercise) => {
-    // This function is no longer needed since we handle edit inline
-  };
-
   const handleDelete = (exerciseId: number) => {
     if (window.confirm("Are you sure you want to delete this exercise?")) {
       deleteExercise(exerciseId);
