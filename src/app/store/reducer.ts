@@ -4,6 +4,7 @@ import health from "../(secure)/health/state/reducers";
 import diet from "../(secure)/diet/state/reducers";
 import checkins from "../(secure)/checkins/state/reducers";
 import physique from "../(secure)/physique/state/reducers";
+import training from "../(secure)/training/state/reducers";
 
 const rootReducer = combineReducers({
   app,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   diet,
   checkins,
   physique,
+  training,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

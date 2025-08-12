@@ -165,3 +165,11 @@ export const LOAD_EDIT_HEALTH_SLEEP_LOG = "LOAD_EDIT_HEALTH_SLEEP_LOG" as const;
 // Exercises - Fetch and manage exercises
 export const FETCH_EXERCISES = "FETCH_EXERCISES" as const;
 export const LOAD_EXERCISES = "LOAD_EXERCISES" as const;
+
+// Exercises - Manage editing exercises
+export const FETCH_EDIT_EXERCISE = "FETCH_EDIT_EXERCISE" as const;
+export const LOAD_EDIT_EXERCISE = "LOAD_EDIT_EXERCISE" as const;
+
+// Exercises - Manage deleting exercise
+export const FETCH_DELETE_EXERCISE = "FETCH_DELETE_EXERCISE" as const;
+export const LOAD_DELETE_EXERCISE = "LOAD_DELETE_EXERCISE" as const;
