@@ -5,8 +5,6 @@ import {
   getFlattenedDataWithTypes,
   getCompleteSessionData,
 } from "../localDB";
-import { toast } from "sonner";
-import { Loader, Check } from "lucide-react";
 
 interface DataViewProps {
   onDataChange?: () => void; // Optional callback for when data changes
@@ -24,7 +22,6 @@ const DataView: React.FC<DataViewProps> = ({
   const [viewMode, setViewMode] = React.useState<"json" | "table">("table");
   const [syncStatus, setSyncStatus] = React.useState<any>(null);
   const [countdown, setCountdown] = React.useState(10);
-  const [toastId, setToastId] = React.useState<string | number | null>(null);
   const [lastSyncedData, setLastSyncedData] = React.useState<{
     sessionIds: string[];
     deletedSessionsCount: number;
@@ -51,7 +48,7 @@ const DataView: React.FC<DataViewProps> = ({
     const statusInterval = setInterval(async () => {
       const status = await syncAPI.getSyncStatusSummary();
       setSyncStatus(status);
-    }, 5000); // Refresh every 5 seconds
+    }, 500); // Refresh every 0.5 seconds
 
     // Set up auto-sync timer with countdown
     const countdownInterval = setInterval(() => {
@@ -73,10 +70,11 @@ const DataView: React.FC<DataViewProps> = ({
     };
   }, [syncSessionsLoading]);
 
-  // Handle toast updates when syncSessionsLoading changes
+  // Handle sync completion for local database updates
   React.useEffect(() => {
     const handleSyncCompletion = async () => {
-      if (!syncSessionsLoading && toastId !== null && lastSyncedData) {
+      // If sync just completed and we have data that was synced
+      if (!syncSessionsLoading && lastSyncedData) {
         try {
           // Mark pending records as synced using the stored data
           if (lastSyncedData.sessionIds.length) {
@@ -92,33 +90,17 @@ const DataView: React.FC<DataViewProps> = ({
 
           // Refresh data to update the UI
           await refreshData();
-
-          // Show success with checkbox
-          toast(<Check className="w-5 h-5 text-green-500" />, {
-            id: toastId,
-            duration: 2000, // Auto-dismiss after 2 seconds
-            className:
-              "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
-            unstyled: false,
-          });
         } catch (error) {
-          console.error("Error handling sync completion:", error);
-          // Show error state
-          toast(<Check className="w-5 h-5 text-red-500" />, {
-            id: toastId,
-            duration: 2000,
-            className:
-              "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
-            unstyled: false,
-          });
+          console.error("Error updating local database after sync:", error);
         }
-        setToastId(null); // Clear the toast ID
-        setLastSyncedData(null); // Clear the sync data
+
+        // Clear the sync data
+        setLastSyncedData(null);
       }
     };
 
     handleSyncCompletion();
-  }, [syncSessionsLoading, toastId, lastSyncedData]);
+  }, [syncSessionsLoading, lastSyncedData]);
 
   const triggerSync = async () => {
     if (syncSessionsLoading) return; // Prevent multiple simultaneous syncs
@@ -129,16 +111,8 @@ const DataView: React.FC<DataViewProps> = ({
 
     const allSessions = [...pendingData.sessions, ...deletedData.sessions];
 
-    // Simulate batch sync to server
+    // Batch sync to server
     if (totalToSync > 0) {
-      // Show spinner toast and store the ID
-      const newToastId = toast(<Loader className="w-5 h-5 animate-spin" />, {
-        duration: Infinity, // Keep it visible until we update it
-        className: "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
-        unstyled: false,
-      });
-      setToastId(newToastId);
-
       // Store the data being synced so we can update it locally when sync completes
       const sessionIds = pendingData.sessions.map((s) => s.id!);
       setLastSyncedData({
@@ -147,9 +121,8 @@ const DataView: React.FC<DataViewProps> = ({
       });
 
       syncSessions(allSessions);
-    } else {
-      // No data to sync, no need to show any toast
     }
+    // No need to do anything if there's no data to sync
   };
 
   return (
