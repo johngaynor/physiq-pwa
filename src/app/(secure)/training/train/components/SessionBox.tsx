@@ -25,6 +25,10 @@ const SessionBox: React.FC<SessionBoxProps> = ({
   const [isRenaming, setIsRenaming] = React.useState(false);
   const [newName, setNewName] = React.useState(name);
   const [isUpdating, setIsUpdating] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isMoving, setIsMoving] = React.useState(false);
+  const [newDate, setNewDate] = React.useState(session.date);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const handleRename = async () => {
     if (!session.id || !newName.trim() || newName.trim() === name) {
@@ -37,13 +41,12 @@ const SessionBox: React.FC<SessionBoxProps> = ({
       setIsUpdating(true);
       await sessionsAPI.update(session.id, { name: newName.trim() });
       setIsRenaming(false);
+      setDrawerOpen(false); // Close the drawer after successful rename
 
       // Call the callback to refresh sessions in parent component
       if (onSessionUpdate) {
         onSessionUpdate();
       }
-
-      console.log("Session renamed successfully");
     } catch (error) {
       console.error("Error renaming session:", error);
       setNewName(name); // Reset to original name on error
@@ -55,6 +58,66 @@ const SessionBox: React.FC<SessionBoxProps> = ({
   const handleCancelRename = () => {
     setIsRenaming(false);
     setNewName(name);
+  };
+
+  const handleDelete = async () => {
+    if (!session.id) {
+      console.error("No session ID found");
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await sessionsAPI.delete(session.id);
+      setDrawerOpen(false); // Close the drawer after successful delete
+
+      // Call the callback to refresh sessions in parent component
+      if (onSessionUpdate) {
+        onSessionUpdate();
+      }
+    } catch (error) {
+      console.error("Error deleting session:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleMove = async () => {
+    if (!session.id || !newDate || newDate === session.date) {
+      setIsMoving(false);
+      setNewDate(session.date);
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      await sessionsAPI.update(session.id, { date: newDate });
+      setIsMoving(false);
+      setDrawerOpen(false); // Close the drawer after successful move
+
+      // Call the callback to refresh sessions in parent component
+      if (onSessionUpdate) {
+        onSessionUpdate();
+      }
+    } catch (error) {
+      console.error("Error moving session:", error);
+      setNewDate(session.date); // Reset to original date on error
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleCancelMove = () => {
+    setIsMoving(false);
+    setNewDate(session.date);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+    setIsRenaming(false);
+    setNewName(name);
+    setIsMoving(false);
+    setNewDate(session.date);
   };
   return (
     <div className="flex flex-col pb-10 px-6">
@@ -68,10 +131,9 @@ const SessionBox: React.FC<SessionBoxProps> = ({
           </div>
         </div>
         <Drawer
-          onClose={() => {
-            setIsRenaming(false);
-            setNewName(name);
-          }}
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+          onClose={handleDrawerClose}
         >
           <DrawerTrigger asChild>
             <Button
@@ -138,29 +200,65 @@ const SessionBox: React.FC<SessionBoxProps> = ({
               )}
 
               {/* Move Session Option */}
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-12 text-left"
-                onClick={() => {
-                  // TODO: Implement move to another day functionality
-                  console.log("Move session to another day");
-                }}
-              >
-                <Calendar className="w-4 h-4 mr-3" />
-                Move to Another Day
-              </Button>
+              {!isMoving ? (
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start h-12 text-left"
+                  onClick={() => setIsMoving(true)}
+                >
+                  <Calendar className="w-4 h-4 mr-3" />
+                  Move to Another Day
+                </Button>
+              ) : (
+                <div className="space-y-3">
+                  <div className="px-1">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      New Date
+                    </label>
+                    <Input
+                      type="date"
+                      value={newDate}
+                      onChange={(e) => setNewDate(e.target.value)}
+                      className="mt-1"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleMove();
+                        } else if (e.key === "Escape") {
+                          handleCancelMove();
+                        }
+                      }}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      onClick={handleMove}
+                      disabled={isUpdating || !newDate}
+                      className="flex-1"
+                    >
+                      {isUpdating ? "Moving..." : "Move"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleCancelMove}
+                      disabled={isUpdating}
+                      className="flex-1"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
 
               {/* Delete Session Option */}
               <Button
                 variant="ghost"
                 className="w-full justify-start h-12 text-left text-red-500 hover:text-red-600 hover:bg-red-50"
-                onClick={() => {
-                  // TODO: Implement delete functionality
-                  console.log("Delete session");
-                }}
+                onClick={handleDelete}
+                disabled={isDeleting || isUpdating}
               >
                 <Trash2 className="w-4 h-4 mr-3" />
-                Delete Session
+                {isDeleting ? "Deleting..." : "Delete Session"}
               </Button>
 
               {/* Cancel Button */}
