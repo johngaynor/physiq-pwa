@@ -4,7 +4,9 @@ import {
   syncAPI,
   getFlattenedDataWithTypes,
   getCompleteSessionData,
-} from "../localDB_old";
+} from "../localDB";
+import { toast } from "sonner";
+import { Loader, Check } from "lucide-react";
 
 interface DataViewProps {
   onDataChange?: () => void; // Optional callback for when data changes
@@ -15,6 +17,8 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
   const [flattenedData, setFlattenedData] = React.useState<any[]>([]);
   const [viewMode, setViewMode] = React.useState<"json" | "table">("table");
   const [syncStatus, setSyncStatus] = React.useState<any>(null);
+  const [countdown, setCountdown] = React.useState(10);
+  const [isSyncing, setIsSyncing] = React.useState(false);
 
   const refreshData = async () => {
     const data = await getCompleteSessionData();
@@ -34,66 +38,93 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
     refreshData();
 
     // Set up interval to refresh sync status periodically
-    const interval = setInterval(async () => {
+    const statusInterval = setInterval(async () => {
       const status = await syncAPI.getSyncStatusSummary();
       setSyncStatus(status);
     }, 5000); // Refresh every 5 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+    // Set up auto-sync timer with countdown
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          // Trigger sync when countdown reaches 0
+          if (!isSyncing) {
+            triggerSync();
+          }
+          return 10; // Reset countdown
+        }
+        return prev - 1;
+      });
+    }, 1000); // Update countdown every second
+
+    return () => {
+      clearInterval(statusInterval);
+      clearInterval(countdownInterval);
+    };
+  }, [isSyncing]);
 
   const triggerSync = async () => {
+    if (isSyncing) return; // Prevent multiple simultaneous syncs
+
+    setIsSyncing(true);
     const pendingData = await syncAPI.getAllPendingSync();
     const deletedData = await syncAPI.getAllDeleted();
-    const totalToSync =
-      pendingData.totalPending +
-      deletedData.sessions.length +
-      deletedData.exercises.length +
-      deletedData.sets.length;
-
-    console.log("Pending sync data:", pendingData);
-    console.log("Deleted data:", deletedData);
+    const totalToSync = pendingData.totalPending + deletedData.sessions.length;
 
     // Simulate batch sync to server
     if (totalToSync > 0) {
-      alert(
-        `Would sync ${pendingData.totalPending} records and delete ${
-          deletedData.sessions.length +
-          deletedData.exercises.length +
-          deletedData.sets.length
-        } records on server`
-      );
+      // Show spinner toast
+      const toastId = toast(<Loader className="w-5 h-5 animate-spin" />, {
+        duration: Infinity, // Keep it visible until we update it
+        className: "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+        unstyled: false,
+      });
 
-      // In real implementation, you'd make API calls here
-      // For demo, we'll just mark everything as synced and clean up deletions
+      try {
+        // Simulate network delay for database call
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
 
-      // Mark pending records as synced
-      const sessionIds = pendingData.sessions.map((s) => s.id!);
-      const exerciseIds = pendingData.exercises.map((e) => e.id!);
-      const setIds = pendingData.sets.map((s) => s.id!);
+        // In real implementation, you'd make API calls here
+        // For demo, we'll just mark everything as synced and clean up deletions
 
-      if (sessionIds.length || exerciseIds.length || setIds.length) {
-        await syncAPI.markBatchSynced({
-          sessionIds,
-          exerciseIds,
-          setIds,
+        // Mark pending records as synced
+        const sessionIds = pendingData.sessions.map((s) => s.id!);
+
+        if (sessionIds.length) {
+          await syncAPI.markBatchSynced({
+            sessionIds,
+          });
+        }
+
+        // Clean up deleted records (remove them from local DB after server sync)
+        if (deletedData.sessions.length) {
+          await syncAPI.cleanupSyncedDeletions();
+        }
+
+        await refreshData();
+
+        // Update toast to show success with checkbox
+        toast(<Check className="w-5 h-5 text-green-500" />, {
+          id: toastId,
+          duration: 2000, // Auto-dismiss after 2 seconds
+          className:
+            "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+          unstyled: false,
         });
+      } catch (error) {
+        // Dismiss the spinner toast and show error
+        toast.dismiss(toastId);
+        console.error("Sync failed:", error);
       }
-
-      // Clean up deleted records (remove them from local DB after server sync)
-      if (
-        deletedData.sessions.length ||
-        deletedData.exercises.length ||
-        deletedData.sets.length
-      ) {
-        await syncAPI.cleanupSyncedDeletions();
-      }
-
-      await refreshData();
-      alert("Sync completed!");
     } else {
-      alert("No pending changes to sync");
+      toast(<Check className="w-5 h-5 text-gray-500" />, {
+        duration: 2000,
+        className: "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+        unstyled: false,
+      });
     }
+
+    setIsSyncing(false);
   };
 
   return (
@@ -132,6 +163,8 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
             <div className="space-y-1 text-xs">
               <div>Pending: {syncStatus.pending}</div>
               <div>Deleted: {syncStatus.deleted}</div>
+              {/* Comment out the manual sync button - using auto-sync now */}
+              {/* 
               <button
                 onClick={triggerSync}
                 disabled={syncStatus.pending + syncStatus.deleted === 0}
@@ -143,6 +176,10 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
               >
                 Sync to Server ({syncStatus.pending + syncStatus.deleted})
               </button>
+              */}
+              <div className="text-blue-600 font-medium">
+                {isSyncing ? "Syncing..." : `Next sync in: ${countdown}s`}
+              </div>
             </div>
           )}
         </div>

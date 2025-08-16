@@ -162,5 +162,34 @@ export const syncAPI = {
   },
 };
 
+// Utility function to get complete session data with nested exercises and sets
+export const getCompleteSessionData = async () => {
+  const sessions = await db.sessions
+    .where("syncStatus")
+    .notEqual("deleted")
+    .toArray();
+
+  return sessions;
+};
+
+// Utility function to get flattened data with record types for sync monitoring
+export const getFlattenedDataWithTypes = async () => {
+  const sessions = await db.sessions.toArray();
+
+  const flattenedData = [
+    ...sessions.map((session) => ({
+      ...session,
+      recordType: "session" as const,
+      displayName: session.name,
+      parentInfo: session.date,
+    })),
+  ];
+
+  // Sort by creation time
+  return flattenedData.sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
+};
+
 // Export the database for direct access if needed
 export default db;
