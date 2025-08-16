@@ -75,25 +75,11 @@ const DataView: React.FC<DataViewProps> = ({
 
   // Handle toast updates when syncSessionsLoading changes
   React.useEffect(() => {
-    console.log(
-      "syncSessionsLoading changed:",
-      syncSessionsLoading,
-      "toastId:",
-      toastId
-    );
-
     const handleSyncCompletion = async () => {
       if (!syncSessionsLoading && toastId !== null && lastSyncedData) {
-        console.log("Sync completed, handling local database updates...");
         try {
-          console.log("Using stored sync data:", lastSyncedData);
-
           // Mark pending records as synced using the stored data
           if (lastSyncedData.sessionIds.length) {
-            console.log(
-              "Marking sessions as synced:",
-              lastSyncedData.sessionIds
-            );
             await syncAPI.markBatchSynced({
               sessionIds: lastSyncedData.sessionIds,
             });
@@ -101,13 +87,11 @@ const DataView: React.FC<DataViewProps> = ({
 
           // Clean up deleted records if there were any
           if (lastSyncedData.deletedSessionsCount > 0) {
-            console.log("Cleaning up deleted records");
             await syncAPI.cleanupSyncedDeletions();
           }
 
           // Refresh data to update the UI
           await refreshData();
-          console.log("Data refreshed after sync completion");
 
           // Show success with checkbox
           toast(<Check className="w-5 h-5 text-green-500" />, {
@@ -143,12 +127,6 @@ const DataView: React.FC<DataViewProps> = ({
     const deletedData = await syncAPI.getAllDeleted();
     const totalToSync = pendingData.totalPending + deletedData.sessions.length;
 
-    console.log("triggerSync called:", {
-      totalToSync,
-      pendingSessions: pendingData.sessions.length,
-      deletedSessions: deletedData.sessions.length,
-    });
-
     const allSessions = [...pendingData.sessions, ...deletedData.sessions];
 
     // Simulate batch sync to server
@@ -168,10 +146,8 @@ const DataView: React.FC<DataViewProps> = ({
         deletedSessionsCount: deletedData.sessions.length,
       });
 
-      console.log("Calling syncSessions with data:", allSessions);
       syncSessions(allSessions);
     } else {
-      console.log("No data to sync - skipping API call");
       // No data to sync, no need to show any toast
     }
   };

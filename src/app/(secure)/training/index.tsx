@@ -6,17 +6,23 @@ import { getCompleteSessionData } from "./localDB_old";
 import DataView from "./components/DataView";
 import TrainingManagement from "./components/TrainingManagement";
 import { Checkbox } from "@/components/ui";
+import { syncSessions } from "./state/actions";
 
 function mapStateToProps(state: RootState) {
   return {
     user: state.app.user,
+    syncSessionsLoading: state.training.syncSessionsLoading,
   };
 }
 
-const connector = connect(mapStateToProps, {});
+const connector = connect(mapStateToProps, { syncSessions });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Training: React.FC<PropsFromRedux> = ({ user }) => {
+const Training: React.FC<PropsFromRedux> = ({
+  user,
+  syncSessions,
+  syncSessionsLoading,
+}) => {
   const [completeData, setCompleteData] = React.useState<any[]>([]);
   const [selectedSession, setSelectedSession] = React.useState<string | null>(
     null
@@ -54,7 +60,13 @@ const Training: React.FC<PropsFromRedux> = ({ user }) => {
           setSelectedExercise={setSelectedExercise}
           onRefreshData={refreshData}
         />
-        {showAdmin && <DataView onDataChange={refreshData} />}
+        {showAdmin && (
+          <DataView
+            onDataChange={refreshData}
+            syncSessions={syncSessions}
+            syncSessionsLoading={syncSessionsLoading}
+          />
+        )}
       </div>
     </>
   );
