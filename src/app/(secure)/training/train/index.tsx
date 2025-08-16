@@ -30,21 +30,21 @@ const Training: React.FC<PropsFromRedux> = ({ user }) => {
   }, [selectedDate]);
 
   // Fetch all sessions from local database
-  React.useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const allSessions = await sessionsAPI.getAll();
-        // Filter out deleted sessions
-        const activeSessions = allSessions.filter(
-          (session) => session.syncStatus !== "deleted"
-        );
-        setSessions(activeSessions);
-      } catch (error) {
-        console.error("Error fetching sessions:", error);
-      } finally {
-      }
-    };
+  const fetchSessions = async () => {
+    try {
+      const allSessions = await sessionsAPI.getAll();
+      // Filter out deleted sessions
+      const activeSessions = allSessions.filter(
+        (session) => session.syncStatus !== "deleted"
+      );
+      setSessions(activeSessions);
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+    } finally {
+    }
+  };
 
+  React.useEffect(() => {
     fetchSessions();
   }, []);
 
@@ -123,7 +123,10 @@ const Training: React.FC<PropsFromRedux> = ({ user }) => {
             <div className="pt-40">
               {todaySessions.map((session, index) => (
                 <React.Fragment key={"session" + index}>
-                  <SessionBox session={session} />
+                  <SessionBox
+                    session={session}
+                    onSessionUpdate={fetchSessions}
+                  />
                   {index < todaySessions.length - 1 && (
                     <div className="border-b-40 border-slate-900"></div>
                   )}
