@@ -1,8 +1,16 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui";
-import { Plus, Ellipsis } from "lucide-react";
+import { Plus, Ellipsis, Trash2, Edit, Calendar } from "lucide-react";
 import { TrainingSession } from "../../localDB";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  DrawerClose,
+} from "@/components/ui/drawer";
 
 interface SessionBoxProps {
   session: TrainingSession;
@@ -21,12 +29,68 @@ const SessionBox: React.FC<SessionBoxProps> = ({ session }) => {
             </h2>
           </div>
         </div>
-        <Button
-          className="rounded-full h-10 w-10 flex items-center justify-center"
-          variant="outline"
-        >
-          <Ellipsis />
-        </Button>
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button
+              className="rounded-full h-10 w-10 flex items-center justify-center"
+              variant="outline"
+            >
+              <Ellipsis />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Session Options</DrawerTitle>
+            </DrawerHeader>
+            <div className="px-4 pb-4 space-y-3">
+              {/* Rename Session Option */}
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-12 text-left"
+                onClick={() => {
+                  // TODO: Implement rename functionality
+                  console.log("Rename session");
+                }}
+              >
+                <Edit className="w-4 h-4 mr-3" />
+                Rename Session
+              </Button>
+
+              {/* Move Session Option */}
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-12 text-left"
+                onClick={() => {
+                  // TODO: Implement move to another day functionality
+                  console.log("Move session to another day");
+                }}
+              >
+                <Calendar className="w-4 h-4 mr-3" />
+                Move to Another Day
+              </Button>
+
+              {/* Delete Session Option */}
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-12 text-left text-red-500 hover:text-red-600 hover:bg-red-50"
+                onClick={() => {
+                  // TODO: Implement delete functionality
+                  console.log("Delete session");
+                }}
+              >
+                <Trash2 className="w-4 h-4 mr-3" />
+                Delete Session
+              </Button>
+
+              {/* Cancel Button */}
+              <DrawerClose asChild>
+                <Button variant="outline" className="w-full mt-4">
+                  Cancel
+                </Button>
+              </DrawerClose>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
       <div className="mb-8">
         <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 text-lg h-12 rounded-md">

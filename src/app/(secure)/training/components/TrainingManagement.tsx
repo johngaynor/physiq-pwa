@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { sessionsAPI, exercisesAPI, setsAPI } from "../localDB";
+import { sessionsAPI, exercisesAPI, setsAPI } from "../localDB_old";
 
 interface TrainingManagementProps {
   completeData: any[];
