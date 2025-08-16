@@ -185,3 +185,9 @@ export const LOAD_EDIT_GYM = "LOAD_EDIT_GYM" as const;
 // Gyms - Manage deleting gym
 export const FETCH_DELETE_GYM = "FETCH_DELETE_GYM" as const;
 export const LOAD_DELETE_GYM = "LOAD_DELETE_GYM" as const;
+
+// Training Session Syncs
+export const FETCH_TRAINING_SESSION_SYNCS =
+  "FETCH_TRAINING_SESSION_SYNCS" as const;
+export const LOAD_TRAINING_SESSION_SYNCS =
+  "LOAD_TRAINING_SESSION_SYNCS" as const;

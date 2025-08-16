@@ -11,6 +11,8 @@ import {
   LOAD_EDIT_GYM,
   FETCH_DELETE_GYM,
   LOAD_DELETE_GYM,
+  FETCH_TRAINING_SESSION_SYNCS,
+  LOAD_TRAINING_SESSION_SYNCS,
 } from "../../../store/actionTypes";
 import type { TrainingState, Action } from "./types";
 
@@ -19,6 +21,7 @@ const DEFAULT_STATE: TrainingState = {
   exercisesLoading: false,
   gyms: null,
   gymsLoading: false,
+  syncSessionsLoading: false,
 };
 
 export default function appReducer(
@@ -86,6 +89,13 @@ export default function appReducer(
         gyms: state.gyms?.filter((gym) => gym.id !== action.id) || [],
         gymsLoading: false,
       };
+    case FETCH_TRAINING_SESSION_SYNCS:
+      return {
+        ...state,
+        syncSessionsLoading: true,
+      };
+    case LOAD_TRAINING_SESSION_SYNCS:
+      return { ...state, syncSessionsLoading: false };
     default:
       return state;
   }

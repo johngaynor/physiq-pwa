@@ -10,15 +10,25 @@ import { Loader, Check } from "lucide-react";
 
 interface DataViewProps {
   onDataChange?: () => void; // Optional callback for when data changes
+  syncSessions: (records: any) => void;
+  syncSessionsLoading: boolean;
 }
 
-const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
+const DataView: React.FC<DataViewProps> = ({
+  onDataChange,
+  syncSessions,
+  syncSessionsLoading,
+}) => {
   const [completeData, setCompleteData] = React.useState<any[]>([]);
   const [flattenedData, setFlattenedData] = React.useState<any[]>([]);
   const [viewMode, setViewMode] = React.useState<"json" | "table">("table");
   const [syncStatus, setSyncStatus] = React.useState<any>(null);
   const [countdown, setCountdown] = React.useState(10);
-  const [isSyncing, setIsSyncing] = React.useState(false);
+  const [toastId, setToastId] = React.useState<string | number | null>(null);
+  const [lastSyncedData, setLastSyncedData] = React.useState<{
+    sessionIds: string[];
+    deletedSessionsCount: number;
+  } | null>(null);
 
   const refreshData = async () => {
     const data = await getCompleteSessionData();
@@ -48,83 +58,122 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
       setCountdown((prev) => {
         if (prev <= 1) {
           // Trigger sync when countdown reaches 0
-          if (!isSyncing) {
+          if (!syncSessionsLoading) {
             triggerSync();
           }
           return 10; // Reset countdown
         }
         return prev - 1;
       });
-    }, 1000); // Update countdown every second
+    }, 1000);
 
     return () => {
       clearInterval(statusInterval);
       clearInterval(countdownInterval);
     };
-  }, [isSyncing]);
+  }, [syncSessionsLoading]);
+
+  // Handle toast updates when syncSessionsLoading changes
+  React.useEffect(() => {
+    console.log(
+      "syncSessionsLoading changed:",
+      syncSessionsLoading,
+      "toastId:",
+      toastId
+    );
+
+    const handleSyncCompletion = async () => {
+      if (!syncSessionsLoading && toastId !== null && lastSyncedData) {
+        console.log("Sync completed, handling local database updates...");
+        try {
+          console.log("Using stored sync data:", lastSyncedData);
+
+          // Mark pending records as synced using the stored data
+          if (lastSyncedData.sessionIds.length) {
+            console.log(
+              "Marking sessions as synced:",
+              lastSyncedData.sessionIds
+            );
+            await syncAPI.markBatchSynced({
+              sessionIds: lastSyncedData.sessionIds,
+            });
+          }
+
+          // Clean up deleted records if there were any
+          if (lastSyncedData.deletedSessionsCount > 0) {
+            console.log("Cleaning up deleted records");
+            await syncAPI.cleanupSyncedDeletions();
+          }
+
+          // Refresh data to update the UI
+          await refreshData();
+          console.log("Data refreshed after sync completion");
+
+          // Show success with checkbox
+          toast(<Check className="w-5 h-5 text-green-500" />, {
+            id: toastId,
+            duration: 2000, // Auto-dismiss after 2 seconds
+            className:
+              "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+            unstyled: false,
+          });
+        } catch (error) {
+          console.error("Error handling sync completion:", error);
+          // Show error state
+          toast(<Check className="w-5 h-5 text-red-500" />, {
+            id: toastId,
+            duration: 2000,
+            className:
+              "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+            unstyled: false,
+          });
+        }
+        setToastId(null); // Clear the toast ID
+        setLastSyncedData(null); // Clear the sync data
+      }
+    };
+
+    handleSyncCompletion();
+  }, [syncSessionsLoading, toastId, lastSyncedData]);
 
   const triggerSync = async () => {
-    if (isSyncing) return; // Prevent multiple simultaneous syncs
+    if (syncSessionsLoading) return; // Prevent multiple simultaneous syncs
 
-    setIsSyncing(true);
     const pendingData = await syncAPI.getAllPendingSync();
     const deletedData = await syncAPI.getAllDeleted();
     const totalToSync = pendingData.totalPending + deletedData.sessions.length;
 
+    console.log("triggerSync called:", {
+      totalToSync,
+      pendingSessions: pendingData.sessions.length,
+      deletedSessions: deletedData.sessions.length,
+    });
+
+    const allSessions = [...pendingData.sessions, ...deletedData.sessions];
+
     // Simulate batch sync to server
     if (totalToSync > 0) {
-      // Show spinner toast
-      const toastId = toast(<Loader className="w-5 h-5 animate-spin" />, {
+      // Show spinner toast and store the ID
+      const newToastId = toast(<Loader className="w-5 h-5 animate-spin" />, {
         duration: Infinity, // Keep it visible until we update it
         className: "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
         unstyled: false,
       });
+      setToastId(newToastId);
 
-      try {
-        // Simulate network delay for database call
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
-
-        // In real implementation, you'd make API calls here
-        // For demo, we'll just mark everything as synced and clean up deletions
-
-        // Mark pending records as synced
-        const sessionIds = pendingData.sessions.map((s) => s.id!);
-
-        if (sessionIds.length) {
-          await syncAPI.markBatchSynced({
-            sessionIds,
-          });
-        }
-
-        // Clean up deleted records (remove them from local DB after server sync)
-        if (deletedData.sessions.length) {
-          await syncAPI.cleanupSyncedDeletions();
-        }
-
-        await refreshData();
-
-        // Update toast to show success with checkbox
-        toast(<Check className="w-5 h-5 text-green-500" />, {
-          id: toastId,
-          duration: 2000, // Auto-dismiss after 2 seconds
-          className:
-            "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
-          unstyled: false,
-        });
-      } catch (error) {
-        // Dismiss the spinner toast and show error
-        toast.dismiss(toastId);
-        console.error("Sync failed:", error);
-      }
-    } else {
-      toast(<Check className="w-5 h-5 text-gray-500" />, {
-        duration: 2000,
-        className: "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
-        unstyled: false,
+      // Store the data being synced so we can update it locally when sync completes
+      const sessionIds = pendingData.sessions.map((s) => s.id!);
+      setLastSyncedData({
+        sessionIds,
+        deletedSessionsCount: deletedData.sessions.length,
       });
-    }
 
-    setIsSyncing(false);
+      console.log("Calling syncSessions with data:", allSessions);
+      syncSessions(allSessions);
+    } else {
+      console.log("No data to sync - skipping API call");
+      // No data to sync, no need to show any toast
+    }
   };
 
   return (
@@ -164,8 +213,8 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
               <div>Pending: {syncStatus.pending}</div>
               <div>Deleted: {syncStatus.deleted}</div>
               {/* Comment out the manual sync button - using auto-sync now */}
-              {/* 
-              <button
+
+              {/* <button
                 onClick={triggerSync}
                 disabled={syncStatus.pending + syncStatus.deleted === 0}
                 className={`px-2 py-1 rounded text-white ${
@@ -175,10 +224,12 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
                 }`}
               >
                 Sync to Server ({syncStatus.pending + syncStatus.deleted})
-              </button>
-              */}
+              </button> */}
+
               <div className="text-blue-600 font-medium">
-                {isSyncing ? "Syncing..." : `Next sync in: ${countdown}s`}
+                {syncSessionsLoading
+                  ? "Syncing..."
+                  : `Next sync in: ${countdown}s`}
               </div>
             </div>
           )}

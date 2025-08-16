@@ -11,6 +11,8 @@ import {
   LOAD_EDIT_GYM,
   FETCH_DELETE_GYM,
   LOAD_DELETE_GYM,
+  FETCH_TRAINING_SESSION_SYNCS,
+  LOAD_TRAINING_SESSION_SYNCS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { Exercise, Gym } from "./types";
@@ -87,4 +89,16 @@ export const deleteGym = (id: number) => {
     }))
     .error("Error deleting gym")
     .delete();
+};
+
+export const syncSessions = (records: any) => {
+  return api
+    .route("/api/training/train/sync")
+    .data({ records })
+    .fetch(() => ({ type: FETCH_TRAINING_SESSION_SYNCS }))
+    .load(() => ({
+      type: LOAD_TRAINING_SESSION_SYNCS,
+    }))
+    .error("Error syncing sessions")
+    .post();
 };

@@ -11,6 +11,8 @@ import {
   LOAD_EDIT_GYM,
   FETCH_DELETE_GYM,
   LOAD_DELETE_GYM,
+  FETCH_TRAINING_SESSION_SYNCS,
+  LOAD_TRAINING_SESSION_SYNCS,
 } from "../../../store/actionTypes";
 
 export type Exercise = {
@@ -43,11 +45,14 @@ export type Action =
       data: Gym;
     }
   | { type: typeof FETCH_DELETE_GYM }
-  | { type: typeof LOAD_DELETE_GYM; id: number };
+  | { type: typeof LOAD_DELETE_GYM; id: number }
+  | { type: typeof FETCH_TRAINING_SESSION_SYNCS }
+  | { type: typeof LOAD_TRAINING_SESSION_SYNCS };
 
 export interface TrainingState {
   exercises: null | Exercise[];
   exercisesLoading: boolean;
   gyms: null | Gym[];
   gymsLoading: boolean;
+  syncSessionsLoading: boolean;
 }

@@ -10,18 +10,24 @@ import MonthlyCalendar from "./components/MonthlyCalendar";
 import SessionBox from "./components/SessionBox";
 import verses from "./components/verses.json";
 import { sessionsAPI, TrainingSession } from "../localDB";
+import { syncSessions } from "../state/actions";
 import DataView from "../components/DataView";
 
 function mapStateToProps(state: RootState) {
   return {
     user: state.app.user,
+    syncSessionsLoading: state.training.syncSessionsLoading,
   };
 }
 
-const connector = connect(mapStateToProps, {});
+const connector = connect(mapStateToProps, { syncSessions });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Training: React.FC<PropsFromRedux> = ({ user }) => {
+const Training: React.FC<PropsFromRedux> = ({
+  user,
+  syncSessions,
+  syncSessionsLoading,
+}) => {
   const [selectedDate, setSelectedDate] = React.useState(DateTime.now());
   const [sessions, setSessions] = React.useState<TrainingSession[]>([]);
 
@@ -159,7 +165,12 @@ const Training: React.FC<PropsFromRedux> = ({ user }) => {
           </Button>
         </div>
       </div>
-      {isAdmin && <DataView />}
+      {isAdmin && (
+        <DataView
+          syncSessions={syncSessions}
+          syncSessionsLoading={syncSessionsLoading}
+        />
+      )}
     </div>
   );
 };
