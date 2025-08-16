@@ -24,7 +24,7 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
     <div className="flex flex-col gap-3">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer">
             <span className="text-xl font-bold">
               {selectedDate.toFormat("MMM").toUpperCase()} &apos;
               {selectedDate.toFormat("yy")}

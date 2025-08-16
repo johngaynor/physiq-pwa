@@ -48,7 +48,12 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
             >
               TODAY
             </Button>
-            <Info className="w-6 h-6" />
+            <Info
+              className="w-6 h-6 cursor-pointer"
+              onClick={() =>
+                alert("Sorry, this functionality is not available yet.")
+              }
+            />
           </div>
         </div>
         <WeeklyCalendar
