@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { getCompleteSessionData } from "./localDB";
+import { getCompleteSessionData } from "./localDB_old";
 import DataView from "./components/DataView";
 import TrainingManagement from "./components/TrainingManagement";
 import { Checkbox } from "@/components/ui";

@@ -3,11 +3,14 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { Button } from "@/components/ui";
-import { Plus, Menu, Info, Ellipsis } from "lucide-react";
+import { Plus, Menu, Info } from "lucide-react";
 import { DateTime } from "luxon";
 import WeeklyCalendar from "./components/WeeklyCalendar";
 import MonthlyCalendar from "./components/MonthlyCalendar";
+import SessionBox from "./components/SessionBox";
 import verses from "./components/verses.json";
+import { sessionsAPI, TrainingSession } from "../localDB";
+import DataView from "../components/DataView";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -18,115 +21,142 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, {});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Training: React.FC<PropsFromRedux> = ({}) => {
+const Training: React.FC<PropsFromRedux> = ({ user }) => {
   const [selectedDate, setSelectedDate] = React.useState(DateTime.now());
+  const [sessions, setSessions] = React.useState<TrainingSession[]>([]);
 
   const selectedVerse = React.useMemo(() => {
     return verses[Math.floor(Math.random() * verses.length)];
   }, [selectedDate]);
 
+  // Fetch all sessions from local database
+  React.useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const allSessions = await sessionsAPI.getAll();
+        // Filter out deleted sessions
+        const activeSessions = allSessions.filter(
+          (session) => session.syncStatus !== "deleted"
+        );
+        setSessions(activeSessions);
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+      } finally {
+      }
+    };
+
+    fetchSessions();
+  }, []);
+
+  // Function to create a new session for the selected date
+  const createNewSession = async () => {
+    try {
+      const sessionName = `Training Session - ${selectedDate.toFormat(
+        "MMM dd, yyyy"
+      )}`;
+      const sessionDate = selectedDate.toISODate();
+
+      await sessionsAPI.add({
+        name: sessionName,
+        date: sessionDate,
+      });
+
+      // Refresh sessions list
+      const updatedSessions = await sessionsAPI.getAll();
+      const activeSessions = updatedSessions.filter(
+        (session) => session.syncStatus !== "deleted"
+      );
+      setSessions(activeSessions);
+    } catch (error) {
+      console.error("Error creating new session:", error);
+    }
+  };
+
+  const todaySessions = sessions.filter((session) =>
+    DateTime.fromISO(session.date).hasSame(selectedDate, "day")
+  );
+
+  const isAdmin = user?.apps.some((app) => app.id === 1);
+
   return (
-    <div className="flex flex-col h-full">
-      {/* Navbar for training */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background">
-        <div className="flex items-center justify-between p-4 pt-8">
-          <Menu
-            className="w-6 h-6 cursor-pointer"
-            onClick={() =>
-              alert("Sorry, this functionality is not available yet.")
-            }
-          />
-          <MonthlyCalendar
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
-          <div className="flex items-center space-x-3">
-            <Button
-              onClick={() => setSelectedDate(DateTime.now())}
-              variant="outline"
-              className="border-slate-600 hover:bg-slate-600"
-            >
-              TODAY
-            </Button>
-            <Info
+    <div className="h-full flex flex-col md:flex-row col-2">
+      <div className="flex w-full md:flex-row flex-col h-full relative">
+        {/* Navbar for training - fixed only within left column */}
+        <div className="absolute top-0 left-0 right-0 z-50 bg-background">
+          <div className="flex items-center justify-between p-4 pt-8">
+            <Menu
               className="w-6 h-6 cursor-pointer"
               onClick={() =>
                 alert("Sorry, this functionality is not available yet.")
               }
             />
+            <MonthlyCalendar
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+            <div className="flex items-center space-x-3">
+              <Button
+                onClick={() => setSelectedDate(DateTime.now())}
+                variant="outline"
+                className="border-slate-600 hover:bg-slate-600"
+              >
+                TODAY
+              </Button>
+              <Info
+                className="w-6 h-6 cursor-pointer"
+                onClick={() =>
+                  alert("Sorry, this functionality is not available yet.")
+                }
+              />
+            </div>
           </div>
+          <WeeklyCalendar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            sessions={sessions}
+          />
+          <div className="border-b"></div>
         </div>
-        <WeeklyCalendar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-        <div className="border-b"></div>
-      </div>
-      <div className="flex-1 flex flex-col overflow-y-auto px-6">
-        {/* Session Interface */}
-        <div className="flex flex-col h-full pt-40">
-          {/* Date Header */}
-          <div className="flex items-center justify-between py-6">
-            <div className="flex items-center">
-              <div className="w-10 h-10 border-2 rounded-full"></div>
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          {/* Main content */}
+          {todaySessions.length > 0 ? (
+            <div className="pt-40">
+              {todaySessions.map((session, index) => (
+                <React.Fragment key={"session" + index}>
+                  <SessionBox session={session} />
+                  {index < todaySessions.length - 1 && (
+                    <div className="border-b-40 border-slate-900"></div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center px-8">
               <div className="text-center">
-                <h2 className="text-xl text-white ml-4 border-b-2 border-white">
-                  2025-01-01
-                </h2>
+                <div className="flex justify-center mb-8">
+                  <div className="w-12 h-12 bg-cyan-400 rounded-lg flex items-center justify-center transform rotate-12">
+                    <div className="w-8 h-8 bg-cyan-300 rounded-sm transform -rotate-6"></div>
+                  </div>
+                </div>
+                <p className="text-lg leading-relaxed mb-6">
+                  {selectedVerse.text}
+                </p>
+                <p className="font-semibold text-lg">{selectedVerse.verse}</p>
               </div>
             </div>
-            <Button
-              className="rounded-full h-10 w-10 flex items-center justify-center"
-              variant="outline"
-            >
-              <Ellipsis />
-            </Button>
-          </div>
-
-          {/* Start Session Button */}
-          <div className="mb-8">
-            <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 text-lg h-12 rounded-md">
-              Start Session
-            </Button>
-          </div>
-
-          {/* Add Exercise and Add Circuit */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-4 py-4">
-              <div className="w-12 h-12 border-2 border-blue-400 rounded-full flex items-center justify-center">
-                <Plus className="w-6 h-6 text-blue-400" />
-              </div>
-              <span className="text-white text-xl">Add Exercise</span>
-            </div>
-
-            <div className="flex items-center space-x-4 py-4">
-              <div className="w-12 h-12 border-2 border-blue-400 rounded-full flex items-center justify-center">
-                <Plus className="w-6 h-6 text-blue-400" />
-              </div>
-              <span className="text-white text-xl">Add Circuit</span>
-            </div>
-          </div>
+          )}
         </div>
-        {/* <div className="flex-1 flex items-center justify-center px-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-8">
-              <div className="w-12 h-12 bg-cyan-400 rounded-lg flex items-center justify-center transform rotate-12">
-                <div className="w-8 h-8 bg-cyan-300 rounded-sm transform -rotate-6"></div>
-              </div>
-            </div>
-            <p className="text-lg leading-relaxed mb-6">{selectedVerse.text}</p>
-            <p className="font-semibold text-lg">{selectedVerse.verse}</p>
-          </div>
-        </div> */}
+        <div className="absolute bottom-24 right-6">
+          <Button
+            onClick={createNewSession}
+            className="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg"
+            size="icon"
+          >
+            <Plus className="w-6 h-6" />
+          </Button>
+        </div>
       </div>
-      <div className="fixed bottom-24 right-6">
-        <Button
-          className="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg"
-          size="icon"
-        >
-          <Plus className="w-6 h-6" />
-        </Button>
-      </div>
+      {isAdmin && <DataView />}
     </div>
   );
 };

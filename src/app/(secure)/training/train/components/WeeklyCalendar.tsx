@@ -2,15 +2,18 @@
 import React from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { DateTime } from "luxon";
+import { TrainingSession } from "../../localDB";
 
 interface WeeklyCalendarProps {
   selectedDate: DateTime;
   setSelectedDate: (date: DateTime) => void;
+  sessions: TrainingSession[];
 }
 
 const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   selectedDate,
   setSelectedDate,
+  sessions,
 }) => {
   // Generate calendar days for the current week
   const weekDays = React.useMemo(() => {
@@ -96,6 +99,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         >
           {weekDays.map((day, index) => {
             const isSelected = day.hasSame(selectedDate, "day");
+            const hasSession = sessions.some(session => 
+              DateTime.fromISO(session.date).hasSame(day, "day") && 
+              session.syncStatus !== 'deleted'
+            );
 
             return (
               <div
@@ -108,7 +115,11 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 </span>
                 <div
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    isSelected ? "bg-primary" : "bg-transparent"
+                    isSelected 
+                      ? "bg-primary" 
+                      : hasSession 
+                      ? "bg-gray-400" 
+                      : "bg-transparent"
                   }`}
                 />
               </div>

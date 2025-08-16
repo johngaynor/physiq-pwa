@@ -4,7 +4,7 @@ import {
   syncAPI,
   getFlattenedDataWithTypes,
   getCompleteSessionData,
-} from "../localDB";
+} from "../localDB_old";
 
 interface DataViewProps {
   onDataChange?: () => void; // Optional callback for when data changes
@@ -97,7 +97,7 @@ const DataView: React.FC<DataViewProps> = ({ onDataChange }) => {
   };
 
   return (
-    <div className="w-1/2 p-4 border-r">
+    <div className="w-1/2 p-4 border-r hidden md:block">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-bold">Data View</h2>
