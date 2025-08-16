@@ -26,7 +26,8 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
   }, [selectedDate]);
 
   return (
-    <div className="flex flex-col bg-blue-100 h-[800px]">
+    <div className="flex flex-col h-full">
+      {/* Navbar for training */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background">
         <div className="flex items-center justify-between p-4 pt-8">
           <Menu
@@ -58,7 +59,7 @@ const Training: React.FC<PropsFromRedux> = ({}) => {
       </div>
 
       {/* Scrollable Content with proper top padding */}
-      <div className="flex-1 flex flex-col overflow-y-auto bg-red-100 h-full">
+      <div className="flex-1 flex flex-col overflow-y-auto">
         {/* Main Content Area - Motivational Quote */}
         <div className="flex-1 flex items-center justify-center px-8">
           {/* Scripture reference */}

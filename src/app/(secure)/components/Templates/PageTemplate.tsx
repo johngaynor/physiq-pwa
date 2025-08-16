@@ -80,7 +80,7 @@ export default function PageTemplate({
     !!apps?.find((app: any) => app.id === requiredAppId);
 
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <div className="border-b">
         <div className="flex flex-col md:flex-row items-center max-w-6xl mx-auto px-5">
           <H1
@@ -114,8 +114,9 @@ export default function PageTemplate({
           </Breadcrumb>
         </div>
       </div>
+
       <div
-        className={`flex flex-col md:flex-row gap-4 max-w-6xl mx-auto md:px-5 ${
+        className={`flex flex-col md:flex-row flex-1 gap-4 w-full max-w-6xl mx-auto md:px-5 ${
           showTitleMobile ? "pt-4 px-5" : "pt-0"
         }`}
       >

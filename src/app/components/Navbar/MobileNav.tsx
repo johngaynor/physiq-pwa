@@ -28,7 +28,7 @@ const NavItems = [
     icon: <HeartPlus size={24} />,
   },
   {
-    href: "/",
+    href: "/training/train",
     icon: <Dumbbell size={24} />,
   },
   {
