@@ -5,13 +5,13 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-// import { useTheme } from "next-themes";
+import { useTheme } from "next-themes";
 import {
   House,
   Dumbbell,
-  Database,
-  // Sun,
-  // Moon,
+  // Database,
+  Sun,
+  Moon,
   CircleUser,
   HeartPlus,
 } from "lucide-react";
@@ -31,14 +31,14 @@ const NavItems = [
     href: "/training/train",
     icon: <Dumbbell size={24} />,
   },
-  {
-    href: "/apps",
-    icon: <Database size={24} />,
-  },
+  // {
+  //   href: "/apps",
+  //   icon: <Database size={24} />,
+  // },
 ];
 
 const MobileNav = ({}) => {
-  // const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
     <NavigationMenu className="fixed bottom-0 pb-5 right-0 left-0 border-t border-gray-100 bg-background">
@@ -56,7 +56,7 @@ const MobileNav = ({}) => {
             </Link>
           </NavigationMenuItem>
         ))}
-        {/* <NavigationMenuItem className="w-full">
+        <NavigationMenuItem className="w-full">
           {theme === "dark" ? (
             <Sun
               size={24}
@@ -70,7 +70,7 @@ const MobileNav = ({}) => {
               className="flex items-center justify-center mx-auto"
             />
           )}
-        </NavigationMenuItem> */}
+        </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
           <SignedOut>
