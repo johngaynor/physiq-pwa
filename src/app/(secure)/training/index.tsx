@@ -6,7 +6,6 @@ import { getCompleteSessionData } from "./localDB";
 import DataView from "./components/DataView";
 import TrainingManagement from "./components/TrainingManagement";
 import { Checkbox } from "@/components/ui";
-import { DateTime } from "luxon";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -24,9 +23,6 @@ const Training: React.FC<PropsFromRedux> = ({ user }) => {
   );
   const [selectedExercise, setSelectedExercise] = React.useState<string | null>(
     null
-  );
-  const [selectedDate, setSelectedDate] = React.useState<string>(
-    DateTime.now().toISODate()
   );
   const [showAdmin, setShowAdmin] = React.useState<boolean>(false);
 
