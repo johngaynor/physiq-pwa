@@ -66,7 +66,7 @@ const Development: React.FC<PropsFromRedux> = ({
             )}
             {!testDataLoading && !testData && (
               <div className="flex items-center justify-center py-8 text-muted-foreground">
-                No data available. Click "Fetch Data" to load.
+                No data available. Click &quot;Fetch Data&quot; to load.
               </div>
             )}
           </CardContent>
