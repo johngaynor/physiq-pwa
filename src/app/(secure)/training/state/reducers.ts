@@ -5,6 +5,8 @@ import {
   LOAD_EDIT_EXERCISE,
   FETCH_DELETE_EXERCISE,
   LOAD_DELETE_EXERCISE,
+  FETCH_EXERCISE_UNITS,
+  LOAD_EXERCISE_UNITS,
   FETCH_GYMS,
   LOAD_GYMS,
   FETCH_EDIT_GYM,
@@ -19,6 +21,8 @@ import type { TrainingState, Action } from "./types";
 const DEFAULT_STATE: TrainingState = {
   exercises: null,
   exercisesLoading: false,
+  exerciseUnits: null,
+  exerciseUnitsLoading: false,
   gyms: null,
   gymsLoading: false,
   syncSessionsLoading: false,
@@ -61,6 +65,14 @@ export default function appReducer(
           state.exercises?.filter((exercise) => exercise.id !== action.id) ||
           [],
         exercisesLoading: false,
+      };
+    case FETCH_EXERCISE_UNITS:
+      return { ...state, exerciseUnitsLoading: true };
+    case LOAD_EXERCISE_UNITS:
+      return {
+        ...state,
+        exerciseUnits: action.data,
+        exerciseUnitsLoading: false,
       };
     case FETCH_GYMS:
       return { ...state, gymsLoading: true };

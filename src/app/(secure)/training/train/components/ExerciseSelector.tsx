@@ -1,5 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect, ConnectedProps } from "react-redux";
+import { RootState } from "../../../../store/reducer";
+import { getExercises } from "../../state/actions";
 import {
   Drawer,
   DrawerContent,
@@ -7,14 +10,8 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
-import { Search, Dumbbell } from "lucide-react";
-
-interface Exercise {
-  id: number;
-  name: string;
-  category: string;
-  muscleGroup: string;
-}
+import { Search, Dumbbell, Activity } from "lucide-react";
+import { Exercise } from "../../state/types";
 
 interface ExerciseSelectorProps {
   isOpen: boolean;
@@ -22,120 +19,50 @@ interface ExerciseSelectorProps {
   onSelectExercise: (exercise: Exercise) => void;
 }
 
-const defaultExercises: Exercise[] = [
-  // Chest
-  { id: 1, name: "Bench Press", category: "Chest", muscleGroup: "Pectorals" },
-  {
-    id: 2,
-    name: "Incline Dumbbell Press",
-    category: "Chest",
-    muscleGroup: "Pectorals",
-  },
-  { id: 3, name: "Push-ups", category: "Chest", muscleGroup: "Pectorals" },
-  { id: 4, name: "Chest Flyes", category: "Chest", muscleGroup: "Pectorals" },
+function mapStateToProps(state: RootState) {
+  return {
+    exercises: state.training.exercises,
+    exercisesLoading: state.training.exercisesLoading,
+  };
+}
 
-  // Back
-  {
-    id: 5,
-    name: "Pull-ups",
-    category: "Back",
-    muscleGroup: "Latissimus Dorsi",
-  },
-  {
-    id: 6,
-    name: "Deadlift",
-    category: "Back",
-    muscleGroup: "Latissimus Dorsi",
-  },
-  { id: 7, name: "Bent-over Row", category: "Back", muscleGroup: "Rhomboids" },
-  {
-    id: 8,
-    name: "Lat Pulldown",
-    category: "Back",
-    muscleGroup: "Latissimus Dorsi",
-  },
+const connector = connect(mapStateToProps, {
+  getExercises,
+});
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-  // Shoulders
-  {
-    id: 9,
-    name: "Overhead Press",
-    category: "Shoulders",
-    muscleGroup: "Deltoids",
-  },
-  {
-    id: 10,
-    name: "Lateral Raises",
-    category: "Shoulders",
-    muscleGroup: "Deltoids",
-  },
-  {
-    id: 11,
-    name: "Front Raises",
-    category: "Shoulders",
-    muscleGroup: "Deltoids",
-  },
-  {
-    id: 12,
-    name: "Rear Delt Flyes",
-    category: "Shoulders",
-    muscleGroup: "Deltoids",
-  },
-
-  // Arms
-  { id: 13, name: "Bicep Curls", category: "Arms", muscleGroup: "Biceps" },
-  { id: 14, name: "Tricep Dips", category: "Arms", muscleGroup: "Triceps" },
-  { id: 15, name: "Hammer Curls", category: "Arms", muscleGroup: "Biceps" },
-  {
-    id: 16,
-    name: "Tricep Extensions",
-    category: "Arms",
-    muscleGroup: "Triceps",
-  },
-
-  // Legs
-  { id: 17, name: "Squats", category: "Legs", muscleGroup: "Quadriceps" },
-  { id: 18, name: "Lunges", category: "Legs", muscleGroup: "Quadriceps" },
-  { id: 19, name: "Leg Press", category: "Legs", muscleGroup: "Quadriceps" },
-  { id: 20, name: "Calf Raises", category: "Legs", muscleGroup: "Calves" },
-  {
-    id: 21,
-    name: "Romanian Deadlift",
-    category: "Legs",
-    muscleGroup: "Hamstrings",
-  },
-  { id: 22, name: "Leg Curls", category: "Legs", muscleGroup: "Hamstrings" },
-
-  // Core
-  { id: 23, name: "Plank", category: "Core", muscleGroup: "Abdominals" },
-  { id: 24, name: "Crunches", category: "Core", muscleGroup: "Abdominals" },
-  { id: 25, name: "Russian Twists", category: "Core", muscleGroup: "Obliques" },
-  {
-    id: 26,
-    name: "Mountain Climbers",
-    category: "Core",
-    muscleGroup: "Abdominals",
-  },
-];
-
-const ExerciseSelector: React.FC<ExerciseSelectorProps> = ({
+const ExerciseSelector: React.FC<ExerciseSelectorProps & PropsFromRedux> = ({
   isOpen,
   onClose,
   onSelectExercise,
+  exercises,
+  exercisesLoading,
+  getExercises,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredExercises = defaultExercises.filter(
-    (exercise) =>
-      exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      exercise.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      exercise.muscleGroup.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const exercisesByCategory = filteredExercises.reduce((acc, exercise) => {
-    if (!acc[exercise.category]) {
-      acc[exercise.category] = [];
+  // Fetch exercises when component mounts
+  useEffect(() => {
+    if (!exercises) {
+      getExercises();
     }
-    acc[exercise.category].push(exercise);
+  }, [exercises, getExercises]);
+
+  // Filter exercises based on search term
+  const filteredExercises = exercises 
+    ? exercises.filter((exercise) =>
+        exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (exercise.target && exercise.target.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : [];
+
+  // Group exercises by target (muscle group)
+  const exercisesByCategory = filteredExercises.reduce((acc, exercise) => {
+    const category = exercise.target || "General";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(exercise);
     return acc;
   }, {} as Record<string, Exercise[]>);
 
@@ -168,34 +95,47 @@ const ExerciseSelector: React.FC<ExerciseSelectorProps> = ({
 
           {/* Exercises List */}
           <div className="flex-1 overflow-y-auto">
-            {Object.entries(exercisesByCategory).map(
-              ([category, exercises]) => (
-                <div key={category} className="mb-6">
-                  <h3 className="text-lg font-medium text-gray-700 mb-3 sticky top-0 bg-background py-2">
-                    {category}
-                  </h3>
-                  <div className="space-y-2">
-                    {exercises.map((exercise) => (
-                      <div
-                        key={exercise.id}
-                        onClick={() => handleExerciseSelect(exercise)}
-                        className="flex items-center p-3 bg-card rounded-lg border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
-                      >
-                        <Dumbbell className="w-5 h-5 text-blue-500 mr-3" />
-                        <div className="flex-1">
-                          <p className="font-medium">{exercise.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {exercise.muscleGroup}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            {exercisesLoading && (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-muted-foreground">
+                  Loading exercises...
                 </div>
-              )
+              </div>
             )}
 
-            {filteredExercises.length === 0 && (
+            {!exercisesLoading &&
+              Object.entries(exercisesByCategory).map(
+                ([category, exercises]) => (
+                  <div key={category} className="mb-6">
+                    <h3 className="text-lg font-medium text-gray-700 mb-3 sticky top-0 bg-background py-2">
+                      {category}
+                    </h3>
+                    <div className="space-y-2">
+                      {exercises.map((exercise) => (
+                        <div
+                          key={exercise.id}
+                          onClick={() => handleExerciseSelect(exercise)}
+                          className="flex items-center p-3 bg-card rounded-lg border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+                        >
+                          {exercise.target?.toLowerCase() === 'cardio' ? (
+                            <Activity className="w-5 h-5 text-red-500 mr-3" />
+                          ) : (
+                            <Dumbbell className="w-5 h-5 text-blue-500 mr-3" />
+                          )}
+                          <div className="flex-1">
+                            <p className="font-medium">{exercise.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {exercise.target || "General"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              )}
+
+            {!exercisesLoading && filteredExercises.length === 0 && (
               <div className="text-center py-12">
                 <Dumbbell className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-gray-500">No exercises found</p>
@@ -211,4 +151,4 @@ const ExerciseSelector: React.FC<ExerciseSelectorProps> = ({
   );
 };
 
-export default ExerciseSelector;
+export default connector(ExerciseSelector);

@@ -5,6 +5,8 @@ import {
   LOAD_EDIT_EXERCISE,
   FETCH_DELETE_EXERCISE,
   LOAD_DELETE_EXERCISE,
+  FETCH_EXERCISE_UNITS,
+  LOAD_EXERCISE_UNITS,
   FETCH_GYMS,
   LOAD_GYMS,
   FETCH_EDIT_GYM,
@@ -15,7 +17,7 @@ import {
   LOAD_TRAINING_SESSION_SYNCS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { Exercise, Gym } from "./types";
+import { Exercise, ExerciseUnit, Gym } from "./types";
 
 export const getExercises = () => {
   return api
@@ -52,6 +54,18 @@ export const deleteExercise = (id: number) => {
     }))
     .error("Error deleting exercise")
     .delete();
+};
+
+export const getExerciseUnits = () => {
+  return api
+    .route("/api/training/exercises/units")
+    .fetch(() => ({ type: FETCH_EXERCISE_UNITS }))
+    .load((data: ExerciseUnit[]) => ({
+      type: LOAD_EXERCISE_UNITS,
+      data,
+    }))
+    .error("Error fetching exercise units")
+    .get();
 };
 
 export const getGyms = () => {

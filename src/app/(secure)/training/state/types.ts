@@ -13,17 +13,28 @@ import {
   LOAD_DELETE_GYM,
   FETCH_TRAINING_SESSION_SYNCS,
   LOAD_TRAINING_SESSION_SYNCS,
+  FETCH_EXERCISE_UNITS,
+  LOAD_EXERCISE_UNITS,
 } from "../../../store/actionTypes";
 
 export type Exercise = {
   id: number;
   name: string;
+  target?: string;
+  defaultPrimaryUnit?: number;
+  defaultSecondaryUnit?: number;
 };
 
 export type Gym = {
   id: number;
   name: string;
   address: string;
+};
+
+export type ExerciseUnit = {
+  id: number;
+  name: string;
+  measurement: string;
 };
 
 // action types
@@ -46,12 +57,16 @@ export type Action =
     }
   | { type: typeof FETCH_DELETE_GYM }
   | { type: typeof LOAD_DELETE_GYM; id: number }
+  | { type: typeof FETCH_EXERCISE_UNITS }
+  | { type: typeof LOAD_EXERCISE_UNITS; data: ExerciseUnit[] }
   | { type: typeof FETCH_TRAINING_SESSION_SYNCS }
   | { type: typeof LOAD_TRAINING_SESSION_SYNCS; failed?: boolean };
 
 export interface TrainingState {
   exercises: null | Exercise[];
   exercisesLoading: boolean;
+  exerciseUnits: null | ExerciseUnit[];
+  exerciseUnitsLoading: boolean;
   gyms: null | Gym[];
   gymsLoading: boolean;
   syncSessionsLoading: boolean;
