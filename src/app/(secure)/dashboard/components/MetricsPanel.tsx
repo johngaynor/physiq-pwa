@@ -134,10 +134,10 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
         />
         <DrawerWrapper
           header="Add/Subtract Water"
-          subheader="Track your water intake throughout the day."
-          currentValue={todayLog?.water || 0}
+          subheader="Track your water intake from yesterday."
+          currentValue={yesterdayLog?.water || 0}
           onUpdate={(newValue: number) => {
-            editDailyWater(today, newValue);
+            editDailyWater(yesterday, newValue);
           }}
           increment={8}
           Trigger={
@@ -146,7 +146,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               subheader={
                 dietLog?.water ? `/ ${dietLog.water}oz` : "No goal set"
               }
-              data={todayLog?.water ? `${todayLog.water} oz` : "0 oz"}
+              data={yesterdayLog?.water ? `${yesterdayLog.water} oz` : "0 oz"}
               loading={
                 !dailyLogs ||
                 dailyLogsLoading ||
@@ -158,10 +158,10 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
         />
         <DrawerWrapper
           header="Add/Subtract Calories"
-          subheader="Track your calories throughout the day."
-          currentValue={todayLog?.calories || 0}
+          subheader="Track your calories from yesterday."
+          currentValue={yesterdayLog?.calories || 0}
           onUpdate={(newValue: number) => {
-            editDailyCalories(today, newValue);
+            editDailyCalories(yesterday, newValue);
           }}
           increment={100}
           Trigger={
@@ -171,8 +171,8 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
                 dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"
               }
               data={
-                todayLog?.calories
-                  ? `${Math.floor(todayLog.calories)} cal`
+                yesterdayLog?.calories
+                  ? `${Math.floor(yesterdayLog.calories)} cal`
                   : "0 cal"
               }
               loading={
