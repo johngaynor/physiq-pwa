@@ -5,11 +5,13 @@ import diet from "../(secure)/diet/state/reducers";
 import checkins from "../(secure)/checkins/state/reducers";
 import physique from "../(secure)/physique/state/reducers";
 import training from "../(secure)/training/state/reducers";
+import development from "../(secure)/development/state/reducers";
 
 const rootReducer = combineReducers({
   app,
   health,
   diet,
+  development,
   checkins,
   physique,
   training,

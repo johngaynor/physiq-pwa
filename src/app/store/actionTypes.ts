@@ -191,3 +191,7 @@ export const FETCH_TRAINING_SESSION_SYNCS =
   "FETCH_TRAINING_SESSION_SYNCS" as const;
 export const LOAD_TRAINING_SESSION_SYNCS =
   "LOAD_TRAINING_SESSION_SYNCS" as const;
+
+// Test Query for development app
+export const FETCH_TEST_QUERY = "FETCH_TEST_QUERY" as const;
+export const LOAD_TEST_QUERY = "LOAD_TEST_QUERY" as const;
