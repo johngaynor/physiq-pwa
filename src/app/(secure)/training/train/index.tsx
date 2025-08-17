@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { Button } from "@/components/ui";
-import { Plus, Menu, Info } from "lucide-react";
+import { Plus, Menu, Info, Check, X, Loader2 } from "lucide-react";
 import { DateTime } from "luxon";
 import WeeklyCalendar from "./components/WeeklyCalendar";
 import MonthlyCalendar from "./components/MonthlyCalendar";
@@ -12,11 +12,13 @@ import verses from "./components/verses.json";
 import { sessionsAPI, TrainingSession } from "../localDB";
 import { syncSessions } from "../state/actions";
 import DataView from "../components/DataView";
+import { toast } from "sonner";
 
 function mapStateToProps(state: RootState) {
   return {
     user: state.app.user,
     syncSessionsLoading: state.training.syncSessionsLoading,
+    syncSessionsResult: state.training.syncSessionsResult,
   };
 }
 
@@ -27,6 +29,7 @@ const Training: React.FC<PropsFromRedux> = ({
   user,
   syncSessions,
   syncSessionsLoading,
+  syncSessionsResult,
 }) => {
   const [selectedDate, setSelectedDate] = React.useState(DateTime.now());
   const [sessions, setSessions] = React.useState<TrainingSession[]>([]);
@@ -54,7 +57,47 @@ const Training: React.FC<PropsFromRedux> = ({
     fetchSessions();
   }, []);
 
-  // Function to create a new session for the selected date
+  // Handle sync toast notifications
+  React.useEffect(() => {
+    let toastId: string | number | undefined;
+
+    if (syncSessionsLoading) {
+      toastId = toast(
+        <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />,
+        {
+          duration: Infinity, // Keep loading toast until dismissed
+          className:
+            "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+          unstyled: false,
+        }
+      );
+    }
+
+    if (!syncSessionsLoading && syncSessionsResult === "success") {
+      if (toastId) toast.dismiss(toastId);
+      toast(<Check className="w-5 h-5 text-green-500" />, {
+        duration: 2000,
+        className: "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+        unstyled: false,
+      });
+    }
+
+    if (!syncSessionsLoading && syncSessionsResult === "error") {
+      if (toastId) toast.dismiss(toastId);
+      toast(<X className="w-5 h-5 text-red-500" />, {
+        duration: 2000,
+        className: "!w-12 !h-12 !min-h-0 !p-2 flex items-center justify-center",
+        unstyled: false,
+      });
+    }
+
+    return () => {
+      if (toastId) {
+        toast.dismiss(toastId);
+      }
+    };
+  }, [syncSessionsLoading, syncSessionsResult]);
+
   const createNewSession = async () => {
     try {
       const sessionName = `Training Session - ${selectedDate.toFormat(

@@ -47,7 +47,7 @@ export type Action =
   | { type: typeof FETCH_DELETE_GYM }
   | { type: typeof LOAD_DELETE_GYM; id: number }
   | { type: typeof FETCH_TRAINING_SESSION_SYNCS }
-  | { type: typeof LOAD_TRAINING_SESSION_SYNCS };
+  | { type: typeof LOAD_TRAINING_SESSION_SYNCS; failed?: boolean };
 
 export interface TrainingState {
   exercises: null | Exercise[];
@@ -55,4 +55,5 @@ export interface TrainingState {
   gyms: null | Gym[];
   gymsLoading: boolean;
   syncSessionsLoading: boolean;
+  syncSessionsResult: "success" | "error" | "idle";
 }

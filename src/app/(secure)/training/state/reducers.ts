@@ -22,6 +22,7 @@ const DEFAULT_STATE: TrainingState = {
   gyms: null,
   gymsLoading: false,
   syncSessionsLoading: false,
+  syncSessionsResult: "idle",
 };
 
 export default function appReducer(
@@ -93,9 +94,14 @@ export default function appReducer(
       return {
         ...state,
         syncSessionsLoading: true,
+        syncSessionsResult: "idle",
       };
     case LOAD_TRAINING_SESSION_SYNCS:
-      return { ...state, syncSessionsLoading: false };
+      return {
+        ...state,
+        syncSessionsLoading: false,
+        syncSessionsResult: action.failed ? "error" : "success",
+      };
     default:
       return state;
   }

@@ -98,6 +98,11 @@ export const syncSessions = (records: any) => {
     .fetch(() => ({ type: FETCH_TRAINING_SESSION_SYNCS }))
     .load(() => ({
       type: LOAD_TRAINING_SESSION_SYNCS,
+      failed: false,
+    }))
+    .onFail(() => ({
+      type: LOAD_TRAINING_SESSION_SYNCS,
+      failed: true,
     }))
     .error("Error syncing sessions")
     .post();
