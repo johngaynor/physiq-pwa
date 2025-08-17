@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Input } from "@/components/ui";
 import { Plus, Ellipsis, Trash2, Edit, Calendar } from "lucide-react";
 import { TrainingSession, sessionsAPI } from "../../localDB";
+import ExerciseSelector from "./ExerciseSelector";
 import {
   Drawer,
   DrawerContent,
@@ -29,6 +30,7 @@ const SessionBox: React.FC<SessionBoxProps> = ({
   const [isMoving, setIsMoving] = React.useState(false);
   const [newDate, setNewDate] = React.useState(session.date);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [exerciseSelectorOpen, setExerciseSelectorOpen] = React.useState(false);
 
   const handleRename = async () => {
     if (!session.id || !newName.trim() || newName.trim() === name) {
@@ -110,6 +112,12 @@ const SessionBox: React.FC<SessionBoxProps> = ({
   const handleCancelMove = () => {
     setIsMoving(false);
     setNewDate(session.date);
+  };
+
+  const handleExerciseSelect = (exercise: any) => {
+    console.log("Selected exercise:", exercise);
+    // TODO: Add the exercise to the session
+    // You can implement the logic to add the exercise to the session here
   };
 
   const handleDrawerClose = () => {
@@ -281,6 +289,7 @@ const SessionBox: React.FC<SessionBoxProps> = ({
           <Button
             className="rounded-full h-10 w-10 flex items-center justify-center"
             variant="outline"
+            onClick={() => setExerciseSelectorOpen(true)}
           >
             <Plus />
           </Button>
@@ -296,6 +305,12 @@ const SessionBox: React.FC<SessionBoxProps> = ({
           <span className="text-lg">Add Comments</span>
         </div>
       </div>
+
+      <ExerciseSelector
+        isOpen={exerciseSelectorOpen}
+        onClose={() => setExerciseSelectorOpen(false)}
+        onSelectExercise={handleExerciseSelect}
+      />
     </div>
   );
 };
