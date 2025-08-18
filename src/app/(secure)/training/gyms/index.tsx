@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
+import { useTheme } from "next-themes";
 import { RootState } from "../../../store/reducer";
 import { getGyms, editGym, deleteGym } from "../state/actions";
 import { Button, Input, Skeleton } from "@/components/ui";
@@ -38,6 +39,7 @@ const Gyms: React.FC<PropsFromRedux> = ({
   editGym,
   deleteGym,
 }) => {
+  const { theme } = useTheme();
   const [search, setSearch] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -93,6 +95,7 @@ const Gyms: React.FC<PropsFromRedux> = ({
           title="Add New Gym"
           description="Create a new gym location for your training sessions."
           onSubmit={handleSubmitNew}
+          theme={theme}
         />
       </div>
 
@@ -175,6 +178,7 @@ const Gyms: React.FC<PropsFromRedux> = ({
                             latitude: gym.latitude,
                             longitude: gym.longitude,
                           }}
+                          theme={theme}
                         />
                         <Button
                           variant="ghost"

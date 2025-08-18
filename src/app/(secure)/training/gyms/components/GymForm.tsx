@@ -21,6 +21,7 @@ type GymFormProps = {
   description: string;
   onSubmit: (values: GymFormValues) => void;
   initialValues?: GymFormValues;
+  theme?: string;
 };
 
 export function GymForm({
@@ -38,6 +39,7 @@ export function GymForm({
     latitude: null,
     longitude: null,
   },
+  theme = "light",
 }: GymFormProps) {
   const [formValues, setFormValues] =
     React.useState<GymFormValues>(initialValues);
@@ -54,6 +56,14 @@ export function GymForm({
   function handleSubmit() {
     onSubmit(formValues);
     setOpen(false);
+  }
+
+  function handleOpenChange(isOpen: boolean) {
+    setOpen(isOpen);
+    // Reset form values when dialog closes
+    if (!isOpen) {
+      setFormValues(initialValues);
+    }
   }
 
   const handleRetrieve = (response: any) => {
@@ -90,7 +100,7 @@ export function GymForm({
   const SearchBoxComponent = SearchBox as any;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{Trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px] top-[20%] translate-y-0 max-h-[500px] flex flex-col">
         <DialogHeader>
@@ -130,6 +140,27 @@ export function GymForm({
                 }}
                 onRetrieve={handleRetrieve}
                 placeholder="Search for gym locations..."
+                theme={
+                  theme === "dark"
+                    ? {
+                        variables: {
+                          colorBackground: "#0f172a",
+                          colorBackgroundHover: "#1e293b",
+                          colorText: "#ffffff",
+                          fontFamily: "inherit",
+                          unit: "14px",
+                        },
+                        cssText: `
+                          .Input {
+                            color: #ffffff !important;
+                            border: 1px solid #374151 !important;
+                            border-radius: 6px !important;
+                            background-color: #0f172a !important;
+                          }
+                        `,
+                      }
+                    : {}
+                }
               />
             </div>
             <div className="space-y-2">
