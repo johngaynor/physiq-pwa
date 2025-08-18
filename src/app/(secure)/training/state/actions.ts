@@ -80,14 +80,14 @@ export const getGyms = () => {
     .get();
 };
 
-export const editGym = (id: number | null, name: string, address: string) => {
+export const editGym = (gymData: Partial<Gym> & { id?: number | null }) => {
   return api
     .route("/api/training/gyms/gym")
-    .data({ id, name, address })
+    .data(gymData)
     .fetch(() => ({ type: FETCH_EDIT_GYM }))
     .load(() => ({
       type: LOAD_EDIT_GYM,
-      data: { id, name, address },
+      data: gymData,
     }))
     .error("Error editing gym")
     .post();

@@ -53,7 +53,7 @@ const Gyms: React.FC<PropsFromRedux> = ({
     return gyms.filter(
       (gym) =>
         gym.name.toLowerCase().includes(search.toLowerCase()) ||
-        gym.address.toLowerCase().includes(search.toLowerCase())
+        gym.fullAddress.toLowerCase().includes(search.toLowerCase())
     );
   }, [gyms, search]);
   const handleDelete = (gymId: number) => {
@@ -62,14 +62,14 @@ const Gyms: React.FC<PropsFromRedux> = ({
     }
   };
 
-  const handleSubmitNew = (values: { name: string; address: string }) => {
-    editGym(null, values.name, values.address);
+  const handleSubmitNew = (values: Partial<Gym>) => {
+    editGym(values);
+    // console.log("submitting", values);
   };
 
-  const createEditHandler =
-    (gym: Gym) => (values: { name: string; address: string }) => {
-      editGym(gym.id, values.name, values.address);
-    };
+  const handleSubmitEdit = (gymId: number) => (values: Partial<Gym>) => {
+    editGym({ id: gymId, ...values });
+  };
 
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
@@ -92,7 +92,6 @@ const Gyms: React.FC<PropsFromRedux> = ({
           }
           title="Add New Gym"
           description="Create a new gym location for your training sessions."
-          initialValues={{ name: "", address: "" }}
           onSubmit={handleSubmitNew}
         />
       </div>
@@ -148,7 +147,7 @@ const Gyms: React.FC<PropsFromRedux> = ({
                   <TableRow key={gym.id}>
                     <TableCell className="font-medium">{gym.name}</TableCell>
                     <TableCell className="text-muted-foreground">
-                      {gym.address}
+                      {gym.fullAddress}
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-2">
@@ -165,11 +164,17 @@ const Gyms: React.FC<PropsFromRedux> = ({
                           }
                           title="Edit Gym"
                           description="Update the gym name and address."
+                          onSubmit={handleSubmitEdit(gym.id)}
                           initialValues={{
                             name: gym.name,
-                            address: gym.address,
+                            streetAddress: gym.streetAddress,
+                            city: gym.city,
+                            state: gym.state,
+                            postalCode: gym.postalCode,
+                            fullAddress: gym.fullAddress,
+                            latitude: gym.latitude,
+                            longitude: gym.longitude,
                           }}
-                          onSubmit={createEditHandler(gym)}
                         />
                         <Button
                           variant="ghost"

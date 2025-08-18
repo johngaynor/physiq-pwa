@@ -28,7 +28,15 @@ export type Exercise = {
 export type Gym = {
   id: number;
   name: string;
-  address: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  fullAddress: string;
+  latitude: number | null;
+  longitude: number | null;
+  createdBy: string | null;
+  lastUpdated: string;
 };
 
 export type ExerciseUnit = {
