@@ -131,7 +131,7 @@ export function GymForm({
           <div className="col-span-3">
             <div className="mb-4">
               <SearchBoxComponent
-                accessToken="pk.eyJ1Ijoiam9obmdheW5vcmRldiIsImEiOiJjbWVoaWUxYnUwMTJuMmxwdTN4bGpycjF2In0.M5om4EzqkW7cml6tQiQXRg"
+                accessToken={process.env.MAPBOX_API_TOKEN}
                 options={{
                   language: "en",
                   country: "US",
