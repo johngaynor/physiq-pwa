@@ -22,7 +22,6 @@ const connector = connect(mapStateToProps, {
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const Gym: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
-  const [editGym, setEditGym] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (!gyms && !gymsLoading) getGyms();
   }, [gyms, gymsLoading, getGyms]);
@@ -37,22 +36,8 @@ const Gym: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
 
   if (gymsLoading) {
     return "loading";
-  } else if (editGym && gym) {
-    return (
-      // <DietLogForm
-      //   onSubmit={(values) => {
-      //     editGym(values);
-      //     setEditGym(false);
-      //   }}
-      //   supplements={supplements || []}
-      //   log={log}
-      //   setEditGym={setEditGym}
-      // />
-      "edit"
-    );
-  }
-  {
-    return <ViewGym setEditGym={setEditGym} />;
+  } else {
+    return <ViewGym />;
   }
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Label } from "@/components/ui";
+import { Input, Label, Button, Textarea } from "@/components/ui";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui";
 import { SearchBox } from "@mapbox/search-js-react";
 import { Gym } from "@/app/(secure)/training/state/types";
 
@@ -127,7 +126,7 @@ export function GymForm({
             <Label htmlFor="comments" className="text-right pt-2">
               Comments
             </Label>
-            <textarea
+            <Textarea
               id="comments"
               value={formValues.comments || ""}
               onChange={(e) => {
@@ -136,8 +135,9 @@ export function GymForm({
                   comments: e.target.value,
                 }));
               }}
-              className="col-span-3 min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="col-span-3 h-[60px] resize-none"
               placeholder="Enter any comments about this gym..."
+              rows={2}
             />
           </div>
         </div>

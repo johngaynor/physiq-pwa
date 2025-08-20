@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 import { GymForm } from "./components/GymForm";
 import type { Gym } from "../state/types";
 import { useRouter } from "next/navigation";
@@ -158,32 +158,6 @@ const Gyms: React.FC<PropsFromRedux> = ({
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-2">
-                        <GymForm
-                          Trigger={
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 w-8 p-0"
-                            >
-                              <Pencil className="h-4 w-4" />
-                              <span className="sr-only">Edit gym</span>
-                            </Button>
-                          }
-                          title="Edit Gym"
-                          description="Update the gym name and address."
-                          onSubmit={handleSubmitEdit(gym.id)}
-                          initialValues={{
-                            name: gym.name,
-                            streetAddress: gym.streetAddress,
-                            city: gym.city,
-                            state: gym.state,
-                            postalCode: gym.postalCode,
-                            fullAddress: gym.fullAddress,
-                            latitude: gym.latitude,
-                            longitude: gym.longitude,
-                          }}
-                          theme={theme}
-                        />
                         <Button
                           variant="ghost"
                           size="sm"

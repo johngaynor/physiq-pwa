@@ -5,11 +5,13 @@ import { RootState } from "../../../../../../store/reducer";
 import {
   getGyms,
   deleteGym,
+  editGym,
   getGymPhotos,
   uploadGymPhotos,
   deleteGymPhoto,
 } from "../../../../state/actions";
 import { useParams, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { FieldValue } from "@/app/(secure)/components/Forms/FieldValues";
 import { H3, Button } from "@/components/ui";
 import { Edit, Trash, Camera, Upload, Home, Share } from "lucide-react";
@@ -29,6 +31,7 @@ import {
 } from "@/components/ui/accordion";
 import Image from "next/image";
 import { UploadPhoto } from "./UploadPhoto";
+import { GymForm } from "../../../components/GymForm";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -46,20 +49,19 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, {
   getGyms,
   deleteGym,
+  editGym,
   getGymPhotos,
   uploadGymPhotos,
   deleteGymPhoto,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const ViewGym: React.FC<
-  PropsFromRedux & { setEditGym: (edit: boolean) => void }
-> = ({
+const ViewGym: React.FC<PropsFromRedux> = ({
   gyms,
   gymsLoading,
   getGyms,
-  setEditGym,
   deleteGym,
+  editGym,
   user,
   gymPhotos,
   gymPhotosLoading,
@@ -72,6 +74,7 @@ const ViewGym: React.FC<
 }) => {
   const params = useParams();
   const router = useRouter();
+  const { theme } = useTheme();
   const gymId = params.id ? parseInt(params.id as string) : null;
 
   React.useEffect(() => {
@@ -165,13 +168,30 @@ const ViewGym: React.FC<
                   {isAdmin && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
-                          className="ml-2"
-                          variant="outline"
-                          onClick={() => setEditGym(true)}
-                        >
-                          <Edit className="font-extrabold" />
-                        </Button>
+                        <GymForm
+                          Trigger={
+                            <Button className="ml-2" variant="outline">
+                              <Edit className="font-extrabold" />
+                            </Button>
+                          }
+                          title="Edit Gym"
+                          description="Update the gym name and address."
+                          onSubmit={(values) => {
+                            editGym({ ...values, id: gym.id });
+                          }}
+                          initialValues={{
+                            name: gym.name,
+                            streetAddress: gym.streetAddress,
+                            city: gym.city,
+                            state: gym.state,
+                            postalCode: gym.postalCode,
+                            fullAddress: gym.fullAddress,
+                            latitude: gym.latitude,
+                            longitude: gym.longitude,
+                            comments: gym.comments,
+                          }}
+                          theme={theme}
+                        />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Edit gym</p>

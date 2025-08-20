@@ -8,4 +8,10 @@ export { Calendar } from "./calendar";
 export { Skeleton } from "./skeleton";
 export { Select } from "./select";
 export { Combobox } from "./combobox";
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tooltip";
+export {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "./tooltip";
+export { Textarea } from "./textarea";
