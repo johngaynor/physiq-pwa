@@ -109,7 +109,7 @@ export const deleteGym = (id: number) => {
 
 export const getGymPhotos = (gymId: number) => {
   return api
-    .route(`/api/training/gyms/gym/${gymId}/photos`)
+    .route(`/api/training/gyms/photos/${gymId}`)
     .fetch(() => ({ type: FETCH_GYM_PHOTOS, gymId }))
     .load((photos: GymPhotos[]) => ({
       type: LOAD_GYM_PHOTOS,
