@@ -13,11 +13,13 @@ import {
   LOAD_EDIT_GYM,
   FETCH_DELETE_GYM,
   LOAD_DELETE_GYM,
+  FETCH_GYM_PHOTOS,
+  LOAD_GYM_PHOTOS,
   FETCH_TRAINING_SESSION_SYNCS,
   LOAD_TRAINING_SESSION_SYNCS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { Exercise, ExerciseUnit, Gym } from "./types";
+import { Exercise, ExerciseUnit, Gym, GymPhotos } from "./types";
 
 export const getExercises = () => {
   return api
@@ -103,6 +105,19 @@ export const deleteGym = (id: number) => {
     }))
     .error("Error deleting gym")
     .delete();
+};
+
+export const getGymPhotos = (gymId: number) => {
+  return api
+    .route(`/api/training/gyms/gym/${gymId}/photos`)
+    .fetch(() => ({ type: FETCH_GYM_PHOTOS, gymId }))
+    .load((photos: GymPhotos[]) => ({
+      type: LOAD_GYM_PHOTOS,
+      gymId,
+      photos,
+    }))
+    .error("Error fetching gym photos")
+    .get();
 };
 
 export const syncSessions = (records: any) => {

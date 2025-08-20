@@ -15,6 +15,8 @@ import {
   LOAD_TRAINING_SESSION_SYNCS,
   FETCH_EXERCISE_UNITS,
   LOAD_EXERCISE_UNITS,
+  FETCH_GYM_PHOTOS,
+  LOAD_GYM_PHOTOS,
 } from "../../../store/actionTypes";
 
 export type Exercise = {
@@ -23,6 +25,20 @@ export type Exercise = {
   target?: string;
   defaultPrimaryUnit?: number;
   defaultSecondaryUnit?: number;
+};
+
+export type GymPhotos = {
+  id?: number;
+  gymId?: number;
+  s3Filename?: string;
+  url?: string;
+  filename?: string;
+  blob?: {
+    contentType: string;
+    data: string;
+    lastModified: string;
+    size: number;
+  };
 };
 
 export type Gym = {
@@ -67,6 +83,12 @@ export type Action =
   | { type: typeof LOAD_DELETE_GYM; id: number }
   | { type: typeof FETCH_EXERCISE_UNITS }
   | { type: typeof LOAD_EXERCISE_UNITS; data: ExerciseUnit[] }
+  | { type: typeof FETCH_GYM_PHOTOS; gymId: number }
+  | {
+      type: typeof LOAD_GYM_PHOTOS;
+      gymId: number;
+      photos: GymPhotos[];
+    }
   | { type: typeof FETCH_TRAINING_SESSION_SYNCS }
   | { type: typeof LOAD_TRAINING_SESSION_SYNCS; failed?: boolean };
 
@@ -77,6 +99,9 @@ export interface TrainingState {
   exerciseUnitsLoading: boolean;
   gyms: null | Gym[];
   gymsLoading: boolean;
+  gymPhotos: GymPhotos[];
+  gymPhotosLoading: boolean;
+  gymPhotosId: number | null;
   syncSessionsLoading: boolean;
   syncSessionsResult: "success" | "error" | "idle";
 }

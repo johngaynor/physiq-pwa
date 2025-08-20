@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
 import { deleteDietLog } from "../../../state/actions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { StatisticsGraph } from "@/app/(secure)/health/components/StatisticsGraph";
 import { H3, Button } from "@/components/ui";
 import { Edit, Trash } from "lucide-react";
@@ -22,9 +22,8 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { FieldValue } from "./FieldValues";
-import { useRouter } from "next/navigation";
-import ConfirmDeleteLog from "./ConfirmDeleteLog";
+import { FieldValue } from "../../../../components/Forms/FieldValues";
+import ConfirmDeleteModal from "@/app/(secure)/components/Modals/ConfirmDeleteModal";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -94,18 +93,6 @@ const ViewDietLog: React.FC<
       <Card className="w-full rounded-sm p-0">
         <CardContent className="flex flex-col md:flex-row justify-between grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           <div>
-            <StatisticsGraph
-              dailyLogs={filteredDailyLogs}
-              title="Weight Changes this Diet Log"
-              unit="lbs"
-              dataKeys={["weight"]}
-              showUnit
-              rounding={2}
-              primaryKey="weight"
-              subtitle="this calorie adjustment"
-            />
-          </div>
-          <div>
             <div className="mb-6 flex justify-between items-center">
               <H3>Diet Change #{log.id}</H3>
               <div>
@@ -116,7 +103,7 @@ const ViewDietLog: React.FC<
                 >
                   <Edit className="font-extrabold" />
                 </Button>
-                <ConfirmDeleteLog
+                <ConfirmDeleteModal
                   trigger={
                     <Button className="ml-2" variant="outline">
                       <Trash className="font-extrabold" />
@@ -145,6 +132,18 @@ const ViewDietLog: React.FC<
               <FieldValue title="Carbs" value={log.carbs + "g"} />
               <FieldValue title="Fat" value={log.fat + "g"} />
             </div>
+          </div>
+          <div>
+            <StatisticsGraph
+              dailyLogs={filteredDailyLogs}
+              title="Weight Changes this Diet Log"
+              unit="lbs"
+              dataKeys={["weight"]}
+              showUnit
+              rounding={2}
+              primaryKey="weight"
+              subtitle="this calorie adjustment"
+            />
           </div>
         </CardContent>
         <CardFooter className="p-0">

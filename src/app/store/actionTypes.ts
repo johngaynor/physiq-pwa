@@ -186,6 +186,10 @@ export const LOAD_EDIT_GYM = "LOAD_EDIT_GYM" as const;
 export const FETCH_DELETE_GYM = "FETCH_DELETE_GYM" as const;
 export const LOAD_DELETE_GYM = "LOAD_DELETE_GYM" as const;
 
+// Gym Photos - Fetch and manage gym photos
+export const FETCH_GYM_PHOTOS = "FETCH_GYM_PHOTOS" as const;
+export const LOAD_GYM_PHOTOS = "LOAD_GYM_PHOTOS" as const;
+
 // Training Session Syncs
 export const FETCH_TRAINING_SESSION_SYNCS =
   "FETCH_TRAINING_SESSION_SYNCS" as const;

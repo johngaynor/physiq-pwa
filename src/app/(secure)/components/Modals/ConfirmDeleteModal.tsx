@@ -10,12 +10,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function ConfirmDeleteLog({
+export default function ConfirmDeleteModal({
   trigger,
   onConfirm,
+  description = "You cannot restore this after it has been deleted.",
 }: {
-  trigger?: React.ReactNode;
+  trigger: React.ReactNode;
   onConfirm: () => void;
+  description?: string;
 }) {
   return (
     <AlertDialog>
@@ -23,9 +25,7 @@ export default function ConfirmDeleteLog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            You cannot restore a diet log after it has been deleted.
-          </AlertDialogDescription>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

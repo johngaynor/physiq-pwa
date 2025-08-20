@@ -36,7 +36,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FieldValue } from "@/app/(secure)/diet/log/[id]/components/FieldValues";
+import { FieldValue } from "@/app/(secure)/components/Forms/FieldValues";
 import { StatisticsGraph } from "@/app/(secure)/health/components/StatisticsGraph";
 
 // Utility functions for calculating statistics
