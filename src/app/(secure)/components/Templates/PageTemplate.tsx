@@ -116,7 +116,7 @@ export default function PageTemplate({
       </div>
 
       <div
-        className={`flex flex-col md:flex-row flex-1 gap-4 w-full max-w-6xl mx-auto md:px-5 ${
+        className={`flex flex-col md:flex-row flex-1 gap-4 w-full max-w-6xl mx-auto md:px-5 pt-5 ${
           showTitleMobile ? "pt-4 px-5" : "pt-0"
         }`}
       >

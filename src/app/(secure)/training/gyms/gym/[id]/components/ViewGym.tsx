@@ -103,6 +103,15 @@ const ViewGym: React.FC<
     );
   }
 
+  const token = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN;
+  const zoom = 10;
+  const width = 600;
+  const height = 400;
+
+  const marker = `pin-s+ff0000(${gym.longitude},${gym.latitude})`;
+  const style = "mapbox/streets-v12";
+  const url = `https://api.mapbox.com/styles/v1/${style}/static/${marker}/${gym.longitude},${gym.latitude},${zoom},0/${width}x${height}@2x?access_token=${token}`;
+
   return (
     <div className="w-full mb-20">
       <Card className="w-full rounded-sm p-0">
@@ -140,9 +149,24 @@ const ViewGym: React.FC<
 
             <div className="py-4">
               <FieldValue title="Address" value={gym.fullAddress} />
+              {gym.comments && (
+                <div className="mt-4">
+                  <FieldValue title="Comments" value={gym.comments} />
+                </div>
+              )}
             </div>
           </div>
-          <div>{/* map that shows location */}</div>
+          <div>
+            <div className="rounded-xl overflow-hidden shadow-md">
+              <Image
+                src={url}
+                alt={`Map showing ${name}`}
+                width={width}
+                height={height}
+                unoptimized // prevents Next.js from trying to optimize the external URL
+              />
+            </div>
+          </div>
         </CardContent>
         <CardFooter className="p-0">
           <Accordion type="single" collapsible className="border-t-1 w-full">

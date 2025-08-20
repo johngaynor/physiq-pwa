@@ -57,6 +57,7 @@ export type Gym = {
   longitude: number | null;
   createdBy: string | null;
   lastUpdated: string;
+  comments?: string;
 };
 
 export type ExerciseUnit = {

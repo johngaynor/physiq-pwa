@@ -6,7 +6,7 @@ const title = "Gym";
 
 export default function Page() {
   return (
-    <PageTemplate title={title}>
+    <PageTemplate title={title} showTitleMobile>
       <Gym />
     </PageTemplate>
   );
