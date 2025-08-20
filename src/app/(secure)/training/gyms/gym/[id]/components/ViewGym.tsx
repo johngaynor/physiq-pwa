@@ -2,11 +2,17 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../../store/reducer";
-import { getGyms, deleteGym, getGymPhotos } from "../../../../state/actions";
+import {
+  getGyms,
+  deleteGym,
+  getGymPhotos,
+  uploadGymPhotos,
+  deleteGymPhoto,
+} from "../../../../state/actions";
 import { useParams, useRouter } from "next/navigation";
 import { FieldValue } from "@/app/(secure)/components/Forms/FieldValues";
 import { H3, Button } from "@/components/ui";
-import { Edit, Trash, Camera } from "lucide-react";
+import { Edit, Trash, Camera, Upload } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import ConfirmDeleteModal from "@/app/(secure)/components/Modals/ConfirmDeleteModal";
 import {
@@ -16,6 +22,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Image from "next/image";
+import { UploadPhoto } from "./UploadPhoto";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -24,6 +31,8 @@ function mapStateToProps(state: RootState) {
     gymPhotos: state.training.gymPhotos,
     gymPhotosLoading: state.training.gymPhotosLoading,
     gymPhotosId: state.training.gymPhotosId,
+    uploadGymPhotosLoading: state.training.uploadGymPhotosLoading,
+    deleteGymPhotoLoading: state.training.deleteGymPhotoLoading,
     user: state.app.user,
   };
 }
@@ -32,6 +41,8 @@ const connector = connect(mapStateToProps, {
   getGyms,
   deleteGym,
   getGymPhotos,
+  uploadGymPhotos,
+  deleteGymPhoto,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -48,6 +59,10 @@ const ViewGym: React.FC<
   gymPhotosLoading,
   gymPhotosId,
   getGymPhotos,
+  uploadGymPhotos,
+  uploadGymPhotosLoading,
+  deleteGymPhoto,
+  deleteGymPhotoLoading,
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -133,9 +148,29 @@ const ViewGym: React.FC<
           <Accordion type="single" collapsible className="border-t-1 w-full">
             <AccordionItem value="photos" className="px-6">
               <AccordionTrigger>
-                <div className="flex items-center">
-                  <Camera className="h-5 w-5 mr-2" />
-                  Photos ({gymPhotos ? gymPhotos.length : 0})
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center">
+                    <Camera className="h-5 w-5 mr-2" />
+                    Photos ({gymPhotos ? gymPhotos.length : 0})
+                  </div>
+                  {isAdmin && gymId && (
+                    <UploadPhoto
+                      Trigger={
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Upload className="h-4 w-4" />
+                          Upload
+                        </Button>
+                      }
+                      gymId={gymId}
+                      onUpload={uploadGymPhotos}
+                      uploading={uploadGymPhotosLoading}
+                    />
+                  )}
                 </div>
               </AccordionTrigger>
               <AccordionContent>
@@ -241,10 +276,27 @@ const ViewGym: React.FC<
                           </div>
                           {/* File info overlay */}
                           <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="text-xs truncate">
-                              {photo.filename ||
-                                photo.s3Filename ||
-                                "Gym Photo"}
+                            <div className="flex items-center justify-between">
+                              <div className="text-xs truncate">
+                                {photo.filename ||
+                                  photo.s3Filename ||
+                                  "Gym Photo"}
+                              </div>
+                              {isAdmin && photo.id && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0 text-white hover:text-red-400 hover:bg-red-900/20"
+                                  onClick={() => {
+                                    if (window.confirm("Are you sure you want to delete this photo?")) {
+                                      deleteGymPhoto(photo.id!);
+                                    }
+                                  }}
+                                  disabled={deleteGymPhotoLoading}
+                                >
+                                  <Trash className="h-3 w-3" />
+                                </Button>
+                              )}
                             </div>
                           </div>
                         </div>

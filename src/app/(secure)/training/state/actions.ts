@@ -15,6 +15,10 @@ import {
   LOAD_DELETE_GYM,
   FETCH_GYM_PHOTOS,
   LOAD_GYM_PHOTOS,
+  FETCH_UPLOAD_GYM_PHOTOS,
+  LOAD_UPLOAD_GYM_PHOTOS,
+  FETCH_DELETE_GYM_PHOTO,
+  LOAD_DELETE_GYM_PHOTO,
   FETCH_TRAINING_SESSION_SYNCS,
   LOAD_TRAINING_SESSION_SYNCS,
 } from "@/app/store/actionTypes";
@@ -118,6 +122,30 @@ export const getGymPhotos = (gymId: number) => {
     }))
     .error("Error fetching gym photos")
     .get();
+};
+
+export const uploadGymPhotos = (formData: FormData) => {
+  return api
+    .route("/api/training/gyms/photos")
+    .data(formData)
+    .fetch(() => ({ type: FETCH_UPLOAD_GYM_PHOTOS }))
+    .load(() => ({
+      type: LOAD_UPLOAD_GYM_PHOTOS,
+    }))
+    .error("Error uploading gym photos")
+    .post();
+};
+
+export const deleteGymPhoto = (photoId: number) => {
+  return api
+    .route(`/api/training/gyms/photos/${photoId}`)
+    .fetch(() => ({ type: FETCH_DELETE_GYM_PHOTO }))
+    .load(() => ({
+      type: LOAD_DELETE_GYM_PHOTO,
+      photoId,
+    }))
+    .error("Error deleting gym photo")
+    .delete();
 };
 
 export const syncSessions = (records: any) => {

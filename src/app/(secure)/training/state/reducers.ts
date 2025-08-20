@@ -15,6 +15,10 @@ import {
   LOAD_DELETE_GYM,
   FETCH_GYM_PHOTOS,
   LOAD_GYM_PHOTOS,
+  FETCH_UPLOAD_GYM_PHOTOS,
+  LOAD_UPLOAD_GYM_PHOTOS,
+  FETCH_DELETE_GYM_PHOTO,
+  LOAD_DELETE_GYM_PHOTO,
   FETCH_TRAINING_SESSION_SYNCS,
   LOAD_TRAINING_SESSION_SYNCS,
 } from "../../../store/actionTypes";
@@ -30,6 +34,8 @@ const DEFAULT_STATE: TrainingState = {
   gymPhotos: [],
   gymPhotosLoading: false,
   gymPhotosId: null,
+  uploadGymPhotosLoading: false,
+  deleteGymPhotoLoading: false,
   syncSessionsLoading: false,
   syncSessionsResult: "idle",
 };
@@ -119,6 +125,29 @@ export default function appReducer(
         gymPhotos: action.photos,
         gymPhotosLoading: false,
         gymPhotosId: action.gymId,
+      };
+    case FETCH_UPLOAD_GYM_PHOTOS:
+      return {
+        ...state,
+        uploadGymPhotosLoading: true,
+      };
+    case LOAD_UPLOAD_GYM_PHOTOS:
+      return {
+        ...state,
+        uploadGymPhotosLoading: false,
+        gymPhotos: [], // Reset to refetch
+        gymPhotosId: null, // Clear to trigger refetch
+      };
+    case FETCH_DELETE_GYM_PHOTO:
+      return {
+        ...state,
+        deleteGymPhotoLoading: true,
+      };
+    case LOAD_DELETE_GYM_PHOTO:
+      return {
+        ...state,
+        deleteGymPhotoLoading: false,
+        gymPhotos: state.gymPhotos.filter(photo => photo.id !== action.photoId),
       };
     case FETCH_TRAINING_SESSION_SYNCS:
       return {

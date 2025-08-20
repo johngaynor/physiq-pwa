@@ -190,6 +190,14 @@ export const LOAD_DELETE_GYM = "LOAD_DELETE_GYM" as const;
 export const FETCH_GYM_PHOTOS = "FETCH_GYM_PHOTOS" as const;
 export const LOAD_GYM_PHOTOS = "LOAD_GYM_PHOTOS" as const;
 
+// Gym Photos - Upload gym photos
+export const FETCH_UPLOAD_GYM_PHOTOS = "FETCH_UPLOAD_GYM_PHOTOS" as const;
+export const LOAD_UPLOAD_GYM_PHOTOS = "LOAD_UPLOAD_GYM_PHOTOS" as const;
+
+// Gym Photos - Delete gym photos
+export const FETCH_DELETE_GYM_PHOTO = "FETCH_DELETE_GYM_PHOTO" as const;
+export const LOAD_DELETE_GYM_PHOTO = "LOAD_DELETE_GYM_PHOTO" as const;
+
 // Training Session Syncs
 export const FETCH_TRAINING_SESSION_SYNCS =
   "FETCH_TRAINING_SESSION_SYNCS" as const;
