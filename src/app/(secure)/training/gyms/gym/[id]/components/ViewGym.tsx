@@ -282,23 +282,20 @@ const ViewGym: React.FC<
                                   "Gym Photo"}
                               </div>
                               {isAdmin && photo.id && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-6 w-6 p-0 text-white hover:text-red-400 hover:bg-red-900/20"
-                                  onClick={() => {
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to delete this photo?"
-                                      )
-                                    ) {
-                                      deleteGymPhoto(photo.id!);
-                                    }
-                                  }}
-                                  disabled={deleteGymPhotoLoading}
-                                >
-                                  <Trash className="h-3 w-3" />
-                                </Button>
+                                <ConfirmDeleteModal
+                                  trigger={
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-6 w-6 p-0 text-white hover:text-red-400 hover:bg-red-900/20"
+                                      disabled={deleteGymPhotoLoading}
+                                    >
+                                      <Trash className="h-3 w-3" />
+                                    </Button>
+                                  }
+                                  onConfirm={() => deleteGymPhoto(photo.id!)}
+                                  description="Are you sure you want to delete this photo? This action cannot be undone."
+                                />
                               )}
                             </div>
                           </div>
