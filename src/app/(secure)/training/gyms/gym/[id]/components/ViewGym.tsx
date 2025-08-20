@@ -148,32 +148,31 @@ const ViewGym: React.FC<
           <Accordion type="single" collapsible className="border-t-1 w-full">
             <AccordionItem value="photos" className="px-6">
               <AccordionTrigger>
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center">
-                    <Camera className="h-5 w-5 mr-2" />
-                    Photos ({gymPhotos ? gymPhotos.length : 0})
-                  </div>
-                  {isAdmin && gymId && (
+                <div className="flex items-center">
+                  <Camera className="h-5 w-5 mr-2" />
+                  Photos ({gymPhotos ? gymPhotos.length : 0})
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                {isAdmin && gymId && (
+                  <div className="mb-4">
                     <UploadPhoto
                       Trigger={
                         <Button
                           variant="outline"
                           size="sm"
                           className="flex items-center gap-2"
-                          onClick={(e) => e.stopPropagation()}
                         >
                           <Upload className="h-4 w-4" />
-                          Upload
+                          Upload Photos
                         </Button>
                       }
                       gymId={gymId}
                       onUpload={uploadGymPhotos}
                       uploading={uploadGymPhotosLoading}
                     />
-                  )}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
                   {gymPhotosLoading ? (
                     <div className="col-span-full text-center py-4">
@@ -288,7 +287,11 @@ const ViewGym: React.FC<
                                   size="sm"
                                   className="h-6 w-6 p-0 text-white hover:text-red-400 hover:bg-red-900/20"
                                   onClick={() => {
-                                    if (window.confirm("Are you sure you want to delete this photo?")) {
+                                    if (
+                                      window.confirm(
+                                        "Are you sure you want to delete this photo?"
+                                      )
+                                    ) {
                                       deleteGymPhoto(photo.id!);
                                     }
                                   }}

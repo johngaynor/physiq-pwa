@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { GymForm } from "./components/GymForm";
 import type { Gym } from "../state/types";
+import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -40,6 +41,7 @@ const Gyms: React.FC<PropsFromRedux> = ({
   deleteGym,
 }) => {
   const { theme } = useTheme();
+  const router = useRouter();
   const [search, setSearch] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -66,7 +68,6 @@ const Gyms: React.FC<PropsFromRedux> = ({
 
   const handleSubmitNew = (values: Partial<Gym>) => {
     editGym(values);
-    // console.log("submitting", values);
   };
 
   const handleSubmitEdit = (gymId: number) => (values: Partial<Gym>) => {
@@ -147,7 +148,10 @@ const Gyms: React.FC<PropsFromRedux> = ({
               </TableHeader>
               <TableBody>
                 {filteredGyms.map((gym) => (
-                  <TableRow key={gym.id}>
+                  <TableRow
+                    key={gym.id}
+                    onClick={() => router.push(`/training/gyms/gym/${gym.id}`)}
+                  >
                     <TableCell className="font-medium">{gym.name}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {gym.fullAddress}

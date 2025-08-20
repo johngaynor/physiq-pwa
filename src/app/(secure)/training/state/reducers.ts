@@ -147,7 +147,9 @@ export default function appReducer(
       return {
         ...state,
         deleteGymPhotoLoading: false,
-        gymPhotos: state.gymPhotos.filter(photo => photo.id !== action.photoId),
+        gymPhotos: state.gymPhotos.filter(
+          (photo) => photo.id !== action.photoId
+        ),
       };
     case FETCH_TRAINING_SESSION_SYNCS:
       return {
