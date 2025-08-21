@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { useTheme } from "next-themes";
 import { RootState } from "../../../store/reducer";
-import { getGyms, editGym, deleteGym } from "../state/actions";
+import { getGyms, editGym } from "../state/actions";
 import { Button, Input, Skeleton } from "@/components/ui";
 import {
   Table,
@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { GymForm } from "./components/GymForm";
 import type { Gym } from "../state/types";
 import { useRouter } from "next/navigation";
@@ -29,7 +29,6 @@ function mapStateToProps(state: RootState) {
 const connector = connect(mapStateToProps, {
   getGyms,
   editGym,
-  deleteGym,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -38,7 +37,6 @@ const Gyms: React.FC<PropsFromRedux> = ({
   gymsLoading,
   getGyms,
   editGym,
-  deleteGym,
 }) => {
   const { theme } = useTheme();
   const router = useRouter();
@@ -60,18 +58,9 @@ const Gyms: React.FC<PropsFromRedux> = ({
         gym.fullAddress.toLowerCase().includes(search.toLowerCase())
     );
   }, [gyms, search]);
-  const handleDelete = (gymId: number) => {
-    if (window.confirm("Are you sure you want to delete this gym?")) {
-      deleteGym(gymId);
-    }
-  };
 
   const handleSubmitNew = (values: Partial<Gym>) => {
     editGym(values);
-  };
-
-  const handleSubmitEdit = (gymId: number) => (values: Partial<Gym>) => {
-    editGym({ id: gymId, ...values });
   };
 
   return (
@@ -143,7 +132,6 @@ const Gyms: React.FC<PropsFromRedux> = ({
                 <TableRow>
                   <TableHead>Gym Name</TableHead>
                   <TableHead>Address</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -155,19 +143,6 @@ const Gyms: React.FC<PropsFromRedux> = ({
                     <TableCell className="font-medium">{gym.name}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {gym.fullAddress}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(gym.id)}
-                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete gym</span>
-                        </Button>
-                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

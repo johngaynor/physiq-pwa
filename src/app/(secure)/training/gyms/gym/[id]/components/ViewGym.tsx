@@ -175,7 +175,7 @@ const ViewGym: React.FC<PropsFromRedux> = ({
                             </Button>
                           }
                           title="Edit Gym"
-                          description="Update the gym name and address."
+                          description="Update information about this gym."
                           onSubmit={(values) => {
                             editGym({ ...values, id: gym.id });
                           }}
