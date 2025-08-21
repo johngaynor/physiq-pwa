@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
 import { getGyms } from "../../../state/actions";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 // import LogLoadingPage from "../../components/LogLoadingPage";
 // import ViewDietLog from "./components/ViewDietLog";
 // import DietLogForm from "../../new/components/DietLogForm";
@@ -26,13 +26,13 @@ const Gym: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
     if (!gyms && !gymsLoading) getGyms();
   }, [gyms, gymsLoading, getGyms]);
 
-  const params = useParams();
+  // const params = useParams();
 
-  const gymId = params.id ? parseInt(params.id as string) : null;
+  // const gymId = params.id ? parseInt(params.id as string) : null;
 
-  const gym = React.useMemo(() => {
-    return gyms?.find((gym) => gym.id === gymId);
-  }, [gyms, gymId]);
+  // const gym = React.useMemo(() => {
+  //   return gyms?.find((gym) => gym.id === gymId);
+  // }, [gyms, gymId]);
 
   if (gymsLoading) {
     return "loading";
