@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { getGyms } from "../state/actions";
-import { Button, Input, Skeleton } from "@/components/ui";
+import { Button, Input, Checkbox } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -24,12 +24,17 @@ function mapStateToProps(state: RootState) {
   };
 }
 
-// interface Filters {
-//   search: string;
-//   ratingMin: number;
-//   ratingMax: number;
-//   tags: string[];
-// }
+interface Filters {
+  search: string;
+  cost: number[];
+  dayPasses: (boolean | null)[];
+}
+
+const initialFilters = {
+  search: "",
+  cost: [1, 2, 3],
+  dayPasses: [true, false, null],
+};
 
 const connector = connect(mapStateToProps, {
   getGyms,
@@ -38,25 +43,33 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const router = useRouter();
-  const [search, setSearch] = React.useState<string>("");
   const [viewMode, setViewMode] = React.useState<"map" | "list">("list");
+  const [filters, setFilters] = React.useState<Filters>(initialFilters);
 
   React.useEffect(() => {
     if (!gyms && !gymsLoading) getGyms();
   }, [gyms, gymsLoading, getGyms]);
 
-  // Filter gyms based on search
+  // Filter gyms based on search and filters
   const filteredGyms = React.useMemo(() => {
     if (!gyms) return [];
 
-    if (!search.trim()) return gyms;
+    return gyms.filter((gym) => {
+      // Text search filter
+      const matchesSearch =
+        !filters.search.trim() ||
+        gym.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+        gym.fullAddress.toLowerCase().includes(filters.search.toLowerCase());
 
-    return gyms.filter(
-      (gym) =>
-        gym.name.toLowerCase().includes(search.toLowerCase()) ||
-        gym.fullAddress.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [gyms, search]);
+      // Cost filter
+      const matchesCost = filters.cost.includes(gym.cost);
+
+      // Day passes filter
+      const matchesDayPasses = filters.dayPasses.includes(gym.dayPasses);
+
+      return matchesSearch && matchesCost && matchesDayPasses;
+    });
+  }, [gyms, filters]);
 
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
@@ -69,9 +82,9 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               <h2 className="text-2xl font-bold mb-4">Filters</h2>
               <Button
                 variant="outline"
-                onClick={() =>
-                  alert("this functionality is not available yet.")
-                }
+                onClick={() => {
+                  setFilters(initialFilters);
+                }}
               >
                 Reset
               </Button>
@@ -79,12 +92,169 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
 
             <Input
               id="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={filters.search}
+              onChange={(e) =>
+                setFilters({ ...filters, search: e.target.value })
+              }
               placeholder="Search gyms..."
               className="flex-1"
               type="text"
             />
+
+            {/* Filter Checkboxes */}
+            <div className="mt-4 grid grid-cols-2 gap-6">
+              {/* Cost Filter */}
+              <div>
+                <h3 className="font-medium mb-2">Cost</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="cost-1"
+                      checked={filters.cost.includes(1)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setFilters({
+                            ...filters,
+                            cost: [...filters.cost, 1],
+                          });
+                        } else {
+                          setFilters({
+                            ...filters,
+                            cost: filters.cost.filter((c: number) => c !== 1),
+                          });
+                        }
+                      }}
+                    />
+                    <label htmlFor="cost-1" className="text-sm">
+                      $ ($0-40)
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="cost-2"
+                      checked={filters.cost.includes(2)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setFilters({
+                            ...filters,
+                            cost: [...filters.cost, 2],
+                          });
+                        } else {
+                          setFilters({
+                            ...filters,
+                            cost: filters.cost.filter((c: number) => c !== 2),
+                          });
+                        }
+                      }}
+                    />
+                    <label htmlFor="cost-2" className="text-sm">
+                      $$ ($40-100)
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="cost-3"
+                      checked={filters.cost.includes(3)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setFilters({
+                            ...filters,
+                            cost: [...filters.cost, 3],
+                          });
+                        } else {
+                          setFilters({
+                            ...filters,
+                            cost: filters.cost.filter((c: number) => c !== 3),
+                          });
+                        }
+                      }}
+                    />
+                    <label htmlFor="cost-3" className="text-sm">
+                      $$$ ($100+)
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Day Passes Filter */}
+              <div>
+                <h3 className="font-medium mb-2">Offers day passes?</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="daypass-yes"
+                      checked={filters.dayPasses.includes(true)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setFilters({
+                            ...filters,
+                            dayPasses: [...filters.dayPasses, true],
+                          });
+                        } else {
+                          setFilters({
+                            ...filters,
+                            dayPasses: filters.dayPasses.filter(
+                              (d: boolean | null) => d !== true
+                            ),
+                          });
+                        }
+                      }}
+                    />
+                    <label htmlFor="daypass-yes" className="text-sm">
+                      Yes
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="daypass-no"
+                      checked={filters.dayPasses.includes(false)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setFilters({
+                            ...filters,
+                            dayPasses: [...filters.dayPasses, false],
+                          });
+                        } else {
+                          setFilters({
+                            ...filters,
+                            dayPasses: filters.dayPasses.filter(
+                              (d: boolean | null) => d !== false
+                            ),
+                          });
+                        }
+                      }}
+                    />
+                    <label htmlFor="daypass-no" className="text-sm">
+                      No
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="daypass-unsure"
+                      checked={filters.dayPasses.includes(null)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setFilters({
+                            ...filters,
+                            dayPasses: [...filters.dayPasses, null],
+                          });
+                        } else {
+                          setFilters({
+                            ...filters,
+                            dayPasses: filters.dayPasses.filter(
+                              (d: boolean | null) => d !== null
+                            ),
+                          });
+                        }
+                      }}
+                    />
+                    <label htmlFor="daypass-unsure" className="text-sm">
+                      Unsure
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Interactive Map */}
@@ -133,7 +303,9 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                           <TableHead className="w-[200px]">Gym Name</TableHead>
                           <TableHead>Address</TableHead>
                           <TableHead className="w-[100px]">Cost</TableHead>
-                          <TableHead className="w-[120px]">Day Passes</TableHead>
+                          <TableHead className="w-[120px]">
+                            Day Passes
+                          </TableHead>
                           <TableHead className="w-[150px]">Tags</TableHead>
                           <TableHead className="w-[100px] text-center">
                             Sessions
@@ -172,12 +344,11 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                                     : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                                 }`}
                               >
-                                {gym.dayPasses === true 
-                                  ? "Available" 
-                                  : gym.dayPasses === false 
-                                  ? "Not Available" 
-                                  : "Unknown"
-                                }
+                                {gym.dayPasses === true
+                                  ? "Available"
+                                  : gym.dayPasses === false
+                                  ? "Not Available"
+                                  : "Unknown"}
                               </span>
                             </TableCell>
                             <TableCell>
@@ -212,7 +383,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                 <div className="text-center text-muted-foreground">
                   <p className="text-lg font-medium">No gyms to display</p>
                   <p className="text-sm">
-                    {search.trim()
+                    {filters.search.trim()
                       ? "Try adjusting your search terms"
                       : "Add your first gym to see it on the map"}
                   </p>
@@ -226,21 +397,13 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                 <div className="p-3 border rounded-lg text-center">
                   <p className="text-sm text-muted-foreground">Total Gyms</p>
                   <p className="text-2xl font-bold text-primary">
-                    {gymsLoading ? (
-                      <Skeleton className="h-6 w-8 mx-auto" />
-                    ) : (
-                      gyms?.length || 0
-                    )}
+                    {gymsLoading ? "..." : gyms?.length || 0}
                   </p>
                 </div>
                 <div className="p-3 border rounded-lg text-center">
                   <p className="text-sm text-muted-foreground">Showing</p>
                   <p className="text-2xl font-bold text-primary">
-                    {gymsLoading ? (
-                      <Skeleton className="h-6 w-8 mx-auto" />
-                    ) : (
-                      filteredGyms.length
-                    )}
+                    {gymsLoading ? "..." : filteredGyms.length}
                   </p>
                 </div>
               </div>
