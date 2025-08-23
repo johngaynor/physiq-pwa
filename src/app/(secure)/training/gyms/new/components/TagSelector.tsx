@@ -18,96 +18,59 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Badge } from "@/components/ui/badge";
 
 const GYM_TAGS = [
   {
-    value: "cardio-equipment",
-    label: "Cardio Equipment",
+    value: "bodybuilding",
+    label: "bodybuilding",
   },
   {
-    value: "free-weights",
-    label: "Free Weights",
+    value: "powerlifting",
+    label: "powerlifting",
   },
   {
-    value: "weight-machines",
-    label: "Weight Machines",
+    value: "pool",
+    label: "pool",
   },
   {
-    value: "group-classes",
-    label: "Group Classes",
+    value: "cardio",
+    label: "cardio",
   },
   {
-    value: "personal-training",
-    label: "Personal Training",
+    value: "24/7",
+    label: "24/7",
   },
   {
-    value: "swimming-pool",
-    label: "Swimming Pool",
+    value: "day passes",
+    label: "day passes",
+  },
+  {
+    value: "local gym",
+    label: "local gym",
+  },
+  {
+    value: "commercial gym",
+    label: "commercial gym",
+  },
+  {
+    value: "expensive",
+    label: "expensive",
   },
   {
     value: "sauna",
-    label: "Sauna",
+    label: "sauna",
   },
   {
-    value: "steam-room",
-    label: "Steam Room",
+    value: "steam room",
+    label: "steam room",
   },
   {
-    value: "basketball-court",
-    label: "Basketball Court",
+    value: "posing room",
+    label: "posing room",
   },
   {
-    value: "racquetball-court",
-    label: "Racquetball Court",
-  },
-  {
-    value: "rock-climbing",
-    label: "Rock Climbing",
-  },
-  {
-    value: "yoga-studio",
-    label: "Yoga Studio",
-  },
-  {
-    value: "cycling-studio",
-    label: "Cycling Studio",
-  },
-  {
-    value: "locker-rooms",
-    label: "Locker Rooms",
-  },
-  {
-    value: "parking",
-    label: "Parking",
-  },
-  {
-    value: "wifi",
-    label: "WiFi",
-  },
-  {
-    value: "towel-service",
-    label: "Towel Service",
-  },
-  {
-    value: "massage-therapy",
-    label: "Massage Therapy",
-  },
-  {
-    value: "childcare",
-    label: "Childcare",
-  },
-  {
-    value: "24-hour-access",
-    label: "24 Hour Access",
-  },
-  {
-    value: "juice-bar",
-    label: "Juice Bar",
-  },
-  {
-    value: "pro-shop",
-    label: "Pro Shop",
+    value: "yoga room",
+    label: "yoga room",
   },
 ];
 
@@ -123,11 +86,6 @@ export function TagSelector({ value = [], onChange }: TagSelectorProps) {
     const newValue = value.includes(tagValue)
       ? value.filter((v) => v !== tagValue)
       : [...value, tagValue];
-    onChange?.(newValue);
-  };
-
-  const handleRemoveTag = (tagValue: string) => {
-    const newValue = value.filter((v) => v !== tagValue);
     onChange?.(newValue);
   };
 

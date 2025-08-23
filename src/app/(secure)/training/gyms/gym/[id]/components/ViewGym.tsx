@@ -16,6 +16,7 @@ import {
   List,
 } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
@@ -302,7 +303,14 @@ const ViewGym: React.FC<
                 </div>
                 {gym.tags && gym.tags.length > 0 && (
                   <div className="mt-4">
-                    <FieldValue title="Tags" value={gym.tags.join(", ")} />
+                    <p className="text-muted-foreground mb-2">Tags</p>
+                    <div className="flex flex-wrap gap-2">
+                      {gym.tags.map((tag, index) => (
+                        <Badge key={index} variant="secondary">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <div className="mt-6 grid grid-cols-3 gap-4">
