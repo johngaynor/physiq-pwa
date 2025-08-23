@@ -25,6 +25,14 @@ const GYM_TAGS = [
     label: "bodybuilding",
   },
   {
+    value: "crossfit",
+    label: "crossfit",
+  },
+  {
+    value: "strongman",
+    label: "strongman",
+  },
+  {
     value: "powerlifting",
     label: "powerlifting",
   },
@@ -41,20 +49,12 @@ const GYM_TAGS = [
     label: "24/7",
   },
   {
-    value: "day passes",
-    label: "day passes",
-  },
-  {
     value: "local gym",
     label: "local gym",
   },
   {
     value: "commercial gym",
     label: "commercial gym",
-  },
-  {
-    value: "expensive",
-    label: "expensive",
   },
   {
     value: "sauna",
@@ -67,10 +67,6 @@ const GYM_TAGS = [
   {
     value: "posing room",
     label: "posing room",
-  },
-  {
-    value: "yoga room",
-    label: "yoga room",
   },
 ];
 

@@ -7,6 +7,14 @@ import { Button, Input, Checkbox } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import tagOptions from "./components/TagOptions.json";
 import {
   Table,
   TableBody,
@@ -31,6 +39,7 @@ interface Filters {
   cost: number[];
   dayPasses: (boolean | null)[];
   sortMethod: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc";
+  tags: string[];
 }
 
 const initialFilters = {
@@ -38,6 +47,7 @@ const initialFilters = {
   cost: [1, 2, 3],
   dayPasses: [true, false, null],
   sortMethod: "ratingDesc" as const,
+  tags: [],
 };
 
 const connector = connect(mapStateToProps, {
@@ -49,6 +59,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const router = useRouter();
   const [viewMode, setViewMode] = React.useState<"map" | "list">("list");
   const [filters, setFilters] = React.useState<Filters>(initialFilters);
+  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (!gyms && !gymsLoading) getGyms();
@@ -71,7 +82,12 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
       // Day passes filter
       const matchesDayPasses = filters.dayPasses.includes(gym.dayPasses);
 
-      return matchesSearch && matchesCost && matchesDayPasses;
+      // Tags filter
+      const matchesTags =
+        filters.tags.length === 0 ||
+        filters.tags.every((tag) => gym.tags?.includes(tag));
+
+      return matchesSearch && matchesCost && matchesDayPasses && matchesTags;
     });
 
     // Apply sorting
@@ -141,10 +157,6 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               className="flex-1"
               type="text"
             />
-
-            <h2 className="text-xl font-bold my-4">Filters</h2>
-            <p>within X distance of ___ (my location button)</p>
-            <p>Tags (list out all to click on)</p>
             {/* Filter Checkboxes */}
             <div className="mt-4 grid grid-cols-2 gap-6">
               {/* Cost Filter */}
@@ -349,6 +361,62 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                   </div>
                 </RadioGroup>
               </div>
+            </div>
+
+            {/* Tags Filter */}
+            {!advancedOpen && (
+              <div className="mt-6 transition-opacity duration-300">
+                <h3 className="font-medium mb-3">Tags</h3>
+                <div className="flex flex-wrap gap-2">
+                  {tagOptions.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant={
+                        filters.tags.includes(tag) ? "default" : "outline"
+                      }
+                      className="cursor-pointer hover:bg-primary/10 transition-colors"
+                      onClick={() => {
+                        if (filters.tags.includes(tag)) {
+                          // Remove tag if already selected
+                          setFilters({
+                            ...filters,
+                            tags: filters.tags.filter((t) => t !== tag),
+                          });
+                        } else {
+                          // Add tag if not selected
+                          setFilters({
+                            ...filters,
+                            tags: [...filters.tags, tag],
+                          });
+                        }
+                      }}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Advanced Filter Options Accordion */}
+            <div className="mt-6 border border-2 rounded-lg">
+              <Accordion
+                type="single"
+                collapsible
+                value={advancedOpen ? "advanced" : ""}
+                onValueChange={(value) => setAdvancedOpen(value === "advanced")}
+              >
+                <AccordionItem value="advanced">
+                  <AccordionTrigger className="text-sm font-medium px-6 py-2">
+                    Advanced filter options
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6">
+                    <p className="text-sm text-muted-foreground">
+                      This feature is not yet available.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
           {/* Right Column - Interactive Map */}
