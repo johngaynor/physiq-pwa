@@ -79,14 +79,14 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
           {/* Left Column */}
           <div>
             <div className="gap-2 flex justify-between w-full mb-2">
-              <h2 className="text-2xl font-bold mb-4">Filters</h2>
+              <h2 className="text-2xl font-bold mb-4">Search for Gyms</h2>
               <Button
                 variant="outline"
                 onClick={() => {
                   setFilters(initialFilters);
                 }}
               >
-                Reset
+                Reset All
               </Button>
             </div>
 
@@ -96,11 +96,13 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               onChange={(e) =>
                 setFilters({ ...filters, search: e.target.value })
               }
-              placeholder="Search gyms..."
+              placeholder="Search by text..."
               className="flex-1"
               type="text"
             />
-
+            <h2 className="text-xl font-bold my-4">Filters</h2>
+            <p>within X distance of ___ (my location button)</p>
+            <p>Tags (list out all to click on)</p>
             {/* Filter Checkboxes */}
             <div className="mt-4 grid grid-cols-2 gap-6">
               {/* Cost Filter */}
@@ -255,6 +257,9 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                 </div>
               </div>
             </div>
+            <h2 className="text-xl font-bold my-4">Sort By</h2>
+            <p>price asc/desc</p>
+            <p>ratings asc/desc</p>
           </div>
 
           {/* Right Column - Interactive Map */}
