@@ -301,6 +301,17 @@ const ViewGym: React.FC<
                 <div className="mt-4">
                   <FieldValue title="Comments" value={gym.comments || "N/A"} />
                 </div>
+                <div className="mt-6 grid grid-cols-3 gap-4">
+                  <div>
+                    <FieldValue title="Your workouts here" value="0" />
+                  </div>
+                  <div>
+                    <FieldValue title="Total workouts here" value="0" />
+                  </div>
+                  <div>
+                    <FieldValue title="User photos" value="0" />
+                  </div>
+                </div>
                 {gym.tags && gym.tags.length > 0 && (
                   <div className="mt-4">
                     <p className="text-muted-foreground mb-2">Tags</p>
@@ -313,17 +324,6 @@ const ViewGym: React.FC<
                     </div>
                   </div>
                 )}
-                <div className="mt-6 grid grid-cols-3 gap-4">
-                  <div>
-                    <FieldValue title="Your workouts here" value="0" />
-                  </div>
-                  <div>
-                    <FieldValue title="Total workouts here" value="0" />
-                  </div>
-                  <div>
-                    <FieldValue title="User photos" value="0" />
-                  </div>
-                </div>
               </div>
             </div>
             <div>
