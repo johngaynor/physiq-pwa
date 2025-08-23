@@ -119,12 +119,6 @@ const ViewGym: React.FC<
     setReviewFormOpen(true);
   };
 
-  const handleEditReview = (review: Review) => {
-    setEditingReview(review);
-    setSelectedRating(0);
-    setReviewFormOpen(true);
-  };
-
   // Calculate average rating
   const averageRating = React.useMemo(() => {
     if (!gym?.reviews || gym.reviews.length === 0) return 0;
@@ -174,7 +168,9 @@ const ViewGym: React.FC<
   const style = "mapbox/streets-v12";
   const url = `https://api.mapbox.com/styles/v1/${style}/static/${marker}/${gym.longitude},${gym.latitude},${zoom},0/${width}x${height}@2x?access_token=${token}`;
 
-  const isAdmin = user?.apps.some((app) => app.id === 1);
+  const isAdmin = user && user.id === gym?.createdBy;
+
+  console.log(gym);
 
   return (
     <TooltipProvider>
@@ -360,10 +356,16 @@ const ViewGym: React.FC<
                 </div>
                 <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
-                    <FieldValue title="Your workouts here" value="0" />
+                    <FieldValue
+                      title="Your sessions here"
+                      value={gym.yourSessions || "0"}
+                    />
                   </div>
                   <div className="hidden md:block">
-                    <FieldValue title="Total workouts here" value="0" />
+                    <FieldValue
+                      title="Total sessions here"
+                      value={gym.totalSessions || "0"}
+                    />
                   </div>
                   <div>
                     <p className="text-muted-foreground mb-2">Average rating</p>

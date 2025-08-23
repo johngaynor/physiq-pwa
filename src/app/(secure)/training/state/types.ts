@@ -62,6 +62,8 @@ export type Gym = {
   comments?: string;
   tags: string[];
   reviews?: Review[];
+  yourSessions?: number;
+  totalSessions?: number;
 };
 
 export type Review = {
