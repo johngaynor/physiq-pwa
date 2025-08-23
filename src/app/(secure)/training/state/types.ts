@@ -21,6 +21,8 @@ import {
   LOAD_UPLOAD_GYM_PHOTOS,
   FETCH_DELETE_GYM_PHOTO,
   LOAD_DELETE_GYM_PHOTO,
+  FETCH_EDIT_GYM_REVIEW,
+  LOAD_EDIT_GYM_REVIEW,
 } from "../../../store/actionTypes";
 
 export type Exercise = {
@@ -109,6 +111,8 @@ export type Action =
   | { type: typeof LOAD_UPLOAD_GYM_PHOTOS }
   | { type: typeof FETCH_DELETE_GYM_PHOTO }
   | { type: typeof LOAD_DELETE_GYM_PHOTO; photoId: number }
+  | { type: typeof FETCH_EDIT_GYM_REVIEW }
+  | { type: typeof LOAD_EDIT_GYM_REVIEW; gymId: number; review: Review }
   | { type: typeof FETCH_TRAINING_SESSION_SYNCS }
   | { type: typeof LOAD_TRAINING_SESSION_SYNCS; failed?: boolean };
 
@@ -120,6 +124,7 @@ export interface TrainingState {
   gyms: null | Gym[];
   gymsLoading: boolean;
   editGymLoading: boolean;
+  editGymReviewLoading: boolean;
   gymPhotos: GymPhotos[];
   gymPhotosLoading: boolean;
   gymPhotosId: number | null;

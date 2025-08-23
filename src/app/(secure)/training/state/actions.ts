@@ -19,11 +19,13 @@ import {
   LOAD_UPLOAD_GYM_PHOTOS,
   FETCH_DELETE_GYM_PHOTO,
   LOAD_DELETE_GYM_PHOTO,
+  FETCH_EDIT_GYM_REVIEW,
+  LOAD_EDIT_GYM_REVIEW,
   FETCH_TRAINING_SESSION_SYNCS,
   LOAD_TRAINING_SESSION_SYNCS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { Exercise, ExerciseUnit, Gym, GymPhotos } from "./types";
+import { Exercise, ExerciseUnit, Gym, GymPhotos, Review } from "./types";
 
 export const getExercises = () => {
   return api
@@ -162,5 +164,29 @@ export const syncSessions = (records: any) => {
       failed: true,
     }))
     .error("Error syncing sessions")
+    .post();
+};
+
+export const editGymReview = ({
+  id,
+  gymId,
+  rating,
+  review,
+}: {
+  id: number | null;
+  gymId: number;
+  rating: number;
+  review: string;
+}) => {
+  return api
+    .route("/api/training/gyms/review")
+    .data({ id, gymId, rating, review })
+    .fetch(() => ({ type: FETCH_EDIT_GYM_REVIEW }))
+    .load((data: Review) => ({
+      type: LOAD_EDIT_GYM_REVIEW,
+      gymId,
+      review: data,
+    }))
+    .error("Error editing gym review")
     .post();
 };

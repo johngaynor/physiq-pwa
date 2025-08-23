@@ -46,6 +46,7 @@ import {
   deleteGym,
   uploadGymPhotos,
   deleteGymPhoto,
+  editGymReview,
 } from "@/app/(secure)/training/state/actions";
 
 function mapStateToProps(state: RootState) {
@@ -56,6 +57,7 @@ function mapStateToProps(state: RootState) {
     gymPhotosId: state.training.gymPhotosId,
     uploadGymPhotosLoading: state.training.uploadGymPhotosLoading,
     deleteGymPhotoLoading: state.training.deleteGymPhotoLoading,
+    editGymReviewLoading: state.training.editGymReviewLoading,
     user: state.app.user,
   };
 }
@@ -65,6 +67,7 @@ const connector = connect(mapStateToProps, {
   deleteGym,
   uploadGymPhotos,
   deleteGymPhoto,
+  editGymReview,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -79,15 +82,18 @@ const ViewGym: React.FC<
   setEditGym,
   uploadGymPhotosLoading,
   deleteGymPhotoLoading,
+  editGymReviewLoading,
   user,
   uploadGymPhotos,
   deleteGymPhoto,
   deleteGym,
+  editGymReview,
 }) => {
   const params = useParams();
   const router = useRouter();
   const [reviewFormOpen, setReviewFormOpen] = React.useState(false);
   const [selectedRating, setSelectedRating] = React.useState(0);
+  const [editingReview, setEditingReview] = React.useState<Review | null>(null);
 
   const gymId = params.id ? parseInt(params.id as string) : null;
 
@@ -102,17 +108,21 @@ const ViewGym: React.FC<
   }, [gymId, gymPhotosId, gymPhotosLoading, getGymPhotos]);
 
   const handleRatingClick = (rating: number) => {
-    setSelectedRating(rating);
+    if (userReview) {
+      // If user has existing review, edit it
+      setEditingReview(userReview);
+    } else {
+      // If no existing review, create new one with selected rating
+      setSelectedRating(rating);
+      setEditingReview(null);
+    }
     setReviewFormOpen(true);
   };
 
-  const handleReviewSubmit = (
-    reviewData: Omit<Review, "id" | "lastUpdated">
-  ) => {
-    // TODO: Implement review submission action
-    console.log("Review submitted:", reviewData);
-    setReviewFormOpen(false);
+  const handleEditReview = (review: Review) => {
+    setEditingReview(review);
     setSelectedRating(0);
+    setReviewFormOpen(true);
   };
 
   // Calculate average rating
@@ -142,6 +152,18 @@ const ViewGym: React.FC<
       </div>
     );
   }
+
+  const handleReviewSubmit = (reviewData: Partial<Review>) => {
+    editGymReview({
+      id: reviewData.id || null,
+      gymId: gym.id,
+      rating: reviewData.rating!,
+      review: reviewData.review!,
+    });
+    setReviewFormOpen(false);
+    setSelectedRating(0);
+    setEditingReview(null);
+  };
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN;
   const zoom = 10;
@@ -620,7 +642,9 @@ const ViewGym: React.FC<
           onOpenChange={setReviewFormOpen}
           gymId={gym.id || 0}
           initialRating={selectedRating}
+          existingReview={editingReview || undefined}
           onSubmit={handleReviewSubmit}
+          loading={editGymReviewLoading}
         />
       </div>
     </TooltipProvider>

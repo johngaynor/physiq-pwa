@@ -36,7 +36,8 @@ interface ReviewFormProps {
   onOpenChange: (open: boolean) => void;
   gymId: number;
   initialRating?: number;
-  onSubmit: (data: Omit<Review, "id" | "lastUpdated">) => void;
+  existingReview?: Review;
+  onSubmit: (data: Partial<Review>) => void;
   loading?: boolean;
 }
 
@@ -45,6 +46,7 @@ export function ReviewForm({
   onOpenChange,
   gymId,
   initialRating = 0,
+  existingReview,
   onSubmit,
   loading = false,
 }: ReviewFormProps) {
@@ -56,19 +58,19 @@ export function ReviewForm({
   } = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
-      rating: initialRating,
-      review: "",
+      rating: existingReview?.rating || initialRating,
+      review: existingReview?.review || "",
     },
   });
 
   React.useEffect(() => {
-    if (open && initialRating > 0) {
+    if (open) {
       reset({
-        rating: initialRating,
-        review: "",
+        rating: existingReview?.rating || initialRating,
+        review: existingReview?.review || "",
       });
     }
-  }, [open, initialRating, reset]);
+  }, [open, initialRating, existingReview, reset]);
 
   const handleFormSubmit = (data: ReviewFormData) => {
     onSubmit({
@@ -76,6 +78,7 @@ export function ReviewForm({
       userId: "", // This will be set by the backend/action
       rating: data.rating,
       review: data.review,
+      id: existingReview?.id, // Use existing review ID for edits, undefined for new reviews
     });
   };
 
@@ -88,7 +91,9 @@ export function ReviewForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Write a Review</DialogTitle>
+          <DialogTitle>
+            {existingReview ? "Edit Review" : "Write a Review"}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <div className="space-y-2">
@@ -154,7 +159,10 @@ export function ReviewForm({
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Submitting..." : "Submit Review"}
+              {loading 
+                ? (existingReview ? "Updating..." : "Submitting...") 
+                : (existingReview ? "Update Review" : "Submit Review")
+              }
             </Button>
           </DialogFooter>
         </form>

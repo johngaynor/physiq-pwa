@@ -19,10 +19,12 @@ import {
   LOAD_UPLOAD_GYM_PHOTOS,
   FETCH_DELETE_GYM_PHOTO,
   LOAD_DELETE_GYM_PHOTO,
+  FETCH_EDIT_GYM_REVIEW,
+  LOAD_EDIT_GYM_REVIEW,
   FETCH_TRAINING_SESSION_SYNCS,
   LOAD_TRAINING_SESSION_SYNCS,
 } from "../../../store/actionTypes";
-import type { TrainingState, Action } from "./types";
+import type { TrainingState, Action, Review } from "./types";
 
 const DEFAULT_STATE: TrainingState = {
   exercises: null,
@@ -32,6 +34,7 @@ const DEFAULT_STATE: TrainingState = {
   gyms: null,
   gymsLoading: false,
   editGymLoading: false,
+  editGymReviewLoading: false,
   gymPhotos: [],
   gymPhotosLoading: false,
   gymPhotosId: null,
@@ -152,6 +155,46 @@ export default function appReducer(
           (photo) => photo.id !== action.photoId
         ),
       };
+    case FETCH_EDIT_GYM_REVIEW:
+      return {
+        ...state,
+        editGymReviewLoading: true,
+      };
+    case LOAD_EDIT_GYM_REVIEW: {
+      const newGyms =
+        state.gyms?.map((gym) => {
+          if (gym.id === action.gymId) {
+            const existingReviews = gym.reviews || [];
+            const existingReviewIndex = existingReviews.findIndex(
+              (review) => review.id === action.review.id
+            );
+
+            let updatedReviews: Review[];
+
+            if (existingReviewIndex !== -1) {
+              // Update existing review
+              updatedReviews = existingReviews.map((review, index) =>
+                index === existingReviewIndex ? action.review : review
+              );
+            } else {
+              // Add new review
+              updatedReviews = [...existingReviews, action.review];
+            }
+            return {
+              ...gym,
+              reviews: updatedReviews,
+            };
+          }
+          return gym;
+        }) || null;
+
+      return {
+        ...state,
+        gyms: newGyms,
+        editGymReviewLoading: false,
+      };
+    }
+
     case FETCH_TRAINING_SESSION_SYNCS:
       return {
         ...state,

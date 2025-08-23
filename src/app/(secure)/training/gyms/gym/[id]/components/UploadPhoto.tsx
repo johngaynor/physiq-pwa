@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import { Input, Label, Button } from "@/components/ui";
 import {
   Dialog,
@@ -130,11 +131,14 @@ export function UploadPhoto({
                     >
                       {/* Image Preview */}
                       {isImage && (
-                        <div className="w-full h-full mb-1">
-                          <img
+                        <div className="w-full h-full mb-1 relative">
+                          <Image
                             src={URL.createObjectURL(file)}
                             alt={file.name}
-                            className="w-full h-full object-cover rounded border"
+                            fill
+                            className="object-cover rounded border"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            unoptimized={true}
                           />
                         </div>
                       )}
