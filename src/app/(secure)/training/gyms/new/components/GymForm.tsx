@@ -32,7 +32,6 @@ const GymForm = ({
     register,
     control,
     handleSubmit,
-    watch,
     reset,
     setValue,
     formState: { errors },
