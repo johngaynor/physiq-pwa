@@ -399,7 +399,7 @@ const ViewGym: React.FC<
                       <Rating
                         value={userReview ? userReview.rating : selectedRating}
                         onValueChange={handleRatingClick}
-                        className="text-white"
+                        className="text-muted-foreground"
                       >
                         {[1, 2, 3, 4, 5].map((star) => (
                           <RatingButton key={star} size={20} />
