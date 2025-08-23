@@ -152,7 +152,6 @@ const Gym: React.FC<PropsFromRedux> = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        className="ml-2"
                         variant="outline"
                         onClick={() => router.push("/training/gyms")}
                       >
@@ -166,6 +165,7 @@ const Gym: React.FC<PropsFromRedux> = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
+                        className="ml-2"
                         variant="outline"
                         onClick={() =>
                           alert("This functionality is not available yet...")
