@@ -5,6 +5,8 @@ import { RootState } from "../../../store/reducer";
 import { getGyms } from "../state/actions";
 import { Button, Input, Checkbox } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -28,12 +30,14 @@ interface Filters {
   search: string;
   cost: number[];
   dayPasses: (boolean | null)[];
+  sortMethod: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc";
 }
 
 const initialFilters = {
   search: "",
   cost: [1, 2, 3],
   dayPasses: [true, false, null],
+  sortMethod: "ratingDesc" as const,
 };
 
 const connector = connect(mapStateToProps, {
@@ -50,11 +54,11 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
     if (!gyms && !gymsLoading) getGyms();
   }, [gyms, gymsLoading, getGyms]);
 
-  // Filter gyms based on search and filters
+  // Filter and sort gyms based on search, filters, and sorting
   const filteredGyms = React.useMemo(() => {
     if (!gyms) return [];
 
-    return gyms.filter((gym) => {
+    let filtered = gyms.filter((gym) => {
       // Text search filter
       const matchesSearch =
         !filters.search.trim() ||
@@ -69,6 +73,43 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
 
       return matchesSearch && matchesCost && matchesDayPasses;
     });
+
+    // Apply sorting
+    if (filters.sortMethod === "costAsc") {
+      filtered = filtered.sort((a, b) => a.cost - b.cost);
+    } else if (filters.sortMethod === "costDesc") {
+      filtered = filtered.sort((a, b) => b.cost - a.cost);
+    } else if (filters.sortMethod === "ratingAsc") {
+      filtered = filtered.sort((a, b) => {
+        const aRating =
+          a.reviews && a.reviews.length > 0
+            ? a.reviews.reduce((sum, review) => sum + review.rating, 0) /
+              a.reviews.length
+            : 0;
+        const bRating =
+          b.reviews && b.reviews.length > 0
+            ? b.reviews.reduce((sum, review) => sum + review.rating, 0) /
+              b.reviews.length
+            : 0;
+        return aRating - bRating; // Sort lowest rating first
+      });
+    } else if (filters.sortMethod === "ratingDesc") {
+      filtered = filtered.sort((a, b) => {
+        const aRating =
+          a.reviews && a.reviews.length > 0
+            ? a.reviews.reduce((sum, review) => sum + review.rating, 0) /
+              a.reviews.length
+            : 0;
+        const bRating =
+          b.reviews && b.reviews.length > 0
+            ? b.reviews.reduce((sum, review) => sum + review.rating, 0) /
+              b.reviews.length
+            : 0;
+        return bRating - aRating; // Sort highest rating first
+      });
+    }
+
+    return filtered;
   }, [gyms, filters]);
 
   return (
@@ -100,6 +141,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               className="flex-1"
               type="text"
             />
+
             <h2 className="text-xl font-bold my-4">Filters</h2>
             <p>within X distance of ___ (my location button)</p>
             <p>Tags (list out all to click on)</p>
@@ -257,11 +299,58 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                 </div>
               </div>
             </div>
-            <h2 className="text-xl font-bold my-4">Sort By</h2>
-            <p>price asc/desc</p>
-            <p>ratings asc/desc</p>
-          </div>
 
+            {/* Sort Method Filters */}
+            <div className="mt-6 grid grid-cols-2 gap-6">
+              {/* Sort by Price */}
+              <div>
+                <h3 className="font-medium mb-2">Sort by Price</h3>
+                <RadioGroup
+                  value={filters.sortMethod}
+                  onValueChange={(
+                    value: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc"
+                  ) => setFilters({ ...filters, sortMethod: value })}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="costAsc" id="sort-cost-asc" />
+                    <Label htmlFor="sort-cost-asc" className="text-sm">
+                      Low to High
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="costDesc" id="sort-cost-desc" />
+                    <Label htmlFor="sort-cost-desc" className="text-sm">
+                      High to Low
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* Sort by Rating */}
+              <div>
+                <h3 className="font-medium mb-2">Sort by Rating</h3>
+                <RadioGroup
+                  value={filters.sortMethod}
+                  onValueChange={(
+                    value: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc"
+                  ) => setFilters({ ...filters, sortMethod: value })}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="ratingDesc" id="sort-rating-desc" />
+                    <Label htmlFor="sort-rating-desc" className="text-sm">
+                      High to Low
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="ratingAsc" id="sort-rating-asc" />
+                    <Label htmlFor="sort-rating-asc" className="text-sm">
+                      Low to High
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+          </div>
           {/* Right Column - Interactive Map */}
           <div>
             <div className="gap-2 flex justify-end w-full mb-4">
