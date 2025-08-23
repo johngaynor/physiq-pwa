@@ -71,6 +71,7 @@ const ViewGym: React.FC<
   gymPhotos,
   gymPhotosLoading,
   gymPhotosId,
+  getGymPhotos,
   setEditGym,
   uploadGymPhotosLoading,
   deleteGymPhotoLoading,
@@ -91,7 +92,7 @@ const ViewGym: React.FC<
     if (gymId && gymId !== gymPhotosId && !gymPhotosLoading) {
       getGymPhotos(gymId);
     }
-  }, [gymId, gymPhotosId, gymPhotosLoading]);
+  }, [gymId, gymPhotosId, gymPhotosLoading, getGymPhotos]);
 
   if (!gym) {
     return (
