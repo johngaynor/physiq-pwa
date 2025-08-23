@@ -18,57 +18,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import tagOptions from "../../components/TagOptions.json";
 
-const GYM_TAGS = [
-  {
-    value: "bodybuilding",
-    label: "bodybuilding",
-  },
-  {
-    value: "crossfit",
-    label: "crossfit",
-  },
-  {
-    value: "strongman",
-    label: "strongman",
-  },
-  {
-    value: "powerlifting",
-    label: "powerlifting",
-  },
-  {
-    value: "pool",
-    label: "pool",
-  },
-  {
-    value: "cardio",
-    label: "cardio",
-  },
-  {
-    value: "24/7",
-    label: "24/7",
-  },
-  {
-    value: "local gym",
-    label: "local gym",
-  },
-  {
-    value: "commercial gym",
-    label: "commercial gym",
-  },
-  {
-    value: "sauna",
-    label: "sauna",
-  },
-  {
-    value: "steam room",
-    label: "steam room",
-  },
-  {
-    value: "posing room",
-    label: "posing room",
-  },
-];
+const GYM_TAGS = tagOptions.map((tag: string) => ({
+  value: tag,
+  label: tag,
+}));
 
 interface TagSelectorProps {
   value?: string[];
