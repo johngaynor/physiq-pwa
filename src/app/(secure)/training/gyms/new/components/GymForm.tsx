@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { SearchBox } from "@mapbox/search-js-react";
 import { ArrowLeft } from "lucide-react";
 import { Gym } from "@/app/(secure)/training/state/types";
