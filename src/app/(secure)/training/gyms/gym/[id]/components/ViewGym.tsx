@@ -354,16 +354,34 @@ const ViewGym: React.FC<
                 </div>
                 <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
-                    <FieldValue
-                      title="Your sessions here"
-                      value={gym.yourSessions || "0"}
-                    />
+                    <p className="text-muted-foreground mb-2">Cost (monthly)</p>
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    >
+                      {gym.cost === 1 && "$ ($1-49)"}
+                      {gym.cost === 2 && "$$ ($50-99)"}
+                      {gym.cost === 3 && "$$$ ($100+)"}
+                    </Badge>
                   </div>
                   <div className="hidden md:block">
-                    <FieldValue
-                      title="Total sessions here"
-                      value={gym.totalSessions || "0"}
-                    />
+                    <p className="text-muted-foreground mb-2">Day Passes</p>
+                    <Badge
+                      variant="secondary"
+                      className={
+                        gym.dayPasses === true
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : gym.dayPasses === false
+                          ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                      }
+                    >
+                      {gym.dayPasses === true
+                        ? "Yes"
+                        : gym.dayPasses === false
+                        ? "No"
+                        : "Uncertain"}
+                    </Badge>
                   </div>
                   <div>
                     <p className="text-muted-foreground mb-2">Average rating</p>
