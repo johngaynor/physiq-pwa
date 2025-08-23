@@ -37,7 +37,7 @@ const AppsGridPage: React.FC<AppsGridPageProps> = ({ user, filter }) => {
     );
   } else
     return (
-      <div className="w-full mb-20">
+      <div className="w-full">
         <Input
           type="text"
           placeholder="Search..."

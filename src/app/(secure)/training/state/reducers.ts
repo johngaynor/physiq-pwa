@@ -97,7 +97,6 @@ export default function appReducer(
     case FETCH_EDIT_GYM:
       return { ...state, editGymLoading: true };
     case LOAD_EDIT_GYM:
-      console.log(action);
       return {
         ...state,
         gyms: state.gyms

@@ -59,6 +59,16 @@ export type Gym = {
   lastUpdated: string;
   comments?: string;
   tags: string[];
+  reviews?: Review[];
+};
+
+export type Review = {
+  id: number;
+  gymId: number;
+  userId: string;
+  rating: number;
+  review: string;
+  lastUpdated: string;
 };
 
 export type ExerciseUnit = {

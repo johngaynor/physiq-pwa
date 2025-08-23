@@ -14,9 +14,13 @@ import {
   Share,
   MoreVertical,
   List,
+  Star,
 } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
+import { ReviewForm } from "./ReviewForm";
+import { Review } from "@/app/(secure)/training/state/types";
 import {
   Tooltip,
   TooltipContent,
@@ -82,6 +86,8 @@ const ViewGym: React.FC<
 }) => {
   const params = useParams();
   const router = useRouter();
+  const [reviewFormOpen, setReviewFormOpen] = React.useState(false);
+  const [selectedRating, setSelectedRating] = React.useState(0);
 
   const gymId = params.id ? parseInt(params.id as string) : null;
 
@@ -95,13 +101,40 @@ const ViewGym: React.FC<
     }
   }, [gymId, gymPhotosId, gymPhotosLoading, getGymPhotos]);
 
+  const handleRatingClick = (rating: number) => {
+    setSelectedRating(rating);
+    setReviewFormOpen(true);
+  };
+
+  const handleReviewSubmit = (
+    reviewData: Omit<Review, "id" | "lastUpdated">
+  ) => {
+    // TODO: Implement review submission action
+    console.log("Review submitted:", reviewData);
+    setReviewFormOpen(false);
+    setSelectedRating(0);
+  };
+
+  // Calculate average rating
+  const averageRating = React.useMemo(() => {
+    if (!gym?.reviews || gym.reviews.length === 0) return 0;
+    const sum = gym.reviews.reduce((acc, review) => acc + review.rating, 0);
+    return sum / gym.reviews.length;
+  }, [gym?.reviews]);
+
+  // Get user's existing review
+  const userReview = React.useMemo(() => {
+    if (!gym?.reviews || !user?.id) return null;
+    return gym.reviews.find((review) => review.userId === user.id);
+  }, [gym?.reviews, user?.id]);
+
   if (!gym) {
     return (
       <div className="w-full">
         <Card className="w-full rounded-sm p-0">
           <CardContent className="p-4">
             <p>
-              There was no log found with this ID. If you think this was a
+              There was no gym found with this ID. If you think this was a
               mistake, please contact your coach.
             </p>
           </CardContent>
@@ -123,7 +156,7 @@ const ViewGym: React.FC<
 
   return (
     <TooltipProvider>
-      <div className="w-full mb-20">
+      <div className="w-full">
         <Card className="w-full rounded-sm p-0">
           <CardContent className="flex flex-col md:flex-row justify-between grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
             <div>
@@ -303,29 +336,56 @@ const ViewGym: React.FC<
                 <div className="mt-4">
                   <FieldValue title="Comments" value={gym.comments || "N/A"} />
                 </div>
-                <div className="mt-6 grid grid-cols-3 gap-4">
+                <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
                     <FieldValue title="Your workouts here" value="0" />
                   </div>
-                  <div>
+                  <div className="hidden md:block">
                     <FieldValue title="Total workouts here" value="0" />
                   </div>
                   <div>
-                    <FieldValue title="User photos" value="0" />
+                    <p className="text-muted-foreground mb-2">Average rating</p>
+                    <Rating
+                      value={averageRating || 0}
+                      readOnly
+                      className="text-muted-foreground"
+                    >
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <RatingButton key={star} size={20} />
+                      ))}
+                    </Rating>
                   </div>
                 </div>
-                {gym.tags && gym.tags.length > 0 && (
-                  <div className="mt-4">
+                <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="md:col-span-2">
                     <p className="text-muted-foreground mb-2">Tags</p>
                     <div className="flex flex-wrap gap-2">
-                      {gym.tags.map((tag, index) => (
-                        <Badge key={index} variant="secondary">
-                          {tag}
-                        </Badge>
-                      ))}
+                      {gym.tags.length ? (
+                        gym.tags.map((tag, index) => (
+                          <Badge key={index} variant="secondary">
+                            {tag}
+                          </Badge>
+                        ))
+                      ) : (
+                        <p>N/A</p>
+                      )}
                     </div>
                   </div>
-                )}
+                  <div>
+                    <p className="text-muted-foreground mb-2">Rate this gym</p>
+                    <div className="mb-3">
+                      <Rating
+                        value={userReview ? userReview.rating : selectedRating}
+                        onValueChange={handleRatingClick}
+                        className="text-white"
+                      >
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <RatingButton key={star} size={20} />
+                        ))}
+                      </Rating>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div>
@@ -506,9 +566,62 @@ const ViewGym: React.FC<
                   </div>
                 </AccordionContent>
               </AccordionItem>
+
+              {/* Reviews Accordion */}
+              <AccordionItem value="reviews" className="px-6">
+                <AccordionTrigger>
+                  <div className="flex items-center">
+                    <Star className="h-5 w-5 mr-2" />
+                    Reviews ({gym.reviews?.length || 0})
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4 pt-4">
+                    {!gym.reviews || gym.reviews.length === 0 ? (
+                      <div className="text-center py-4">
+                        <i>No reviews yet. Be the first to review this gym!</i>
+                      </div>
+                    ) : (
+                      gym.reviews.map((review) => (
+                        <div
+                          key={review.id}
+                          className="border-b pb-4 last:border-b-0"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <Rating
+                              value={review.rating}
+                              readOnly
+                              className="text-white"
+                            >
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <RatingButton key={star} size={14} />
+                              ))}
+                            </Rating>
+                            <span className="text-sm text-muted-foreground">
+                              {new Date(
+                                review.lastUpdated
+                              ).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-sm">{review.review}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
           </CardFooter>
         </Card>
+
+        {/* Review Form Modal */}
+        <ReviewForm
+          open={reviewFormOpen}
+          onOpenChange={setReviewFormOpen}
+          gymId={gym.id || 0}
+          initialRating={selectedRating}
+          onSubmit={handleReviewSubmit}
+        />
       </div>
     </TooltipProvider>
   );

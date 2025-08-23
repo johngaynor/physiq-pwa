@@ -128,10 +128,10 @@ const Training: React.FC<PropsFromRedux> = ({
   const isAdmin = user?.apps.some((app) => app.id === 1);
 
   return (
-    <div className="h-full flex flex-col md:flex-row col-2">
-      <div className="flex w-full md:flex-row flex-col h-full relative">
+    <div className="flex flex-col md:flex-row col-2 relative bg-blue-100">
+      <div className="flex w-full md:flex-row flex-col">
         {/* Navbar for training - fixed only within left column */}
-        <div className="absolute top-0 left-0 right-0 z-50 bg-background">
+        <div className="absolute top-0 left-0 right-0 z-50 bg-red-100">
           <div className="flex items-center justify-between p-4 pt-8">
             <Menu
               className="w-6 h-6 cursor-pointer"
@@ -166,10 +166,10 @@ const Training: React.FC<PropsFromRedux> = ({
           />
           <div className="border-b"></div>
         </div>
-        <div className="flex-1 flex flex-col overflow-y-auto">
+        <div className="flex-1 flex flex-col h-screen">
           {/* Main content */}
           {todaySessions.length > 0 ? (
-            <div className="pt-40">
+            <div className="">
               {todaySessions.map((session, index) => (
                 <React.Fragment key={"session" + index}>
                   <SessionBox

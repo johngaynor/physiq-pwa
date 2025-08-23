@@ -44,7 +44,7 @@ export default function DesktopNavAuth() {
   }
 
   return (
-    <>
+    <div className="fixed right-0 left-0">
       <NavigationMenu className="px-5 right-0 left-0 dark:bg-[#060B1C]">
         <NavigationMenuList>
           <div className=" flex items-center">
@@ -107,6 +107,6 @@ export default function DesktopNavAuth() {
           {TabComponent("Apps", path === "Apps", () => navigateToTab("Apps"))}
         </TabsList>
       </Tabs>
-    </>
+    </div>
   );
 }

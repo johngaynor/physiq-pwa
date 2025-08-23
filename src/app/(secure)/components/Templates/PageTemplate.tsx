@@ -80,7 +80,7 @@ export default function PageTemplate({
     !!apps?.find((app: any) => app.id === requiredAppId);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col">
       <div className="border-b">
         <div className="flex flex-col md:flex-row items-center max-w-6xl mx-auto px-5">
           <H1

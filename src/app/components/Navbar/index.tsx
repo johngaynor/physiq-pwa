@@ -19,7 +19,13 @@ export default function NavbarWrapper({
     <>
       {!isMobile && user && <DesktopNavAuth />}
       {!isMobile && !user && <DesktopNav />}
-      <div>{children}</div>
+      <div
+        className={`${!isMobile && user ? "pt-25" : ""} ${
+          isMobile && user ? "pb-30" : ""
+        }`}
+      >
+        {children}
+      </div>
       {isMobile && <MobileNav />}
     </>
   );
