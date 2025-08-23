@@ -14,7 +14,16 @@ import { useParams, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { FieldValue } from "@/app/(secure)/components/Forms/FieldValues";
 import { H3, Button } from "@/components/ui";
-import { Edit, Trash, Camera, Upload, Home, Share } from "lucide-react";
+import {
+  Edit,
+  Trash,
+  Camera,
+  Upload,
+  Home,
+  Share,
+  MoreVertical,
+  List,
+} from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Tooltip,
@@ -22,6 +31,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import ConfirmDeleteModal from "@/app/(secure)/components/Modals/ConfirmDeleteModal";
 import {
   Accordion,
@@ -133,7 +147,22 @@ const Gym: React.FC<PropsFromRedux> = ({
             <div>
               <div className="mb-6 flex justify-between items-center">
                 <H3>{gym.name}</H3>
-                <div>
+                {/* Desktop buttons - show on md and larger screens */}
+                <div className="hidden md:flex">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className="ml-2"
+                        variant="outline"
+                        onClick={() => router.push("/training/gyms")}
+                      >
+                        <List className="font-extrabold" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Go to all gyms</p>
+                    </TooltipContent>
+                  </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -224,6 +253,103 @@ const Gym: React.FC<PropsFromRedux> = ({
                       </TooltipContent>
                     </Tooltip>
                   )}
+                </div>
+
+                {/* Mobile popover - show on smaller screens */}
+                <div className="md:hidden">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline">
+                        <MoreVertical className="h-4 w-4 mr-2" />
+                        Actions
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48" align="end">
+                      <div className="flex flex-col space-y-2">
+                        <Button
+                          variant="ghost"
+                          className="justify-start"
+                          onClick={() => router.push("/training/gyms")}
+                        >
+                          <List className="h-4 w-4 mr-2" />
+                          Go to all gyms
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="justify-start"
+                          onClick={() =>
+                            alert("This functionality is not available yet...")
+                          }
+                        >
+                          <Home className="h-4 w-4 mr-2" />
+                          Set as home gym
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="justify-start"
+                          onClick={() => {
+                            const destination = encodeURIComponent(
+                              gym.fullAddress
+                            );
+                            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+                            window.open(googleMapsUrl, "_blank");
+                          }}
+                        >
+                          <Share className="h-4 w-4 mr-2" />
+                          Go to maps
+                        </Button>
+                        {isAdmin && (
+                          <GymForm
+                            Trigger={
+                              <Button
+                                variant="ghost"
+                                className="justify-start w-full"
+                              >
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit gym
+                              </Button>
+                            }
+                            title="Edit Gym"
+                            description="Update information about this gym."
+                            onSubmit={(values) => {
+                              editGym({ ...values, id: gym.id });
+                            }}
+                            initialValues={{
+                              name: gym.name,
+                              streetAddress: gym.streetAddress,
+                              city: gym.city,
+                              state: gym.state,
+                              postalCode: gym.postalCode,
+                              fullAddress: gym.fullAddress,
+                              latitude: gym.latitude,
+                              longitude: gym.longitude,
+                              comments: gym.comments,
+                            }}
+                            theme={theme}
+                          />
+                        )}
+                        {isAdmin && (
+                          <ConfirmDeleteModal
+                            trigger={
+                              <Button
+                                variant="ghost"
+                                className="justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                              >
+                                <Trash className="h-4 w-4 mr-2" />
+                                Delete gym
+                              </Button>
+                            }
+                            onConfirm={() => {
+                              if (gym.id) {
+                                deleteGym(gym.id);
+                                router.push("/training/gyms");
+                              }
+                            }}
+                          />
+                        )}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
 
