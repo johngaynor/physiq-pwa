@@ -8,6 +8,14 @@ import {
 } from "@/app/(secure)/diet/new/components/FormWrappers";
 import { Input, Label, Button, H3 } from "@/components/ui";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { SearchBox } from "@mapbox/search-js-react";
 import { ArrowLeft } from "lucide-react";
 import { Gym } from "@/app/(secure)/training/state/types";
@@ -53,6 +61,8 @@ const GymForm = ({
           longitude: null,
           comments: "",
           tags: [],
+          cost: 1,
+          dayPasses: null,
         },
   });
 
@@ -70,6 +80,8 @@ const GymForm = ({
       longitude: latestGym.longitude,
       comments: latestGym.comments || "",
       tags: latestGym.tags || [],
+      cost: latestGym.cost || 1,
+      dayPasses: latestGym.dayPasses !== undefined ? latestGym.dayPasses : null,
     });
   }
 
@@ -152,6 +164,63 @@ const GymForm = ({
             {...register("comments")}
           />
         </InputWrapper>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <InputWrapper error={errors.cost?.message}>
+            <Label htmlFor="cost">Cost Level</Label>
+            <Controller
+              control={control}
+              name="cost"
+              render={({ field }) => (
+                <Select
+                  value={field.value?.toString()}
+                  onValueChange={(value) => field.onChange(parseInt(value))}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select cost level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">$ ($1-49)</SelectItem>
+                    <SelectItem value="2">$$ ($50-99)</SelectItem>
+                    <SelectItem value="3">$$$ ($100+)</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </InputWrapper>
+
+          <InputWrapper error={errors.dayPasses?.message}>
+            <Label htmlFor="dayPasses">Day Passes</Label>
+            <Controller
+              control={control}
+              name="dayPasses"
+              render={({ field }) => (
+                <Select
+                  value={
+                    field.value === null
+                      ? "unknown"
+                      : field.value
+                      ? "yes"
+                      : "no"
+                  }
+                  onValueChange={(value) => {
+                    if (value === "unknown") field.onChange(null);
+                    else field.onChange(value === "yes");
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select day pass availability" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="yes">Yes</SelectItem>
+                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="unknown">Unsure</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </InputWrapper>
+        </div>
         <InputWrapper>
           <Label>Gym Tags</Label>
           <Controller

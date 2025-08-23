@@ -15,6 +15,8 @@ export const gymRawSchema = z.object({
   lastUpdated: z.string().optional(),
   comments: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  cost: z.number().min(1).max(3),
+  dayPasses: z.boolean().nullable().optional(),
 });
 
 // 2. Transformed schema for validation/output
@@ -22,6 +24,8 @@ export const gymSchema = gymRawSchema.transform((data) => ({
   ...data,
   tags: data.tags || [],
   comments: data.comments || "",
+  cost: data.cost || 1,
+  dayPasses: data.dayPasses !== undefined ? data.dayPasses : null,
 }));
 
 // 3. Types

@@ -61,6 +61,8 @@ export type Gym = {
   lastUpdated: string;
   comments?: string;
   tags: string[];
+  cost: number; // 1-3 scale (1 = $, 2 = $$, 3 = $$$)
+  dayPasses: boolean | null; // Whether day passes are available (null = uncertain)
   reviews?: Review[];
   yourSessions?: number;
   totalSessions?: number;
