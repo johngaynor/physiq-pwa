@@ -97,16 +97,14 @@ export default function appReducer(
     case FETCH_EDIT_GYM:
       return { ...state, editGymLoading: true };
     case LOAD_EDIT_GYM:
+      console.log(action);
       return {
         ...state,
-        // gyms: state.gyms
-        //   ? state.gyms.some((g) => g.id === action.data.id)
-        //     ? state.gyms.map((g) => (g.id === action.data.id ? action.data : g))
-        //     : [...state.gyms, action.data]
-        //   : [action.data],
-
-        // need to write this properly soon to match diet log
-        gyms: null,
+        gyms: state.gyms
+          ? state.gyms.some((g) => g.id === action.data.id)
+            ? state.gyms.map((g) => (g.id === action.data.id ? action.data : g))
+            : [...state.gyms, action.data]
+          : [action.data],
         editGymLoading: false,
       };
     case FETCH_DELETE_GYM:

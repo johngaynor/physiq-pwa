@@ -78,6 +78,7 @@ const ViewGym: React.FC<
   user,
   uploadGymPhotos,
   deleteGymPhoto,
+  deleteGym,
 }) => {
   const params = useParams();
   const router = useRouter();

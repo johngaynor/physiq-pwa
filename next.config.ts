@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/training/gyms/gym",
+        destination: "/training/gyms",
+        permanent: true,
+      },
+      {
         source: "/checkins/checkin",
         destination: "/checkins",
         permanent: true,

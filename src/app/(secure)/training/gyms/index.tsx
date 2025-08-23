@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { useTheme } from "next-themes";
 import { RootState } from "../../../store/reducer";
-import { getGyms, editGym } from "../state/actions";
+import { getGyms } from "../state/actions";
 import { Button, Input, Skeleton } from "@/components/ui";
 import {
   Table,
@@ -15,7 +14,6 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
-import type { Gym } from "../state/types";
 import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
@@ -27,17 +25,10 @@ function mapStateToProps(state: RootState) {
 
 const connector = connect(mapStateToProps, {
   getGyms,
-  editGym,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Gyms: React.FC<PropsFromRedux> = ({
-  gyms,
-  gymsLoading,
-  getGyms,
-  editGym,
-}) => {
-  const { theme } = useTheme();
+const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const router = useRouter();
   const [search, setSearch] = React.useState<string>("");
 
@@ -57,10 +48,6 @@ const Gyms: React.FC<PropsFromRedux> = ({
         gym.fullAddress.toLowerCase().includes(search.toLowerCase())
     );
   }, [gyms, search]);
-
-  const handleSubmitNew = (values: Partial<Gym>) => {
-    editGym(values);
-  };
 
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
