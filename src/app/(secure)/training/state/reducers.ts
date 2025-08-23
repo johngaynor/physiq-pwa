@@ -31,6 +31,7 @@ const DEFAULT_STATE: TrainingState = {
   exerciseUnitsLoading: false,
   gyms: null,
   gymsLoading: false,
+  editGymLoading: false,
   gymPhotos: [],
   gymPhotosLoading: false,
   gymPhotosId: null,
@@ -94,16 +95,19 @@ export default function appReducer(
         gymsLoading: false,
       };
     case FETCH_EDIT_GYM:
-      return { ...state, gymsLoading: true };
+      return { ...state, editGymLoading: true };
     case LOAD_EDIT_GYM:
       return {
         ...state,
-        gyms: state.gyms
-          ? state.gyms.some((g) => g.id === action.data.id)
-            ? state.gyms.map((g) => (g.id === action.data.id ? action.data : g))
-            : [...state.gyms, action.data]
-          : [action.data],
-        gymsLoading: false,
+        // gyms: state.gyms
+        //   ? state.gyms.some((g) => g.id === action.data.id)
+        //     ? state.gyms.map((g) => (g.id === action.data.id ? action.data : g))
+        //     : [...state.gyms, action.data]
+        //   : [action.data],
+
+        // need to write this properly soon to match diet log
+        gyms: null,
+        editGymLoading: false,
       };
     case FETCH_DELETE_GYM:
       return { ...state, gymsLoading: true };

@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
-import { GymForm } from "./components/GymForm";
 import type { Gym } from "../state/types";
 import { useRouter } from "next/navigation";
 
@@ -75,18 +74,15 @@ const Gyms: React.FC<PropsFromRedux> = ({
           className="flex-1"
           type="text"
         />
-        <GymForm
-          Trigger={
-            <Button variant="outline" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Add Gym
-            </Button>
-          }
-          title="Add New Gym"
-          description="Create a new gym location for your training sessions."
-          onSubmit={handleSubmitNew}
-          theme={theme}
-        />
+        <Button
+          className="ml-2"
+          variant="outline"
+          onClick={() => router.push("/training/gyms/new")}
+        >
+          <div className="flex">
+            <Plus className=" font-extrabold" />
+          </div>
+        </Button>
       </div>
 
       {/* Gyms Table */}

@@ -58,6 +58,7 @@ export type Gym = {
   createdBy: string | null;
   lastUpdated: string;
   comments?: string;
+  tags: string[];
 };
 
 export type ExerciseUnit = {
@@ -108,6 +109,7 @@ export interface TrainingState {
   exerciseUnitsLoading: boolean;
   gyms: null | Gym[];
   gymsLoading: boolean;
+  editGymLoading: boolean;
   gymPhotos: GymPhotos[];
   gymPhotosLoading: boolean;
   gymPhotosId: number | null;
