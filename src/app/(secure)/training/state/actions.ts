@@ -93,9 +93,9 @@ export const editGym = (gymData: Partial<Gym> & { id?: number | null }) => {
     .route("/api/training/gyms/gym")
     .data(gymData)
     .fetch(() => ({ type: FETCH_EDIT_GYM }))
-    .load(() => ({
+    .load((data: Gym) => ({
       type: LOAD_EDIT_GYM,
-      data: gymData,
+      data,
     }))
     .error("Error editing gym")
     .post();

@@ -170,8 +170,6 @@ const ViewGym: React.FC<
 
   const isAdmin = user && user.id === gym?.createdBy;
 
-  console.log(gym);
-
   return (
     <TooltipProvider>
       <div className="w-full">

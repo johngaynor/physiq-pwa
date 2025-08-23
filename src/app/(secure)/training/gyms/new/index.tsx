@@ -34,9 +34,7 @@ const GymFormWrapper: React.FC<PropsFromRedux> = ({
   const router = useRouter();
 
   function onSubmit(data: GymFormData) {
-    editGym(data).then((data) =>
-      router.push(`/training/gyms/gym/${data.gym.id}`)
-    );
+    editGym(data).then((data) => router.push(`/training/gyms/gym/${data.id}`));
   }
 
   if (gymsLoading) {
