@@ -3,7 +3,6 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../../store/reducer";
 import { assignPose } from "../../../state/actions";
-import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -110,13 +109,12 @@ const EditPosesModal: React.FC<EditPosesModalProps> = ({
                     {/* Attachment Preview */}
                     <div className="w-24 h-24 flex-shrink-0 relative">
                       {isImage && imageUrl ? (
-                        <Image
+                        <img
                           src={imageUrl}
                           alt={
                             attachment.s3Filename || `Attachment ${index + 1}`
                           }
-                          fill
-                          className="object-cover rounded border"
+                          className="w-full h-full object-cover rounded border"
                         />
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center border rounded bg-gray-50">

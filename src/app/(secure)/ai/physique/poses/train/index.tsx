@@ -4,7 +4,6 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "@/app/store/reducer";
 import { Input, Button } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -176,11 +175,10 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                 <div className="flex flex-col items-center space-y-2">
                   <div className="relative w-full max-w-xs h-64 border border-gray-200 rounded-lg overflow-hidden bg-transparent">
                     {previewUrl ? (
-                      <Image
+                      <img
                         src={previewUrl}
                         alt="Preview"
-                        fill
-                        className="object-contain"
+                        className="object-contain w-full h-full"
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-transparent">
