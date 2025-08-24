@@ -168,7 +168,9 @@ const ViewGym: React.FC<
   const style = "mapbox/streets-v12";
   const url = `https://api.mapbox.com/styles/v1/${style}/static/${marker}/${gym.longitude},${gym.latitude},${zoom},0/${width}x${height}@2x?access_token=${token}`;
 
-  const isAdmin = user && user.id === gym?.createdBy;
+  const isAdmin =
+    user &&
+    (user.id === gym?.createdBy || user.apps.some((app) => app.id === 1));
 
   return (
     <TooltipProvider>
