@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { DateTime } from "luxon";
 import { TrainingSession } from "../../localDB";
@@ -25,15 +25,15 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     "left" | "right" | null
   >(null);
 
-  const handlePrevWeek = () => {
+  const handlePrevWeek = useCallback(() => {
     setAnimationDirection("left");
     setSelectedDate(selectedDate.minus({ weeks: 1 }));
-  };
+  }, [selectedDate, setSelectedDate]);
 
-  const handleNextWeek = () => {
+  const handleNextWeek = useCallback(() => {
     setAnimationDirection("right");
     setSelectedDate(selectedDate.plus({ weeks: 1 }));
-  };
+  }, [selectedDate, setSelectedDate]);
 
   // Keyboard navigation
   React.useEffect(() => {
@@ -99,9 +99,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         >
           {weekDays.map((day, index) => {
             const isSelected = day.hasSame(selectedDate, "day");
-            const hasSession = sessions.some(session => 
-              DateTime.fromISO(session.date).hasSame(day, "day") && 
-              session.syncStatus !== 'deleted'
+            const hasSession = sessions.some(
+              (session) =>
+                DateTime.fromISO(session.date).hasSame(day, "day") &&
+                session.syncStatus !== "deleted"
             );
 
             return (
@@ -115,10 +116,10 @@ const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 </span>
                 <div
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    isSelected 
-                      ? "bg-primary" 
-                      : hasSession 
-                      ? "bg-gray-400" 
+                    isSelected
+                      ? "bg-primary"
+                      : hasSession
+                      ? "bg-gray-400"
                       : "bg-transparent"
                   }`}
                 />
