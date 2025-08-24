@@ -300,14 +300,16 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                               }
                             }}
                           >
-                            <SelectTrigger className="w-[120px]">
+                            <SelectTrigger className="w-[180px]">
                               <SelectValue placeholder="Select..." />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="my-location">
                                 My location
                               </SelectItem>
-                              <SelectItem value="custom">Custom</SelectItem>
+                              <SelectItem value="custom">
+                                Enter Address
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -319,15 +321,6 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                             />
                           </div>
                         )}
-
-                        {filters.latitude &&
-                          filters.longitude &&
-                          locationType === "my-location" && (
-                            <p className="text-xs text-muted-foreground mt-3">
-                              Using your location: {filters.latitude.toFixed(4)}
-                              , {filters.longitude.toFixed(4)}
-                            </p>
-                          )}
                       </div>
                     </div>
                   </AccordionContent>
