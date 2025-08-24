@@ -101,8 +101,6 @@ const ViewGym: React.FC<
     return gyms?.find((g) => g.id === gymId);
   }, [gyms, gymId]);
 
-  console.log(gym);
-
   React.useEffect(() => {
     if (gymId && gymId !== gymPhotosId && !gymPhotosLoading) {
       getGymPhotos(gymId);
