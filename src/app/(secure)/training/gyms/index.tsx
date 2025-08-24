@@ -6,6 +6,13 @@ import { getGyms } from "../state/actions";
 import { Button } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -17,12 +24,37 @@ import GymMap from "./components/GymMap";
 import GymList from "./components/GymList";
 import GymFilters from "./components/GymFilters";
 import { Filters, initialFilters } from "./types";
+import LocationSearchBox from "./components/LocationSearchBox";
 
 function mapStateToProps(state: RootState) {
   return {
     gyms: state.training.gyms,
     gymsLoading: state.training.gymsLoading,
   };
+}
+
+// Haversine formula to calculate distance between two coordinates
+function getDistanceFromLatLonInKm(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371; // Earth radius in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+}
+
+function deg2rad(deg: number): number {
+  return deg * (Math.PI / 180);
 }
 
 const connector = connect(mapStateToProps, {
@@ -34,6 +66,9 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const router = useRouter();
   const [viewMode, setViewMode] = React.useState<"map" | "list">("list");
   const [filters, setFilters] = React.useState<Filters>(initialFilters);
+  const [locationType, setLocationType] = React.useState<
+    "" | "my-location" | "custom"
+  >("");
   const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(true); // set back to false
 
   React.useEffect(() => {
@@ -45,13 +80,12 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log("Latitude:", position.coords.latitude);
-          console.log("Longitude:", position.coords.longitude);
           setFilters({
             ...filters,
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
+          setLocationType("my-location");
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -92,7 +126,38 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
         filters.tags.length === 0 ||
         filters.tags.every((tag) => gym.tags?.includes(tag));
 
-      return matchesSearch && matchesCost && matchesDayPasses && matchesTags;
+      // Distance filter (only apply if user has set their location)
+      const matchesDistance = (() => {
+        if (filters.latitude === null || filters.longitude === null) {
+          // If no user location is set, don't filter by distance
+          return true;
+        }
+
+        if (gym.latitude === null || gym.longitude === null) {
+          // If gym doesn't have coordinates, exclude it from distance filtering
+          return false;
+        }
+
+        const distance = getDistanceFromLatLonInKm(
+          filters.latitude,
+          filters.longitude,
+          gym.latitude,
+          gym.longitude
+        );
+
+        // Convert kilometers to miles for comparison (1 km = 0.621371 miles)
+        const distanceInMiles = distance * 0.621371;
+
+        return distanceInMiles <= filters.distance;
+      })();
+
+      return (
+        matchesSearch &&
+        matchesCost &&
+        matchesDayPasses &&
+        matchesTags &&
+        matchesDistance
+      );
     });
 
     // Apply sorting
@@ -133,7 +198,18 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
     return filtered;
   }, [gyms, filters]);
 
-  console.log(filters);
+  const handleLocationRetrieve = (response: any) => {
+    if (response.features?.[0]) {
+      const feature = response.features[0];
+      const { coordinates } = feature.properties || {};
+
+      setFilters({
+        ...filters,
+        latitude: coordinates?.latitude || null,
+        longitude: coordinates?.longitude || null,
+      });
+    }
+  };
 
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
@@ -175,25 +251,83 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                   <AccordionContent className="px-6">
                     <div className="space-y-4">
                       <div>
-                        <h4 className="text-sm font-medium mb-2">
-                          Location-based filtering
-                        </h4>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          Filter gyms by distance from your current location
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Filter gyms by distance from a location
                         </p>
-                        <Button
-                          variant="outline"
-                          onClick={handleUseMyLocation}
-                          className="w-full"
-                        >
-                          Use my location
-                        </Button>
-                        {filters.latitude && filters.longitude && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Using location: {filters.latitude.toFixed(4)},{" "}
-                            {filters.longitude.toFixed(4)}
-                          </p>
+
+                        <div className="flex items-center gap-2 text-sm">
+                          <span>Within</span>
+                          <Select
+                            value={filters.distance.toString()}
+                            onValueChange={(value) =>
+                              setFilters({
+                                ...filters,
+                                distance: parseInt(value),
+                              })
+                            }
+                          >
+                            <SelectTrigger className="w-[80px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="10">10</SelectItem>
+                              <SelectItem value="25">25</SelectItem>
+                              <SelectItem value="50">50</SelectItem>
+                              <SelectItem value="100">100</SelectItem>
+                              <SelectItem value="250">250</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <span>miles from</span>
+                          <Select
+                            value={locationType}
+                            onValueChange={(
+                              value: "" | "my-location" | "custom"
+                            ) => {
+                              setLocationType(value);
+
+                              // Clear coordinates when changing location type
+                              if (value !== "my-location") {
+                                setFilters({
+                                  ...filters,
+                                  latitude: null,
+                                  longitude: null,
+                                });
+                              }
+
+                              // Automatically trigger location if "my-location" is selected
+                              if (value === "my-location") {
+                                handleUseMyLocation();
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="w-[120px]">
+                              <SelectValue placeholder="Select..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="my-location">
+                                My location
+                              </SelectItem>
+                              <SelectItem value="custom">Custom</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {locationType === "custom" && (
+                          <div className="mt-3">
+                            <LocationSearchBox
+                              onRetrieve={handleLocationRetrieve}
+                            />
+                          </div>
                         )}
+
+                        {filters.latitude &&
+                          filters.longitude &&
+                          locationType === "my-location" && (
+                            <p className="text-xs text-muted-foreground mt-3">
+                              Using your location: {filters.latitude.toFixed(4)}
+                              , {filters.longitude.toFixed(4)}
+                            </p>
+                          )}
                       </div>
                     </div>
                   </AccordionContent>
