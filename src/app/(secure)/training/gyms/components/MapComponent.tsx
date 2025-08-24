@@ -82,6 +82,15 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .setLngLat([gym.longitude!, gym.latitude!])
         .addTo(mapRef.current!);
 
+      // Calculate average rating
+      const averageRating =
+        gym.reviews && gym.reviews.length > 0
+          ? (
+              gym.reviews.reduce((sum, review) => sum + review.rating, 0) /
+              gym.reviews.length
+            ).toFixed(1)
+          : null;
+
       // Create popup
       const popup = new mapboxgl.Popup({
         offset: 25,
@@ -89,12 +98,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
         closeOnClick: false,
       }).setHTML(`
         <div style="padding: 8px; min-width: 200px;">
-          <h3 style="margin: 0 0 4px 0; font-weight: bold; font-size: 14px;">${
+          <h3 style="margin: 0 0 4px 0; font-weight: bold; font-size: 14px; color: black;">${
             gym.name
           }</h3>
-          <p style="margin: 0; color: #666; font-size: 12px;">${
-            gym.fullAddress
-          }</p>
+          <p style="margin: 0; color: #666; font-size: 12px;">
+            ${
+              averageRating
+                ? `⭐ ${averageRating} (${gym.reviews!.length} review${
+                    gym.reviews!.length !== 1 ? "s" : ""
+                  })`
+                : "No ratings yet"
+            }
+          </p>
           ${
             gym.tags && gym.tags.length > 0
               ? `<div style="margin-top: 8px;">
@@ -102,7 +117,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 .slice(0, 3)
                 .map(
                   (tag) =>
-                    `<span style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 4px;">${tag}</span>`
+                    `<span style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 4px; color: black;">${tag}</span>`
                 )
                 .join("")}
             </div>`

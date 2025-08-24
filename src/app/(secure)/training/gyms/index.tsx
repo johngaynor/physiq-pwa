@@ -538,11 +538,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               <div className="w-full h-96 rounded-lg border-2 border-dashed border-muted-foreground/20 flex items-center justify-center">
                 <div className="text-center text-muted-foreground">
                   <p className="text-lg font-medium">No gyms to display</p>
-                  <p className="text-sm">
-                    {filters.search.trim()
-                      ? "Try adjusting your search terms"
-                      : "Add your first gym to see it on the map"}
-                  </p>
+                  <p className="text-sm">Try adjusting your search terms</p>
                 </div>
               </div>
             )}
