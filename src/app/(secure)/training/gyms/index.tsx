@@ -64,7 +64,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const router = useRouter();
-  const [viewMode, setViewMode] = React.useState<"map" | "list">("list");
+  const [viewMode, setViewMode] = React.useState<"map" | "list">("map");
   const [filters, setFilters] = React.useState<Filters>(initialFilters);
   const [locationType, setLocationType] = React.useState<
     "" | "my-location" | "custom"
