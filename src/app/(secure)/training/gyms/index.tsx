@@ -3,29 +3,20 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { getGyms } from "../state/actions";
-import { Button, Input, Checkbox } from "@/components/ui";
+import { Button, Input } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import tagOptions from "./components/TagOptions.json";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import MapComponent from "./components/MapComponent";
+import GymMap from "./components/GymMap";
+import GymList from "./components/GymList";
+import GymFilters from "./components/GymFilters";
+import { Filters, initialFilters } from "./types";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -33,22 +24,6 @@ function mapStateToProps(state: RootState) {
     gymsLoading: state.training.gymsLoading,
   };
 }
-
-interface Filters {
-  search: string;
-  cost: number[];
-  dayPasses: (boolean | null)[];
-  sortMethod: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc";
-  tags: string[];
-}
-
-const initialFilters = {
-  search: "",
-  cost: [1, 2, 3],
-  dayPasses: [true, false, null],
-  sortMethod: "ratingDesc" as const,
-  tags: [],
-};
 
 const connector = connect(mapStateToProps, {
   getGyms,
@@ -59,11 +34,42 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const router = useRouter();
   const [viewMode, setViewMode] = React.useState<"map" | "list">("list");
   const [filters, setFilters] = React.useState<Filters>(initialFilters);
-  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false);
+  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(true); // set back to false
+  const [userLocation, setUserLocation] = React.useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   React.useEffect(() => {
     if (!gyms && !gymsLoading) getGyms();
   }, [gyms, gymsLoading, getGyms]);
+
+  // Get user's location
+  React.useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log("Latitude:", position.coords.latitude);
+          console.log("Longitude:", position.coords.longitude);
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          // Don't set userLocation, keep it null if location access fails
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000, // 5 minutes
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
   // Filter and sort gyms based on search, filters, and sorting
   const filteredGyms = React.useMemo(() => {
@@ -157,246 +163,12 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               className="flex-1"
               type="text"
             />
-            {/* Filter Checkboxes */}
-            <div className="mt-4 grid grid-cols-2 gap-6">
-              {/* Cost Filter */}
-              <div>
-                <h3 className="font-medium mb-2">Cost</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="cost-1"
-                      checked={filters.cost.includes(1)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilters({
-                            ...filters,
-                            cost: [...filters.cost, 1],
-                          });
-                        } else {
-                          setFilters({
-                            ...filters,
-                            cost: filters.cost.filter((c: number) => c !== 1),
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="cost-1" className="text-sm">
-                      $ ($0-40)
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="cost-2"
-                      checked={filters.cost.includes(2)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilters({
-                            ...filters,
-                            cost: [...filters.cost, 2],
-                          });
-                        } else {
-                          setFilters({
-                            ...filters,
-                            cost: filters.cost.filter((c: number) => c !== 2),
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="cost-2" className="text-sm">
-                      $$ ($40-100)
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="cost-3"
-                      checked={filters.cost.includes(3)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilters({
-                            ...filters,
-                            cost: [...filters.cost, 3],
-                          });
-                        } else {
-                          setFilters({
-                            ...filters,
-                            cost: filters.cost.filter((c: number) => c !== 3),
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="cost-3" className="text-sm">
-                      $$$ ($100+)
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Day Passes Filter */}
-              <div>
-                <h3 className="font-medium mb-2">Offers day passes?</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="daypass-yes"
-                      checked={filters.dayPasses.includes(true)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilters({
-                            ...filters,
-                            dayPasses: [...filters.dayPasses, true],
-                          });
-                        } else {
-                          setFilters({
-                            ...filters,
-                            dayPasses: filters.dayPasses.filter(
-                              (d: boolean | null) => d !== true
-                            ),
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="daypass-yes" className="text-sm">
-                      Yes
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="daypass-no"
-                      checked={filters.dayPasses.includes(false)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilters({
-                            ...filters,
-                            dayPasses: [...filters.dayPasses, false],
-                          });
-                        } else {
-                          setFilters({
-                            ...filters,
-                            dayPasses: filters.dayPasses.filter(
-                              (d: boolean | null) => d !== false
-                            ),
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="daypass-no" className="text-sm">
-                      No
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="daypass-unsure"
-                      checked={filters.dayPasses.includes(null)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilters({
-                            ...filters,
-                            dayPasses: [...filters.dayPasses, null],
-                          });
-                        } else {
-                          setFilters({
-                            ...filters,
-                            dayPasses: filters.dayPasses.filter(
-                              (d: boolean | null) => d !== null
-                            ),
-                          });
-                        }
-                      }}
-                    />
-                    <label htmlFor="daypass-unsure" className="text-sm">
-                      Unsure
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Sort Method Filters */}
-            <div className="mt-6 grid grid-cols-2 gap-6">
-              {/* Sort by Price */}
-              <div>
-                <h3 className="font-medium mb-2">Sort by Price</h3>
-                <RadioGroup
-                  value={filters.sortMethod}
-                  onValueChange={(
-                    value: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc"
-                  ) => setFilters({ ...filters, sortMethod: value })}
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="costAsc" id="sort-cost-asc" />
-                    <Label htmlFor="sort-cost-asc" className="text-sm">
-                      Low to High
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="costDesc" id="sort-cost-desc" />
-                    <Label htmlFor="sort-cost-desc" className="text-sm">
-                      High to Low
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {/* Sort by Rating */}
-              <div>
-                <h3 className="font-medium mb-2">Sort by Rating</h3>
-                <RadioGroup
-                  value={filters.sortMethod}
-                  onValueChange={(
-                    value: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc"
-                  ) => setFilters({ ...filters, sortMethod: value })}
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="ratingDesc" id="sort-rating-desc" />
-                    <Label htmlFor="sort-rating-desc" className="text-sm">
-                      High to Low
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="ratingAsc" id="sort-rating-asc" />
-                    <Label htmlFor="sort-rating-asc" className="text-sm">
-                      Low to High
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            {/* Tags Filter */}
-            {!advancedOpen && (
-              <div className="mt-6 transition-opacity duration-300">
-                <h3 className="font-medium mb-3">Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {tagOptions.map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant={
-                        filters.tags.includes(tag) ? "default" : "outline"
-                      }
-                      className="cursor-pointer hover:bg-primary/10 transition-colors"
-                      onClick={() => {
-                        if (filters.tags.includes(tag)) {
-                          // Remove tag if already selected
-                          setFilters({
-                            ...filters,
-                            tags: filters.tags.filter((t) => t !== tag),
-                          });
-                        } else {
-                          // Add tag if not selected
-                          setFilters({
-                            ...filters,
-                            tags: [...filters.tags, tag],
-                          });
-                        }
-                      }}
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
+            
+            <GymFilters
+              filters={filters}
+              onFiltersChange={setFilters}
+              advancedOpen={advancedOpen}
+            />
 
             {/* Advanced Filter Options Accordion */}
             <div className="mt-6 border border-2 rounded-lg">
@@ -450,7 +222,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               </div>
             ) : filteredGyms.length > 0 ? (
               viewMode === "map" ? (
-                <MapComponent
+                <GymMap
                   gyms={filteredGyms}
                   onGymClick={(gym) =>
                     router.push(`/training/gyms/gym/${gym.id}`)
@@ -458,82 +230,13 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                   className="w-full h-96 rounded-lg border"
                 />
               ) : (
-                <div className="w-full h-96 border rounded-lg overflow-hidden">
-                  <div className="h-full overflow-auto">
-                    <Table>
-                      <TableHeader className="sticky top-0 bg-background z-10">
-                        <TableRow>
-                          <TableHead className="w-[200px]">Gym Name</TableHead>
-                          <TableHead>Location</TableHead>
-                          <TableHead className="w-[100px]">Cost</TableHead>
-                          <TableHead className="w-[120px]">
-                            Day Passes
-                          </TableHead>
-                          <TableHead className="w-[150px]">Tags</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredGyms.map((gym) => (
-                          <TableRow
-                            key={gym.id}
-                            className="cursor-pointer hover:bg-accent"
-                            onClick={() =>
-                              router.push(`/training/gyms/gym/${gym.id}`)
-                            }
-                          >
-                            <TableCell className="font-medium">
-                              {gym.name}
-                            </TableCell>
-                            <TableCell className="text-muted-foreground">
-                              {gym.city}, {gym.state}
-                            </TableCell>
-                            <TableCell>
-                              <span className="text-lg">
-                                {gym.cost === 1 && "$"}
-                                {gym.cost === 2 && "$$"}
-                                {gym.cost === 3 && "$$$"}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <span
-                                className={`text-xs px-2 py-1 rounded ${
-                                  gym.dayPasses === true
-                                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                    : gym.dayPasses === false
-                                    ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                                    : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                }`}
-                              >
-                                {gym.dayPasses === true
-                                  ? "Available"
-                                  : gym.dayPasses === false
-                                  ? "Not Available"
-                                  : "Unknown"}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex flex-wrap gap-1">
-                                {gym.tags?.slice(0, 2).map((tag, index) => (
-                                  <span
-                                    key={index}
-                                    className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded"
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                                {gym.tags && gym.tags.length > 2 && (
-                                  <span className="text-xs text-muted-foreground">
-                                    +{gym.tags.length - 2}
-                                  </span>
-                                )}
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </div>
+                <GymList
+                  gyms={filteredGyms}
+                  onGymClick={(gym) =>
+                    router.push(`/training/gyms/gym/${gym.id}`)
+                  }
+                  className="w-full h-96 border rounded-lg overflow-hidden"
+                />
               )
             ) : (
               <div className="w-full h-96 rounded-lg border-2 border-dashed border-muted-foreground/20 flex items-center justify-center">

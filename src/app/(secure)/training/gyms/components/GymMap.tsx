@@ -4,13 +4,13 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Gym } from "../../state/types";
 
-interface MapComponentProps {
+interface GymMapProps {
   gyms: Gym[];
   onGymClick?: (gym: Gym) => void;
   className?: string;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({
+const GymMap: React.FC<GymMapProps> = ({
   gyms,
   onGymClick,
   className = "w-full h-96 rounded-lg overflow-hidden",
@@ -176,4 +176,4 @@ const MapComponent: React.FC<MapComponentProps> = ({
   );
 };
 
-export default MapComponent;
+export default GymMap;
