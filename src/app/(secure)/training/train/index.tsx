@@ -36,7 +36,7 @@ const Training: React.FC<PropsFromRedux> = ({
 
   const selectedVerse = React.useMemo(() => {
     return verses[Math.floor(Math.random() * verses.length)];
-  }, [selectedDate]);
+  }, []);
 
   // Fetch all sessions from local database
   const fetchSessions = async () => {

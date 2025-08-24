@@ -15,25 +15,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SearchBox } from "@mapbox/search-js-react";
 import { ArrowLeft } from "lucide-react";
 import { Gym } from "@/app/(secure)/training/state/types";
+import LocationSearchBox from "../../components/LocationSearchBox";
 import {
   GymFormData,
   GymSubmissionData,
   gymFormSchema,
   transformGymData,
 } from "../types";
-import { useTheme } from "next-themes";
 import { TagSelector } from "./TagSelector";
 
 const GymForm = ({
-  latestGym,
   onSubmit,
   gym,
   setEditGym,
 }: {
-  latestGym?: Gym | null;
   onSubmit: (data: GymSubmissionData) => void;
   gym?: Gym | null;
   setEditGym?: (edit: boolean) => void;
@@ -81,25 +78,6 @@ const GymForm = ({
         },
   });
 
-  function copyFromLastGym() {
-    if (!latestGym) return;
-
-    reset({
-      name: latestGym.name || "",
-      streetAddress: latestGym.streetAddress || "",
-      city: latestGym.city || "",
-      state: latestGym.state || "",
-      postalCode: latestGym.postalCode || "",
-      fullAddress: latestGym.fullAddress || "",
-      latitude: latestGym.latitude,
-      longitude: latestGym.longitude,
-      comments: latestGym.comments || "",
-      tags: latestGym.tags || [],
-      cost: latestGym.cost || 1,
-      dayPasses: latestGym.dayPasses !== undefined ? latestGym.dayPasses : null,
-    });
-  }
-
   const handleRetrieve = (response: any) => {
     if (response.features?.[0]) {
       const feature = response.features[0];
@@ -136,9 +114,6 @@ const GymForm = ({
     console.log("Form validation errors:", errors);
   };
 
-  const SearchBoxComponent = SearchBox as any;
-  const { theme } = useTheme();
-
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
@@ -158,11 +133,6 @@ const GymForm = ({
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Cancel
-              </Button>
-            )}
-            {latestGym && (
-              <Button variant="outline" onClick={copyFromLastGym} type="button">
-                Copy from Last Gym
               </Button>
             )}
           </div>
@@ -268,38 +238,10 @@ const GymForm = ({
         <CardContent>
           <div className="space-y-4">
             <InputWrapper>
-              <Label>Search for Gym Location</Label>
-              <SearchBoxComponent
-                accessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
-                options={{
-                  language: "en",
-                  country: "US",
-                  types: "poi",
-                  proximity: "ip",
-                }}
+              <LocationSearchBox
                 onRetrieve={handleRetrieve}
                 placeholder="Search for gym locations..."
-                theme={
-                  theme === "dark"
-                    ? {
-                        variables: {
-                          colorBackground: "#0f172a",
-                          colorBackgroundHover: "#1e293b",
-                          colorText: "#ffffff",
-                          fontFamily: "inherit",
-                          unit: "14px",
-                        },
-                        cssText: `
-                          .Input {
-                            color: #ffffff !important;
-                            border: 1px solid #374151 !important;
-                            border-radius: 6px !important;
-                            background-color: #0f172a !important;
-                          }
-                        `,
-                      }
-                    : {}
-                }
+                label="Search for Gym Location"
               />
             </InputWrapper>
 

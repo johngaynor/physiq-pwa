@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { getGyms } from "../state/actions";
-import { Button, Input } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -24,6 +24,7 @@ import GymMap from "./components/GymMap";
 import GymList from "./components/GymList";
 import GymFilters from "./components/GymFilters";
 import { Filters, initialFilters } from "./types";
+import LocationSearchBox from "./components/LocationSearchBox";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -197,6 +198,19 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
     return filtered;
   }, [gyms, filters]);
 
+  const handleLocationRetrieve = (response: any) => {
+    if (response.features?.[0]) {
+      const feature = response.features[0];
+      const { coordinates } = feature.properties || {};
+
+      setFilters({
+        ...filters,
+        latitude: coordinates?.latitude || null,
+        longitude: coordinates?.longitude || null,
+      });
+    }
+  };
+
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
       {/* Two Column Layout */}
@@ -300,10 +314,8 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
 
                         {locationType === "custom" && (
                           <div className="mt-3">
-                            <Input
-                              placeholder="Enter location (coming soon...)"
-                              disabled
-                              className="text-muted-foreground"
+                            <LocationSearchBox
+                              onRetrieve={handleLocationRetrieve}
                             />
                           </div>
                         )}
