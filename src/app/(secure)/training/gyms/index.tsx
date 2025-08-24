@@ -131,7 +131,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
       {/* Two Column Layout */}
-      <Card className="w-full">
+      <Card className="w-full pt-0">
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           {/* Left Column */}
           <div>
@@ -412,7 +412,8 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                   </AccordionTrigger>
                   <AccordionContent className="px-6">
                     <p className="text-sm text-muted-foreground">
-                      This feature is not yet available.
+                      This feature is not yet available... location filters
+                      coming soon! Within ___ miles from ___ location
                     </p>
                   </AccordionContent>
                 </AccordionItem>
