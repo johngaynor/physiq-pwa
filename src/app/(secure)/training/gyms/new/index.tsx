@@ -5,7 +5,7 @@ import { RootState } from "../../../../store/reducer";
 import { getGyms, editGym } from "../../state/actions";
 import GymLoadingPage from "../components/GymLoadingPage";
 import GymForm from "./components/GymForm";
-import { GymFormData } from "./types";
+import { GymSubmissionData } from "./types";
 import { useRouter } from "next/navigation";
 
 function mapStateToProps(state: RootState) {
@@ -33,7 +33,7 @@ const GymFormWrapper: React.FC<PropsFromRedux> = ({
 
   const router = useRouter();
 
-  function onSubmit(data: GymFormData) {
+  function onSubmit(data: GymSubmissionData) {
     editGym(data).then((data) => router.push(`/training/gyms/gym/${data.id}`));
   }
 

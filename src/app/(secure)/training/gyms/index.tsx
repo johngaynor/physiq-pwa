@@ -463,15 +463,12 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                       <TableHeader className="sticky top-0 bg-background z-10">
                         <TableRow>
                           <TableHead className="w-[200px]">Gym Name</TableHead>
-                          <TableHead>Address</TableHead>
+                          <TableHead>Location</TableHead>
                           <TableHead className="w-[100px]">Cost</TableHead>
                           <TableHead className="w-[120px]">
                             Day Passes
                           </TableHead>
                           <TableHead className="w-[150px]">Tags</TableHead>
-                          <TableHead className="w-[100px] text-center">
-                            Sessions
-                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -487,7 +484,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                               {gym.name}
                             </TableCell>
                             <TableCell className="text-muted-foreground">
-                              {gym.fullAddress}
+                              {gym.city}, {gym.state}
                             </TableCell>
                             <TableCell>
                               <span className="text-lg">
@@ -529,9 +526,6 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                                   </span>
                                 )}
                               </div>
-                            </TableCell>
-                            <TableCell className="text-center">
-                              {gym.yourSessions || 0}
                             </TableCell>
                           </TableRow>
                         ))}

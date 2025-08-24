@@ -18,7 +18,12 @@ import {
 import { SearchBox } from "@mapbox/search-js-react";
 import { ArrowLeft } from "lucide-react";
 import { Gym } from "@/app/(secure)/training/state/types";
-import { GymFormData, gymSchema, GymRawFormData, gymRawSchema } from "../types";
+import {
+  GymFormData,
+  GymSubmissionData,
+  gymFormSchema,
+  transformGymData,
+} from "../types";
 import { useTheme } from "next-themes";
 import { TagSelector } from "./TagSelector";
 
@@ -29,7 +34,7 @@ const GymForm = ({
   setEditGym,
 }: {
   latestGym?: Gym | null;
-  onSubmit: (data: GymFormData) => void;
+  onSubmit: (data: GymSubmissionData) => void;
   gym?: Gym | null;
   setEditGym?: (edit: boolean) => void;
   theme?: string;
@@ -42,12 +47,23 @@ const GymForm = ({
     reset,
     setValue,
     formState: { errors },
-  } = useForm<GymRawFormData>({
-    resolver: zodResolver(gymRawSchema),
+  } = useForm<GymFormData>({
+    resolver: zodResolver(gymFormSchema),
     defaultValues: gym
       ? {
           ...gym,
           tags: gym.tags || [],
+          // Ensure dayPasses is properly typed as boolean | null
+          dayPasses:
+            typeof gym.dayPasses === "boolean"
+              ? gym.dayPasses
+              : gym.dayPasses === null
+              ? null
+              : gym.dayPasses === 1
+              ? true
+              : gym.dayPasses === 0
+              ? false
+              : null,
         }
       : {
           name: "",
@@ -107,20 +123,27 @@ const GymForm = ({
     }
   };
 
-  const handleFormSubmit = (rawData: GymRawFormData) => {
+  const handleFormSubmit = (formData: GymFormData) => {
     try {
-      const parsed = gymSchema.parse(rawData);
-      onSubmit(parsed);
+      const submissionData = transformGymData(formData);
+      onSubmit(submissionData);
     } catch (err) {
-      console.error("Zod parse failed", err);
+      console.error("Data transformation failed", err);
     }
+  };
+
+  const handleFormError = (errors: any) => {
+    console.log("Form validation errors:", errors);
   };
 
   const SearchBoxComponent = SearchBox as any;
   const { theme } = useTheme();
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full mb-20">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
+      className="w-full mb-20"
+    >
       {/* General Information */}
       <SectionWrapper
         title="General Information"
