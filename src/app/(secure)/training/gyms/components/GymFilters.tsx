@@ -118,18 +118,18 @@ const GymFilters: React.FC<GymFiltersProps> = ({
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="daypass-yes"
-                checked={filters.dayPasses.includes(true)}
+                checked={filters.dayPasses.includes(1)}
                 onCheckedChange={(checked) => {
                   if (checked) {
                     setFilters({
                       ...filters,
-                      dayPasses: [...filters.dayPasses, true],
+                      dayPasses: [...filters.dayPasses, 1],
                     });
                   } else {
                     setFilters({
                       ...filters,
                       dayPasses: filters.dayPasses.filter(
-                        (d: boolean | null) => d !== true
+                        (d: number | null) => d !== 1
                       ),
                     });
                   }
@@ -142,18 +142,18 @@ const GymFilters: React.FC<GymFiltersProps> = ({
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="daypass-no"
-                checked={filters.dayPasses.includes(false)}
+                checked={filters.dayPasses.includes(0)}
                 onCheckedChange={(checked) => {
                   if (checked) {
                     setFilters({
                       ...filters,
-                      dayPasses: [...filters.dayPasses, false],
+                      dayPasses: [...filters.dayPasses, 0],
                     });
                   } else {
                     setFilters({
                       ...filters,
                       dayPasses: filters.dayPasses.filter(
-                        (d: boolean | null) => d !== false
+                        (d: number | null) => d !== 0
                       ),
                     });
                   }
@@ -177,7 +177,7 @@ const GymFilters: React.FC<GymFiltersProps> = ({
                     setFilters({
                       ...filters,
                       dayPasses: filters.dayPasses.filter(
-                        (d: boolean | null) => d !== null
+                        (d: number | null) => d !== null
                       ),
                     });
                   }

@@ -28,7 +28,7 @@ export const gymFormSchema = z.object({
   comments: z.string().optional(),
   tags: z.array(z.string()).optional(),
   cost: z.number().min(1).max(3),
-  dayPasses: z.boolean().nullable().optional(),
+  dayPasses: z.number().nullable().optional(),
 });
 
 // Output schema (what gets submitted)
@@ -47,7 +47,7 @@ export const gymSubmissionSchema = z.object({
   comments: z.string(),
   tags: z.array(z.string()),
   cost: z.number().min(1).max(3),
-  dayPasses: z.boolean().nullable(),
+  dayPasses: z.number().nullable(),
 });
 
 // Types

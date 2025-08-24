@@ -49,17 +49,6 @@ const GymForm = ({
       ? {
           ...gym,
           tags: gym.tags || [],
-          // Ensure dayPasses is properly typed as boolean | null
-          dayPasses:
-            typeof gym.dayPasses === "boolean"
-              ? gym.dayPasses
-              : gym.dayPasses === null
-              ? null
-              : gym.dayPasses === 1
-              ? true
-              : gym.dayPasses === 0
-              ? false
-              : null,
         }
       : {
           name: "",
@@ -190,13 +179,13 @@ const GymForm = ({
                   value={
                     field.value === null
                       ? "unknown"
-                      : field.value
+                      : field.value === 1
                       ? "yes"
                       : "no"
                   }
                   onValueChange={(value) => {
                     if (value === "unknown") field.onChange(null);
-                    else field.onChange(value === "yes");
+                    else field.onChange(value === "yes" ? 1 : 0);
                   }}
                 >
                   <SelectTrigger className="w-full">

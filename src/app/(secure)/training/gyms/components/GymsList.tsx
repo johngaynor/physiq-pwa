@@ -63,23 +63,23 @@ const GymsList: React.FC<GymsListProps> = ({
                 <TableCell className="w-[120px]">
                   <span
                     className={`text-xs px-2 py-1 rounded truncate inline-block max-w-full ${
-                      gym.dayPasses === true
+                      gym.dayPasses === 1
                         ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        : gym.dayPasses === false
+                        : gym.dayPasses === 0
                         ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
                         : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                     }`}
                     title={
-                      gym.dayPasses === true
+                      gym.dayPasses === 1
                         ? "Available"
-                        : gym.dayPasses === false
+                        : gym.dayPasses === 0
                         ? "Not Available"
                         : "Unknown"
                     }
                   >
-                    {gym.dayPasses === true
+                    {gym.dayPasses === 1
                       ? "Available"
-                      : gym.dayPasses === false
+                      : gym.dayPasses === 0
                       ? "Not Available"
                       : "Unknown"}
                   </span>

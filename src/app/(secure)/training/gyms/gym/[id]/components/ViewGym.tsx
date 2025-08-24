@@ -101,6 +101,8 @@ const ViewGym: React.FC<
     return gyms?.find((g) => g.id === gymId);
   }, [gyms, gymId]);
 
+  console.log(gym);
+
   React.useEffect(() => {
     if (gymId && gymId !== gymPhotosId && !gymPhotosLoading) {
       getGymPhotos(gymId);
@@ -371,16 +373,16 @@ const ViewGym: React.FC<
                     <Badge
                       variant="secondary"
                       className={
-                        gym.dayPasses === true
+                        gym.dayPasses === 1
                           ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                          : gym.dayPasses === false
+                          : gym.dayPasses === 0
                           ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
                           : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                       }
                     >
-                      {gym.dayPasses === true
+                      {gym.dayPasses === 1
                         ? "Yes"
-                        : gym.dayPasses === false
+                        : gym.dayPasses === 0
                         ? "No"
                         : "Uncertain"}
                     </Badge>

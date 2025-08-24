@@ -62,7 +62,7 @@ export type Gym = {
   comments?: string;
   tags: string[];
   cost: number; // 1-3 scale (1 = $, 2 = $$, 3 = $$$)
-  dayPasses: boolean | null; // Whether day passes are available (null = uncertain)
+  dayPasses: number | null; // Whether day passes are available (1 = yes, 0 = no, null = uncertain)
   reviews?: Review[];
   yourSessions?: number;
   totalSessions?: number;
