@@ -15,6 +15,7 @@ const eslintConfig = [
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off", // ⛔ Disable 'unexpected any' error
+      "@next/next/no-img-element": "off", // ⛔ Disable 'no-img-element' error for using <img>
     },
   },
 ];
