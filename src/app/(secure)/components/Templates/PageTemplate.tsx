@@ -121,7 +121,7 @@ export default function PageTemplate({
         }`}
       >
         {!apps
-          ? "loading..."
+          ? ""
           : !authed
           ? "You do not have access to this page."
           : children}
