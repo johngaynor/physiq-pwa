@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Checkbox } from "@/components/ui";
+import { Input, Checkbox } from "@/components/ui";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,18 @@ const GymFilters: React.FC<GymFiltersProps> = ({
 
   return (
     <>
+      {/* Search Input */}
+      <Input
+        id="search"
+        value={filters.search}
+        onChange={(e) =>
+          setFilters({ ...filters, search: e.target.value })
+        }
+        placeholder="Search by text..."
+        className="flex-1"
+        type="text"
+      />
+
       {/* Filter Checkboxes */}
       <div className="mt-4 grid grid-cols-2 gap-6">
         {/* Cost Filter */}

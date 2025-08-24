@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { getGyms } from "../state/actions";
-import { Button, Input } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
@@ -35,30 +35,29 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const [viewMode, setViewMode] = React.useState<"map" | "list">("list");
   const [filters, setFilters] = React.useState<Filters>(initialFilters);
   const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(true); // set back to false
-  const [userLocation, setUserLocation] = React.useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
 
   React.useEffect(() => {
     if (!gyms && !gymsLoading) getGyms();
   }, [gyms, gymsLoading, getGyms]);
 
-  // Get user's location
-  React.useEffect(() => {
+  // Function to handle getting user's location on demand
+  const handleUseMyLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           console.log("Latitude:", position.coords.latitude);
           console.log("Longitude:", position.coords.longitude);
-          setUserLocation({
+          setFilters({
+            ...filters,
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
         },
         (error) => {
           console.error("Error getting location:", error);
-          // Don't set userLocation, keep it null if location access fails
+          alert(
+            "Unable to get your location. Please check your browser settings and try again."
+          );
         },
         {
           enableHighAccuracy: true,
@@ -67,9 +66,9 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
         }
       );
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      alert("Geolocation is not supported by this browser.");
     }
-  }, []);
+  };
 
   // Filter and sort gyms based on search, filters, and sorting
   const filteredGyms = React.useMemo(() => {
@@ -134,6 +133,8 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
     return filtered;
   }, [gyms, filters]);
 
+  console.log(filters);
+
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
       {/* Two Column Layout */}
@@ -153,17 +154,6 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
               </Button>
             </div>
 
-            <Input
-              id="search"
-              value={filters.search}
-              onChange={(e) =>
-                setFilters({ ...filters, search: e.target.value })
-              }
-              placeholder="Search by text..."
-              className="flex-1"
-              type="text"
-            />
-            
             <GymFilters
               filters={filters}
               onFiltersChange={setFilters}
@@ -183,10 +173,29 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                     Advanced filter options
                   </AccordionTrigger>
                   <AccordionContent className="px-6">
-                    <p className="text-sm text-muted-foreground">
-                      This feature is not yet available... location filters
-                      coming soon! Within ___ miles from ___ location
-                    </p>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-sm font-medium mb-2">
+                          Location-based filtering
+                        </h4>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Filter gyms by distance from your current location
+                        </p>
+                        <Button
+                          variant="outline"
+                          onClick={handleUseMyLocation}
+                          className="w-full"
+                        >
+                          Use my location
+                        </Button>
+                        {filters.latitude && filters.longitude && (
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Using location: {filters.latitude.toFixed(4)},{" "}
+                            {filters.longitude.toFixed(4)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

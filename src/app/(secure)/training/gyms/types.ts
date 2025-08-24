@@ -4,6 +4,9 @@ export interface Filters {
   dayPasses: (boolean | null)[];
   sortMethod: "costAsc" | "costDesc" | "ratingAsc" | "ratingDesc";
   tags: string[];
+  latitude: number | null;
+  longitude: number | null;
+  distance: number;
 }
 
 export const initialFilters: Filters = {
@@ -12,4 +15,7 @@ export const initialFilters: Filters = {
   dayPasses: [true, false, null],
   sortMethod: "ratingDesc",
   tags: [],
+  latitude: null,
+  longitude: null,
+  distance: 10,
 };
