@@ -41,7 +41,6 @@ const GymForm = ({
     register,
     control,
     handleSubmit,
-    reset,
     setValue,
     formState: { errors },
   } = useForm<GymFormData>({
