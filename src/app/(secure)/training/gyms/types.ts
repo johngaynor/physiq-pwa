@@ -7,6 +7,7 @@ export interface Filters {
   latitude: number | null;
   longitude: number | null;
   distance: number;
+  locationType: "" | "my-location" | "custom";
 }
 
 export const initialFilters: Filters = {
@@ -18,4 +19,5 @@ export const initialFilters: Filters = {
   latitude: null,
   longitude: null,
   distance: 10,
+  locationType: "",
 };

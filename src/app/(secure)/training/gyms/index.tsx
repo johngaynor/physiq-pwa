@@ -66,9 +66,6 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const router = useRouter();
   const [viewMode, setViewMode] = React.useState<"map" | "list">("map");
   const [filters, setFilters] = React.useState<Filters>(initialFilters);
-  const [locationType, setLocationType] = React.useState<
-    "" | "my-location" | "custom"
-  >("");
   const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -84,8 +81,8 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
             ...filters,
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
+            locationType: "my-location",
           });
-          setLocationType("my-location");
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -279,18 +276,22 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                           </Select>
                           <span>miles from</span>
                           <Select
-                            value={locationType}
+                            value={filters.locationType}
                             onValueChange={(
                               value: "" | "my-location" | "custom"
                             ) => {
-                              setLocationType(value);
-
-                              // Clear coordinates when changing location type
+                              // Update locationType and clear coordinates when changing location type
                               if (value !== "my-location") {
                                 setFilters({
                                   ...filters,
+                                  locationType: value,
                                   latitude: null,
                                   longitude: null,
+                                });
+                              } else {
+                                setFilters({
+                                  ...filters,
+                                  locationType: value,
                                 });
                               }
 
@@ -314,7 +315,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
                           </Select>
                         </div>
 
-                        {locationType === "custom" && (
+                        {filters.locationType === "custom" && (
                           <div className="mt-3">
                             <LocationSearchBox
                               onRetrieve={handleLocationRetrieve}
