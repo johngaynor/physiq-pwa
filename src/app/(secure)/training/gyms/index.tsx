@@ -69,7 +69,7 @@ const Gyms: React.FC<PropsFromRedux> = ({ gyms, gymsLoading, getGyms }) => {
   const [locationType, setLocationType] = React.useState<
     "" | "my-location" | "custom"
   >("");
-  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(true); // set back to false
+  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (!gyms && !gymsLoading) getGyms();
