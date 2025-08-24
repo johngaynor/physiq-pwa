@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   syncAPI,
   getFlattenedDataWithTypes,
@@ -27,7 +27,7 @@ const DataView: React.FC<DataViewProps> = ({
     deletedSessionsCount: number;
   } | null>(null);
 
-  const refreshData = async () => {
+  const refreshData = useCallback(async () => {
     const data = await getCompleteSessionData();
     const flattened = await getFlattenedDataWithTypes();
     setCompleteData(data);
@@ -39,7 +39,30 @@ const DataView: React.FC<DataViewProps> = ({
 
     // Notify parent if callback provided
     onDataChange?.();
-  };
+  }, [onDataChange]);
+
+  const triggerSync = useCallback(async () => {
+    if (syncSessionsLoading) return; // Prevent multiple simultaneous syncs
+
+    const pendingData = await syncAPI.getAllPendingSync();
+    const deletedData = await syncAPI.getAllDeleted();
+    const totalToSync = pendingData.totalPending + deletedData.sessions.length;
+
+    const allSessions = [...pendingData.sessions, ...deletedData.sessions];
+
+    // Batch sync to server
+    if (totalToSync > 0) {
+      // Store the data being synced so we can update it locally when sync completes
+      const sessionIds = pendingData.sessions.map((s) => s.id!);
+      setLastSyncedData({
+        sessionIds,
+        deletedSessionsCount: deletedData.sessions.length,
+      });
+
+      syncSessions(allSessions);
+    }
+    // No need to do anything if there's no data to sync
+  }, [syncSessionsLoading, syncSessions]);
 
   React.useEffect(() => {
     refreshData();
@@ -68,7 +91,7 @@ const DataView: React.FC<DataViewProps> = ({
       clearInterval(statusInterval);
       clearInterval(countdownInterval);
     };
-  }, [syncSessionsLoading]);
+  }, [syncSessionsLoading, refreshData, triggerSync]);
 
   // Handle sync completion for local database updates
   React.useEffect(() => {
@@ -100,30 +123,7 @@ const DataView: React.FC<DataViewProps> = ({
     };
 
     handleSyncCompletion();
-  }, [syncSessionsLoading, lastSyncedData]);
-
-  const triggerSync = async () => {
-    if (syncSessionsLoading) return; // Prevent multiple simultaneous syncs
-
-    const pendingData = await syncAPI.getAllPendingSync();
-    const deletedData = await syncAPI.getAllDeleted();
-    const totalToSync = pendingData.totalPending + deletedData.sessions.length;
-
-    const allSessions = [...pendingData.sessions, ...deletedData.sessions];
-
-    // Batch sync to server
-    if (totalToSync > 0) {
-      // Store the data being synced so we can update it locally when sync completes
-      const sessionIds = pendingData.sessions.map((s) => s.id!);
-      setLastSyncedData({
-        sessionIds,
-        deletedSessionsCount: deletedData.sessions.length,
-      });
-
-      syncSessions(allSessions);
-    }
-    // No need to do anything if there's no data to sync
-  };
+  }, [syncSessionsLoading, lastSyncedData, refreshData]);
 
   return (
     <div className="w-1/2 p-4 border-r hidden md:block">

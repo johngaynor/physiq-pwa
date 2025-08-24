@@ -156,7 +156,7 @@ const ViewCheckIn: React.FC<ViewCheckInProps> = ({
 
     const index = sortedCheckIns.findIndex((c) => c.id === checkIn.id);
     return sortedCheckIns[index - 1] || null;
-  }, [checkIn]);
+  }, [checkIn, checkIns]);
 
   const filteredDailyLogs = React.useMemo(() => {
     if (!dailyLogs || !checkIn) return [];
