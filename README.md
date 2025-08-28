@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 align="center" id="title">PhysiQ Web App</h1>
 
-## Getting Started
+<p align="center"><img src="https://socialify.git.ci/johngaynor/physiq-web-app/image?language=1&amp;name=1&amp;owner=1&amp;pattern=Plus&amp;theme=Light" alt="project-image"></p>
 
-First, run the development server:
+<p id="description">Meet PhysiQ - your intelligent bodybuilding coach. Track progress optimize variables and gain AI-driven insights on your growth.</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+<p align="center"><img src="https://img.shields.io/badge/version-1.0.0-blue" alt="shields"><img src="https://img.shields.io/badge/contributors-1-green" alt="shields"><img src="https://img.shields.io/badge/status-stable-green" alt="shields"></p>
+
+<h2>🚀 Demo</h2>
+
+[https://physiq.app](https://physiq.app)
+
+<h2>🧐 Features</h2>
+
+Here're some of the project's best features:
+
+- Daily health metrics
+- Sleep ring integrations
+- Coach check-ins
+- AI pose classification
+- Training log
+- Gym finder
+- Supplementation management
+
+<h2>🛠️ Installation Steps:</h2>
+
+<p>1. Clone the repository</p>
+
+```
+git clone repo_url
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<p>2. Install npm modules</p>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<p>3. Start development server using below command</p>
 
-## Learn More
+```
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+<h2>🍰 Contribution Guidelines:</h2>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Please contribute using GitHub Flow. Create a branch add commits and open a pull request.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<h2>💻 Built with</h2>
 
-## Deploy on Vercel
+Technologies used in the project:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Next.js
+- Tailwind.css
+- Redux
+- shadcn.io
+- html2canvas
+- MapBox
+- framer-motion
+- zod
+- TypeScript
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<h2>🛡️ License:</h2>
+
+This project is licensed under the This project is licensed under the MIT License.
