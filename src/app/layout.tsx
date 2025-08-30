@@ -21,11 +21,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "PhysiQ",
-  description: "Bodybuilding Redefined.",
+  description: "Intelligent Bodybuilding.",
   icons: {
-    icon: "/icon-light-bg-192x192.jpg",
-    shortcut: "/icon-light-bg-192x192.jpg",
-    apple: "/icon-light-bg-192x192.jpg",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/icons/icon-filled-dark-180x180.png", sizes: "180x180" }],
   },
 };
 
