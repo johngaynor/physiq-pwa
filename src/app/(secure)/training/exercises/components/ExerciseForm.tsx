@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
+import { Textarea } from "@/components/ui/textarea";
 
 // Hardcoded exercise units
 const EXERCISE_UNITS = [
@@ -30,6 +31,9 @@ type ExerciseFormValues = {
   name: string;
   defaultPrimaryUnit?: number | null;
   defaultSecondaryUnit?: number | null;
+  // Generic Machine Configuration
+  machineDescription?: string;
+  machineS3Filename?: string;
 };
 
 type ExerciseFormProps = {
@@ -55,7 +59,9 @@ export function ExerciseForm({
     setFormValues(initialValues);
   }, [initialValues]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     const { id, value } = e.target;
     setFormValues((prev) => ({
       ...prev,
@@ -147,6 +153,41 @@ export function ExerciseForm({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Generic Machine Configuration Section */}
+          <div className="border-t pt-4 mt-4">
+            <h3 className="text-lg font-medium mb-4">
+              Generic Machine Configuration
+            </h3>
+
+            <div className="grid grid-cols-4 items-start gap-4 mb-4">
+              <Label htmlFor="machineDescription" className="text-right mt-2">
+                Description
+              </Label>
+              <Textarea
+                id="machineDescription"
+                value={formValues.machineDescription || ""}
+                onChange={handleChange}
+                className="col-span-3"
+                placeholder="Enter machine description..."
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="machineS3Filename" className="text-right">
+                S3 Filename
+              </Label>
+              <Input
+                id="machineS3Filename"
+                value={formValues.machineS3Filename || ""}
+                onChange={handleChange}
+                className="col-span-3"
+                type="text"
+                placeholder="Enter S3 filename..."
+              />
+            </div>
           </div>
         </div>
         <DialogFooter>

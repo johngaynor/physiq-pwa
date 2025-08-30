@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Pencil, Trash2, Plus } from "lucide-react";
-import { ExerciseForm } from "./components/ExerciseForm";
+import { useRouter } from "next/navigation";
 import type { Exercise } from "../state/types";
 
 function mapStateToProps(state: RootState) {
   return {
     exercises: state.training.exercises,
     exercisesLoading: state.training.exercisesLoading,
+    user: state.app.user,
   };
 }
 
@@ -37,8 +38,10 @@ const Exercises: React.FC<PropsFromRedux> = ({
   getExercises,
   editExercise,
   deleteExercise,
+  user,
 }) => {
   const [search, setSearch] = React.useState<string>("");
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!exercises && !exercisesLoading) getExercises();
@@ -61,33 +64,7 @@ const Exercises: React.FC<PropsFromRedux> = ({
     }
   };
 
-  const handleSubmitNew = (values: {
-    name: string;
-    defaultPrimaryUnit?: number | null;
-    defaultSecondaryUnit?: number | null;
-  }) => {
-    editExercise(
-      null,
-      values.name,
-      values.defaultPrimaryUnit,
-      values.defaultSecondaryUnit
-    );
-  };
-
-  const createEditHandler =
-    (exercise: Exercise) =>
-    (values: {
-      name: string;
-      defaultPrimaryUnit?: number | null;
-      defaultSecondaryUnit?: number | null;
-    }) => {
-      editExercise(
-        exercise.id,
-        values.name,
-        values.defaultPrimaryUnit,
-        values.defaultSecondaryUnit
-      );
-    };
+  const isAdmin = user && user.apps.some((app) => app.id === 1);
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
       {/* Search and Add Button */}
@@ -100,22 +77,16 @@ const Exercises: React.FC<PropsFromRedux> = ({
           className="flex-1"
           type="text"
         />
-        <ExerciseForm
-          Trigger={
-            <Button variant="outline" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Add Exercise
-            </Button>
-          }
-          title="Add New Exercise"
-          description="Create a new exercise for your training routines."
-          initialValues={{
-            name: "",
-            defaultPrimaryUnit: null,
-            defaultSecondaryUnit: null,
-          }}
-          onSubmit={handleSubmitNew}
-        />
+        {isAdmin && (
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={() => router.push("/training/exercises/new")}
+          >
+            <Plus className="h-4 w-4" />
+            Add Exercise
+          </Button>
+        )}
       </div>
 
       {/* Exercises Table */}
@@ -208,26 +179,17 @@ const Exercises: React.FC<PropsFromRedux> = ({
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-2">
-                        <ExerciseForm
-                          Trigger={
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 w-8 p-0"
-                            >
-                              <Pencil className="h-4 w-4" />
-                              <span className="sr-only">Edit exercise</span>
-                            </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() =>
+                            alert("Edit functionality coming soon!")
                           }
-                          title="Edit Exercise"
-                          description="Update the exercise details."
-                          initialValues={{
-                            name: exercise.name,
-                            defaultPrimaryUnit: exercise.defaultPrimaryUnit,
-                            defaultSecondaryUnit: exercise.defaultSecondaryUnit,
-                          }}
-                          onSubmit={createEditHandler(exercise)}
-                        />
+                        >
+                          <Pencil className="h-4 w-4" />
+                          <span className="sr-only">Edit exercise</span>
+                        </Button>
                         <Button
                           variant="ghost"
                           size="sm"
