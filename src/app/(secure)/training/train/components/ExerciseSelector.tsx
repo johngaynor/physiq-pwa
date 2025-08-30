@@ -52,13 +52,15 @@ const ExerciseSelector: React.FC<ExerciseSelectorProps & PropsFromRedux> = ({
   const filteredExercises = exercises 
     ? exercises.filter((exercise) =>
         exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (exercise.target && exercise.target.toLowerCase().includes(searchTerm.toLowerCase()))
+        (exercise.targets && exercise.targets.some(target => 
+          target.toLowerCase().includes(searchTerm.toLowerCase())
+        ))
       )
     : [];
 
   // Group exercises by target (muscle group)
   const exercisesByCategory = filteredExercises.reduce((acc, exercise) => {
-    const category = exercise.target || "General";
+    const category = (exercise.targets && exercise.targets.length > 0) ? exercise.targets[0] : "General";
     if (!acc[category]) {
       acc[category] = [];
     }
@@ -117,7 +119,7 @@ const ExerciseSelector: React.FC<ExerciseSelectorProps & PropsFromRedux> = ({
                           onClick={() => handleExerciseSelect(exercise)}
                           className="flex items-center p-3 bg-card rounded-lg border hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
                         >
-                          {exercise.target?.toLowerCase() === 'cardio' ? (
+                          {exercise.targets?.some(target => target.toLowerCase() === 'cardio') ? (
                             <Activity className="w-5 h-5 text-red-500 mr-3" />
                           ) : (
                             <Dumbbell className="w-5 h-5 text-blue-500 mr-3" />
@@ -125,7 +127,7 @@ const ExerciseSelector: React.FC<ExerciseSelectorProps & PropsFromRedux> = ({
                           <div className="flex-1">
                             <p className="font-medium">{exercise.name}</p>
                             <p className="text-sm text-muted-foreground">
-                              {exercise.target || "General"}
+                              {(exercise.targets && exercise.targets.length > 0) ? exercise.targets[0] : "General"}
                             </p>
                           </div>
                         </div>
