@@ -144,69 +144,71 @@ const Exercises: React.FC<PropsFromRedux> = ({
             </div>
 
             {/* Exercise Table */}
-            <div className="border rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Primary Unit</TableHead>
-                    <TableHead>Secondary Unit</TableHead>
-                    <TableHead>Targets</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {exercisesLoading ? (
+            <div className="w-full h-[400px] border rounded-lg overflow-hidden">
+              <div className="h-full overflow-auto">
+                <Table>
+                  <TableHeader className="sticky top-0 bg-background z-10">
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-8">
-                        Loading exercises...
-                      </TableCell>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Primary Unit</TableHead>
+                      <TableHead>Secondary Unit</TableHead>
+                      <TableHead>Targets</TableHead>
                     </TableRow>
-                  ) : filteredExercises.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={4} className="text-center py-8">
-                        {filters.search.trim() || filters.targets.length > 0
-                          ? "No exercises match your filters"
-                          : "No exercises available"}
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    filteredExercises.map((exercise) => (
-                      <TableRow
-                        key={exercise.id}
-                        className="cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() =>
-                          router.push(
-                            `/training/exercises/exercise/${exercise.id}`
-                          )
-                        }
-                      >
-                        <TableCell className="font-medium">
-                          {exercise.name}
-                        </TableCell>
-                        <TableCell>
-                          {getUnitNameById(exercise.defaultPrimaryUnit)}
-                        </TableCell>
-                        <TableCell>
-                          {getUnitNameById(exercise.defaultSecondaryUnit)}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {exercise.targets?.map((target) => (
-                              <Badge
-                                key={target}
-                                variant="secondary"
-                                className="text-xs"
-                              >
-                                {target}
-                              </Badge>
-                            ))}
-                          </div>
+                  </TableHeader>
+                  <TableBody>
+                    {exercisesLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8">
+                          Loading exercises...
                         </TableCell>
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+                    ) : filteredExercises.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8">
+                          {filters.search.trim() || filters.targets.length > 0
+                            ? "No exercises match your filters"
+                            : "No exercises available"}
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredExercises.map((exercise) => (
+                        <TableRow
+                          key={exercise.id}
+                          className="cursor-pointer hover:bg-muted/50 transition-colors"
+                          onClick={() =>
+                            router.push(
+                              `/training/exercises/exercise/${exercise.id}`
+                            )
+                          }
+                        >
+                          <TableCell className="font-medium">
+                            {exercise.name}
+                          </TableCell>
+                          <TableCell>
+                            {getUnitNameById(exercise.defaultPrimaryUnit)}
+                          </TableCell>
+                          <TableCell>
+                            {getUnitNameById(exercise.defaultSecondaryUnit)}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {exercise.targets?.map((target) => (
+                                <Badge
+                                  key={target}
+                                  variant="secondary"
+                                  className="text-xs"
+                                >
+                                  {target}
+                                </Badge>
+                              ))}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
           </div>
         </CardContent>

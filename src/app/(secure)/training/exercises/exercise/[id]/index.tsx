@@ -11,6 +11,34 @@ import ViewExercise from "./components/ViewExercise";
 import ExerciseForm from "../../new/components/ExerciseForm";
 import ExerciseLoadingPage from "../../components/ExerciseLoadingPage";
 
+// Hardcoded muscle group targets - should match the ones in ExerciseForm
+const MUSCLE_GROUPS = [
+  { id: 1, name: "Quads" },
+  { id: 2, name: "Calves" },
+  { id: 3, name: "Hamstrings" },
+  { id: 4, name: "Glutes" },
+  { id: 5, name: "Abs" },
+  { id: 6, name: "Chest" },
+  { id: 7, name: "Rear Delts" },
+  { id: 8, name: "Front Delts" },
+  { id: 9, name: "Side Delts" },
+  { id: 10, name: "Triceps" },
+  { id: 11, name: "Biceps" },
+  { id: 12, name: "Forearms" },
+  { id: 13, name: "Back" },
+  { id: 14, name: "Cardio" },
+];
+
+// Helper function to convert target names to IDs
+const convertTargetNamesToIds = (targetNames: string[]): number[] => {
+  return targetNames
+    .map((name) => {
+      const muscle = MUSCLE_GROUPS.find((m) => m.name === name);
+      return muscle ? muscle.id : null;
+    })
+    .filter((id): id is number => id !== null);
+};
+
 function mapStateToProps(state: RootState) {
   return {
     exercises: state.training.exercises,
@@ -50,7 +78,12 @@ const Exercise: React.FC<PropsFromRedux> = ({
     return (
       <ExerciseForm
         onSubmit={(values) => {
-          editExerciseInformation({ ...values, id: exercise.id });
+          const submissionData = {
+            ...values,
+            id: exercise.id,
+            targets: convertTargetNamesToIds(values.targets || []) as any,
+          };
+          editExerciseInformation(submissionData);
           setEditExercise(false);
         }}
         exercise={exercise}
