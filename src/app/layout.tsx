@@ -23,9 +23,9 @@ export const metadata: Metadata = {
   title: "PhysiQ",
   description: "Bodybuilding Redefined.",
   icons: {
-    icon: "/192.png",
-    shortcut: "/192.png",
-    apple: "/192.png",
+    icon: "/icon-light-bg-192x192.jpg",
+    shortcut: "/icon-light-bg-192x192.jpg",
+    apple: "/icon-light-bg-192x192.jpg",
   },
 };
 
