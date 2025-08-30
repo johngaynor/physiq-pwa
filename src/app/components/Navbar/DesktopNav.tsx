@@ -20,6 +20,7 @@ import { Button, H4 } from "@/components/ui";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const DesktopNav = ({}) => {
   const { theme, setTheme } = useTheme();
@@ -30,7 +31,12 @@ const DesktopNav = ({}) => {
         <div className=" flex items-center">
           <NavigationMenuItem>
             <Link href="/">
-              <H4 className="pr-10 pb-2">PhysiQ</H4>
+              <Image
+                src={`/images/text-${theme}-transparent-200x80.png`}
+                alt="PhysiQ Logo"
+                width={80}
+                height={32}
+              />
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>

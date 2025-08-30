@@ -12,6 +12,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 
 function TabComponent(value: string, isActive: boolean, onClick: () => void) {
   return (
@@ -50,7 +51,12 @@ export default function DesktopNavAuth() {
           <div className=" flex items-center">
             <NavigationMenuItem>
               <Link href="/">
-                <H4 className="pr-10 pb-2">PhysiQ</H4>
+                <Image
+                  src={`/images/text-${theme}-transparent-200x80.png`}
+                  alt="PhysiQ Logo"
+                  width={80}
+                  height={32}
+                />
               </Link>
             </NavigationMenuItem>
           </div>
