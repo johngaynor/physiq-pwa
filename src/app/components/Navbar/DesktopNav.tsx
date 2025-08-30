@@ -16,7 +16,7 @@ import {
   AIItems,
 } from "./ListItems";
 import { useTheme } from "next-themes";
-import { Button, H4 } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
