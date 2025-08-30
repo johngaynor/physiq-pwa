@@ -6,8 +6,7 @@ import {
   SectionWrapper,
   InputWrapper,
 } from "@/app/(secure)/diet/new/components/FormWrappers";
-import { Input, Label, Button, H3 } from "@/components/ui";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input, Label, Button } from "@/components/ui";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -190,7 +189,10 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
             render={({ field }) => (
               <div className="flex flex-col w-full mt-2 gap-2">
                 {MUSCLE_GROUPS.map((muscle) => (
-                  <div key={muscle.id} className="flex items-center w-full space-x-2">
+                  <div
+                    key={muscle.id}
+                    className="flex items-center w-full space-x-2"
+                  >
                     <Checkbox
                       id={`muscle-${muscle.id}`}
                       checked={field.value?.includes(muscle.id) || false}
@@ -199,7 +201,9 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
                         if (checked) {
                           field.onChange([...currentTags, muscle.id]);
                         } else {
-                          field.onChange(currentTags.filter((id) => id !== muscle.id));
+                          field.onChange(
+                            currentTags.filter((id) => id !== muscle.id)
+                          );
                         }
                       }}
                     />

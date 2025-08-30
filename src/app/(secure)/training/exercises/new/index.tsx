@@ -37,12 +37,12 @@ const ExerciseFormWrapper: React.FC<PropsFromRedux> = ({
       data.defaultPrimaryUnit,
       data.defaultSecondaryUnit
     );
-    
+
     // TODO: Submit tags when API supports them
     if (data.tags && data.tags.length > 0) {
       console.log("Selected muscle group tags:", data.tags);
     }
-    
+
     router.push("/training/exercises");
   }
 
