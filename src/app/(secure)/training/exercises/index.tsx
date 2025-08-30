@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
 import { getExercises } from "../state/actions";
-import { Button, Input, Skeleton } from "@/components/ui";
+import { Button, Badge } from "@/components/ui";
 import {
   Table,
   TableBody,
@@ -15,6 +15,10 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ExerciseFiltersComponent, {
+  ExerciseFilters,
+  initialExerciseFilters,
+} from "./components/ExerciseFilters";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -35,148 +39,161 @@ const Exercises: React.FC<PropsFromRedux> = ({
   getExercises,
   user,
 }) => {
-  const [search, setSearch] = React.useState<string>("");
+  const [filters, setFilters] = React.useState<ExerciseFilters>(
+    initialExerciseFilters
+  );
   const router = useRouter();
 
   React.useEffect(() => {
     if (!exercises && !exercisesLoading) getExercises();
   }, [exercises, exercisesLoading, getExercises]);
 
-  // Filter exercises based on search
+  // Filter exercises based on search and targets
   const filteredExercises = React.useMemo(() => {
     if (!exercises) return [];
 
-    if (!search.trim()) return exercises;
+    return exercises.filter((exercise) => {
+      // Text search filter
+      const matchesSearch =
+        !filters.search.trim() ||
+        exercise.name.toLowerCase().includes(filters.search.toLowerCase());
 
-    return exercises.filter((exercise) =>
-      exercise.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [exercises, search]);
+      // Targets filter
+      const matchesTargets =
+        filters.targets.length === 0 ||
+        filters.targets.some((target) => exercise.targets?.includes(target));
+
+      return matchesSearch && matchesTargets;
+    });
+  }, [exercises, filters]);
 
   const isAdmin = user && user.apps.some((app) => app.id === 1);
+
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
-      {/* Search and Add Button */}
-      <div className="flex gap-2">
-        <Input
-          id="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search exercises..."
-          className="flex-1"
-          type="text"
-        />
-        {isAdmin && (
-          <Button
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={() => router.push("/training/exercises/new")}
-          >
-            <Plus className="h-4 w-4" />
-            Add Exercise
-          </Button>
-        )}
-      </div>
-
-      {/* Exercises Table */}
-      <Card className="w-full">
-        <CardContent className="p-0">
-          {exercisesLoading ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <Skeleton className="h-5 w-32" />
-                  </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-5 w-24" />
-                  </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-5 w-24" />
-                  </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-5 w-32" />
-                  </TableHead>
-                  <TableHead className="text-center">
-                    <Skeleton className="h-5 w-16" />
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <TableRow key={`exercise-loading-${index}`}>
-                    <TableCell>
-                      <Skeleton className="h-5 w-40" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-5 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-5 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-5 w-32" />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : filteredExercises.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Exercise Name</TableHead>
-                  <TableHead>Primary Unit</TableHead>
-                  <TableHead>Secondary Unit</TableHead>
-                  <TableHead>Targets</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredExercises.map((exercise) => (
-                  <TableRow key={"exercise-" + exercise.id}>
-                    <TableCell className="font-medium">
-                      {exercise.name}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {exercise.primaryUnitType || "—"}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {exercise.secondaryUnitType || "—"}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {exercise.targets && exercise.targets.length > 0 ? (
-                          exercise.targets.map((target, index) => (
-                            <span
-                              key={"exercise-target-" + index}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground"
-                            >
-                              {target}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>
-                {search.trim()
-                  ? "No exercises found matching your search."
-                  : "No exercises found."}
-              </p>
-              <p className="text-sm mt-1">
-                {search.trim()
-                  ? "Try adjusting your search terms."
-                  : "Add your first exercise to get started."}
-              </p>
+      {/* Two Column Layout */}
+      <Card className="w-full pt-0">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+          {/* Left Column - Filters */}
+          <div>
+            <div className="gap-2 flex justify-between w-full mb-2">
+              <h2 className="text-2xl font-bold mb-4">Filter Exercises</h2>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setFilters(initialExerciseFilters);
+                }}
+              >
+                Reset All
+              </Button>
             </div>
-          )}
+
+            <ExerciseFiltersComponent
+              filters={filters}
+              onFiltersChange={setFilters}
+            />
+
+            {/* Quick Stats */}
+            <div className="mt-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 border rounded-lg text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Total Exercises
+                  </p>
+                  <p className="text-2xl font-bold text-primary">
+                    {exercisesLoading ? "..." : exercises?.length || 0}
+                  </p>
+                </div>
+                <div className="p-3 border rounded-lg text-center">
+                  <p className="text-sm text-muted-foreground">Showing</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {exercisesLoading ? "..." : filteredExercises.length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Exercise Table */}
+          <div>
+            <div className="gap-2 flex justify-end w-full mb-4">
+              {isAdmin && (
+                <Button
+                  variant="outline"
+                  onClick={() => router.push("/training/exercises/new")}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Exercise
+                </Button>
+              )}
+            </div>
+
+            {/* Exercise Table */}
+            <div className="border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Primary Unit</TableHead>
+                    <TableHead>Secondary Unit</TableHead>
+                    <TableHead>Targets</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {exercisesLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-8">
+                        Loading exercises...
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredExercises.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-8">
+                        {filters.search.trim() || filters.targets.length > 0
+                          ? "No exercises match your filters"
+                          : "No exercises available"}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredExercises.map((exercise) => (
+                      <TableRow
+                        key={exercise.id}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
+                        onClick={() =>
+                          router.push(
+                            `/training/exercises/exercise/${exercise.id}`
+                          )
+                        }
+                      >
+                        <TableCell className="font-medium">
+                          {exercise.name}
+                        </TableCell>
+                        <TableCell>
+                          {exercise.defaultPrimaryUnit || "-"}
+                        </TableCell>
+                        <TableCell>
+                          {exercise.defaultSecondaryUnit || "-"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {exercise.targets?.map((target) => (
+                              <Badge
+                                key={target}
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {target}
+                              </Badge>
+                            ))}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
