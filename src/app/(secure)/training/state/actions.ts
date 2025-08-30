@@ -41,11 +41,12 @@ export const editExercise = (
   id: number | null,
   name: string,
   defaultPrimaryUnit?: number | null,
-  defaultSecondaryUnit?: number | null
+  defaultSecondaryUnit?: number | null,
+  targets?: number[]
 ) => {
   return api
     .route("/api/training/exercises/exercise")
-    .data({ id, name, defaultPrimaryUnit, defaultSecondaryUnit })
+    .data({ id, name, defaultPrimaryUnit, defaultSecondaryUnit, targets })
     .fetch(() => ({ type: FETCH_EDIT_EXERCISE }))
     .load((data: Exercise) => ({
       type: LOAD_EDIT_EXERCISE,

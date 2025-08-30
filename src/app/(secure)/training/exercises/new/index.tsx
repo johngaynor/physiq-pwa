@@ -38,7 +38,8 @@ const ExerciseFormWrapper: React.FC<PropsFromRedux> = ({
       null,
       data.name,
       data.defaultPrimaryUnit,
-      data.defaultSecondaryUnit
+      data.defaultSecondaryUnit,
+      data.tags
     ).then((data) => router.push(`/training/exercises/exercise/${data.id}`));
   }
 
