@@ -20,6 +20,21 @@ import ExerciseFiltersComponent, {
   initialExerciseFilters,
 } from "./components/ExerciseFilters";
 
+// Hardcoded exercise units - should match the ones in ExerciseForm
+const EXERCISE_UNITS = [
+  { id: 1, name: "Weight", measurement: "number" },
+  { id: 2, name: "Reps", measurement: "number" },
+  { id: 3, name: "Time", measurement: "time" },
+  { id: 4, name: "BPM", measurement: "number" },
+];
+
+// Helper function to get unit name by ID
+const getUnitNameById = (unitId: number | null | undefined): string => {
+  if (!unitId) return "-";
+  const unit = EXERCISE_UNITS.find((u) => u.id === unitId);
+  return unit ? unit.name : "-";
+};
+
 function mapStateToProps(state: RootState) {
   return {
     exercises: state.training.exercises,
@@ -169,10 +184,10 @@ const Exercises: React.FC<PropsFromRedux> = ({
                           {exercise.name}
                         </TableCell>
                         <TableCell>
-                          {exercise.defaultPrimaryUnit || "-"}
+                          {getUnitNameById(exercise.defaultPrimaryUnit)}
                         </TableCell>
                         <TableCell>
-                          {exercise.defaultSecondaryUnit || "-"}
+                          {getUnitNameById(exercise.defaultSecondaryUnit)}
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">

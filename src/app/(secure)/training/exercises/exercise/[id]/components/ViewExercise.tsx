@@ -31,6 +31,21 @@ import {
   deleteExercise,
 } from "@/app/(secure)/training/state/actions";
 
+// Hardcoded exercise units - should match the ones in ExerciseForm
+const EXERCISE_UNITS = [
+  { id: 1, name: "Weight", measurement: "number" },
+  { id: 2, name: "Reps", measurement: "number" },
+  { id: 3, name: "Time", measurement: "time" },
+  { id: 4, name: "BPM", measurement: "number" },
+];
+
+// Helper function to get unit name by ID
+const getUnitNameById = (unitId: number | null | undefined): string => {
+  if (!unitId) return "Not set";
+  const unit = EXERCISE_UNITS.find((u) => u.id === unitId);
+  return unit ? unit.name : "Not set";
+};
+
 function mapStateToProps(state: RootState) {
   return {
     exercises: state.training.exercises,
@@ -259,7 +274,7 @@ const ViewExercise: React.FC<
                         Default Primary Unit
                       </p>
                       <p className="font-medium">
-                        {exercise.defaultPrimaryUnit || "Not set"}
+                        {getUnitNameById(exercise.defaultPrimaryUnit)}
                       </p>
                     </div>
                     <div>
@@ -267,7 +282,7 @@ const ViewExercise: React.FC<
                         Default Secondary Unit
                       </p>
                       <p className="font-medium">
-                        {exercise.defaultSecondaryUnit || "Not set"}
+                        {getUnitNameById(exercise.defaultSecondaryUnit)}
                       </p>
                     </div>
                   </div>
