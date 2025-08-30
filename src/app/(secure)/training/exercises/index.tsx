@@ -61,13 +61,32 @@ const Exercises: React.FC<PropsFromRedux> = ({
     }
   };
 
-  const handleSubmitNew = (values: { name: string }) => {
-    editExercise(null, values.name);
+  const handleSubmitNew = (values: {
+    name: string;
+    defaultPrimaryUnit?: number | null;
+    defaultSecondaryUnit?: number | null;
+  }) => {
+    editExercise(
+      null,
+      values.name,
+      values.defaultPrimaryUnit,
+      values.defaultSecondaryUnit
+    );
   };
 
   const createEditHandler =
-    (exercise: Exercise) => (values: { name: string }) => {
-      editExercise(exercise.id, values.name);
+    (exercise: Exercise) =>
+    (values: {
+      name: string;
+      defaultPrimaryUnit?: number | null;
+      defaultSecondaryUnit?: number | null;
+    }) => {
+      editExercise(
+        exercise.id,
+        values.name,
+        values.defaultPrimaryUnit,
+        values.defaultSecondaryUnit
+      );
     };
   return (
     <div className="w-full flex flex-col gap-4 mb-20">
@@ -90,7 +109,11 @@ const Exercises: React.FC<PropsFromRedux> = ({
           }
           title="Add New Exercise"
           description="Create a new exercise for your training routines."
-          initialValues={{ name: "" }}
+          initialValues={{
+            name: "",
+            defaultPrimaryUnit: null,
+            defaultSecondaryUnit: null,
+          }}
           onSubmit={handleSubmitNew}
         />
       </div>
@@ -105,6 +128,15 @@ const Exercises: React.FC<PropsFromRedux> = ({
                   <TableHead>
                     <Skeleton className="h-5 w-32" />
                   </TableHead>
+                  <TableHead>
+                    <Skeleton className="h-5 w-24" />
+                  </TableHead>
+                  <TableHead>
+                    <Skeleton className="h-5 w-24" />
+                  </TableHead>
+                  <TableHead>
+                    <Skeleton className="h-5 w-32" />
+                  </TableHead>
                   <TableHead className="text-center">
                     <Skeleton className="h-5 w-16" />
                   </TableHead>
@@ -115,6 +147,15 @@ const Exercises: React.FC<PropsFromRedux> = ({
                   <TableRow key={`exercise-loading-${index}`}>
                     <TableCell>
                       <Skeleton className="h-5 w-40" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-5 w-20" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-5 w-20" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-5 w-32" />
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-2">
@@ -131,14 +172,39 @@ const Exercises: React.FC<PropsFromRedux> = ({
               <TableHeader>
                 <TableRow>
                   <TableHead>Exercise Name</TableHead>
+                  <TableHead>Primary Unit</TableHead>
+                  <TableHead>Secondary Unit</TableHead>
+                  <TableHead>Targets</TableHead>
                   <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredExercises.map((exercise) => (
-                  <TableRow key={exercise.id}>
+                  <TableRow key={"exercise-" + exercise.id}>
                     <TableCell className="font-medium">
                       {exercise.name}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {exercise.primaryUnitType || "—"}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {exercise.secondaryUnitType || "—"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {exercise.targets && exercise.targets.length > 0 ? (
+                          exercise.targets.map((target, index) => (
+                            <span
+                              key={"exercise-target-" + index}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground"
+                            >
+                              {target}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-2">
@@ -154,8 +220,12 @@ const Exercises: React.FC<PropsFromRedux> = ({
                             </Button>
                           }
                           title="Edit Exercise"
-                          description="Update the exercise name."
-                          initialValues={{ name: exercise.name }}
+                          description="Update the exercise details."
+                          initialValues={{
+                            name: exercise.name,
+                            defaultPrimaryUnit: exercise.defaultPrimaryUnit,
+                            defaultSecondaryUnit: exercise.defaultSecondaryUnit,
+                          }}
                           onSubmit={createEditHandler(exercise)}
                         />
                         <Button

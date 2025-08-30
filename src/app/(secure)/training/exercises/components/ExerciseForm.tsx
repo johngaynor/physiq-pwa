@@ -1,6 +1,13 @@
 import React from "react";
 import { Input, Label } from "@/components/ui";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -11,8 +18,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui";
 
+// Hardcoded exercise units
+const EXERCISE_UNITS = [
+  { id: 1, name: "Weight", measurement: "number" },
+  { id: 2, name: "Reps", measurement: "number" },
+  { id: 3, name: "Time", measurement: "time" },
+  { id: 4, name: "BPM", measurement: "number" },
+];
+
 type ExerciseFormValues = {
   name: string;
+  defaultPrimaryUnit?: number | null;
+  defaultSecondaryUnit?: number | null;
 };
 
 type ExerciseFormProps = {
@@ -46,6 +63,13 @@ export function ExerciseForm({
     }));
   }
 
+  function handleSelectChange(field: string, value: string) {
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: value === "none" ? null : parseInt(value),
+    }));
+  }
+
   function handleSubmit() {
     if (!formValues.name.trim()) {
       return; // Don't submit if name is empty
@@ -75,6 +99,54 @@ export function ExerciseForm({
               type="text"
               placeholder="Enter exercise name..."
             />
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="defaultPrimaryUnit" className="text-right">
+              Primary Unit
+            </Label>
+            <Select
+              value={formValues.defaultPrimaryUnit?.toString() || "none"}
+              onValueChange={(value) =>
+                handleSelectChange("defaultPrimaryUnit", value)
+              }
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select primary unit..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                {EXERCISE_UNITS.map((unit) => (
+                  <SelectItem key={unit.id} value={unit.id.toString()}>
+                    {unit.name} ({unit.measurement})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="defaultSecondaryUnit" className="text-right">
+              Secondary Unit
+            </Label>
+            <Select
+              value={formValues.defaultSecondaryUnit?.toString() || "none"}
+              onValueChange={(value) =>
+                handleSelectChange("defaultSecondaryUnit", value)
+              }
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select secondary unit..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                {EXERCISE_UNITS.map((unit) => (
+                  <SelectItem key={unit.id} value={unit.id.toString()}>
+                    {unit.name} ({unit.measurement})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <DialogFooter>

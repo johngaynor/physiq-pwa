@@ -25,7 +25,7 @@ import {
   LOAD_TRAINING_SESSION_SYNCS,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
-import { Exercise, ExerciseUnit, Gym, GymPhotos, Review } from "./types";
+import { Exercise, Gym, GymPhotos, Review } from "./types";
 
 export const getExercises = () => {
   return api
@@ -39,14 +39,19 @@ export const getExercises = () => {
     .get();
 };
 
-export const editExercise = (id: number | null, name: string) => {
+export const editExercise = (
+  id: number | null,
+  name: string,
+  defaultPrimaryUnit?: number | null,
+  defaultSecondaryUnit?: number | null
+) => {
   return api
     .route("/api/training/exercises/exercise")
-    .data({ id, name })
+    .data({ id, name, defaultPrimaryUnit, defaultSecondaryUnit })
     .fetch(() => ({ type: FETCH_EDIT_EXERCISE }))
-    .load(() => ({
+    .load((data: Exercise) => ({
       type: LOAD_EDIT_EXERCISE,
-      data: { id, name },
+      data,
     }))
     .error("Error error editing exercise")
     .post();
@@ -62,18 +67,6 @@ export const deleteExercise = (id: number) => {
     }))
     .error("Error deleting exercise")
     .delete();
-};
-
-export const getExerciseUnits = () => {
-  return api
-    .route("/api/training/exercises/units")
-    .fetch(() => ({ type: FETCH_EXERCISE_UNITS }))
-    .load((data: ExerciseUnit[]) => ({
-      type: LOAD_EXERCISE_UNITS,
-      data,
-    }))
-    .error("Error fetching exercise units")
-    .get();
 };
 
 export const getGyms = () => {

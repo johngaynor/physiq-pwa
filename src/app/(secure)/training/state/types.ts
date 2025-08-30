@@ -13,8 +13,6 @@ import {
   LOAD_DELETE_GYM,
   FETCH_TRAINING_SESSION_SYNCS,
   LOAD_TRAINING_SESSION_SYNCS,
-  FETCH_EXERCISE_UNITS,
-  LOAD_EXERCISE_UNITS,
   FETCH_GYM_PHOTOS,
   LOAD_GYM_PHOTOS,
   FETCH_UPLOAD_GYM_PHOTOS,
@@ -28,9 +26,11 @@ import {
 export type Exercise = {
   id: number;
   name: string;
-  target?: string;
-  defaultPrimaryUnit?: number;
-  defaultSecondaryUnit?: number;
+  primaryUnitType?: string;
+  secondaryUnitType?: string;
+  defaultPrimaryUnit?: number | null;
+  defaultSecondaryUnit?: number | null;
+  targets: string[];
 };
 
 export type GymPhotos = {
@@ -77,12 +77,6 @@ export type Review = {
   lastUpdated: string;
 };
 
-export type ExerciseUnit = {
-  id: number;
-  name: string;
-  measurement: string;
-};
-
 // action types
 export type Action =
   | { type: typeof FETCH_EXERCISES }
@@ -103,8 +97,6 @@ export type Action =
     }
   | { type: typeof FETCH_DELETE_GYM }
   | { type: typeof LOAD_DELETE_GYM; id: number }
-  | { type: typeof FETCH_EXERCISE_UNITS }
-  | { type: typeof LOAD_EXERCISE_UNITS; data: ExerciseUnit[] }
   | { type: typeof FETCH_GYM_PHOTOS; gymId: number }
   | {
       type: typeof LOAD_GYM_PHOTOS;
@@ -123,8 +115,6 @@ export type Action =
 export interface TrainingState {
   exercises: null | Exercise[];
   exercisesLoading: boolean;
-  exerciseUnits: null | ExerciseUnit[];
-  exerciseUnitsLoading: boolean;
   gyms: null | Gym[];
   gymsLoading: boolean;
   editGymLoading: boolean;
