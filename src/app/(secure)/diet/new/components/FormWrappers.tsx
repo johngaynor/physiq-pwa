@@ -31,12 +31,16 @@ export function SectionWrapper({
 export function InputWrapper({
   children,
   error,
+  colspan = 1,
 }: {
   children: React.ReactNode;
   error?: string;
+  colspan?: number;
 }) {
   return (
-    <div className="grid w-full items-center gap-3 relative pb-3">
+    <div
+      className={`grid w-full items-center gap-3 relative pb-3 col-span-${colspan}`}
+    >
       {children}
       {error && (
         <p className="text-sm text-red-500 absolute -bottom-4">{error}</p>

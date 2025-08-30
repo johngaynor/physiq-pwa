@@ -5,10 +5,12 @@ import { RootState } from "../../../../store/reducer";
 import { editExercise } from "../../state/actions";
 import ExerciseForm from "./components/ExerciseForm";
 import { useRouter } from "next/navigation";
+import ExerciseLoadingPage from "../components/ExerciseLoadingPage";
 
 function mapStateToProps(state: RootState) {
   return {
     exercisesLoading: state.training.exercisesLoading,
+    editExerciseLoading: state.training.editExerciseLoading,
   };
 }
 
@@ -27,6 +29,7 @@ type ExerciseFormData = {
 const ExerciseFormWrapper: React.FC<PropsFromRedux> = ({
   exercisesLoading,
   editExercise,
+  editExerciseLoading,
 }) => {
   const router = useRouter();
 
@@ -36,20 +39,13 @@ const ExerciseFormWrapper: React.FC<PropsFromRedux> = ({
       data.name,
       data.defaultPrimaryUnit,
       data.defaultSecondaryUnit
-    );
-
-    // TODO: Submit tags when API supports them
-    if (data.tags && data.tags.length > 0) {
-      console.log("Selected muscle group tags:", data.tags);
-    }
-
-    router.push("/training/exercises");
+    ).then((data) => router.push(`/training/exercises/exercise/${data.id}`));
   }
 
   function onCancel() {
     router.push("/training/exercises");
   }
-
+  if (exercisesLoading || editExerciseLoading) return <ExerciseLoadingPage />;
   return <ExerciseForm onSubmit={onSubmit} onCancel={onCancel} />;
 };
 

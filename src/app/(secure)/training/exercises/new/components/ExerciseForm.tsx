@@ -16,17 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
-import { z } from "zod";
-
-// Exercise form validation schema
-const exerciseFormSchema = z.object({
-  name: z.string().min(1, "Exercise name is required"),
-  defaultPrimaryUnit: z.number().nullable().optional(),
-  defaultSecondaryUnit: z.number().nullable().optional(),
-  tags: z.array(z.number()).optional(),
-});
-
-type ExerciseFormData = z.infer<typeof exerciseFormSchema>;
+import { exerciseFormSchema, type ExerciseFormData } from "../types";
 
 // Hardcoded exercise units
 const EXERCISE_UNITS = [
@@ -75,8 +65,8 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
     resolver: zodResolver(exerciseFormSchema),
     defaultValues: exercise || {
       name: "",
-      defaultPrimaryUnit: null,
-      defaultSecondaryUnit: null,
+      defaultPrimaryUnit: 2, // Reps
+      defaultSecondaryUnit: 1, // Weight
       tags: [],
     },
   });
@@ -122,76 +112,71 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
             {...register("name")}
           />
         </InputWrapper>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InputWrapper error={errors.defaultPrimaryUnit?.message}>
-            <Label htmlFor="defaultPrimaryUnit">Primary Unit</Label>
-            <Controller
-              control={control}
-              name="defaultPrimaryUnit"
-              render={({ field }) => (
-                <Select
-                  value={field.value?.toString() || "none"}
-                  onValueChange={(value) =>
-                    field.onChange(value === "none" ? null : parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select primary unit..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {EXERCISE_UNITS.map((unit) => (
-                      <SelectItem key={unit.id} value={unit.id.toString()}>
-                        {unit.name} ({unit.measurement})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </InputWrapper>
-
-          <InputWrapper error={errors.defaultSecondaryUnit?.message}>
-            <Label htmlFor="defaultSecondaryUnit">Secondary Unit</Label>
-            <Controller
-              control={control}
-              name="defaultSecondaryUnit"
-              render={({ field }) => (
-                <Select
-                  value={field.value?.toString() || "none"}
-                  onValueChange={(value) =>
-                    field.onChange(value === "none" ? null : parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select secondary unit..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    {EXERCISE_UNITS.map((unit) => (
-                      <SelectItem key={unit.id} value={unit.id.toString()}>
-                        {unit.name} ({unit.measurement})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </InputWrapper>
-        </div>
-
-        <InputWrapper>
+        <InputWrapper error={errors.defaultPrimaryUnit?.message}>
+          <Label htmlFor="defaultPrimaryUnit">Primary Unit</Label>
+          <Controller
+            control={control}
+            name="defaultPrimaryUnit"
+            render={({ field }) => (
+              <Select
+                value={field.value?.toString() || "none"}
+                onValueChange={(value) =>
+                  field.onChange(value === "none" ? null : parseInt(value))
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select primary unit..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  {EXERCISE_UNITS.map((unit) => (
+                    <SelectItem key={unit.id} value={unit.id.toString()}>
+                      {unit.name} ({unit.measurement})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </InputWrapper>
+        <InputWrapper error={errors.defaultSecondaryUnit?.message}>
+          <Label htmlFor="defaultSecondaryUnit">Secondary Unit</Label>
+          <Controller
+            control={control}
+            name="defaultSecondaryUnit"
+            render={({ field }) => (
+              <Select
+                value={field.value?.toString() || "none"}
+                onValueChange={(value) =>
+                  field.onChange(value === "none" ? null : parseInt(value))
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select secondary unit..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  {EXERCISE_UNITS.map((unit) => (
+                    <SelectItem key={unit.id} value={unit.id.toString()}>
+                      {unit.name} ({unit.measurement})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </InputWrapper>
+        <InputWrapper colspan={3}>
           <Label>Muscle Groups</Label>
           <Controller
             control={control}
             name="tags"
             render={({ field }) => (
-              <div className="flex flex-col w-full mt-2 gap-2">
+              <div className="flex flex-wrap mt-2 gap-2">
                 {MUSCLE_GROUPS.map((muscle) => (
                   <div
                     key={muscle.id}
-                    className="flex items-center w-full space-x-2"
+                    className="flex items-center space-x-2 min-w-fit"
                   >
                     <Checkbox
                       id={`muscle-${muscle.id}`}
@@ -209,7 +194,7 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
                     />
                     <Label
                       htmlFor={`muscle-${muscle.id}`}
-                      className="text-sm font-normal cursor-pointer w-full"
+                      className="text-sm font-normal cursor-pointer whitespace-nowrap"
                     >
                       {muscle.name}
                     </Label>

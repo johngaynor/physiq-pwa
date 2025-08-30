@@ -27,6 +27,7 @@ import type { TrainingState, Action, Review } from "./types";
 const DEFAULT_STATE: TrainingState = {
   exercises: null,
   exercisesLoading: false,
+  editExerciseLoading: false,
   gyms: null,
   gymsLoading: false,
   editGymLoading: false,
@@ -54,7 +55,7 @@ export default function appReducer(
         exercisesLoading: false,
       };
     case FETCH_EDIT_EXERCISE:
-      return { ...state, exercisesLoading: true };
+      return { ...state, editExerciseLoading: true };
     case LOAD_EDIT_EXERCISE:
       return {
         ...state,
@@ -65,7 +66,7 @@ export default function appReducer(
               )
             : [...state.exercises, action.data]
           : [action.data],
-        exercisesLoading: false,
+        editExerciseLoading: false,
       };
     case FETCH_DELETE_EXERCISE:
       return { ...state, exercisesLoading: true };

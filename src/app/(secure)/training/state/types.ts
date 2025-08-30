@@ -115,6 +115,7 @@ export type Action =
 export interface TrainingState {
   exercises: null | Exercise[];
   exercisesLoading: boolean;
+  editExerciseLoading: boolean;
   gyms: null | Gym[];
   gymsLoading: boolean;
   editGymLoading: boolean;
