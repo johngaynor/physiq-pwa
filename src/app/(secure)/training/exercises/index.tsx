@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
-import { getExercises, editExercise, deleteExercise } from "../state/actions";
+import { getExercises } from "../state/actions";
 import { Button, Input, Skeleton } from "@/components/ui";
 import {
   Table,
@@ -13,9 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { Exercise } from "../state/types";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -27,8 +26,6 @@ function mapStateToProps(state: RootState) {
 
 const connector = connect(mapStateToProps, {
   getExercises,
-  editExercise,
-  deleteExercise,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -36,8 +33,6 @@ const Exercises: React.FC<PropsFromRedux> = ({
   exercises,
   exercisesLoading,
   getExercises,
-  editExercise,
-  deleteExercise,
   user,
 }) => {
   const [search, setSearch] = React.useState<string>("");
@@ -57,12 +52,6 @@ const Exercises: React.FC<PropsFromRedux> = ({
       exercise.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [exercises, search]);
-
-  const handleDelete = (exerciseId: number) => {
-    if (window.confirm("Are you sure you want to delete this exercise?")) {
-      deleteExercise(exerciseId);
-    }
-  };
 
   const isAdmin = user && user.apps.some((app) => app.id === 1);
   return (
@@ -128,12 +117,6 @@ const Exercises: React.FC<PropsFromRedux> = ({
                     <TableCell>
                       <Skeleton className="h-5 w-32" />
                     </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center gap-2">
-                        <Skeleton className="h-8 w-8" />
-                        <Skeleton className="h-8 w-8" />
-                      </div>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -146,7 +129,6 @@ const Exercises: React.FC<PropsFromRedux> = ({
                   <TableHead>Primary Unit</TableHead>
                   <TableHead>Secondary Unit</TableHead>
                   <TableHead>Targets</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -175,30 +157,6 @@ const Exercises: React.FC<PropsFromRedux> = ({
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
-                          onClick={() =>
-                            alert("Edit functionality coming soon!")
-                          }
-                        >
-                          <Pencil className="h-4 w-4" />
-                          <span className="sr-only">Edit exercise</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(exercise.id)}
-                          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete exercise</span>
-                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
