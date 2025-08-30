@@ -5,7 +5,7 @@ export const exerciseFormSchema = z.object({
   name: z.string().min(1, "Exercise name is required"),
   defaultPrimaryUnit: z.number().nullable().optional(),
   defaultSecondaryUnit: z.number().nullable().optional(),
-  tags: z.array(z.number()).optional(),
+  targets: z.array(z.string()).optional(),
 });
 
 // Output schema (what gets submitted)
@@ -13,7 +13,7 @@ export const exerciseSubmissionSchema = z.object({
   name: z.string().min(1, "Exercise name is required"),
   defaultPrimaryUnit: z.number().nullable(),
   defaultSecondaryUnit: z.number().nullable(),
-  tags: z.array(z.number()),
+  targets: z.array(z.string()),
 });
 
 // Types
@@ -28,6 +28,6 @@ export const transformExerciseData = (
     name: data.name,
     defaultPrimaryUnit: data.defaultPrimaryUnit || null,
     defaultSecondaryUnit: data.defaultSecondaryUnit || null,
-    tags: data.tags || [],
+    targets: data.targets || [],
   };
 };

@@ -32,6 +32,7 @@ const Exercise: React.FC<PropsFromRedux> = ({
   editExerciseInformation,
   editExerciseLoading,
 }) => {
+  const [editExercise, setEditExercise] = React.useState<boolean>(false);
   const params = useParams();
   const exerciseId = params.id ? parseInt(params.id as string) : null;
 
@@ -45,9 +46,20 @@ const Exercise: React.FC<PropsFromRedux> = ({
 
   if (exercisesLoading || editExerciseLoading) {
     return <ExerciseLoadingPage />;
+  } else if (editExercise && exercise) {
+    return (
+      <ExerciseForm
+        onSubmit={(values) => {
+          editExerciseInformation({ ...values, id: exercise.id });
+          setEditExercise(false);
+        }}
+        exercise={exercise}
+        setEditExercise={setEditExercise}
+      />
+    );
   }
 
-  return <ViewExercise />;
+  return <ViewExercise setEditExercise={setEditExercise} />;
 };
 
 export default connector(Exercise);

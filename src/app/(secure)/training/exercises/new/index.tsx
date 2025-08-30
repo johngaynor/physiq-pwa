@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../store/reducer";
 import { editExercise } from "../../state/actions";
 import ExerciseForm from "./components/ExerciseForm";
+import { ExerciseFormData } from "./types";
 import { useRouter } from "next/navigation";
 import ExerciseLoadingPage from "../components/ExerciseLoadingPage";
 
@@ -19,13 +20,6 @@ const connector = connect(mapStateToProps, {
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type ExerciseFormData = {
-  name: string;
-  defaultPrimaryUnit?: number | null;
-  defaultSecondaryUnit?: number | null;
-  tags?: number[];
-};
-
 const ExerciseFormWrapper: React.FC<PropsFromRedux> = ({
   exercisesLoading,
   editExercise,
@@ -34,20 +28,16 @@ const ExerciseFormWrapper: React.FC<PropsFromRedux> = ({
   const router = useRouter();
 
   function onSubmit(data: ExerciseFormData) {
-    editExercise(
-      null,
-      data.name,
-      data.defaultPrimaryUnit,
-      data.defaultSecondaryUnit,
-      data.tags
-    ).then((data) => router.push(`/training/exercises/exercise/${data.id}`));
+    editExercise({
+      name: data.name,
+      defaultPrimaryUnit: data.defaultPrimaryUnit,
+      defaultSecondaryUnit: data.defaultSecondaryUnit,
+      targets: data.targets,
+    }).then((data) => router.push(`/training/exercises/exercise/${data.id}`));
   }
 
-  function onCancel() {
-    router.push("/training/exercises");
-  }
   if (exercisesLoading || editExerciseLoading) return <ExerciseLoadingPage />;
-  return <ExerciseForm onSubmit={onSubmit} onCancel={onCancel} />;
+  return <ExerciseForm onSubmit={onSubmit} />;
 };
 
 export default connector(ExerciseFormWrapper);

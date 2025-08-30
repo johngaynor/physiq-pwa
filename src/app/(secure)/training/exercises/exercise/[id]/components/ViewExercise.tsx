@@ -45,12 +45,15 @@ const connector = connect(mapStateToProps, {
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const ViewExercise: React.FC<PropsFromRedux> = ({
+const ViewExercise: React.FC<
+  PropsFromRedux & { setEditExercise: (edit: boolean) => void }
+> = ({
   exercises,
   exercisesLoading,
   getExercises,
   deleteExercise,
   user,
+  setEditExercise,
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -124,9 +127,7 @@ const ViewExercise: React.FC<PropsFromRedux> = ({
                       <Button
                         className="ml-2"
                         variant="outline"
-                        onClick={() =>
-                          router.push(`/training/exercises/edit/${exercise.id}`)
-                        }
+                        onClick={() => setEditExercise(true)}
                       >
                         <Edit className="font-extrabold" />
                       </Button>
@@ -183,11 +184,7 @@ const ViewExercise: React.FC<PropsFromRedux> = ({
                         <Button
                           variant="ghost"
                           className="justify-start w-full"
-                          onClick={() =>
-                            router.push(
-                              `/training/exercises/edit/${exercise.id}`
-                            )
-                          }
+                          onClick={() => setEditExercise(true)}
                         >
                           <Edit className="h-4 w-4 mr-2" />
                           Edit exercise

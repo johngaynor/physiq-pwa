@@ -38,15 +38,11 @@ export const getExercises = () => {
 };
 
 export const editExercise = (
-  id: number | null,
-  name: string,
-  defaultPrimaryUnit?: number | null,
-  defaultSecondaryUnit?: number | null,
-  targets?: number[]
+  exerciseData: Partial<Exercise> & { id?: number }
 ) => {
   return api
     .route("/api/training/exercises/exercise")
-    .data({ id, name, defaultPrimaryUnit, defaultSecondaryUnit, targets })
+    .data(exerciseData)
     .fetch(() => ({ type: FETCH_EDIT_EXERCISE }))
     .load((data: Exercise) => ({
       type: LOAD_EDIT_EXERCISE,

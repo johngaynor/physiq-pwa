@@ -26,7 +26,7 @@ const EXERCISE_UNITS = [
   { id: 4, name: "BPM", measurement: "number" },
 ];
 
-// Hardcoded muscle group tags
+// Hardcoded muscle group targets
 const MUSCLE_GROUPS = [
   { id: 1, name: "Quads" },
   { id: 2, name: "Calves" },
@@ -46,14 +46,14 @@ const MUSCLE_GROUPS = [
 
 interface ExerciseFormProps {
   onSubmit: (data: ExerciseFormData) => void;
-  onCancel?: () => void;
   exercise?: ExerciseFormData | null;
+  setEditExercise?: (edit: boolean) => void;
 }
 
 const ExerciseForm: React.FC<ExerciseFormProps> = ({
   onSubmit,
-  onCancel,
   exercise,
+  setEditExercise,
 }) => {
   // form setup
   const {
@@ -67,7 +67,7 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
       name: "",
       defaultPrimaryUnit: 2, // Reps
       defaultSecondaryUnit: 1, // Weight
-      tags: [],
+      targets: [],
     },
   });
 
@@ -89,10 +89,10 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
         title="Exercise Information"
         action={
           <div>
-            {onCancel && (
+            {setEditExercise && (
               <Button
                 variant="outline"
-                onClick={onCancel}
+                onClick={() => setEditExercise(false)}
                 type="button"
                 className="mr-4"
               >
@@ -170,7 +170,7 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
           <Label>Muscle Groups</Label>
           <Controller
             control={control}
-            name="tags"
+            name="targets"
             render={({ field }) => (
               <div className="flex flex-wrap mt-2 gap-2">
                 {MUSCLE_GROUPS.map((muscle) => (
@@ -180,14 +180,14 @@ const ExerciseForm: React.FC<ExerciseFormProps> = ({
                   >
                     <Checkbox
                       id={`muscle-${muscle.id}`}
-                      checked={field.value?.includes(muscle.id) || false}
+                      checked={field.value?.includes(muscle.name) || false}
                       onCheckedChange={(checked) => {
-                        const currentTags = field.value || [];
+                        const currentTargets = field.value || [];
                         if (checked) {
-                          field.onChange([...currentTags, muscle.id]);
+                          field.onChange([...currentTargets, muscle.name]);
                         } else {
                           field.onChange(
-                            currentTags.filter((id) => id !== muscle.id)
+                            currentTargets.filter((name) => name !== muscle.name)
                           );
                         }
                       }}
