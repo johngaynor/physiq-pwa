@@ -1,6 +1,4 @@
-<h1 align="center" id="title">PhysiQ Web App</h1>
-
-<p align="center"><img src="https://socialify.git.ci/johngaynor/physiq-web-app/image?language=1&amp;name=1&amp;owner=1&amp;pattern=Plus&amp;theme=Light" alt="project-image"></p>
+<p align="center"><img src="/public/images/physiq-pwa.png" alt="project-image"></p>
 
 <p id="description">Meet PhysiQ - your intelligent bodybuilding coach. Track progress optimize variables and gain AI-driven insights on your growth.</p>
 
@@ -50,15 +48,15 @@ Please contribute using GitHub Flow. Create a branch add commits and open a pull
 
 Technologies used in the project:
 
-- Next.js
-- Tailwind.css
-- Redux
-- shadcn.io
-- html2canvas
-- MapBox
-- framer-motion
-- zod
-- TypeScript
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Redux](https://redux.js.org/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [html2canvas](https://html2canvas.hertzen.com/)
+- [MapBox](https://www.mapbox.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Zod](https://zod.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
 
 <h2>🛡️ License:</h2>
 
