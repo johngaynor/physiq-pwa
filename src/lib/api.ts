@@ -56,7 +56,7 @@ function caller<T>(obj: ApiObj<T>, method: MethodType) {
       const url =
         (process.env.NODE_ENV === "development"
           ? "http://localhost:3000"
-          : "https://physiq-api.onrender.com") + route;
+          : "https://api.physiq.app") + route;
 
       const config: AxiosRequestConfig = {
         headers,
