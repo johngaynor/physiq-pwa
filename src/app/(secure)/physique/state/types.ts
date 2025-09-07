@@ -49,10 +49,8 @@ export interface AnalyzePoseResult {
   success: boolean;
   fileUploaded: string;
   analysisResult: {
-    status: string;
     filename: string;
-    image_size: string;
-    prediction: {
+    result: {
       predicted_class_index: number;
       predicted_class_id: string;
       predicted_class_name: string;

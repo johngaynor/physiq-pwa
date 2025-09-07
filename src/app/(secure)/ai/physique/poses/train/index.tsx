@@ -118,10 +118,10 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       analyzePose(selectedFile).then((data: AnalyzePoseResult) => {
         setAnalysisResult(data);
         // Set the predicted pose as the default selection
-        if (data.analysisResult?.prediction?.predicted_class_name && poses) {
+        if (data.analysisResult?.result?.predicted_class_name && poses) {
           const predictedPose = poses.find(
             (pose) =>
-              pose.name === data.analysisResult.prediction.predicted_class_name
+              pose.name === data.analysisResult.result.predicted_class_name
           );
           if (predictedPose) {
             setSelectedPose(predictedPose.id.toString());
@@ -196,7 +196,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  className="file:mr-4 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
 
                 <Button
@@ -230,13 +230,12 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                 <div className="space-y-2 flex-1 flex flex-col">
                   <h4 className="text-md font-semibold text-center">
                     {
-                      analysisResult.analysisResult?.prediction
+                      analysisResult.analysisResult?.result
                         ?.predicted_class_name
                     }
-                    {analysisResult.analysisResult?.prediction?.confidence &&
+                    {analysisResult.analysisResult?.result?.confidence &&
                       ` (${(
-                        analysisResult.analysisResult.prediction.confidence *
-                        100
+                        analysisResult.analysisResult.result.confidence * 100
                       ).toFixed(1)}% confidence)`}
                   </h4>
                   <div className="w-full rounded-lg border flex-1 flex flex-col">
@@ -254,30 +253,47 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {analysisResult.analysisResult?.prediction
+                          {analysisResult.analysisResult?.result
                             ?.all_probabilities &&
                             Object.entries(
-                              analysisResult.analysisResult.prediction
+                              analysisResult.analysisResult.result
                                 .all_probabilities
                             )
                               .sort(([, a], [, b]) => b - a) // Sort by probability descending
-                              .map(([pose, probability]) => (
-                                <TableRow
-                                  key={pose}
-                                  className={
-                                    pose ===
-                                    analysisResult.analysisResult?.prediction
-                                      ?.predicted_class_name
-                                      ? "font-extrabold"
-                                      : ""
-                                  }
-                                >
-                                  <TableCell>{pose}</TableCell>
-                                  <TableCell className="text-right">
-                                    {(probability * 100).toFixed(2)}%
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                              .map(([pose, probability]) => {
+                                // Find the pose ID from the poses array
+                                const poseObj = poses?.find(
+                                  (p) => p.name === pose
+                                );
+                                const poseId = poseObj?.id.toString() || "";
+
+                                return (
+                                  <TableRow
+                                    key={pose}
+                                    className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                                      pose ===
+                                      analysisResult.analysisResult?.result
+                                        ?.predicted_class_name
+                                        ? "font-extrabold"
+                                        : ""
+                                    } ${
+                                      selectedPose === poseId
+                                        ? "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-l-blue-500"
+                                        : ""
+                                    }`}
+                                    onClick={() => {
+                                      if (poseId) {
+                                        setSelectedPose(poseId);
+                                      }
+                                    }}
+                                  >
+                                    <TableCell>{pose}</TableCell>
+                                    <TableCell className="text-right">
+                                      {(probability * 100).toFixed(2)}%
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
                         </TableBody>
                       </Table>
                     </div>
