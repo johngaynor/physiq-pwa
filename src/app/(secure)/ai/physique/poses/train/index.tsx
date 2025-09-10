@@ -60,6 +60,10 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     React.useState<AnalyzePoseResult | null>(null);
   const [selectedPose, setSelectedPose] = React.useState<string>("");
 
+  // Refs for scrolling
+  const topRef = React.useRef<HTMLDivElement>(null);
+  const resultsRef = React.useRef<HTMLDivElement>(null);
+
   const handleClearAll = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
@@ -72,6 +76,8 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     if (fileInput) {
       fileInput.value = "";
     }
+    // Scroll back to top
+    topRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleAssignPose = async () => {
@@ -84,7 +90,11 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       await assignPose(
         analysisResult.fileUploaded,
         parseInt(selectedPose)
-      ).then(() => toast.success("Pose assigned successfully!"));
+      ).then(() => {
+        toast.success("Pose assigned successfully!");
+        // Scroll back to top after successful submission
+        topRef.current?.scrollIntoView({ behavior: 'smooth' });
+      });
       handleClearAll();
     } catch (error) {
       console.error("Error assigning pose:", error);
@@ -127,6 +137,10 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
             setSelectedPose(predictedPose.id.toString());
           }
         }
+        // Scroll to results section after analysis completes
+        setTimeout(() => {
+          resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       });
     } catch (error) {
       console.error("Error analyzing pose:", error);
@@ -160,6 +174,8 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
 
   return (
     <div className="w-full mb-40">
+      {/* Top reference for scrolling */}
+      <div ref={topRef} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:h-[600px]">
         {/* Left Column - File Upload */}
         <Card className="w-full rounded-sm p-0 h-full">
@@ -226,6 +242,8 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
           ) : analysisResult ? (
             <Card className="w-full rounded-sm p-0 h-full">
               <CardContent className="p-6 h-full flex flex-col">
+                {/* Results reference for scrolling */}
+                <div ref={resultsRef} />
                 <h3 className="text-lg font-medium mb-4">Analysis Results</h3>
                 <div className="space-y-2 flex-1 flex flex-col">
                   <h4 className="text-md font-semibold text-center">
