@@ -77,7 +77,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       fileInput.value = "";
     }
     // Scroll back to top
-    topRef.current?.scrollIntoView({ behavior: 'smooth' });
+    topRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleAssignPose = async () => {
@@ -93,7 +93,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       ).then(() => {
         toast.success("Pose assigned successfully!");
         // Scroll back to top after successful submission
-        topRef.current?.scrollIntoView({ behavior: 'smooth' });
+        topRef.current?.scrollIntoView({ behavior: "smooth" });
       });
       handleClearAll();
     } catch (error) {
@@ -139,7 +139,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
         }
         // Scroll to results section after analysis completes
         setTimeout(() => {
-          resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+          resultsRef.current?.scrollIntoView({ behavior: "smooth" });
         }, 100);
       });
     } catch (error) {
