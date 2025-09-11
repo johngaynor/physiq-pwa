@@ -23,7 +23,7 @@ export const analyzePose = (files: File[]) => {
   const formData = new FormData();
 
   // Add all image files
-  files.forEach((file, index) => {
+  files.forEach((file) => {
     formData.append(`files`, file);
   });
 

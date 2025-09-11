@@ -72,7 +72,6 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   const resultsRef = React.useRef<HTMLDivElement>(null);
 
   // Current image data for easier access - now using pending results
-  const currentFile = selectedFiles[currentImageIndex];
   const currentPreviewUrl = previewUrls[currentImageIndex];
   const currentAnalysisResult = pendingResults[0]; // Always work with the first pending result
   const currentSelectedPose = selectedPoses[0] || ""; // Corresponding to the first pending result
@@ -93,8 +92,6 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     }
     // Cleanup existing preview URLs
     previewUrls.forEach((url) => URL.revokeObjectURL(url));
-    // Scroll back to top
-    topRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleAssignPose = async () => {
