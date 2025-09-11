@@ -13,7 +13,7 @@ import {
 
 export interface PhysiqueState {
   analyzePoseLoading: boolean;
-  analyzePoseResult: AnalyzePoseResult | null;
+  analyzePoseResult: AnalyzePoseResult[] | null;
   assignPoseLoading: boolean;
   poses: Pose[] | null;
   posesLoading: boolean;
@@ -44,7 +44,6 @@ export interface PoseModelDataResult {
     stack: string;
   } | null;
 }
-
 export interface AnalyzePoseResult {
   success: boolean;
   fileUploaded: string;
@@ -70,7 +69,7 @@ export interface AssignPoseResult {
 
 export type Action =
   | { type: typeof FETCH_ANALYZE_POSE }
-  | { type: typeof LOAD_ANALYZE_POSE; data: AnalyzePoseResult }
+  | { type: typeof LOAD_ANALYZE_POSE; data: AnalyzePoseResult[] }
   | { type: typeof FETCH_ASSIGN_PHYSIQUE_POSE }
   | { type: typeof LOAD_ASSIGN_PHYSIQUE_POSE; data: AssignPoseResult }
   | { type: typeof FETCH_PHYSIQUE_POSES }

@@ -62,15 +62,20 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   const [selectedPoses, setSelectedPoses] = React.useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = React.useState<number>(0);
 
+  // Store remaining unprocessed results that need pose confirmation
+  const [pendingResults, setPendingResults] = React.useState<
+    AnalyzePoseResult[]
+  >([]);
+
   // Refs for scrolling
   const topRef = React.useRef<HTMLDivElement>(null);
   const resultsRef = React.useRef<HTMLDivElement>(null);
 
-  // Current image data for easier access
+  // Current image data for easier access - now using pending results
   const currentFile = selectedFiles[currentImageIndex];
   const currentPreviewUrl = previewUrls[currentImageIndex];
-  const currentAnalysisResult = analysisResults[currentImageIndex];
-  const currentSelectedPose = selectedPoses[currentImageIndex] || "";
+  const currentAnalysisResult = pendingResults[0]; // Always work with the first pending result
+  const currentSelectedPose = selectedPoses[0] || ""; // Corresponding to the first pending result
 
   const handleClearAll = () => {
     setSelectedFiles([]);
@@ -78,6 +83,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     setAnalysisResults([]);
     setSelectedPoses([]);
     setCurrentImageIndex(0);
+    setPendingResults([]);
     // Reset file input
     const fileInput = document.querySelector(
       'input[type="file"]'
@@ -104,15 +110,20 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       ).then(() => {
         toast.success("Pose assigned successfully!");
 
-        // Move to next image or back to top if this was the last one
-        if (currentImageIndex < selectedFiles.length - 1) {
-          setCurrentImageIndex(currentImageIndex + 1);
-          // Scroll to results for next image
+        // Remove the confirmed result from pending results
+        setPendingResults((prev) => prev.slice(1));
+
+        // Remove the first selected pose since we just processed it
+        setSelectedPoses((prev) => prev.slice(1));
+
+        // Check if there are more pending results
+        if (pendingResults.length > 1) {
+          // Stay on current workflow, next result will automatically show
           setTimeout(() => {
             resultsRef.current?.scrollIntoView({ behavior: "smooth" });
           }, 100);
         } else {
-          // All images processed, scroll back to top
+          // All images processed, scroll back to top and clear
           topRef.current?.scrollIntoView({ behavior: "smooth" });
           handleClearAll();
         }
@@ -145,47 +156,53 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   };
 
   const handleSubmit = async () => {
-    if (!currentFile) {
+    if (selectedFiles.length === 0) {
       alert("Please select files first");
       return;
     }
 
     try {
-      // For now, analyze one image at a time.
-      // TODO: Update this when API supports batch processing
-      analyzePose(currentFile).then((data: AnalyzePoseResult) => {
-        // Update analysis results for current image
-        const newResults = [...analysisResults];
-        newResults[currentImageIndex] = data;
-        setAnalysisResults(newResults);
+      // Analyze all files at once using the analyzePose action
+      const dataArray: AnalyzePoseResult[] = await analyzePose(selectedFiles);
 
-        // Set the predicted pose as the default selection for current image
-        if (data.analysisResult?.result?.predicted_class_name && poses) {
-          const predictedPose = poses.find(
-            (pose) =>
-              pose.name === data.analysisResult.result.predicted_class_name
-          );
-          if (predictedPose) {
-            const newSelectedPoses = [...selectedPoses];
-            newSelectedPoses[currentImageIndex] = predictedPose.id.toString();
-            setSelectedPoses(newSelectedPoses);
+      // Set all analysis results at once
+      setAnalysisResults(dataArray);
+
+      // Store all results as pending for processing
+      setPendingResults(dataArray);
+
+      // Set predicted poses as default selections for all images
+      if (poses) {
+        const newSelectedPoses: string[] = [];
+        dataArray.forEach((data, index) => {
+          if (data.analysisResult?.result?.predicted_class_name) {
+            const predictedPose = poses.find(
+              (pose) =>
+                pose.name === data.analysisResult.result.predicted_class_name
+            );
+            if (predictedPose) {
+              newSelectedPoses[index] = predictedPose.id.toString();
+            }
           }
-        }
-        // Scroll to results section after analysis completes
-        setTimeout(() => {
-          resultsRef.current?.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-      });
+        });
+        setSelectedPoses(newSelectedPoses);
+      }
+
+      // Set to first image and scroll to results
+      setCurrentImageIndex(0);
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     } catch (error) {
-      console.error("Error analyzing pose:", error);
+      console.error("Error analyzing poses:", error);
       // TODO: Handle error properly
     }
   };
 
-  // Function to update selected pose for current image
+  // Function to update selected pose for current image (first pending result)
   const setCurrentSelectedPose = (poseId: string) => {
     const newSelectedPoses = [...selectedPoses];
-    newSelectedPoses[currentImageIndex] = poseId;
+    newSelectedPoses[0] = poseId; // Always update the first position since we're working with the first pending result
     setSelectedPoses(newSelectedPoses);
   };
 
@@ -229,10 +246,59 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
               </p>
 
               <div className="w-full max-w-md space-y-4 flex-1 flex flex-col justify-center">
-                {/* Image counter */}
+                {/* Image counter and progress */}
                 {selectedFiles.length > 0 && (
-                  <div className="text-center text-sm text-gray-600">
-                    Image {currentImageIndex + 1} of {selectedFiles.length}
+                  <div className="text-center space-y-2">
+                    <div className="text-sm text-gray-600">
+                      {pendingResults.length > 0
+                        ? `${
+                            selectedFiles.length - pendingResults.length + 1
+                          } of ${selectedFiles.length} (${
+                            pendingResults.length
+                          } remaining)`
+                        : `Image ${currentImageIndex + 1} of ${
+                            selectedFiles.length
+                          }`}
+                    </div>
+
+                    {/* Progress dots */}
+                    {analysisResults.length > 0 && (
+                      <div className="flex justify-center space-x-1">
+                        {selectedFiles.map((_, index) => {
+                          const isSubmitted =
+                            index <
+                            selectedFiles.length - pendingResults.length;
+                          const isCurrent =
+                            index ===
+                            selectedFiles.length - pendingResults.length;
+                          const isAnalyzed = analysisResults.length > 0;
+
+                          return (
+                            <div
+                              key={index}
+                              className={`w-2 h-2 rounded-full ${
+                                isSubmitted
+                                  ? "bg-green-500"
+                                  : isCurrent
+                                  ? "bg-blue-500"
+                                  : isAnalyzed
+                                  ? "bg-yellow-500"
+                                  : "bg-gray-300"
+                              }`}
+                              title={
+                                isSubmitted
+                                  ? "Submitted"
+                                  : isCurrent
+                                  ? "Current"
+                                  : isAnalyzed
+                                  ? "Analyzed"
+                                  : "Pending"
+                              }
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -271,15 +337,21 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                 <Button
                   onClick={handleSubmit}
                   className="w-full"
-                  disabled={!currentFile || analyzePoseLoading}
+                  disabled={
+                    selectedFiles.length === 0 ||
+                    analyzePoseLoading ||
+                    pendingResults.length > 0
+                  }
                 >
                   {analyzePoseLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Analyzing...
+                      Analyzing all images...
                     </>
+                  ) : pendingResults.length > 0 ? (
+                    "Analysis Complete - Review Results"
                   ) : (
-                    `Analyze Image ${currentImageIndex + 1}`
+                    `Analyze All Images (${selectedFiles.length})`
                   )}
                 </Button>
               </div>
@@ -292,13 +364,13 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
           {/* Analysis Results */}
           {analyzePoseLoading || assignPoseLoading ? (
             <ResultsLoadingCard />
-          ) : currentAnalysisResult ? (
+          ) : pendingResults.length > 0 ? (
             <Card className="w-full rounded-sm p-0 h-full">
               <CardContent className="p-6 h-full flex flex-col">
                 {/* Results reference for scrolling */}
                 <div ref={resultsRef} />
                 <h3 className="text-lg font-medium mb-4">
-                  Analysis Results - Image {currentImageIndex + 1} of{" "}
+                  Analysis Results - {pendingResults.length} remaining of{" "}
                   {selectedFiles.length}
                 </h3>
                 <div className="space-y-2 flex-1 flex flex-col">
@@ -415,14 +487,10 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Submitting...
                         </>
-                      ) : selectedFiles.length > 1 ? (
-                        `Submit & ${
-                          currentImageIndex < selectedFiles.length - 1
-                            ? "Next"
-                            : "Finish"
-                        }`
+                      ) : pendingResults.length > 1 ? (
+                        `Submit & Continue (${pendingResults.length - 1} left)`
                       ) : (
-                        "Submit"
+                        "Submit & Finish"
                       )}
                     </Button>
                     <Button

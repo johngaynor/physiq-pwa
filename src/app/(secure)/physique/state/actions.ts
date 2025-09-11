@@ -19,16 +19,18 @@ import {
   TrainingPhoto,
 } from "./types";
 
-export const analyzePose = (file: File) => {
+export const analyzePose = (files: File[]) => {
   const formData = new FormData();
 
-  // Add the image file
-  formData.append("file", file);
+  // Add all image files
+  files.forEach((file, index) => {
+    formData.append(`files`, file);
+  });
 
   return api
     .route("/api/physique/poses/analyze")
     .fetch(() => ({ type: FETCH_ANALYZE_POSE }))
-    .load((data: AnalyzePoseResult) => ({
+    .load((data: AnalyzePoseResult[]) => ({
       type: LOAD_ANALYZE_POSE,
       data,
     }))
