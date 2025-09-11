@@ -86,8 +86,6 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     if (fileInput) {
       fileInput.value = "";
     }
-    // Cleanup existing preview URLs
-    previewUrls.forEach((url) => URL.revokeObjectURL(url));
   };
 
   const handleAssignPose = async () => {
@@ -108,13 +106,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
 
         // Remove the processed file and preview URL to keep preview in sync
         setSelectedFiles((prev) => prev.filter((_, index) => index !== 0));
-        setPreviewUrls((prev) => {
-          // Revoke the URL for the processed image to free memory
-          if (prev[0]) {
-            URL.revokeObjectURL(prev[0]);
-          }
-          return prev.filter((_, index) => index !== 0);
-        });
+        setPreviewUrls((prev) => prev.filter((_, index) => index !== 0));
 
         // Reset selected pose for next item
         setCurrentSelectedPose("");
@@ -175,12 +167,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     }
 
     try {
-      // Analyze all files at once using the analyzePose action
       const analysisResults: PoseAnalysis[] = await analyzePose(selectedFiles);
-
-      console.log({ analysisResults });
-
-      // Store all results as pending for processing
       setPendingResults(analysisResults);
 
       // Set predicted pose as default selection for the first image
@@ -203,11 +190,9 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       }, 100);
     } catch (error) {
       console.error("Error analyzing poses:", error);
-      // TODO: Handle error properly
     }
   };
 
-  // Fetch poses on component mount
   React.useEffect(() => {
     if (!poses) {
       getPoses();
@@ -217,9 +202,11 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   // Cleanup preview URL when component unmounts or file changes
   React.useEffect(() => {
     return () => {
-      previewUrls.forEach((url) => {
-        URL.revokeObjectURL(url);
-      });
+      if (!pendingResults.length) {
+        previewUrls.forEach((url) => {
+          URL.revokeObjectURL(url);
+        });
+      }
     };
   }, [previewUrls]);
 
@@ -302,8 +289,15 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                     {currentPreviewUrl ? (
                       <img
                         src={currentPreviewUrl}
-                        alt="Preview"
+                        alt="Current image preview"
                         className="object-contain w-full h-full"
+                        onError={(e) => {
+                          console.error(
+                            "Image failed to load:",
+                            currentPreviewUrl
+                          );
+                          e.currentTarget.style.display = "none";
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-transparent">
@@ -311,13 +305,21 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                         <span className="text-sm">
                           {selectedFiles.length === 0
                             ? "No images selected"
+                            : pendingResults.length > 0
+                            ? "Processing..."
                             : "Select files to begin"}
                         </span>
                       </div>
                     )}
                   </div>
                   <p className="text-xs text-gray-500">
-                    {currentPreviewUrl ? "Preview" : "Image will appear here"}
+                    {currentPreviewUrl
+                      ? `Image ${
+                          originalFileCount -
+                          pendingResults.length +
+                          (pendingResults.length > 0 ? 1 : 0)
+                        } of ${originalFileCount}`
+                      : "Image will appear here"}
                   </p>
                 </div>
 
