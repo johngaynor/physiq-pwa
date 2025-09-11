@@ -56,29 +56,29 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
 }) => {
   const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = React.useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = React.useState<number>(0);
   const [currentSelectedPose, setCurrentSelectedPose] =
     React.useState<string>("");
+  const [originalFileCount, setOriginalFileCount] = React.useState<number>(0);
 
   // Store remaining unprocessed results that need pose confirmation
-  const [pendingResults, setPendingResults] = React.useState<
-    PoseAnalysis[]
-  >([]);
+  const [pendingResults, setPendingResults] = React.useState<PoseAnalysis[]>(
+    []
+  );
 
   // Refs for scrolling
   const topRef = React.useRef<HTMLDivElement>(null);
   const resultsRef = React.useRef<HTMLDivElement>(null);
 
   // Current image data for easier access - always work with first pending result
-  const currentPreviewUrl = previewUrls[currentImageIndex];
+  const currentPreviewUrl = previewUrls[0]; // Always show the first image which corresponds to current analysis
   const currentAnalysisResult = pendingResults[0]; // Always work with the first pending result
 
   const handleClearAll = () => {
     setSelectedFiles([]);
     setPreviewUrls([]);
     setCurrentSelectedPose("");
-    setCurrentImageIndex(0);
     setPendingResults([]);
+    setOriginalFileCount(0);
     // Reset file input
     const fileInput = document.querySelector(
       'input[type="file"]'
@@ -106,6 +106,16 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
         // Remove the processed result from pending results
         setPendingResults((prev) => prev.filter((_, index) => index !== 0));
 
+        // Remove the processed file and preview URL to keep preview in sync
+        setSelectedFiles((prev) => prev.filter((_, index) => index !== 0));
+        setPreviewUrls((prev) => {
+          // Revoke the URL for the processed image to free memory
+          if (prev[0]) {
+            URL.revokeObjectURL(prev[0]);
+          }
+          return prev.filter((_, index) => index !== 0);
+        });
+
         // Reset selected pose for next item
         setCurrentSelectedPose("");
 
@@ -113,14 +123,9 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
         if (pendingResults.length > 1) {
           // Set the selected pose for the next item (which will now be first)
           const nextResult = pendingResults[1];
-          if (
-            nextResult?.result?.predicted_class_name &&
-            poses
-          ) {
+          if (nextResult?.result?.predicted_class_name && poses) {
             const predictedPose = poses.find(
-              (pose) =>
-                pose.name ===
-                nextResult.result.predicted_class_name
+              (pose) => pose.name === nextResult.result.predicted_class_name
             );
             if (predictedPose) {
               setCurrentSelectedPose(predictedPose.id.toString());
@@ -152,7 +157,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     }
 
     setSelectedFiles(files);
-    setCurrentImageIndex(0);
+    setOriginalFileCount(files.length);
 
     // Create preview URLs for all files
     const urls = files.map((file) => URL.createObjectURL(file));
@@ -185,9 +190,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
         analysisResults[0].result?.predicted_class_name
       ) {
         const predictedPose = poses.find(
-          (pose) =>
-            pose.name ===
-            analysisResults[0].result.predicted_class_name
+          (pose) => pose.name === analysisResults[0].result.predicted_class_name
         );
         if (predictedPose) {
           setCurrentSelectedPose(predictedPose.id.toString());
@@ -195,7 +198,6 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       }
 
       // Set to first image and scroll to results
-      setCurrentImageIndex(0);
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
@@ -250,52 +252,46 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                   <div className="text-center space-y-2">
                     <div className="text-sm text-gray-600">
                       {pendingResults.length > 0
-                        ? `${
-                            selectedFiles.length - pendingResults.length + 1
-                          } of ${selectedFiles.length} (${
+                        ? `Processing image ${
+                            originalFileCount - pendingResults.length + 1
+                          } of ${originalFileCount} (${
                             pendingResults.length
                           } remaining)`
-                        : `Image ${currentImageIndex + 1} of ${
-                            selectedFiles.length
-                          }`}
+                        : `${selectedFiles.length} images selected`}
                     </div>
 
                     {/* Progress dots */}
                     {pendingResults.length > 0 && (
                       <div className="flex justify-center space-x-1">
-                        {selectedFiles.map((_, index) => {
-                          const isSubmitted =
-                            index <
-                            selectedFiles.length - pendingResults.length;
-                          const isCurrent =
-                            index ===
-                            selectedFiles.length - pendingResults.length;
-                          const isAnalyzed = pendingResults.length > 0;
+                        {Array.from({ length: originalFileCount }).map(
+                          (_, index) => {
+                            const isProcessed =
+                              index < originalFileCount - pendingResults.length;
+                            const isCurrent =
+                              index ===
+                              originalFileCount - pendingResults.length;
 
-                          return (
-                            <div
-                              key={index}
-                              className={`w-2 h-2 rounded-full ${
-                                isSubmitted
-                                  ? "bg-green-500"
-                                  : isCurrent
-                                  ? "bg-blue-500"
-                                  : isAnalyzed
-                                  ? "bg-yellow-500"
-                                  : "bg-gray-300"
-                              }`}
-                              title={
-                                isSubmitted
-                                  ? "Submitted"
-                                  : isCurrent
-                                  ? "Current"
-                                  : isAnalyzed
-                                  ? "Analyzed"
-                                  : "Pending"
-                              }
-                            />
-                          );
-                        })}
+                            return (
+                              <div
+                                key={index}
+                                className={`w-2 h-2 rounded-full ${
+                                  isProcessed
+                                    ? "bg-green-500"
+                                    : isCurrent
+                                    ? "bg-blue-500"
+                                    : "bg-yellow-500"
+                                }`}
+                                title={
+                                  isProcessed
+                                    ? "Completed"
+                                    : isCurrent
+                                    ? "Current"
+                                    : "Pending"
+                                }
+                              />
+                            );
+                          }
+                        )}
                       </div>
                     )}
                   </div>
@@ -370,19 +366,14 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                 <div ref={resultsRef} />
                 <h3 className="text-lg font-medium mb-4">
                   Analysis Results - {pendingResults.length} remaining of{" "}
-                  {selectedFiles.length}
+                  {originalFileCount}
                 </h3>
                 <div className="space-y-2 flex-1 flex flex-col">
                   <h4 className="text-md font-semibold text-center">
-                    {
-                      currentAnalysisResult.result
-                        ?.predicted_class_name
-                    }
-                    {currentAnalysisResult.result
-                      ?.confidence &&
+                    {currentAnalysisResult.result?.predicted_class_name}
+                    {currentAnalysisResult.result?.confidence &&
                       ` (${(
-                        currentAnalysisResult.result
-                          .confidence * 100
+                        currentAnalysisResult.result.confidence * 100
                       ).toFixed(1)}% confidence)`}
                   </h4>
                   <div className="w-full rounded-lg border flex-1 flex flex-col">
@@ -400,11 +391,9 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {currentAnalysisResult.result
-                            ?.all_probabilities &&
+                          {currentAnalysisResult.result?.all_probabilities &&
                             Object.entries(
-                              currentAnalysisResult.result
-                                .all_probabilities
+                              currentAnalysisResult.result.all_probabilities
                             )
                               .sort(
                                 ([, a], [, b]) => (b as number) - (a as number)
@@ -421,7 +410,8 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                                     key={pose}
                                     className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 ${
                                       pose ===
-                                      currentAnalysisResult.result?.predicted_class_name
+                                      currentAnalysisResult.result
+                                        ?.predicted_class_name
                                         ? "font-extrabold"
                                         : ""
                                     } ${
