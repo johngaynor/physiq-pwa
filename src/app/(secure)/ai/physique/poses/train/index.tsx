@@ -54,21 +54,30 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   assignPoseLoading,
   assignPose,
 }) => {
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
-  const [analysisResult, setAnalysisResult] =
-    React.useState<AnalyzePoseResult | null>(null);
-  const [selectedPose, setSelectedPose] = React.useState<string>("");
+  const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = React.useState<string[]>([]);
+  const [analysisResults, setAnalysisResults] = React.useState<
+    AnalyzePoseResult[]
+  >([]);
+  const [selectedPoses, setSelectedPoses] = React.useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = React.useState<number>(0);
 
   // Refs for scrolling
   const topRef = React.useRef<HTMLDivElement>(null);
   const resultsRef = React.useRef<HTMLDivElement>(null);
 
+  // Current image data for easier access
+  const currentFile = selectedFiles[currentImageIndex];
+  const currentPreviewUrl = previewUrls[currentImageIndex];
+  const currentAnalysisResult = analysisResults[currentImageIndex];
+  const currentSelectedPose = selectedPoses[currentImageIndex] || "";
+
   const handleClearAll = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    setAnalysisResult(null);
-    setSelectedPose("");
+    setSelectedFiles([]);
+    setPreviewUrls([]);
+    setAnalysisResults([]);
+    setSelectedPoses([]);
+    setCurrentImageIndex(0);
     // Reset file input
     const fileInput = document.querySelector(
       'input[type="file"]'
@@ -76,26 +85,38 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     if (fileInput) {
       fileInput.value = "";
     }
+    // Cleanup existing preview URLs
+    previewUrls.forEach((url) => URL.revokeObjectURL(url));
     // Scroll back to top
     topRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleAssignPose = async () => {
-    if (!selectedPose || !analysisResult?.fileUploaded) {
+    if (!currentSelectedPose || !currentAnalysisResult?.fileUploaded) {
       alert("Please select a pose before submitting");
       return;
     }
 
     try {
       await assignPose(
-        analysisResult.fileUploaded,
-        parseInt(selectedPose)
+        currentAnalysisResult.fileUploaded,
+        parseInt(currentSelectedPose)
       ).then(() => {
         toast.success("Pose assigned successfully!");
-        // Scroll back to top after successful submission
-        topRef.current?.scrollIntoView({ behavior: "smooth" });
+
+        // Move to next image or back to top if this was the last one
+        if (currentImageIndex < selectedFiles.length - 1) {
+          setCurrentImageIndex(currentImageIndex + 1);
+          // Scroll to results for next image
+          setTimeout(() => {
+            resultsRef.current?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        } else {
+          // All images processed, scroll back to top
+          topRef.current?.scrollIntoView({ behavior: "smooth" });
+          handleClearAll();
+        }
       });
-      handleClearAll();
     } catch (error) {
       console.error("Error assigning pose:", error);
       // TODO: Handle error properly
@@ -103,38 +124,51 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setSelectedFile(file);
+    const files = Array.from(event.target.files || []);
 
-    // Create preview URL
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null);
+    // Limit to 10 files
+    if (files.length > 10) {
+      alert("Please select a maximum of 10 images");
+      return;
     }
 
-    // Clear previous result when new file is selected
-    setAnalysisResult(null);
+    setSelectedFiles(files);
+    setCurrentImageIndex(0);
+
+    // Create preview URLs for all files
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(urls);
+
+    // Clear previous results
+    setAnalysisResults([]);
+    setSelectedPoses([]);
   };
 
   const handleSubmit = async () => {
-    if (!selectedFile) {
-      alert("Please select a file first");
+    if (!currentFile) {
+      alert("Please select files first");
       return;
     }
 
     try {
-      analyzePose(selectedFile).then((data: AnalyzePoseResult) => {
-        setAnalysisResult(data);
-        // Set the predicted pose as the default selection
+      // For now, analyze one image at a time.
+      // TODO: Update this when API supports batch processing
+      analyzePose(currentFile).then((data: AnalyzePoseResult) => {
+        // Update analysis results for current image
+        const newResults = [...analysisResults];
+        newResults[currentImageIndex] = data;
+        setAnalysisResults(newResults);
+
+        // Set the predicted pose as the default selection for current image
         if (data.analysisResult?.result?.predicted_class_name && poses) {
           const predictedPose = poses.find(
             (pose) =>
               pose.name === data.analysisResult.result.predicted_class_name
           );
           if (predictedPose) {
-            setSelectedPose(predictedPose.id.toString());
+            const newSelectedPoses = [...selectedPoses];
+            newSelectedPoses[currentImageIndex] = predictedPose.id.toString();
+            setSelectedPoses(newSelectedPoses);
           }
         }
         // Scroll to results section after analysis completes
@@ -148,6 +182,13 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     }
   };
 
+  // Function to update selected pose for current image
+  const setCurrentSelectedPose = (poseId: string) => {
+    const newSelectedPoses = [...selectedPoses];
+    newSelectedPoses[currentImageIndex] = poseId;
+    setSelectedPoses(newSelectedPoses);
+  };
+
   // Fetch poses on component mount
   React.useEffect(() => {
     if (!poses) {
@@ -158,11 +199,11 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   // Cleanup preview URL when component unmounts or file changes
   React.useEffect(() => {
     return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
+      previewUrls.forEach((url) => {
+        URL.revokeObjectURL(url);
+      });
     };
-  }, [previewUrl]);
+  }, [previewUrls]);
 
   if (!poses || posesLoading) {
     return (
@@ -182,35 +223,47 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
           <CardContent className="p-8 h-full">
             <div className="flex flex-col items-center space-y-4 h-full">
               <Upload className="h-12 w-12 text-gray-400" />
-              <h3 className="text-lg font-medium">Upload Physique Photo</h3>
+              <h3 className="text-lg font-medium">Upload Physique Photos</h3>
               <p className="text-sm text-gray-500 text-center">
-                Select a photo to upload for physique tracking
+                Select up to 10 photos to upload for physique tracking
               </p>
 
               <div className="w-full max-w-md space-y-4 flex-1 flex flex-col justify-center">
+                {/* Image counter */}
+                {selectedFiles.length > 0 && (
+                  <div className="text-center text-sm text-gray-600">
+                    Image {currentImageIndex + 1} of {selectedFiles.length}
+                  </div>
+                )}
+
                 <div className="flex flex-col items-center space-y-2">
                   <div className="relative w-full max-w-xs h-64 border border-gray-200 rounded-lg overflow-hidden bg-transparent">
-                    {previewUrl ? (
+                    {currentPreviewUrl ? (
                       <img
-                        src={previewUrl}
+                        src={currentPreviewUrl}
                         alt="Preview"
                         className="object-contain w-full h-full"
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-transparent">
                         <Upload className="h-8 w-8 mb-2" />
-                        <span className="text-sm">No image selected</span>
+                        <span className="text-sm">
+                          {selectedFiles.length === 0
+                            ? "No images selected"
+                            : "Select files to begin"}
+                        </span>
                       </div>
                     )}
                   </div>
                   <p className="text-xs text-gray-500">
-                    {previewUrl ? "Preview" : "Image will appear here"}
+                    {currentPreviewUrl ? "Preview" : "Image will appear here"}
                   </p>
                 </div>
 
                 <Input
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={handleFileChange}
                   className="file:mr-4 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
@@ -218,7 +271,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                 <Button
                   onClick={handleSubmit}
                   className="w-full"
-                  disabled={!selectedFile || analyzePoseLoading}
+                  disabled={!currentFile || analyzePoseLoading}
                 >
                   {analyzePoseLoading ? (
                     <>
@@ -226,7 +279,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                       Analyzing...
                     </>
                   ) : (
-                    "Analyze"
+                    `Analyze Image ${currentImageIndex + 1}`
                   )}
                 </Button>
               </div>
@@ -239,21 +292,25 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
           {/* Analysis Results */}
           {analyzePoseLoading || assignPoseLoading ? (
             <ResultsLoadingCard />
-          ) : analysisResult ? (
+          ) : currentAnalysisResult ? (
             <Card className="w-full rounded-sm p-0 h-full">
               <CardContent className="p-6 h-full flex flex-col">
                 {/* Results reference for scrolling */}
                 <div ref={resultsRef} />
-                <h3 className="text-lg font-medium mb-4">Analysis Results</h3>
+                <h3 className="text-lg font-medium mb-4">
+                  Analysis Results - Image {currentImageIndex + 1} of{" "}
+                  {selectedFiles.length}
+                </h3>
                 <div className="space-y-2 flex-1 flex flex-col">
                   <h4 className="text-md font-semibold text-center">
                     {
-                      analysisResult.analysisResult?.result
+                      currentAnalysisResult.analysisResult?.result
                         ?.predicted_class_name
                     }
-                    {analysisResult.analysisResult?.result?.confidence &&
+                    {currentAnalysisResult.analysisResult?.result?.confidence &&
                       ` (${(
-                        analysisResult.analysisResult.result.confidence * 100
+                        currentAnalysisResult.analysisResult.result.confidence *
+                        100
                       ).toFixed(1)}% confidence)`}
                   </h4>
                   <div className="w-full rounded-lg border flex-1 flex flex-col">
@@ -271,13 +328,15 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {analysisResult.analysisResult?.result
+                          {currentAnalysisResult.analysisResult?.result
                             ?.all_probabilities &&
                             Object.entries(
-                              analysisResult.analysisResult.result
+                              currentAnalysisResult.analysisResult.result
                                 .all_probabilities
                             )
-                              .sort(([, a], [, b]) => b - a) // Sort by probability descending
+                              .sort(
+                                ([, a], [, b]) => (b as number) - (a as number)
+                              ) // Sort by probability descending
                               .map(([pose, probability]) => {
                                 // Find the pose ID from the poses array
                                 const poseObj = poses?.find(
@@ -290,24 +349,27 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                                     key={pose}
                                     className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 ${
                                       pose ===
-                                      analysisResult.analysisResult?.result
-                                        ?.predicted_class_name
+                                      currentAnalysisResult.analysisResult
+                                        ?.result?.predicted_class_name
                                         ? "font-extrabold"
                                         : ""
                                     } ${
-                                      selectedPose === poseId
+                                      currentSelectedPose === poseId
                                         ? "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-l-blue-500"
                                         : ""
                                     }`}
                                     onClick={() => {
                                       if (poseId) {
-                                        setSelectedPose(poseId);
+                                        setCurrentSelectedPose(poseId);
                                       }
                                     }}
                                   >
                                     <TableCell>{pose}</TableCell>
                                     <TableCell className="text-right">
-                                      {(probability * 100).toFixed(2)}%
+                                      {((probability as number) * 100).toFixed(
+                                        2
+                                      )}
+                                      %
                                     </TableCell>
                                   </TableRow>
                                 );
@@ -324,8 +386,8 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                         Select Correct Pose
                       </label>
                       <Select
-                        value={selectedPose}
-                        onValueChange={setSelectedPose}
+                        value={currentSelectedPose}
+                        onValueChange={setCurrentSelectedPose}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Choose the correct pose..." />
@@ -342,9 +404,10 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                         </SelectContent>
                       </Select>
                     </div>
+
                     <Button
                       onClick={handleAssignPose}
-                      disabled={!selectedPose || assignPoseLoading}
+                      disabled={!currentSelectedPose || assignPoseLoading}
                       className="shrink-0"
                     >
                       {assignPoseLoading ? (
@@ -352,6 +415,12 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Submitting...
                         </>
+                      ) : selectedFiles.length > 1 ? (
+                        `Submit & ${
+                          currentImageIndex < selectedFiles.length - 1
+                            ? "Next"
+                            : "Finish"
+                        }`
                       ) : (
                         "Submit"
                       )}
@@ -361,7 +430,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                       onClick={handleClearAll}
                       className="shrink-0"
                     >
-                      Reset
+                      Reset All
                     </Button>
                   </div>
                 </div>
