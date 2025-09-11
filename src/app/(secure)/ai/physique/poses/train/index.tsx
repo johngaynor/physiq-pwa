@@ -200,15 +200,15 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   }, [poses, getPoses]);
 
   // Cleanup preview URL when component unmounts or file changes
-  React.useEffect(() => {
-    return () => {
-      if (!pendingResults.length) {
-        previewUrls.forEach((url) => {
-          URL.revokeObjectURL(url);
-        });
-      }
-    };
-  }, [previewUrls]);
+  // React.useEffect(() => {
+  //   return () => {
+  //     if (!pendingResults.length) {
+  //       previewUrls.forEach((url) => {
+  //         URL.revokeObjectURL(url);
+  //       });
+  //     }
+  //   };
+  // }, [previewUrls]);
 
   if (!poses || posesLoading) {
     return (
