@@ -25,7 +25,7 @@ import {
   getPoses,
   assignPose,
 } from "@/app/(secure)/physique/state/actions";
-import { AnalyzePoseResult } from "@/app/(secure)/physique/state/types";
+import { PoseAnalysis } from "@/app/(secure)/physique/state/types";
 import ResultsLoadingCard from "./components/ResultsLoadingCard";
 import { toast } from "sonner";
 
@@ -62,7 +62,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
 
   // Store remaining unprocessed results that need pose confirmation
   const [pendingResults, setPendingResults] = React.useState<
-    AnalyzePoseResult[]
+    PoseAnalysis[]
   >([]);
 
   // Refs for scrolling
@@ -91,14 +91,14 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   };
 
   const handleAssignPose = async () => {
-    if (!currentSelectedPose || !currentAnalysisResult?.fileUploaded) {
+    if (!currentSelectedPose || !currentAnalysisResult?.filename) {
       alert("Please select a pose before submitting");
       return;
     }
 
     try {
       await assignPose(
-        currentAnalysisResult.fileUploaded,
+        currentAnalysisResult.filename,
         parseInt(currentSelectedPose)
       ).then(() => {
         toast.success("Pose assigned successfully!");
@@ -114,13 +114,13 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
           // Set the selected pose for the next item (which will now be first)
           const nextResult = pendingResults[1];
           if (
-            nextResult?.analysisResult?.result?.predicted_class_name &&
+            nextResult?.result?.predicted_class_name &&
             poses
           ) {
             const predictedPose = poses.find(
               (pose) =>
                 pose.name ===
-                nextResult.analysisResult.result.predicted_class_name
+                nextResult.result.predicted_class_name
             );
             if (predictedPose) {
               setCurrentSelectedPose(predictedPose.id.toString());
@@ -171,21 +171,23 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
 
     try {
       // Analyze all files at once using the analyzePose action
-      const dataArray: AnalyzePoseResult[] = await analyzePose(selectedFiles);
+      const analysisResults: PoseAnalysis[] = await analyzePose(selectedFiles);
+
+      console.log({ analysisResults });
 
       // Store all results as pending for processing
-      setPendingResults(dataArray);
+      setPendingResults(analysisResults);
 
       // Set predicted pose as default selection for the first image
       if (
         poses &&
-        dataArray.length > 0 &&
-        dataArray[0].analysisResult?.result?.predicted_class_name
+        analysisResults.length > 0 &&
+        analysisResults[0].result?.predicted_class_name
       ) {
         const predictedPose = poses.find(
           (pose) =>
             pose.name ===
-            dataArray[0].analysisResult.result.predicted_class_name
+            analysisResults[0].result.predicted_class_name
         );
         if (predictedPose) {
           setCurrentSelectedPose(predictedPose.id.toString());
@@ -373,13 +375,14 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                 <div className="space-y-2 flex-1 flex flex-col">
                   <h4 className="text-md font-semibold text-center">
                     {
-                      currentAnalysisResult.analysisResult?.result
+                      currentAnalysisResult.result
                         ?.predicted_class_name
                     }
-                    {currentAnalysisResult.analysisResult?.result?.confidence &&
+                    {currentAnalysisResult.result
+                      ?.confidence &&
                       ` (${(
-                        currentAnalysisResult.analysisResult.result.confidence *
-                        100
+                        currentAnalysisResult.result
+                          .confidence * 100
                       ).toFixed(1)}% confidence)`}
                   </h4>
                   <div className="w-full rounded-lg border flex-1 flex flex-col">
@@ -397,10 +400,10 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {currentAnalysisResult.analysisResult?.result
+                          {currentAnalysisResult.result
                             ?.all_probabilities &&
                             Object.entries(
-                              currentAnalysisResult.analysisResult.result
+                              currentAnalysisResult.result
                                 .all_probabilities
                             )
                               .sort(
@@ -418,8 +421,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                                     key={pose}
                                     className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 ${
                                       pose ===
-                                      currentAnalysisResult.analysisResult
-                                        ?.result?.predicted_class_name
+                                      currentAnalysisResult.result?.predicted_class_name
                                         ? "font-extrabold"
                                         : ""
                                     } ${

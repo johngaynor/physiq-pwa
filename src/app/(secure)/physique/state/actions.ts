@@ -12,7 +12,7 @@ import {
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import {
-  AnalyzePoseResult,
+  PoseAnalysis,
   AssignPoseResult,
   Pose,
   PoseModelDataResult,
@@ -30,7 +30,7 @@ export const analyzePose = (files: File[]) => {
   return api
     .route("/api/physique/poses/analyze")
     .fetch(() => ({ type: FETCH_ANALYZE_POSE }))
-    .load((data: AnalyzePoseResult[]) => ({
+    .load((data: PoseAnalysis[]) => ({
       type: LOAD_ANALYZE_POSE,
       data,
     }))
