@@ -56,11 +56,9 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
 }) => {
   const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = React.useState<string[]>([]);
-  const [analysisResults, setAnalysisResults] = React.useState<
-    AnalyzePoseResult[]
-  >([]);
-  const [selectedPoses, setSelectedPoses] = React.useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = React.useState<number>(0);
+  const [currentSelectedPose, setCurrentSelectedPose] =
+    React.useState<string>("");
 
   // Store remaining unprocessed results that need pose confirmation
   const [pendingResults, setPendingResults] = React.useState<
@@ -71,16 +69,14 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
   const topRef = React.useRef<HTMLDivElement>(null);
   const resultsRef = React.useRef<HTMLDivElement>(null);
 
-  // Current image data for easier access - now using pending results
+  // Current image data for easier access - always work with first pending result
   const currentPreviewUrl = previewUrls[currentImageIndex];
   const currentAnalysisResult = pendingResults[0]; // Always work with the first pending result
-  const currentSelectedPose = selectedPoses[0] || ""; // Corresponding to the first pending result
 
   const handleClearAll = () => {
     setSelectedFiles([]);
     setPreviewUrls([]);
-    setAnalysisResults([]);
-    setSelectedPoses([]);
+    setCurrentSelectedPose("");
     setCurrentImageIndex(0);
     setPendingResults([]);
     // Reset file input
@@ -107,14 +103,30 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       ).then(() => {
         toast.success("Pose assigned successfully!");
 
-        // Remove the confirmed result from pending results
-        setPendingResults((prev) => prev.slice(1));
+        // Remove the processed result from pending results
+        setPendingResults((prev) => prev.filter((_, index) => index !== 0));
 
-        // Remove the first selected pose since we just processed it
-        setSelectedPoses((prev) => prev.slice(1));
+        // Reset selected pose for next item
+        setCurrentSelectedPose("");
 
         // Check if there are more pending results
         if (pendingResults.length > 1) {
+          // Set the selected pose for the next item (which will now be first)
+          const nextResult = pendingResults[1];
+          if (
+            nextResult?.analysisResult?.result?.predicted_class_name &&
+            poses
+          ) {
+            const predictedPose = poses.find(
+              (pose) =>
+                pose.name ===
+                nextResult.analysisResult.result.predicted_class_name
+            );
+            if (predictedPose) {
+              setCurrentSelectedPose(predictedPose.id.toString());
+            }
+          }
+
           // Stay on current workflow, next result will automatically show
           setTimeout(() => {
             resultsRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -127,7 +139,6 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       });
     } catch (error) {
       console.error("Error assigning pose:", error);
-      // TODO: Handle error properly
     }
   };
 
@@ -148,8 +159,8 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
     setPreviewUrls(urls);
 
     // Clear previous results
-    setAnalysisResults([]);
-    setSelectedPoses([]);
+    setPendingResults([]);
+    setCurrentSelectedPose("");
   };
 
   const handleSubmit = async () => {
@@ -162,27 +173,23 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       // Analyze all files at once using the analyzePose action
       const dataArray: AnalyzePoseResult[] = await analyzePose(selectedFiles);
 
-      // Set all analysis results at once
-      setAnalysisResults(dataArray);
-
       // Store all results as pending for processing
       setPendingResults(dataArray);
 
-      // Set predicted poses as default selections for all images
-      if (poses) {
-        const newSelectedPoses: string[] = [];
-        dataArray.forEach((data, index) => {
-          if (data.analysisResult?.result?.predicted_class_name) {
-            const predictedPose = poses.find(
-              (pose) =>
-                pose.name === data.analysisResult.result.predicted_class_name
-            );
-            if (predictedPose) {
-              newSelectedPoses[index] = predictedPose.id.toString();
-            }
-          }
-        });
-        setSelectedPoses(newSelectedPoses);
+      // Set predicted pose as default selection for the first image
+      if (
+        poses &&
+        dataArray.length > 0 &&
+        dataArray[0].analysisResult?.result?.predicted_class_name
+      ) {
+        const predictedPose = poses.find(
+          (pose) =>
+            pose.name ===
+            dataArray[0].analysisResult.result.predicted_class_name
+        );
+        if (predictedPose) {
+          setCurrentSelectedPose(predictedPose.id.toString());
+        }
       }
 
       // Set to first image and scroll to results
@@ -194,13 +201,6 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
       console.error("Error analyzing poses:", error);
       // TODO: Handle error properly
     }
-  };
-
-  // Function to update selected pose for current image (first pending result)
-  const setCurrentSelectedPose = (poseId: string) => {
-    const newSelectedPoses = [...selectedPoses];
-    newSelectedPoses[0] = poseId; // Always update the first position since we're working with the first pending result
-    setSelectedPoses(newSelectedPoses);
   };
 
   // Fetch poses on component mount
@@ -259,7 +259,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                     </div>
 
                     {/* Progress dots */}
-                    {analysisResults.length > 0 && (
+                    {pendingResults.length > 0 && (
                       <div className="flex justify-center space-x-1">
                         {selectedFiles.map((_, index) => {
                           const isSubmitted =
@@ -268,7 +268,7 @@ const PoseTrainingDashboard: React.FC<PropsFromRedux> = ({
                           const isCurrent =
                             index ===
                             selectedFiles.length - pendingResults.length;
-                          const isAnalyzed = analysisResults.length > 0;
+                          const isAnalyzed = pendingResults.length > 0;
 
                           return (
                             <div
