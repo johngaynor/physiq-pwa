@@ -177,7 +177,7 @@ export type Action =
   | {
       type: typeof FETCH_EDIT_HEALTH_DAILY_SLEEP;
     }
-  | { type: typeof LOAD_EDIT_HEALTH_DAILY_SLEEP; data: DailyLog }
+  | { type: typeof LOAD_EDIT_HEALTH_DAILY_SLEEP; data: SleepLog }
   | { type: typeof FETCH_HEALTH_SUPPLEMENT_TAGS }
   | { type: typeof LOAD_HEALTH_SUPPLEMENT_TAGS; data: SupplementTag[] }
   | { type: typeof FETCH_HEALTH_SLEEP_LOGS }

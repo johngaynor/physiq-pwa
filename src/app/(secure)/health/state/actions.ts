@@ -144,7 +144,10 @@ export const getDailySleep = (date: string) => {
   return api
     .route(`/api/health/daily/sleep/oura/${date}`)
     .fetch(() => ({ type: FETCH_EDIT_HEALTH_DAILY_SLEEP }))
-    .load((data) => ({ type: LOAD_EDIT_HEALTH_DAILY_SLEEP, data }))
+    .load((data: SleepLog[]) => ({
+      type: LOAD_EDIT_HEALTH_DAILY_SLEEP,
+      data: data[0],
+    }))
     .error("Error getting daily sleep from oura")
     .get();
 };

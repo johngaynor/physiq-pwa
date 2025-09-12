@@ -259,24 +259,74 @@ export default function healthReducer(
         editSleepLoading: true,
       };
     case LOAD_EDIT_HEALTH_DAILY_SLEEP:
-      let found = false;
+      // Add the new sleep log to sleepLogs array
+      const existingSleepLogs = state.sleepLogs || [];
+      const sleepLogExists = existingSleepLogs.some(
+        (log) => log.date === action.data.date
+      );
 
-      const newSleepLogs =
-        state.dailyLogs?.map((log) => {
-          if (log.date === action.data?.date) {
-            found = true;
-            return { ...log, ...action.data };
-          }
-          return log;
-        }) || [];
+      let updatedSleepLogs;
+      if (sleepLogExists) {
+        // Update existing log
+        updatedSleepLogs = existingSleepLogs.map((log) =>
+          log.date === action.data.date ? action.data : log
+        );
+      } else {
+        // Add new log
+        updatedSleepLogs = [...existingSleepLogs, action.data];
+      }
 
-      if (!found) {
-        newSleepLogs.push({ ...action.data });
+      // Also update dailyLogs with basic sleep data for the dashboard
+      const existingDailyLogs = state.dailyLogs || [];
+      const dailyLogExists = existingDailyLogs.some(
+        (log) => log.date === action.data.date
+      );
+
+      let updatedDailyLogs;
+      if (dailyLogExists) {
+        // Update existing daily log
+        updatedDailyLogs = existingDailyLogs.map((log) =>
+          log.date === action.data.date
+            ? {
+                ...log,
+                totalSleep: action.data.totalSleep,
+                totalBed: action.data.totalBed,
+                awakeQty: action.data.awakeQty,
+                lightQty: action.data.lightQty,
+                remQty: action.data.remQty,
+                deepQty: action.data.deepQty,
+              }
+            : log
+        );
+      } else {
+        // Add new daily log entry
+        updatedDailyLogs = [
+          ...existingDailyLogs,
+          {
+            date: action.data.date,
+            totalSleep: action.data.totalSleep,
+            totalBed: action.data.totalBed,
+            awakeQty: action.data.awakeQty,
+            lightQty: action.data.lightQty,
+            remQty: action.data.remQty,
+            deepQty: action.data.deepQty,
+            weight: null,
+            steps: null,
+            bodyfat: null,
+            water: null,
+            calories: null,
+            ffm: null,
+            caloriesTarget: null,
+            waterTarget: null,
+            stepsTarget: null,
+          },
+        ];
       }
       return {
         ...state,
         editSleepLoading: false,
-        dailyLogs: newSleepLogs,
+        sleepLogs: updatedSleepLogs,
+        dailyLogs: updatedDailyLogs,
       };
     case FETCH_HEALTH_SUPPLEMENT_TAGS:
       return {
