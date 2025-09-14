@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Edit, Share } from "lucide-react";
-import EditorJS from "@editorjs/editorjs";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -26,7 +25,7 @@ const JournalView: React.FC<PropsFromRedux> = ({
 }) => {
   const params = useParams();
   const router = useRouter();
-  const editorRef = useRef<EditorJS | null>(null);
+  const editorRef = useRef<any>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
   const journalId = params.id as string;
 
@@ -36,29 +35,90 @@ const JournalView: React.FC<PropsFromRedux> = ({
   // Initialize Editor.js in read-only mode
   useEffect(() => {
     if (journal && journal.content && !editorRef.current) {
-      try {
-        let editorData;
+      const initEditor = async () => {
+        try {
+          // Import all the Editor.js tools
+          const EditorJS = (await import("@editorjs/editorjs")).default;
+          const Header = (await import("@editorjs/header")).default;
+          const List = (await import("@editorjs/list")).default;
+          // @ts-ignore
+          const Embed = (await import("@editorjs/embed")).default;
+          const Table = (await import("@editorjs/table")).default;
+          const Paragraph = (await import("@editorjs/paragraph")).default;
+          const Warning = (await import("@editorjs/warning")).default;
+          const Code = (await import("@editorjs/code")).default;
+          // @ts-ignore
+          const LinkTool = (await import("@editorjs/link")).default;
+          const Image = (await import("@editorjs/image")).default;
+          // @ts-ignore
+          const Raw = (await import("@editorjs/raw")).default;
+          const Quote = (await import("@editorjs/quote")).default;
+          // @ts-ignore
+          const Marker = (await import("@editorjs/marker")).default;
+          // @ts-ignore
+          const CheckList = (await import("@editorjs/checklist")).default;
+          const Delimiter = (await import("@editorjs/delimiter")).default;
+          const InlineCode = (await import("@editorjs/inline-code")).default;
+          // @ts-ignore
+          const SimpleImage = (await import("@editorjs/simple-image")).default;
 
-        // Parse content if it's a string
-        if (typeof journal.content === "string") {
-          editorData = JSON.parse(journal.content);
-        } else {
-          editorData = journal.content;
+          let editorData;
+
+          // Parse content if it's a string
+          if (typeof journal.content === "string") {
+            editorData = JSON.parse(journal.content);
+          } else {
+            editorData = journal.content;
+          }
+
+          editorRef.current = new EditorJS({
+            holder: "journal-editor",
+            data: editorData,
+            readOnly: true,
+            minHeight: 50,
+            tools: {
+              // Text tools
+              header: Header as any,
+              paragraph: {
+                class: Paragraph as any,
+                inlineToolbar: ["marker", "link"],
+              },
+
+              // List tools
+              list: List as any,
+              checklist: CheckList as any,
+
+              // Media tools
+              image: Image as any,
+              simpleImage: SimpleImage as any,
+              embed: Embed as any,
+
+              // Content tools
+              quote: Quote as any,
+              warning: Warning as any,
+              code: Code as any,
+              raw: Raw as any,
+              delimiter: Delimiter as any,
+              table: Table as any,
+
+              // Link tool
+              linkTool: LinkTool as any,
+
+              // Inline tools
+              marker: Marker as any,
+              inlineCode: InlineCode as any,
+            },
+            onReady: () => {
+              setIsEditorReady(true);
+            },
+          });
+        } catch (error) {
+          console.error("Error initializing editor:", error);
+          setIsEditorReady(true); // Still show the component even if editor fails
         }
+      };
 
-        editorRef.current = new EditorJS({
-          holder: "journal-editor",
-          data: editorData,
-          readOnly: true,
-          minHeight: 50,
-          onReady: () => {
-            setIsEditorReady(true);
-          },
-        });
-      } catch (error) {
-        console.error("Error initializing editor:", error);
-        setIsEditorReady(true); // Still show the component even if editor fails
-      }
+      initEditor();
     }
 
     return () => {
@@ -202,7 +262,10 @@ const JournalView: React.FC<PropsFromRedux> = ({
           <CardContent>
             {/* Editor.js container */}
             <div className="prose prose-lg max-w-none">
-              <div id="journal-editor" className="min-h-[200px]">
+              <div
+                id="journal-editor"
+                className="min-h-[200px] max-w-none [&_.ce-block]:my-2 [&_.ce-header]:font-bold [&_.ce-header[data-level='1']]:text-3xl [&_.ce-header[data-level='2']]:text-2xl [&_.ce-header[data-level='3']]:text-xl [&_.ce-header[data-level='4']]:text-lg [&_.ce-header[data-level='5']]:text-base [&_.ce-header[data-level='6']]:text-sm [&_.ce-list]:list-disc [&_.ce-list]:ml-4 [&_.ce-quote]:border-l-4 [&_.ce-quote]:border-gray-300 [&_.ce-quote]:pl-4 [&_.ce-quote]:italic [&_.ce-warning]:bg-yellow-50 [&_.ce-warning]:border-yellow-200 [&_.ce-warning]:border [&_.ce-warning]:rounded [&_.ce-warning]:p-4 [&_.ce-code]:bg-gray-100 [&_.ce-code]:rounded [&_.ce-code]:p-2 [&_.ce-delimiter]:text-center [&_.ce-delimiter]:my-6"
+              >
                 {!isEditorReady && (
                   <div className="space-y-4">
                     <Skeleton className="h-4 w-full" />
