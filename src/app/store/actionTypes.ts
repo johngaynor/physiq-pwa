@@ -211,3 +211,7 @@ export const LOAD_TRAINING_SESSION_SYNCS =
 // Test Query for development app
 export const FETCH_TEST_QUERY = "FETCH_TEST_QUERY" as const;
 export const LOAD_TEST_QUERY = "LOAD_TEST_QUERY" as const;
+
+// Journals - get all
+export const FETCH_JOURNALS = "FETCH_JOURNALS" as const;
+export const LOAD_JOURNALS = "LOAD_JOURNALS" as const;
