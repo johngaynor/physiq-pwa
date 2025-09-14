@@ -147,6 +147,9 @@ export const LOAD_APP_ACCESS = "LOAD_APP_ACCESS" as const;
 // Edit App Access - Edit access permissions for apps
 export const EDIT_APP_ACCESS = "EDIT_APP_ACCESS" as const;
 
+// Toggle App Favorite - Toggle favorite status for user apps
+export const TOGGLE_APP_FAVORITE = "TOGGLE_APP_FAVORITE" as const;
+
 // Supplement Tags - Fetch tags for supplements
 export const FETCH_HEALTH_SUPPLEMENT_TAGS =
   "FETCH_HEALTH_SUPPLEMENT_TAGS" as const;

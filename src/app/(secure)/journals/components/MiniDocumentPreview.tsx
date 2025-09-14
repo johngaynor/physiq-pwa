@@ -113,6 +113,7 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
 
       return parsedContent?.blocks || [];
     } catch (error) {
+      console.error(error);
       return [];
     }
   };

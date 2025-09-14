@@ -45,7 +45,7 @@ export default function DesktopNavAuth() {
   }
 
   return (
-    <div className="fixed right-0 left-0">
+    <div className="fixed right-0 left-0 z-50">
       <NavigationMenu className="px-5 right-0 left-0 dark:bg-[#060B1C]">
         <NavigationMenuList>
           <div className=" flex items-center">

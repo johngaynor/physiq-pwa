@@ -8,6 +8,7 @@ import {
   FETCH_APP_ACCESS,
   LOAD_APP_ACCESS,
   EDIT_APP_ACCESS,
+  TOGGLE_APP_FAVORITE,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { App, User } from "./types";
@@ -72,5 +73,14 @@ export const editAppAccess = (userId: string, app: App, checked: boolean) => {
       data: { userId, app, checked },
     }))
     .error("Error editing app access")
+    .post();
+};
+
+export const toggleAppFavorite = (userId: string, appId: number) => {
+  return api
+    .route("/api/all/app/favorite")
+    .data({ userId, appId })
+    .fetch(() => ({ type: TOGGLE_APP_FAVORITE, appId }))
+    .error("Error toggling app favorite")
     .post();
 };

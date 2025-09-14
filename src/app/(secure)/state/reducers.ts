@@ -8,6 +8,7 @@ import {
   FETCH_APP_ACCESS,
   LOAD_APP_ACCESS,
   EDIT_APP_ACCESS,
+  TOGGLE_APP_FAVORITE,
 } from "../../store/actionTypes";
 import type { AppState, Action } from "./types";
 
@@ -76,6 +77,26 @@ export default function appReducer(
           appAccess: state.appAccess?.filter((a) => a.id !== app.id) || [],
         };
       }
+    }
+    case TOGGLE_APP_FAVORITE: {
+      if (!state.user) return state;
+
+      const newApps = state.user.apps?.map((app) => {
+        if (app.id === action.appId) {
+          return {
+            ...app,
+            favorite: app.favorite === 1 ? 0 : 1,
+          };
+        } else return app;
+      });
+
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          apps: newApps || [],
+        },
+      };
     }
     default:
       return state;

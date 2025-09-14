@@ -8,6 +8,7 @@ import {
   FETCH_APP_ACCESS,
   LOAD_APP_ACCESS,
   EDIT_APP_ACCESS,
+  TOGGLE_APP_FAVORITE,
 } from "../../store/actionTypes";
 
 export type App = {
@@ -17,6 +18,7 @@ export type App = {
   link: string;
   allUsers: number;
   restricted: number;
+  favorite: number;
 };
 
 // will eventually store coach-client relationships here
@@ -45,7 +47,8 @@ export type Action =
   | {
       type: typeof EDIT_APP_ACCESS;
       data: { userId: string; app: App; checked: boolean };
-    };
+    }
+  | { type: typeof TOGGLE_APP_FAVORITE; appId: number };
 
 export interface AppState {
   user: User | null;

@@ -6,7 +6,6 @@ import { RootState } from "../../store/reducer";
 import { Input, Button } from "@/components/ui";
 import { Plus } from "lucide-react";
 import { getJournals } from "./state/actions";
-import { Journal } from "./state/types";
 import JournalsLoading from "./components/JournalsLoading";
 import JournalThumbnail from "./components/JournalThumbnail";
 
