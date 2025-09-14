@@ -218,3 +218,7 @@ export const LOAD_TEST_QUERY = "LOAD_TEST_QUERY" as const;
 // Journals - get all
 export const FETCH_JOURNALS = "FETCH_JOURNALS" as const;
 export const LOAD_JOURNALS = "LOAD_JOURNALS" as const;
+
+// Journals - upsert (create/update)
+export const FETCH_UPSERT_JOURNAL = "FETCH_UPSERT_JOURNAL" as const;
+export const LOAD_UPSERT_JOURNAL = "LOAD_UPSERT_JOURNAL" as const;

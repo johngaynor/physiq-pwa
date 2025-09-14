@@ -39,14 +39,14 @@ const Journals: React.FC<PropsFromRedux> = ({
           id="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search diet logs..."
+          placeholder="Search journals..."
           className="col-span-3"
           type="text"
         />
         <Button
           className="ml-2"
           variant="outline"
-          onClick={() => router.push("/diet/new")}
+          onClick={() => router.push("/journals/new")}
         >
           <div className="flex">
             <Plus className=" font-extrabold" />
@@ -55,27 +55,29 @@ const Journals: React.FC<PropsFromRedux> = ({
       </div>
 
       {/* Journals Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {journalsLoading ? (
-          <JournalsLoading />
-        ) : journals && journals.length > 0 ? (
-          // Journal thumbnails
-          journals.map((journal) => (
-            <JournalThumbnail key={journal.id} journal={journal} />
-          ))
-        ) : (
-          // Empty state
-          <div className="col-span-full flex flex-col items-center justify-center py-12">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-2">No journals yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Start writing your first journal entry
-              </p>
-              <Button>Create Your First Journal</Button>
+      {journalsLoading ? (
+        <JournalsLoading />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {journals && journals.length > 0 ? (
+            // Journal thumbnails
+            journals.map((journal) => (
+              <JournalThumbnail key={journal.id} journal={journal} />
+            ))
+          ) : (
+            // Empty state
+            <div className="col-span-full flex flex-col items-center justify-center py-12">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold mb-2">No journals yet</h3>
+                <p className="text-muted-foreground mb-4">
+                  Start writing your first journal entry
+                </p>
+                <Button>Create Your First Journal</Button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

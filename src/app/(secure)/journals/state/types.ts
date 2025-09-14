@@ -1,4 +1,9 @@
-import { FETCH_JOURNALS, LOAD_JOURNALS } from "@/app/store/actionTypes";
+import {
+  FETCH_JOURNALS,
+  LOAD_JOURNALS,
+  FETCH_UPSERT_JOURNAL,
+  LOAD_UPSERT_JOURNAL,
+} from "@/app/store/actionTypes";
 
 export interface Journal {
   id: string;
@@ -13,7 +18,9 @@ export interface Journal {
 // Action types
 export type Action =
   | { type: typeof FETCH_JOURNALS }
-  | { type: typeof LOAD_JOURNALS; data: Journal[] };
+  | { type: typeof LOAD_JOURNALS; data: Journal[] }
+  | { type: typeof FETCH_UPSERT_JOURNAL }
+  | { type: typeof LOAD_UPSERT_JOURNAL; data: Journal };
 
 // State interface
 export interface JournalsState {
