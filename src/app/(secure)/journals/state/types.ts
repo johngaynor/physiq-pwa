@@ -4,7 +4,7 @@ export interface Journal {
   id: string;
   userId: string;
   title: string | null;
-  content: string;
+  content: any; // Changed to any to support Editor.js content object
   coachAccess: boolean;
   createdAt: string;
   lastUpdated: string;
