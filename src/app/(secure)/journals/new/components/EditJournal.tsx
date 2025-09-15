@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { H3 } from "@/components/ui/typography";
+import { RootState } from "@/app/store/reducer";
+import { ConnectedProps, connect } from "react-redux";
+import { upsertJournal } from "../../state/actions";
 
 interface JournalEntry {
   id: string;
@@ -15,22 +18,36 @@ interface JournalEntry {
   content: OutputData;
 }
 
-interface JournalEditorProps {
-  entry?: JournalEntry;
-  onSubmit: (data: JournalEntry) => void;
-  onCancel?: () => void;
+function mapStateToProps(state: RootState) {
+  return {
+    user: state.app.user,
+  };
 }
 
-const JournalEditor: React.FC<JournalEditorProps> = ({
+const connector = connect(mapStateToProps, {
+  upsertJournal,
+});
+type PropsFromRedux = ConnectedProps<typeof connector> & {
+  entry?: JournalEntry;
+  handleCancel?: () => void;
+  onCancel?: () => void; // Backward compatibility
+};
+
+const JournalEditor: React.FC<PropsFromRedux> = ({
   entry,
-  onSubmit,
+  upsertJournal,
+  user,
+  handleCancel,
   onCancel,
 }) => {
   const editorRef = useRef<any>(null);
   const [title, setTitle] = useState(entry?.title || "");
   const [isEditorReady, setIsEditorReady] = useState(false);
-  const [editorData, setEditorData] = useState<OutputData | null>(null);
+  const [editorData, setEditorData] = useState<OutputData | null>(
+    entry?.content || null
+  );
   const [showDevTools, setShowDevTools] = useState(false);
+  const isAdmin = user?.apps.some((app) => app.id === 1);
 
   useEffect(() => {
     let mounted = true;
@@ -39,11 +56,17 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
       // Cleanup any existing editor first
       if (editorRef.current) {
         try {
-          await editorRef.current.destroy();
-          editorRef.current = null;
-        } catch (error) {
-          console.error("Error destroying existing editor:", error);
+          // Check if editor is ready before destroying
+          if (editorRef.current.readOnly !== undefined) {
+            await editorRef.current.destroy();
+          }
+        } catch (error: any) {
+          // Suppress the mobile layout toggled warning as it's harmless
+          if (!error.message?.includes("editor mobile layout toggled")) {
+            console.error("Error destroying existing editor:", error);
+          }
         }
+        editorRef.current = null;
       }
 
       if (!mounted) return;
@@ -112,7 +135,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
           },
           data: entry?.content || undefined,
           onChange: async () => {
-            console.log("Editor content changed");
+            // console.log("Editor content changed");
             try {
               if (editorRef.current && mounted) {
                 const currentData = await editorRef.current.save();
@@ -125,7 +148,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
           onReady: () => {
             if (mounted) {
               setIsEditorReady(true);
-              console.log("Editor.js is ready");
+              // console.log("Editor.js is ready");
             }
           },
         });
@@ -140,12 +163,23 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
       mounted = false;
       if (editorRef.current) {
         try {
-          const destroyResult = editorRef.current.destroy();
-          if (destroyResult && typeof destroyResult.catch === "function") {
-            destroyResult.catch(console.error);
+          // Check if editor is ready before destroying
+          if (editorRef.current.readOnly !== undefined) {
+            const destroyResult = editorRef.current.destroy();
+            if (destroyResult && typeof destroyResult.then === "function") {
+              destroyResult.catch((error: any) => {
+                // Suppress the mobile layout toggled warning as it's harmless
+                if (!error.message?.includes("editor mobile layout toggled")) {
+                  console.error("Error during cleanup:", error);
+                }
+              });
+            }
           }
-        } catch (error) {
-          console.error("Error during cleanup:", error);
+        } catch (error: any) {
+          // Suppress the mobile layout toggled warning as it's harmless
+          if (!error.message?.includes("editor mobile layout toggled")) {
+            console.error("Error during cleanup:", error);
+          }
         } finally {
           editorRef.current = null;
         }
@@ -167,7 +201,8 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
         content: outputData,
       };
 
-      onSubmit(journalEntry);
+      // Save via Redux action
+      upsertJournal(journalEntry);
     } catch (error) {
       console.error("Saving failed:", error);
     }
@@ -297,19 +332,20 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
               </CardTitle>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="dev-tools"
-                    checked={showDevTools}
-                    onCheckedChange={(checked) =>
-                      setShowDevTools(checked === true)
-                    }
-                  />
-                  <Label htmlFor="dev-tools" className="text-sm font-normal">
-                    Dev Tools
-                  </Label>
-                </div>
-
+                {isAdmin ? (
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="dev-tools"
+                      checked={showDevTools}
+                      onCheckedChange={(checked) =>
+                        setShowDevTools(checked === true)
+                      }
+                    />
+                    <Label htmlFor="dev-tools" className="text-sm font-normal">
+                      Dev Tools
+                    </Label>
+                  </div>
+                ) : null}
                 <Button
                   variant="outline"
                   size="sm"
@@ -367,8 +403,12 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
             </div>
 
             <div className="flex gap-2 pt-4">
-              {onCancel && (
-                <Button variant="outline" onClick={onCancel} type="button">
+              {(handleCancel || onCancel) && (
+                <Button 
+                  variant="outline" 
+                  onClick={handleCancel || onCancel} 
+                  type="button"
+                >
                   Cancel
                 </Button>
               )}
@@ -387,4 +427,4 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
   );
 };
 
-export default JournalEditor;
+export default connector(JournalEditor);
