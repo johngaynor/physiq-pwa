@@ -2,7 +2,7 @@ import React from "react";
 import { H1, H5, Skeleton } from "@/components/ui";
 import { CirclePlus } from "lucide-react";
 
-type DashboardButtonProps = {
+type DashboardButtonSmallProps = {
   header?: string;
   subheader?: string;
   data?: string | number | null;
@@ -10,9 +10,9 @@ type DashboardButtonProps = {
   loading?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const DashboardButton = React.forwardRef<
+export const DashboardButtonSmall = React.forwardRef<
   HTMLButtonElement,
-  DashboardButtonProps
+  DashboardButtonSmallProps
 >(
   (
     { header = "--", subheader = "--", data, onClick, loading, ...props },
@@ -20,7 +20,7 @@ export const DashboardButton = React.forwardRef<
   ) => {
     if (loading) {
       return (
-        <button className="relative w-full">
+        <button className="relative w-full cursor-pointer">
           <div className="absolute inset-0">
             <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
               <Skeleton className="absolute left-3 top-3 h-6 w-20" />
@@ -36,7 +36,7 @@ export const DashboardButton = React.forwardRef<
         <button
           ref={ref}
           {...props}
-          className="relative w-full"
+          className="relative w-full cursor-pointer"
           onClick={onClick}
         >
           <div className="absolute inset-0">
@@ -60,4 +60,44 @@ export const DashboardButton = React.forwardRef<
       );
   }
 );
-DashboardButton.displayName = "DashboardButton";
+DashboardButtonSmall.displayName = "DashboardButtonSmall";
+
+type DashboardButtonLargeProps = {
+  label: string;
+  header: string;
+  subheader?: string;
+  onClick?: () => void;
+  size?: "small" | "large";
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+
+export const DashboardButtonLarge = React.forwardRef<
+  HTMLButtonElement,
+  DashboardButtonLargeProps
+>(
+  (
+    { label, header, subheader = "--", onClick, size = "large", ...props },
+    ref
+  ) => {
+    return (
+      <button
+        ref={ref}
+        {...props}
+        className={`relative ${
+          size === "large" ? "h-full" : "h-48"
+        } w-full border-2 rounded-md flex justify-center items-center bg-background hover:bg-accent transition padding-4 cursor-pointer`}
+        onClick={onClick}
+      >
+        <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition p-4">
+          <p className="absolute left-5 top-3 text-gray-500">{label}</p>
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center text-muted-foreground">
+              <p>{header}</p>
+              <p className="text-sm mt-1">{subheader}</p>
+            </div>
+          </div>
+        </div>
+      </button>
+    );
+  }
+);
+DashboardButtonLarge.displayName = "DashboardButtonLarge";

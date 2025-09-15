@@ -2,7 +2,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../store/reducer";
-import { DashboardButton } from "./DashboardButton";
+import { DashboardButtonSmall } from "./DashboardButtons";
 
 import {
   editDailyWeight,
@@ -77,7 +77,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           }}
           increment={0.1}
           Trigger={
-            <DashboardButton
+            <DashboardButtonSmall
               header="Weight"
               subheader="lbs"
               data={
@@ -97,7 +97,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           }}
           increment={1000}
           Trigger={
-            <DashboardButton
+            <DashboardButtonSmall
               header="Steps"
               subheader="steps yesterday"
               data={yesterdayLog?.steps}
@@ -107,7 +107,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           defaultReplace
         />
         {/* sleep, currently no form */}
-        <DashboardButton
+        <DashboardButtonSmall
           header="Sleep"
           subheader="last night"
           data={convertTime(todayLog?.totalSleep || 0)}
@@ -123,7 +123,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           }}
           increment={0.5}
           Trigger={
-            <DashboardButton
+            <DashboardButtonSmall
               header="Bodyfat %"
               subheader="% bodyfat"
               data={todayLog?.bodyfat}
@@ -141,7 +141,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           }}
           increment={8}
           Trigger={
-            <DashboardButton
+            <DashboardButtonSmall
               header="Water"
               subheader={
                 dietLog?.water ? `/ ${dietLog.water}oz` : "No goal set"
@@ -165,7 +165,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
           }}
           increment={100}
           Trigger={
-            <DashboardButton
+            <DashboardButtonSmall
               header="Calories"
               subheader={
                 dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"

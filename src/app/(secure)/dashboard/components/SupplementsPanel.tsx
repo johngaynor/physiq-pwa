@@ -40,7 +40,7 @@ const Metrics: React.FC<PropsFromRedux> = ({
   const today = DateTime.now().toISODate();
 
   return (
-    <div className="border-2 p-2 rounded-md h-1/2 w-full w-max-lg overflow-hidden">
+    <div className="border-2 p-2 rounded-md h-1/2 w-full w-max-lg overflow-hidden relative">
       <div
         className={`${
           dietSupplements && dietSupplements.length > 6
@@ -141,11 +141,12 @@ const Metrics: React.FC<PropsFromRedux> = ({
             </TableBody>
           </Table>
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center xl:h-full h-48">
+            <p className="absolute left-5 top-3 text-gray-500">Supplements</p>
             <div className="text-center text-muted-foreground">
-              <p>No supplements configured</p>
+              <p>Diet logs not enabled for your account.</p>
               <p className="text-sm mt-1">
-                Add supplements to your diet plan to track them here
+                If you believe this is an error, please contact support.
               </p>
             </div>
           </div>

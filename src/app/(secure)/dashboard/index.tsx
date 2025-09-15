@@ -18,10 +18,7 @@ import { getLatestDietLog } from "../diet/state/actions";
 import PageTemplate from "../components/Templates/PageTemplate";
 import MetricsPanel from "./components/MetricsPanel";
 import SupplementsPanel from "./components/SupplementsPanel";
-import { H1, H5 } from "@/components/ui";
-import { CirclePlus } from "lucide-react";
-import { DateTime } from "luxon";
-import { useRouter } from "next/navigation";
+import { DashboardButtonLarge } from "./components/DashboardButtons";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -72,66 +69,25 @@ const Dashboard: React.FC<PropsFromRedux> = ({
     if (!dietLogLoading && !dietLog) getLatestDietLog();
   });
 
-  const router = useRouter();
-
   return (
     <PageTemplate title="Today" showTitleMobile>
-      <div className="w-full flex flex-col gap-4 mb-20">
+      <div className="w-full flex flex-col gap-4">
         {/* Mobile layout (below md/768px) - everything stacked vertically */}
         <div className="flex flex-col gap-4 md:hidden">
           <MetricsPanel />
           <SupplementsPanel />
-          <button
-            className="relative h-48 w-full border-2 rounded-md flex justify-center items-center bg-background hover:bg-accent transition"
-            onClick={() => {
-              const today = DateTime.now().toISODate();
-              window.open(
-                `https://preprolabs.com/fitness/log/${today}`,
-                "_blank"
-              );
-            }}
-          >
-            <div className="absolute inset-0">
-              <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
-                <p className="absolute left-5 top-3 text-gray-500">Training</p>
-                {false ? (
-                  <>
-                    <H1>Training Stats</H1>
-                    <H5>Training Stats</H5>
-                  </>
-                ) : (
-                  <>
-                    <CirclePlus className="size-12 font-extrabold" />
-                    <H5>Add Training</H5>
-                  </>
-                )}
-              </div>
-            </div>
-          </button>
-          <button
-            className="relative h-48 w-full border-2 rounded-md flex justify-center items-center bg-background hover:bg-accent transition"
-            onClick={() => {
-              const today = DateTime.now().toISODate();
-              window.open(`https://preprolabs.com/checkins/${today}`, "_blank");
-            }}
-          >
-            <div className="absolute inset-0">
-              <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
-                <p className="absolute left-5 top-3 text-gray-500">Check-ins</p>
-                {true ? (
-                  <>
-                    <H1>Check-in Stats</H1>
-                    <H5>Check-in Stats</H5>
-                  </>
-                ) : (
-                  <>
-                    <CirclePlus className="size-12 font-extrabold" />
-                    <H5>Add Check-in</H5>
-                  </>
-                )}
-              </div>
-            </div>
-          </button>
+          <DashboardButtonLarge
+            label="Check-ins"
+            header="Check-ins not enabled for your account."
+            subheader="If you believe this is an error, please contact support."
+            size="small"
+          />
+          <DashboardButtonLarge
+            label="Training"
+            header="Training not enabled for your account."
+            subheader="If you believe this is an error, please contact support."
+            size="small"
+          />
         </div>
 
         {/* Tablet layout (md to lg: 768px-1023px) - metrics left, his stacked right, supplements bottom */}
@@ -139,64 +95,16 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           <div className="flex flex-row gap-4">
             <MetricsPanel />
             <div className="w-full gap-4 flex flex-col">
-              <button
-                className="relative h-full w-full border-2 rounded-md flex justify-center items-center rounded-md bg-background hover:bg-accent transition"
-                onClick={() => {
-                  const today = DateTime.now().toISODate();
-                  window.open(
-                    `https://preprolabs.com/fitness/log/${today}`,
-                    "_blank"
-                  );
-                }}
-              >
-                <div className="absolute inset-0">
-                  <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
-                    <p className="absolute left-5 top-3 text-gray-500">
-                      Training
-                    </p>
-                    {true ? (
-                      <>
-                        <H1>Training Stats</H1>
-                        <H5>Training Stats</H5>
-                      </>
-                    ) : (
-                      <>
-                        <CirclePlus className="size-12 font-extrabold" />
-                        <H5>Add Training</H5>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </button>
-              <button
-                className="relative h-full w-full border-2 rounded-md flex justify-center items-center rounded-md bg-background hover:bg-accent transition"
-                onClick={() => {
-                  const today = DateTime.now().toISODate();
-                  window.open(
-                    `https://preprolabs.com/checkins/${today}`,
-                    "_blank"
-                  );
-                }}
-              >
-                <div className="absolute inset-0">
-                  <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
-                    <p className="absolute left-5 top-3 text-gray-500">
-                      Check-ins
-                    </p>
-                    {false ? (
-                      <>
-                        <H1>Check-in Stats</H1>
-                        <H5>Check-in Stats</H5>
-                      </>
-                    ) : (
-                      <>
-                        <CirclePlus className="size-12 font-extrabold" />
-                        <H5>Add Check-in</H5>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </button>
+              <DashboardButtonLarge
+                label="Check-ins"
+                header="Check-ins not enabled for your account."
+                subheader="If you believe this is an error, please contact support."
+              />
+              <DashboardButtonLarge
+                label="Training"
+                header="Training not enabled for your account."
+                subheader="If you believe this is an error, please contact support."
+              />
             </div>
           </div>
           <SupplementsPanel />
@@ -208,58 +116,16 @@ const Dashboard: React.FC<PropsFromRedux> = ({
           <div className="w-full gap-4 flex flex-col">
             <SupplementsPanel />
             <div className="rounded-md h-1/2 flex justify-center items-center w-full w-max-lg grid grid-cols-2 gap-4">
-              <button
-                className="relative h-full w-full border-2 rounded-md flex justify-center items-center rounded-md bg-background hover:bg-accent transition"
-                onClick={() => {
-                  const today = DateTime.now().toISODate();
-                  window.open(
-                    `https://preprolabs.com/fitness/log/${today}`,
-                    "_blank"
-                  );
-                }}
-              >
-                <div className="absolute inset-0">
-                  <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
-                    <p className="absolute left-5 top-3 text-gray-500">
-                      Training
-                    </p>
-                    {true ? (
-                      <>
-                        <H1>Training Stats</H1>
-                        <H5>Training Stats</H5>
-                      </>
-                    ) : (
-                      <>
-                        <CirclePlus className="size-12 font-extrabold" />
-                        <H5>Add Training</H5>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </button>
-              <button
-                className="relative h-full w-full border-2 rounded-md flex justify-center items-center rounded-md bg-background hover:bg-accent transition"
-                onClick={() => router.push("/checkins")}
-              >
-                <div className="absolute inset-0">
-                  <div className="w-full h-full flex flex-col items-center justify-center border rounded-md bg-background hover:bg-accent transition">
-                    <p className="absolute left-5 top-3 text-gray-500">
-                      Check-ins
-                    </p>
-                    {true ? (
-                      <>
-                        <H1>Check-in Stats</H1>
-                        <H5>Check-in Stats</H5>
-                      </>
-                    ) : (
-                      <>
-                        <CirclePlus className="size-12 font-extrabold" />
-                        <H5>Add Check-in</H5>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </button>
+              <DashboardButtonLarge
+                label="Check-ins"
+                header="Check-ins not enabled for your account."
+                subheader="If you believe this is an error, please contact support."
+              />
+              <DashboardButtonLarge
+                label="Training"
+                header="Training not enabled for your account."
+                subheader="If you believe this is an error, please contact support."
+              />
             </div>
           </div>
         </div>
