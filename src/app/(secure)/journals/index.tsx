@@ -58,7 +58,7 @@ const Journals: React.FC<PropsFromRedux> = ({
       {journalsLoading ? (
         <JournalsLoading />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
           {journals && journals.length > 0 ? (
             // Journal thumbnails
             journals.map((journal) => (

@@ -486,14 +486,6 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
                     ? "Saved!"
                     : `Autosave ${autosaveEnabled ? "On" : "Off"}`}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleReset}
-                  type="button"
-                >
-                  Reset Form
-                </Button>
               </div>
             </div>
           </CardHeader>

@@ -28,7 +28,7 @@ const JournalThumbnail: React.FC<JournalThumbnailProps> = ({ journal }) => {
   return (
     <Card
       className="w-full hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col"
-      style={{ aspectRatio: "8.5/11", height: "400px" }} // Standard US Letter paper ratio
+      style={{ aspectRatio: "8.5/11" }} // Standard US Letter paper ratio
       onClick={() => router.push(`/journals/journal/${journal.id}`)}
     >
       <CardHeader className="pb-3 flex-shrink-0">
