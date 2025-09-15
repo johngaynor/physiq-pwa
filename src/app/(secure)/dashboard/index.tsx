@@ -67,7 +67,20 @@ const Dashboard: React.FC<PropsFromRedux> = ({
     if (!supplementsLoading && !supplements) getSupplements();
     if (!supplementLogsLoading && !supplementLogs) getSupplementLogs();
     if (!dietLogLoading && !dietLog) getLatestDietLog();
-  });
+  }, [
+    dailyLogsLoading,
+    dailyLogs,
+    getDailyLogs,
+    supplementsLoading,
+    supplements,
+    getSupplements,
+    supplementLogsLoading,
+    supplementLogs,
+    getSupplementLogs,
+    dietLogLoading,
+    dietLog,
+    getLatestDietLog,
+  ]);
 
   return (
     <PageTemplate title="Today" showTitleMobile>
@@ -81,12 +94,14 @@ const Dashboard: React.FC<PropsFromRedux> = ({
             header="Check-ins not enabled for your account."
             subheader="If you believe this is an error, please contact support."
             size="small"
+            loading={dailyLogsLoading}
           />
           <DashboardButtonLarge
             label="Training"
             header="Training not enabled for your account."
             subheader="If you believe this is an error, please contact support."
             size="small"
+            loading={dailyLogsLoading}
           />
         </div>
 
@@ -99,11 +114,13 @@ const Dashboard: React.FC<PropsFromRedux> = ({
                 label="Check-ins"
                 header="Check-ins not enabled for your account."
                 subheader="If you believe this is an error, please contact support."
+                loading={dailyLogsLoading}
               />
               <DashboardButtonLarge
                 label="Training"
                 header="Training not enabled for your account."
                 subheader="If you believe this is an error, please contact support."
+                loading={dailyLogsLoading}
               />
             </div>
           </div>
@@ -120,11 +137,13 @@ const Dashboard: React.FC<PropsFromRedux> = ({
                 label="Check-ins"
                 header="Check-ins not enabled for your account."
                 subheader="If you believe this is an error, please contact support."
+                loading={dailyLogsLoading}
               />
               <DashboardButtonLarge
                 label="Training"
                 header="Training not enabled for your account."
                 subheader="If you believe this is an error, please contact support."
+                loading={dailyLogsLoading}
               />
             </div>
           </div>
