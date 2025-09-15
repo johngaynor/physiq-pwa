@@ -15,18 +15,19 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
 
     switch (block.type) {
       case "paragraph":
-        const paragraphText = (block.data?.text && typeof block.data.text === "string") 
-          ? block.data.text.replace(/<[^>]*>/g, "") 
-          : "";
+        const paragraphText =
+          block.data?.text && typeof block.data.text === "string"
+            ? block.data.text.replace(/<[^>]*>/g, "")
+            : "";
         return (
           <div
             key={index}
             className={`${baseStyle} text-foreground/80 break-words`}
-            style={{ 
-              fontSize: "10px", 
+            style={{
+              fontSize: "10px",
               lineHeight: "14px",
               wordWrap: "break-word",
-              overflowWrap: "break-word"
+              overflowWrap: "break-word",
             }}
           >
             {paragraphText}
@@ -52,7 +53,7 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
                 "10px",
               lineHeight: "16px",
               wordWrap: "break-word",
-              overflowWrap: "break-word"
+              overflowWrap: "break-word",
             }}
           >
             {block.data?.text && typeof block.data.text === "string"
@@ -82,8 +83,16 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
                   className="flex items-start"
                   style={{ fontSize: "9px", lineHeight: "12px" }}
                 >
-                  <span className="text-muted-foreground mr-1 flex-shrink-0">•</span>
-                  <span className="text-foreground/80 break-words" style={{ wordWrap: "break-word", overflowWrap: "break-word" }}>
+                  <span className="text-muted-foreground mr-1 flex-shrink-0">
+                    •
+                  </span>
+                  <span
+                    className="text-foreground/80 break-words"
+                    style={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
+                  >
                     {itemText.replace(/<[^>]*>/g, "")}
                   </span>
                 </div>
@@ -123,7 +132,10 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
                     className={`text-foreground/80 break-words ${
                       isChecked ? "line-through" : ""
                     }`}
-                    style={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+                    style={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
                   >
                     {itemText.replace(/<[^>]*>/g, "")}
                   </span>
@@ -138,11 +150,11 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
           <div
             key={index}
             className="border-l border-border pl-1 mb-1 italic text-muted-foreground break-words"
-            style={{ 
-              fontSize: "9px", 
+            style={{
+              fontSize: "9px",
               lineHeight: "12px",
               wordWrap: "break-word",
-              overflowWrap: "break-word"
+              overflowWrap: "break-word",
             }}
           >
             {block.data?.text && typeof block.data.text === "string"
@@ -156,11 +168,11 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
           <div
             key={index}
             className="bg-muted p-1 rounded mb-1 font-mono text-foreground/90 overflow-hidden"
-            style={{ 
-              fontSize: "8px", 
+            style={{
+              fontSize: "8px",
               lineHeight: "11px",
               wordWrap: "break-word",
-              overflowWrap: "break-word"
+              overflowWrap: "break-word",
             }}
           >
             {block.data?.code || ""}
