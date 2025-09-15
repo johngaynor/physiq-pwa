@@ -41,25 +41,25 @@ const JournalView: React.FC<PropsFromRedux> = ({
           const EditorJS = (await import("@editorjs/editorjs")).default;
           const Header = (await import("@editorjs/header")).default;
           const List = (await import("@editorjs/list")).default;
-          // @ts-expect-error
+          // @ts-expect-error - @editorjs/embed lacks proper TypeScript definitions
           const Embed = (await import("@editorjs/embed")).default;
           const Table = (await import("@editorjs/table")).default;
           const Paragraph = (await import("@editorjs/paragraph")).default;
           const Warning = (await import("@editorjs/warning")).default;
           const Code = (await import("@editorjs/code")).default;
-          // @ts-expect-error
+          // @ts-expect-error - @editorjs/link lacks proper TypeScript definitions
           const LinkTool = (await import("@editorjs/link")).default;
           const Image = (await import("@editorjs/image")).default;
-          // @ts-expect-error
+          // @ts-expect-error - @editorjs/raw lacks proper TypeScript definitions
           const Raw = (await import("@editorjs/raw")).default;
           const Quote = (await import("@editorjs/quote")).default;
-          // @ts-expect-error
+          // @ts-expect-error - @editorjs/marker lacks proper TypeScript definitions
           const Marker = (await import("@editorjs/marker")).default;
-          // @ts-expect-error
+          // @ts-expect-error - @editorjs/checklist lacks proper TypeScript definitions
           const CheckList = (await import("@editorjs/checklist")).default;
           const Delimiter = (await import("@editorjs/delimiter")).default;
           const InlineCode = (await import("@editorjs/inline-code")).default;
-          // @ts-expect-error
+          // @ts-expect-error - @editorjs/simple-image lacks proper TypeScript definitions
           const SimpleImage = (await import("@editorjs/simple-image")).default;
 
           let editorData;
