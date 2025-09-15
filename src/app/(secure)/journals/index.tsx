@@ -72,7 +72,9 @@ const Journals: React.FC<PropsFromRedux> = ({
                 <p className="text-muted-foreground mb-4">
                   Start writing your first journal entry
                 </p>
-                <Button>Create Your First Journal</Button>
+                <Button onClick={() => router.push("/journals/new")}>
+                  Create Your First Journal
+                </Button>
               </div>
             </div>
           )}

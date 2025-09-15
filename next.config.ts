@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
         destination: "/checkins",
         permanent: true,
       },
+      {
+        source: "/journals/journal",
+        destination: "/journals",
+        permanent: true,
+      },
     ];
   },
 };
