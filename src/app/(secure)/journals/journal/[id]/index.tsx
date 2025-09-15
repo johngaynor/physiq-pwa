@@ -41,25 +41,25 @@ const JournalView: React.FC<PropsFromRedux> = ({
           const EditorJS = (await import("@editorjs/editorjs")).default;
           const Header = (await import("@editorjs/header")).default;
           const List = (await import("@editorjs/list")).default;
-          // @ts-ignore
+          // @ts-expect-error
           const Embed = (await import("@editorjs/embed")).default;
           const Table = (await import("@editorjs/table")).default;
           const Paragraph = (await import("@editorjs/paragraph")).default;
           const Warning = (await import("@editorjs/warning")).default;
           const Code = (await import("@editorjs/code")).default;
-          // @ts-ignore
+          // @ts-expect-error
           const LinkTool = (await import("@editorjs/link")).default;
           const Image = (await import("@editorjs/image")).default;
-          // @ts-ignore
+          // @ts-expect-error
           const Raw = (await import("@editorjs/raw")).default;
           const Quote = (await import("@editorjs/quote")).default;
-          // @ts-ignore
+          // @ts-expect-error
           const Marker = (await import("@editorjs/marker")).default;
-          // @ts-ignore
+          // @ts-expect-error
           const CheckList = (await import("@editorjs/checklist")).default;
           const Delimiter = (await import("@editorjs/delimiter")).default;
           const InlineCode = (await import("@editorjs/inline-code")).default;
-          // @ts-ignore
+          // @ts-expect-error
           const SimpleImage = (await import("@editorjs/simple-image")).default;
 
           let editorData;
@@ -229,7 +229,7 @@ const JournalView: React.FC<PropsFromRedux> = ({
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   onClick={() => router.back()}
                   className="flex items-center gap-2"

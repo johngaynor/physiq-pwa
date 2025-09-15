@@ -17,13 +17,11 @@ export const getJournals = () => {
     .get();
 };
 
-export interface UpsertJournalData {
+export const upsertJournal = (journalData: {
   id: string;
   title: string;
   content: OutputData;
-}
-
-export const upsertJournal = (journalData: UpsertJournalData) => {
+}) => {
   return api
     .route("/api/journals/journal")
     .data(journalData)
