@@ -27,8 +27,8 @@ const JournalThumbnail: React.FC<JournalThumbnailProps> = ({ journal }) => {
 
   return (
     <Card
-      className="w-full hover:shadow-md transition-shadow cursor-pointer flex flex-col"
-      style={{ aspectRatio: "8.5/11" }} // Standard paper aspect ratio
+      className="w-full hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col"
+      style={{ aspectRatio: "8.5/11", height: "400px" }} // Standard US Letter paper ratio
       onClick={() => router.push(`/journals/journal/${journal.id}`)}
     >
       <CardHeader className="pb-3 flex-shrink-0">
@@ -54,16 +54,17 @@ const JournalThumbnail: React.FC<JournalThumbnailProps> = ({ journal }) => {
           {formatDate(journal.createdAt)}
         </p>
       </CardHeader>
-      <CardContent className="pt-0 flex-1 flex flex-col justify-between">
-        {/* Mini document preview */}
-        <div className="flex-1 mb-3">
+      <CardContent className="pt-0 flex-1 flex flex-col min-h-0">
+        {/* Mini document preview - fixed height with overflow hidden */}
+        <div className="flex-1 min-h-0 mb-3">
           <MiniDocumentPreview
             content={journal.content}
             className="w-full h-full"
           />
         </div>
 
-        <div className="mt-4 flex justify-between items-center pt-3 border-t border-border">
+        {/* Footer - fixed height */}
+        <div className="flex-shrink-0 h-12 flex justify-between items-center pt-3 border-t border-border">
           <span className="text-xs text-muted-foreground">
             Last updated: {formatDate(journal.lastUpdated)}
           </span>

@@ -183,6 +183,7 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
                       editorActuallyReady = true;
                     }
                   } catch (e) {
+                    console.error(e);
                     // console.log("🔍 Editor API check failed:", e);
                   }
 
