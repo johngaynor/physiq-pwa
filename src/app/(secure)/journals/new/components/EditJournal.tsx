@@ -321,25 +321,6 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
     }
   };
 
-  const handleReset = async () => {
-    setTitle("");
-    setEditorData(null);
-    setAutosaveStatus("idle");
-
-    // Clear any pending autosave
-    if (autosaveTimeoutRef.current) {
-      clearTimeout(autosaveTimeoutRef.current);
-    }
-
-    if (editorRef.current && isEditorReady) {
-      try {
-        await editorRef.current.clear();
-      } catch (error) {
-        console.error("Error clearing editor:", error);
-      }
-    }
-  };
-
   return (
     <>
       <style jsx global>{`
