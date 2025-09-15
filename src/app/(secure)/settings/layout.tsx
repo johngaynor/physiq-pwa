@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import PageTemplate from "../components/Templates/PageTemplate";
 
 export default function SettingsLayout({
