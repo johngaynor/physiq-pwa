@@ -44,8 +44,8 @@ export default function SettingsLayout({
   return (
     <PageTemplate title="Settings" showTitleMobile>
       <div className="lg:flex w-full">
-        <div className="hidden lg:block lg:w-64 lg:flex-shrink-0">
-          <div className="h-full flex flex-col p-6">
+        <div className="hidden lg:block lg:w-48 lg:flex-shrink-0">
+          <div className="h-full flex flex-col p-6 px-0">
             {/* Settings Navigation */}
             {pathname.startsWith("/settings") && (
               <div>
