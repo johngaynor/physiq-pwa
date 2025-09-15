@@ -43,6 +43,7 @@ const routeConfigs: RouteConfig[] = [
   { pattern: "/ai/physique/poses/train", appId: 37, exactMatch: true },
   { pattern: "/training", appId: 38, exactMatch: false },
   { pattern: "/journals", appId: 42, exactMatch: false },
+  { pattern: "/settings", appId: 43, exactMatch: false },
 ];
 
 function matchRoute(

@@ -21,6 +21,14 @@ export type App = {
   favorite: number;
 };
 
+export type UserSettings = {
+  dashboardStepsToday: number;
+  dashboardWaterToday: number;
+  dashboardWaterAdd: number;
+  dashboardCaloriesToday: number;
+  dashboardCaloriesAdd: number;
+};
+
 // will eventually store coach-client relationships here
 export type User = {
   id: string;
@@ -28,6 +36,7 @@ export type User = {
   email: string;
   // admin: boolean;
   apps: App[];
+  settings: UserSettings;
 };
 
 // action types
