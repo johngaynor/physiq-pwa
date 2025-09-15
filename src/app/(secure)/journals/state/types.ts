@@ -26,4 +26,5 @@ export type Action =
 export interface JournalsState {
   journals: Journal[] | null;
   journalsLoading: boolean;
+  editJournalLoading: boolean;
 }

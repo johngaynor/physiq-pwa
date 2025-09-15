@@ -11,6 +11,7 @@ import { H3 } from "@/components/ui/typography";
 import { RootState } from "@/app/store/reducer";
 import { ConnectedProps, connect } from "react-redux";
 import { upsertJournal } from "../../state/actions";
+import { Save } from "lucide-react";
 
 interface JournalEntry {
   id: string;
@@ -47,10 +48,25 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
     entry?.content || null
   );
   const [showDevTools, setShowDevTools] = useState(false);
+  const [autosaveEnabled, setAutosaveEnabled] = useState(true);
+  const [autosaveStatus, setAutosaveStatus] = useState<
+    "idle" | "saving" | "saved"
+  >("idle");
+  // Store the journal ID in state so it persists for new entries
+  const [journalId] = useState(() => entry?.id || crypto.randomUUID());
   const isAdmin = user?.apps.some((app) => app.id === 1);
+
+  // Debounced autosave function
+  const autosaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     let mounted = true;
+    // console.log("🏗️ Initializing journal editor component with:", {
+    //   hasEntry: !!entry,
+    //   journalId,
+    //   autosaveEnabled,
+    //   isAdmin
+    // });
 
     const initEditor = async () => {
       // Cleanup any existing editor first
@@ -135,20 +151,110 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
           },
           data: entry?.content || undefined,
           onChange: async () => {
-            // console.log("Editor content changed");
+            // console.log("🔄 Editor content changed");
             try {
               if (editorRef.current && mounted) {
                 const currentData = await editorRef.current.save();
                 setEditorData(currentData);
+                // console.log("📝 Editor data updated:", currentData);
+
+                // Trigger autosave with debouncing (wait 2 seconds after last change)
+                if (autosaveTimeoutRef.current) {
+                  clearTimeout(autosaveTimeoutRef.current);
+                  // console.log("⏰ Cleared previous autosave timeout");
+                }
+
+                // console.log("🤖 Autosave enabled:", autosaveEnabled, "Editor ready:", isEditorReady);
+
+                autosaveTimeoutRef.current = setTimeout(async () => {
+                  // console.log("🚀 Starting autosave...");
+
+                  // Get current state values directly instead of using closure
+                  const currentAutosaveEnabled = autosaveEnabled;
+                  const currentEditor = editorRef.current;
+
+                  // Check if editor is actually ready by trying to access its API
+                  let editorActuallyReady = false;
+                  try {
+                    if (
+                      currentEditor &&
+                      typeof currentEditor.save === "function"
+                    ) {
+                      editorActuallyReady = true;
+                    }
+                  } catch (e) {
+                    // console.log("🔍 Editor API check failed:", e);
+                  }
+
+                  // console.log("🔍 Current autosave state:", {
+                  //   autosaveEnabled: currentAutosaveEnabled,
+                  //   hasEditor: !!currentEditor,
+                  //   editorActuallyReady,
+                  //   isEditorReadyState: isEditorReady
+                  // });
+
+                  // Use the actual editor readiness instead of state
+                  if (
+                    !currentAutosaveEnabled ||
+                    !currentEditor ||
+                    !editorActuallyReady
+                  ) {
+                    // console.log("❌ Autosave skipped - conditions not met:", {
+                    //   autosaveEnabled: currentAutosaveEnabled,
+                    //   hasEditor: !!currentEditor,
+                    //   editorActuallyReady,
+                    //   isEditorReadyState: isEditorReady
+                    // });
+                    return;
+                  }
+
+                  try {
+                    // console.log("💾 Setting autosave status to saving...");
+                    setAutosaveStatus("saving");
+                    const outputData = await currentEditor.save();
+                    // console.log("📄 Got output data for autosave:", outputData);
+
+                    // Only autosave if there's actual content
+                    if (outputData.blocks && outputData.blocks.length > 0) {
+                      const journalEntry: JournalEntry = {
+                        id: journalId,
+                        title:
+                          title.trim() ||
+                          `Journal Entry - ${new Date().toLocaleDateString()}`,
+                        content: outputData,
+                      };
+
+                      // console.log("📋 Calling upsertJournal with:", journalEntry);
+                      await upsertJournal(journalEntry);
+                      // console.log("✅ Autosave successful!");
+                      setAutosaveStatus("saved");
+
+                      // Reset status after 2 seconds
+                      setTimeout(() => {
+                        // console.log("🔄 Resetting autosave status to idle");
+                        setAutosaveStatus("idle");
+                      }, 2000);
+                    } else {
+                      // console.log("📭 No content to autosave");
+                      setAutosaveStatus("idle");
+                    }
+                  } catch (error) {
+                    console.error("❌ Autosave failed:", error);
+                    setAutosaveStatus("idle");
+                  }
+                }, 2000);
+                // console.log("⏰ Set autosave timeout for 2 seconds");
               }
             } catch (error) {
-              console.error("Error getting editor data:", error);
+              console.error("❌ Error getting editor data:", error);
             }
           },
           onReady: () => {
             if (mounted) {
               setIsEditorReady(true);
-              // console.log("Editor.js is ready");
+              // console.log("✅ Editor.js is ready and mounted");
+            } else {
+              // console.log("⚠️ Editor ready but component not mounted");
             }
           },
         });
@@ -184,9 +290,15 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
           editorRef.current = null;
         }
       }
+
+      // Clear autosave timeout
+      if (autosaveTimeoutRef.current) {
+        clearTimeout(autosaveTimeoutRef.current);
+      }
+
       setIsEditorReady(false);
     };
-  }, []);
+  }, []); // Remove performAutosave dependency to prevent editor reinitialization
 
   const handleSubmit = async () => {
     if (!editorRef.current || !isEditorReady) return;
@@ -195,7 +307,7 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
       const outputData = await editorRef.current.save();
 
       const journalEntry: JournalEntry = {
-        id: entry ? entry.id : crypto.randomUUID(),
+        id: journalId, // Use the stored ID
         title:
           title.trim() || `Journal Entry - ${new Date().toLocaleDateString()}`,
         content: outputData,
@@ -211,6 +323,12 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
   const handleReset = async () => {
     setTitle("");
     setEditorData(null);
+    setAutosaveStatus("idle");
+
+    // Clear any pending autosave
+    if (autosaveTimeoutRef.current) {
+      clearTimeout(autosaveTimeoutRef.current);
+    }
 
     if (editorRef.current && isEditorReady) {
       try {
@@ -347,6 +465,27 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
                   </div>
                 ) : null}
                 <Button
+                  variant={autosaveEnabled ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    const newState = !autosaveEnabled;
+                    // console.log("🔄 Toggling autosave from", autosaveEnabled, "to", newState);
+                    setAutosaveEnabled(newState);
+                  }}
+                  type="button"
+                  className={
+                    autosaveEnabled ? "bg-blue-600 hover:bg-blue-700" : ""
+                  }
+                  disabled={autosaveStatus === "saving"}
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {autosaveStatus === "saving"
+                    ? "Saving..."
+                    : autosaveStatus === "saved"
+                    ? "Saved!"
+                    : `Autosave ${autosaveEnabled ? "On" : "Off"}`}
+                </Button>
+                <Button
                   variant="outline"
                   size="sm"
                   onClick={handleReset}
@@ -404,9 +543,9 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
 
             <div className="flex gap-2 pt-4">
               {(handleCancel || onCancel) && (
-                <Button 
-                  variant="outline" 
-                  onClick={handleCancel || onCancel} 
+                <Button
+                  variant="outline"
+                  onClick={handleCancel || onCancel}
                   type="button"
                 >
                   Cancel

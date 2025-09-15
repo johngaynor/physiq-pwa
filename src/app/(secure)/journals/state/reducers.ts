@@ -9,6 +9,7 @@ import { JournalsState, Action } from "./types";
 const initialState: JournalsState = {
   journals: null,
   journalsLoading: false,
+  editJournalLoading: false,
 };
 
 export default function journalsReducer(
@@ -32,7 +33,7 @@ export default function journalsReducer(
     case FETCH_UPSERT_JOURNAL:
       return {
         ...state,
-        journalsLoading: true,
+        editJournalLoading: true,
       };
 
     case LOAD_UPSERT_JOURNAL:
@@ -56,7 +57,7 @@ export default function journalsReducer(
 
       return {
         ...state,
-        journalsLoading: false,
+        editJournalLoading: false,
         journals: updatedJournals,
       };
 

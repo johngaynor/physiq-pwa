@@ -3,10 +3,9 @@ import React from "react";
 import { useParams } from "next/navigation";
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../../../store/reducer";
-import { getJournals, upsertJournal } from "../../state/actions";
+import { getJournals } from "../../state/actions";
 import ViewJournal from "./components/ViewJournal";
 import JournalEditor from "../../new/components/EditJournal";
-import { OutputData } from "@editorjs/editorjs";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -18,21 +17,13 @@ function mapStateToProps(state: RootState) {
 
 const connector = connect(mapStateToProps, {
   getJournals,
-  upsertJournal,
 });
 type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface JournalEntry {
-  id: string;
-  title: string;
-  content: OutputData;
-}
 
 const JournalView: React.FC<PropsFromRedux> = ({
   journals,
   journalsLoading,
   getJournals,
-  upsertJournal,
 }) => {
   const [editJournal, setEditJournal] = React.useState<boolean>(false);
   const params = useParams();

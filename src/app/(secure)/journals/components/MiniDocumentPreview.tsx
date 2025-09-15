@@ -21,7 +21,9 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
             className={`${baseStyle} text-foreground/80`}
             style={{ fontSize: "10px", lineHeight: "14px" }}
           >
-            {block.data?.text?.replace(/<[^>]*>/g, "") || ""}
+            {block.data?.text && typeof block.data.text === "string"
+              ? block.data.text.replace(/<[^>]*>/g, "")
+              : ""}
           </div>
         );
 
@@ -45,25 +47,80 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
               lineHeight: "16px",
             }}
           >
-            {block.data?.text?.replace(/<[^>]*>/g, "") || ""}
+            {block.data?.text && typeof block.data.text === "string"
+              ? block.data.text.replace(/<[^>]*>/g, "")
+              : ""}
           </div>
         );
 
       case "list":
         return (
           <div key={index} className="mb-1">
-            {block.data?.items?.slice(0, 3).map((item: string, i: number) => (
-              <div
-                key={i}
-                className="flex items-start"
-                style={{ fontSize: "9px", lineHeight: "12px" }}
-              >
-                <span className="text-muted-foreground mr-1">•</span>
-                <span className="text-foreground/80">
-                  {item.replace(/<[^>]*>/g, "")}
-                </span>
-              </div>
-            ))}
+            {block.data?.items?.slice(0, 3).map((item: any, i: number) => {
+              // Handle different item formats from Editor.js
+              let itemText = "";
+              if (typeof item === "string") {
+                itemText = item;
+              } else if (item && typeof item === "object") {
+                // Handle object-based list items (e.g., { content: "text" })
+                itemText = item.content || item.text || JSON.stringify(item);
+              } else {
+                itemText = String(item || "");
+              }
+
+              return (
+                <div
+                  key={i}
+                  className="flex items-start"
+                  style={{ fontSize: "9px", lineHeight: "12px" }}
+                >
+                  <span className="text-muted-foreground mr-1">•</span>
+                  <span className="text-foreground/80">
+                    {itemText.replace(/<[^>]*>/g, "")}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        );
+
+      case "checklist":
+        return (
+          <div key={index} className="mb-1">
+            {block.data?.items?.slice(0, 3).map((item: any, i: number) => {
+              // Handle different checklist item formats from Editor.js
+              let itemText = "";
+              let isChecked = false;
+
+              if (typeof item === "string") {
+                itemText = item;
+              } else if (item && typeof item === "object") {
+                // Handle object-based checklist items (e.g., { text: "text", checked: false })
+                itemText = item.text || item.content || JSON.stringify(item);
+                isChecked = Boolean(item.checked);
+              } else {
+                itemText = String(item || "");
+              }
+
+              return (
+                <div
+                  key={i}
+                  className="flex items-start"
+                  style={{ fontSize: "9px", lineHeight: "12px" }}
+                >
+                  <span className="text-muted-foreground mr-1">
+                    {isChecked ? "☑" : "☐"}
+                  </span>
+                  <span
+                    className={`text-foreground/80 ${
+                      isChecked ? "line-through" : ""
+                    }`}
+                  >
+                    {itemText.replace(/<[^>]*>/g, "")}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         );
 
@@ -74,7 +131,9 @@ const MiniDocumentPreview: React.FC<MiniDocumentPreviewProps> = ({
             className="border-l border-border pl-1 mb-1 italic text-muted-foreground"
             style={{ fontSize: "9px", lineHeight: "12px" }}
           >
-            {block.data?.text?.replace(/<[^>]*>/g, "") || ""}
+            {block.data?.text && typeof block.data.text === "string"
+              ? block.data.text.replace(/<[^>]*>/g, "")
+              : ""}
           </div>
         );
 
