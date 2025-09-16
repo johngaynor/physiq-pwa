@@ -14,7 +14,7 @@ interface FieldInputProps {
   inputId: string;
   inputStyles?: string;
   value: string | number;
-  onChange: (value: string | number) => void;
+  onChange: (data: { key: string; value: string | number }) => void;
   placeholder: string;
   type: string;
   tooltip?: string;
@@ -58,7 +58,11 @@ export function FieldInput({
         value={value}
         className={inputStyles}
         placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const inputValue =
+            type === "number" ? Number(e.target.value) : e.target.value;
+          onChange({ key: inputId, value: inputValue });
+        }}
       />
     </div>
   );

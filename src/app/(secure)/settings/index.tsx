@@ -35,11 +35,15 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
 
   const {
     dashboardStepsToday,
-    // dashboardCaloriesToday,
-    // dashboardCaloriesAdd,
-    // dashboardWaterToday,
-    // dashboardWaterAdd,
+    dashboardCaloriesToday,
+    dashboardCaloriesAdd,
+    dashboardWaterToday,
+    dashboardWaterAdd,
   } = user.settings;
+
+  function testChange({ key, value }: { key: string; value: string | number }) {
+    console.log(key, value);
+  }
 
   return (
     <div>
@@ -51,14 +55,43 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FieldSelect
+              label="Water Input Day"
+              selectId="dashboardWaterToday"
+              options={settingsOptions.dates}
+              onChange={testChange}
+              value={dashboardWaterToday}
+              tooltip="Do you want to edit today's water intake or yesterday's?"
+            />
+            <FieldSelect
+              label="Water Input Method"
+              selectId="dashboardWaterAdd"
+              options={settingsOptions.inputTypes}
+              onChange={testChange}
+              value={dashboardWaterAdd}
+              tooltip="Do you want to replace the existing value or add/subtract from it?"
+            />
+            <FieldSelect
+              label="Calories Input Day"
+              selectId="dashboardCaloriesToday"
+              options={settingsOptions.dates}
+              onChange={testChange}
+              value={dashboardCaloriesToday}
+              tooltip="Do you want to edit today's calories or yesterday's?"
+            />
+            <FieldSelect
+              label="Calories Input Method"
+              selectId="dashboardCaloriesAdd"
+              options={settingsOptions.inputTypes}
+              onChange={testChange}
+              value={dashboardCaloriesAdd}
+              tooltip="Do you want to replace the existing value or add/subtract from it?"
+            />
+            <FieldSelect
               label="Steps Input Day"
               selectId="dashboardStepsToday"
               options={settingsOptions.dates}
-              onChange={(value) => {
-                console.log(value);
-              }}
+              onChange={testChange}
               value={dashboardStepsToday}
-              placeholder="Select an option"
               tooltip="Do you want to edit today's steps or yesterday's?"
             />
           </div>

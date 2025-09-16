@@ -26,8 +26,8 @@ interface FieldSelectProps {
   selectId?: string;
   selectStyles?: string;
   value: string | number;
-  onChange: (value: string | number) => void;
-  placeholder: string;
+  onChange: (data: { key: string; value: string | number }) => void;
+  placeholder?: string;
   options: SelectOption[];
   disabled?: boolean;
   tooltip?: string;
@@ -54,8 +54,8 @@ export function FieldSelect({
     const originalOption = options.find(
       (opt) => String(opt.value) === selectedValue
     );
-    if (originalOption) {
-      onChange(originalOption.value);
+    if (originalOption && selectId) {
+      onChange({ key: selectId, value: originalOption.value });
     }
   };
 
@@ -86,7 +86,7 @@ export function FieldSelect({
         disabled={disabled}
       >
         <SelectTrigger className={`w-full ${selectStyles || ""}`} id={selectId}>
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={placeholder || "..."} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
