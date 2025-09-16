@@ -29,6 +29,7 @@ function mapStateToProps(state: RootState) {
     dietLog: state.diet.dietLog,
     dietLogLoading: state.diet.dietLogLoading,
     dietSupplements: state.diet.dietSupplements,
+    user: state.app.user,
   };
 }
 
@@ -59,11 +60,16 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
   getDailySleep,
   dietLog,
   dietLogLoading,
+  user,
 }) => {
   const today = DateTime.now().toISODate();
   const todayLog = dailyLogs?.find((d) => d.date === today);
   const yesterday = DateTime.now().minus({ days: 1 }).toISODate();
   const yesterdayLog = dailyLogs?.find((d) => d.date === yesterday);
+
+  const caloriesToday = Boolean(user?.settings.dashboardCaloriesToday);
+  const stepsToday = Boolean(user?.settings.dashboardStepsToday);
+  const waterToday = Boolean(user?.settings.dashboardWaterToday);
 
   return (
     <div className="w-full md:w-[400px] shrink-0">
@@ -90,17 +96,21 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
         />
         <DrawerWrapper
           header="Add/Subtract Steps"
-          subheader="Track your steps from yesterday."
-          currentValue={yesterdayLog?.steps || ""}
+          subheader={`Track your steps from ${
+            stepsToday ? "today" : "yesterday"
+          }.`}
+          currentValue={
+            stepsToday ? todayLog?.steps || "" : yesterdayLog?.steps || ""
+          }
           onUpdate={(newValue: number) => {
-            editDailySteps(yesterday, newValue);
+            editDailySteps(stepsToday ? today : yesterday, newValue);
           }}
           increment={1000}
           Trigger={
             <DashboardButtonSmall
               header="Steps"
-              subheader="steps yesterday"
-              data={yesterdayLog?.steps}
+              subheader={`steps ${stepsToday ? "today" : "yesterday"}`}
+              data={stepsToday ? todayLog?.steps : yesterdayLog?.steps}
               loading={!dailyLogs || dailyLogsLoading || editStepsLoading}
             />
           }
@@ -134,10 +144,14 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
         />
         <DrawerWrapper
           header="Add/Subtract Water"
-          subheader="Track your water intake from yesterday."
-          currentValue={yesterdayLog?.water || 0}
+          subheader={`Track your water intake from ${
+            waterToday ? "today" : "yesterday"
+          }.`}
+          currentValue={
+            waterToday ? todayLog?.water || "" : yesterdayLog?.water || ""
+          }
           onUpdate={(newValue: number) => {
-            editDailyWater(yesterday, newValue);
+            editDailyWater(waterToday ? today : yesterday, newValue);
           }}
           increment={8}
           Trigger={
@@ -146,7 +160,11 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               subheader={
                 dietLog?.water ? `/ ${dietLog.water}oz` : "No goal set"
               }
-              data={yesterdayLog?.water ? `${yesterdayLog.water} oz` : "0 oz"}
+              data={
+                waterToday
+                  ? `${todayLog?.water || 0} oz`
+                  : `${yesterdayLog?.water || 0} oz`
+              }
               loading={
                 !dailyLogs ||
                 dailyLogsLoading ||
@@ -155,13 +173,20 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               }
             />
           }
+          defaultReplace={!Boolean(user?.settings.dashboardWaterAdd)}
         />
         <DrawerWrapper
           header="Add/Subtract Calories"
-          subheader="Track your calories from yesterday."
-          currentValue={yesterdayLog?.calories || 0}
+          subheader={`Track your calories from ${
+            caloriesToday ? "today" : "yesterday"
+          }.`}
+          currentValue={
+            caloriesToday
+              ? todayLog?.calories || ""
+              : yesterdayLog?.calories || ""
+          }
           onUpdate={(newValue: number) => {
-            editDailyCalories(yesterday, newValue);
+            editDailyCalories(caloriesToday ? today : yesterday, newValue);
           }}
           increment={100}
           Trigger={
@@ -171,9 +196,9 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
                 dietLog?.calories ? `/ ${dietLog.calories} cal` : "No goal set"
               }
               data={
-                yesterdayLog?.calories
-                  ? `${Math.floor(yesterdayLog.calories)} cal`
-                  : "0 cal"
+                caloriesToday
+                  ? `${Math.floor(todayLog?.calories || 0)} cal`
+                  : `${Math.floor(yesterdayLog?.calories || 0)} cal`
               }
               loading={
                 !dailyLogs ||
@@ -183,6 +208,7 @@ const MetricsPanel: React.FC<PropsFromRedux> = ({
               }
             />
           }
+          defaultReplace={!Boolean(user?.settings.dashboardCaloriesAdd)}
         />
       </div>
     </div>
