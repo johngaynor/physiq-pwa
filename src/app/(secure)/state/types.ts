@@ -9,6 +9,7 @@ import {
   LOAD_APP_ACCESS,
   EDIT_APP_ACCESS,
   TOGGLE_APP_FAVORITE,
+  EDIT_SETTINGS_DASHBOARD,
 } from "../../store/actionTypes";
 
 export type App = {
@@ -57,7 +58,12 @@ export type Action =
       type: typeof EDIT_APP_ACCESS;
       data: { userId: string; app: App; checked: boolean };
     }
-  | { type: typeof TOGGLE_APP_FAVORITE; appId: number };
+  | { type: typeof TOGGLE_APP_FAVORITE; appId: number }
+  | {
+      type: typeof EDIT_SETTINGS_DASHBOARD;
+      key: string;
+      value: string | number;
+    };
 
 export interface AppState {
   user: User | null;

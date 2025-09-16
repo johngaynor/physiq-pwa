@@ -222,3 +222,5 @@ export const LOAD_JOURNALS = "LOAD_JOURNALS" as const;
 // Journals - upsert (create/update)
 export const FETCH_UPSERT_JOURNAL = "FETCH_UPSERT_JOURNAL" as const;
 export const LOAD_UPSERT_JOURNAL = "LOAD_UPSERT_JOURNAL" as const;
+
+export const EDIT_SETTINGS_DASHBOARD = "EDIT_SETTINGS_DASHBOARD" as const;

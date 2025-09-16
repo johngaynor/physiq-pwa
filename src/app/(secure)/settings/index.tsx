@@ -5,12 +5,13 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../../store/reducer";
 import { H4 } from "@/components/ui";
 import { FieldSelect } from "../components/Forms/FieldSelect";
+import { editDashboardSettings } from "../state/actions";
 
 function mapStateToProps(state: RootState) {
   return { user: state.app.user };
 }
 
-const connector = connect(mapStateToProps, {});
+const connector = connect(mapStateToProps, { editDashboardSettings });
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const settingsOptions = {
@@ -24,7 +25,10 @@ const settingsOptions = {
   ],
 };
 
-const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
+const SettingsPage: React.FC<PropsFromRedux> = ({
+  user,
+  editDashboardSettings,
+}) => {
   if (!user) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -41,8 +45,14 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
     dashboardWaterAdd,
   } = user.settings;
 
-  function testChange({ key, value }: { key: string; value: string | number }) {
-    console.log(key, value);
+  function handleChange({
+    key,
+    value,
+  }: {
+    key: string;
+    value: string | number;
+  }) {
+    editDashboardSettings(key, value);
   }
 
   return (
@@ -58,7 +68,7 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
               label="Water Input Day"
               selectId="dashboardWaterToday"
               options={settingsOptions.dates}
-              onChange={testChange}
+              onChange={handleChange}
               value={dashboardWaterToday}
               tooltip="Do you want to edit today's water intake or yesterday's?"
             />
@@ -66,7 +76,7 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
               label="Water Input Method"
               selectId="dashboardWaterAdd"
               options={settingsOptions.inputTypes}
-              onChange={testChange}
+              onChange={handleChange}
               value={dashboardWaterAdd}
               tooltip="Do you want to replace the existing value or add/subtract from it?"
             />
@@ -74,7 +84,7 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
               label="Calories Input Day"
               selectId="dashboardCaloriesToday"
               options={settingsOptions.dates}
-              onChange={testChange}
+              onChange={handleChange}
               value={dashboardCaloriesToday}
               tooltip="Do you want to edit today's calories or yesterday's?"
             />
@@ -82,7 +92,7 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
               label="Calories Input Method"
               selectId="dashboardCaloriesAdd"
               options={settingsOptions.inputTypes}
-              onChange={testChange}
+              onChange={handleChange}
               value={dashboardCaloriesAdd}
               tooltip="Do you want to replace the existing value or add/subtract from it?"
             />
@@ -90,7 +100,7 @@ const SettingsPage: React.FC<PropsFromRedux> = ({ user }) => {
               label="Steps Input Day"
               selectId="dashboardStepsToday"
               options={settingsOptions.dates}
-              onChange={testChange}
+              onChange={handleChange}
               value={dashboardStepsToday}
               tooltip="Do you want to edit today's steps or yesterday's?"
             />

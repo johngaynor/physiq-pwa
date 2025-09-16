@@ -9,6 +9,7 @@ import {
   LOAD_APP_ACCESS,
   EDIT_APP_ACCESS,
   TOGGLE_APP_FAVORITE,
+  EDIT_SETTINGS_DASHBOARD,
 } from "@/app/store/actionTypes";
 import { api } from "@/lib/api";
 import { App, User } from "./types";
@@ -82,5 +83,14 @@ export const toggleAppFavorite = (userId: string, appId: number) => {
     .data({ userId, appId })
     .fetch(() => ({ type: TOGGLE_APP_FAVORITE, appId }))
     .error("Error toggling app favorite")
+    .post();
+};
+
+export const editDashboardSettings = (key: string, value: string | number) => {
+  return api
+    .route("/api/settings/dashboard")
+    .data({ key, value })
+    .fetch(() => ({ type: EDIT_SETTINGS_DASHBOARD, key, value }))
+    .error("Error changing dashboard setting")
     .post();
 };

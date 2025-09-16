@@ -9,6 +9,7 @@ import {
   LOAD_APP_ACCESS,
   EDIT_APP_ACCESS,
   TOGGLE_APP_FAVORITE,
+  EDIT_SETTINGS_DASHBOARD,
 } from "../../store/actionTypes";
 import type { AppState, Action } from "./types";
 
@@ -95,6 +96,20 @@ export default function appReducer(
         user: {
           ...state.user,
           apps: newApps || [],
+        },
+      };
+    }
+    case EDIT_SETTINGS_DASHBOARD: {
+      if (!state.user) return state;
+      const { key, value } = action;
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          settings: {
+            ...state.user.settings,
+            [key]: value,
+          },
         },
       };
     }
