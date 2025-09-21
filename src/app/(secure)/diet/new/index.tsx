@@ -38,7 +38,6 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
   editDietLog,
 }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
     if (!supplements && !supplementsLoading) getSupplements();
@@ -87,7 +86,12 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
       });
   }
 
-  if (dietLogsLoading || supplementsLoading || editDietLogLoading || isSubmitting) {
+  if (
+    dietLogsLoading ||
+    supplementsLoading ||
+    editDietLogLoading ||
+    isSubmitting
+  ) {
     return <DietFormLoadingPage />;
   } else
     return (
