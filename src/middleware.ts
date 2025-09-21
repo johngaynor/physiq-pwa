@@ -1,9 +1,6 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default clerkMiddleware({
-  afterSignInUrl: "https://my.physiq.app",
-  afterSignUpUrl: "https://my.physiq.app",
-});
+export default clerkMiddleware();
 
 export const config = {
   matcher: [

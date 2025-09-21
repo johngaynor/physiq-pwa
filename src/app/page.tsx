@@ -12,8 +12,8 @@ const Main = () => {
   if (isLoaded && !user) {
     const isProduction = process.env.NODE_ENV === "production";
     const signInUrl = isProduction
-      ? "https://accounts.physiq.app/sign-in"
-      : "https://skilled-kid-59.accounts.dev/sign-in";
+      ? "https://accounts.physiq.app/sign-in?redirect_url=https://my.physiq.app/dashboard"
+      : "https://skilled-kid-59.accounts.dev/sign-in?redirect_url=https://my.physiq.app/dashboard";
 
     window.location.href = signInUrl;
     return null;
