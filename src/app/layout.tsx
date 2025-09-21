@@ -8,6 +8,7 @@ import { ThemeProvider } from "./components/Theme";
 import SessionInitializer from "./components/SessionInitializer";
 import PullToRefresh from "./components/PullToRefresh";
 import { Toaster } from "sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,7 +47,10 @@ export default function RootLayout({
               <SessionInitializer />
               <Toaster richColors theme="system" />
               <div className="relative mx-auto">
-                <NavbarWrapper>{children}</NavbarWrapper>
+                <NavbarWrapper>
+                  {children}
+                  <SpeedInsights />
+                </NavbarWrapper>
               </div>
             </ReduxProvider>
           </ThemeProvider>
