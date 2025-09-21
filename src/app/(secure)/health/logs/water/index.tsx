@@ -44,14 +44,14 @@ const WaterLog: React.FC<PropsFromRedux> = ({
 
   if (dailyLogsLoading || editWaterLoading) return <LogsLoadingPage />;
   return (
-    <>
-      <div>
-        <div className="flex flex-col gap-4">
+    <div className="flex w-full gap-4 h-full md:flex-row flex-col">
+      <div className="flex-shrink-0">
+        <div className="flex flex-col gap-4 h-full justify-between">
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-md border shadow-sm"
+            className="rounded-md border shadow-sm flex-grow"
             captionLayout="dropdown"
             dataDates={dailyLogs
               ?.filter((d) => d.water)
@@ -92,7 +92,7 @@ const WaterLog: React.FC<PropsFromRedux> = ({
           showUnit
         />
       </div>
-    </>
+    </div>
   );
 };
 

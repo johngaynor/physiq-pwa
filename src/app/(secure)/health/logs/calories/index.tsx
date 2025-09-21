@@ -47,41 +47,43 @@ const CaloriesLog: React.FC<PropsFromRedux> = ({
   if (dailyLogsLoading || editCaloriesLoading) return <LogsLoadingPage />;
 
   return (
-    <>
-      <div className="flex flex-col gap-4">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          className="rounded-md border shadow-sm"
-          captionLayout="dropdown"
-          dataDates={dailyLogs
-            ?.filter((d) => d.calories)
-            .map((log) => new Date(log.date))}
-        />
-        <CaloriesForm
-          Trigger={
-            <Button variant="outline" className="w-full h-20">
-              {activeLog ? (
-                <H1>{activeLog.calories} cal</H1>
-              ) : (
-                <div className="flex">
-                  <CirclePlus className="size-8 font-extrabold" />
-                  <H3 className="pl-2">Add Calories</H3>
-                </div>
-              )}
-            </Button>
-          }
-          initialValues={{
-            calories: activeLog?.calories || "",
-          }}
-          handleSubmit={(values: { calories: number | string }) =>
-            editDailyCalories(
-              isoDate || DateTime.now().toISODate(),
-              Number(values.calories)
-            )
-          }
-        />
+    <div className="flex w-full gap-4 h-full md:flex-row flex-col">
+      <div className="flex-shrink-0">
+        <div className="flex flex-col gap-4 h-full justify-between">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            className="rounded-md border shadow-sm flex-grow"
+            captionLayout="dropdown"
+            dataDates={dailyLogs
+              ?.filter((d) => d.calories)
+              .map((log) => new Date(log.date))}
+          />
+          <CaloriesForm
+            Trigger={
+              <Button variant="outline" className="w-full h-20">
+                {activeLog ? (
+                  <H1>{activeLog.calories} cal</H1>
+                ) : (
+                  <div className="flex">
+                    <CirclePlus className="size-8 font-extrabold" />
+                    <H3 className="pl-2">Add Calories</H3>
+                  </div>
+                )}
+              </Button>
+            }
+            initialValues={{
+              calories: activeLog?.calories || "",
+            }}
+            handleSubmit={(values: { calories: number | string }) =>
+              editDailyCalories(
+                isoDate || DateTime.now().toISODate(),
+                Number(values.calories)
+              )
+            }
+          />
+        </div>
       </div>
       <div className="w-full md:pb-0 pb-10">
         <ChartLineMultiple
@@ -92,7 +94,7 @@ const CaloriesLog: React.FC<PropsFromRedux> = ({
           rounding={100}
         />
       </div>
-    </>
+    </div>
   );
 };
 
