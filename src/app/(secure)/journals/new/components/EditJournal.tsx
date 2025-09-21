@@ -11,7 +11,9 @@ import { H3 } from "@/components/ui/typography";
 import { RootState } from "@/app/store/reducer";
 import { ConnectedProps, connect } from "react-redux";
 import { upsertJournal } from "../../state/actions";
-import { Save } from "lucide-react";
+import { Save, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface JournalEntry {
   id: string;
@@ -55,6 +57,8 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
   // Store the journal ID in state so it persists for new entries
   const [journalId] = useState(() => entry?.id || crypto.randomUUID());
   const isAdmin = user?.apps.some((app) => app.id === 1);
+
+  const router = useRouter();
 
   // Debounced autosave function
   const autosaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -432,6 +436,14 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
               </CardTitle>
 
               <div className="flex items-center gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancel || onCancel}
+                  type="button"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
                 {isAdmin ? (
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -516,17 +528,13 @@ const JournalEditor: React.FC<PropsFromRedux> = ({
             </div>
 
             <div className="flex gap-2 pt-4">
-              {(handleCancel || onCancel) && (
-                <Button
-                  variant="outline"
-                  onClick={handleCancel || onCancel}
-                  type="button"
-                >
-                  Cancel
-                </Button>
-              )}
               <Button
-                onClick={handleSubmit}
+                onClick={() =>
+                  handleSubmit().then(() => {
+                    toast.success("Journal entry saved!");
+                    router.push("/journals");
+                  })
+                }
                 disabled={!isEditorReady}
                 variant="default"
               >
