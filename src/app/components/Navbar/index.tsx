@@ -1,8 +1,7 @@
 "use client";
-import MobileNav from "./MobileNav";
-import DesktopNav from "./DesktopNav";
+import Mobile from "./Mobile";
 import { useWindowDimensions } from "@/app/customHooks/useWindowDimensions";
-import DesktopNavAuth from "./DesktopNavAuth";
+import Desktop from "./Desktop";
 import { useUser } from "@clerk/nextjs";
 import { Github, Linkedin, FolderCode } from "lucide-react";
 
@@ -18,8 +17,7 @@ export default function NavbarWrapper({
 
   return (
     <div className="min-h-screen flex flex-col">
-      {!isMobile && user && <DesktopNavAuth />}
-      {!isMobile && !user && <DesktopNav />}
+      {!isMobile && user && <Desktop />}
       <div
         className={`flex-1 ${!isMobile && user ? "pt-25" : ""} ${
           isMobile && user ? "pb-30" : "pb-10"
@@ -63,7 +61,7 @@ export default function NavbarWrapper({
           </p>
         </div>
       )}
-      {isMobile && <MobileNav />}
+      {isMobile && <Mobile />}
     </div>
   );
 }
