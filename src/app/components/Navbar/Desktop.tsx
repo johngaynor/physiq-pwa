@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -71,11 +71,6 @@ export default function DesktopNavAuth() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <SignedOut>
-                <SignInButton mode="redirect">
-                  <Button variant="default">Sign In</Button>
-                </SignInButton>
-              </SignedOut>
               <SignedIn>
                 <UserButton
                   appearance={{

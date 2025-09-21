@@ -12,10 +12,9 @@ import {
   Database,
   Sun,
   Moon,
-  CircleUser,
   HeartPlus,
 } from "lucide-react";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
 const NavItems = [
@@ -73,11 +72,6 @@ const MobileNav = ({}) => {
         </NavigationMenuItem>
 
         <NavigationMenuItem className="w-full">
-          <SignedOut>
-            <SignInButton mode="redirect">
-              <CircleUser size={24} className="mx-auto" />
-            </SignInButton>
-          </SignedOut>
           <SignedIn>
             <div className="flex justify-center items-center h-16">
               <UserButton
