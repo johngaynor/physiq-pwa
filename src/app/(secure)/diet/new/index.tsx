@@ -37,6 +37,8 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
   editDietLogLoading,
   editDietLog,
 }) => {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
     if (!supplements && !supplementsLoading) getSupplements();
@@ -64,6 +66,7 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
   const latestLog = sortedLogs[0];
 
   function onSubmit(data: DietLogFormData) {
+    setIsSubmitting(true);
     const formattedLog: DietLog = {
       ...data,
       protein: data.protein,
@@ -76,12 +79,15 @@ const DietLogFormWrapper: React.FC<PropsFromRedux> = ({
         (data.protein || 0) * 4 + (data.carbs || 0) * 4 + (data.fat || 0) * 9,
     };
 
-    editDietLog(formattedLog).then((data) =>
-      router.push(`/diet/log/${data.log.id}`)
-    );
+    editDietLog(formattedLog)
+      .then((data) => router.push(`/diet/log/${data.log.id}`))
+      .catch((error) => {
+        console.error("Error submitting Diet Log:", error);
+        setIsSubmitting(false); // Only reset on error
+      });
   }
 
-  if (dietLogsLoading || supplementsLoading || editDietLogLoading) {
+  if (dietLogsLoading || supplementsLoading || editDietLogLoading || isSubmitting) {
     return <DietFormLoadingPage />;
   } else
     return (

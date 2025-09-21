@@ -31,6 +31,8 @@ const CheckInFormWrapper: React.FC<PropsFromRedux> = ({
   dietLogsLoading,
   getDietLogs,
 }) => {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   React.useEffect(() => {
     if (!dietLogs && !dietLogsLoading) getDietLogs();
   }, [dietLogs, dietLogsLoading, getDietLogs]);
@@ -38,6 +40,7 @@ const CheckInFormWrapper: React.FC<PropsFromRedux> = ({
   const router = useRouter();
 
   function onSubmit(data: CheckInFormData, files?: File[]) {
+    setIsSubmitting(true);
     const formattedCheckIn: CheckIn = {
       ...data,
     };
@@ -48,10 +51,11 @@ const CheckInFormWrapper: React.FC<PropsFromRedux> = ({
       })
       .catch((error) => {
         console.error("Error submitting CheckIn:", error);
+        setIsSubmitting(false); // Only reset on error
       });
   }
 
-  if (editCheckInLoading || dietLogsLoading) {
+  if (editCheckInLoading || dietLogsLoading || isSubmitting) {
     return <CheckInFormLoadingPage />;
   } else return <CheckInForm onSubmit={onSubmit} dietLogs={dietLogs || []} />;
 };

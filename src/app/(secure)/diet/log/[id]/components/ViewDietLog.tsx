@@ -93,6 +93,18 @@ const ViewDietLog: React.FC<
       <Card className="w-full rounded-sm p-0">
         <CardContent className="flex flex-col md:flex-row justify-between grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
           <div>
+            <StatisticsGraph
+              dailyLogs={filteredDailyLogs}
+              title="Weight Changes this Diet Log"
+              unit="lbs"
+              dataKeys={["weight"]}
+              showUnit
+              rounding={2}
+              primaryKey="weight"
+              subtitle="this calorie adjustment"
+            />
+          </div>
+          <div>
             <div className="mb-6 flex justify-between items-center">
               <H3>Diet Change #{log.id}</H3>
               <div>
@@ -132,18 +144,6 @@ const ViewDietLog: React.FC<
               <FieldValue title="Carbs" value={log.carbs + "g"} />
               <FieldValue title="Fat" value={log.fat + "g"} />
             </div>
-          </div>
-          <div>
-            <StatisticsGraph
-              dailyLogs={filteredDailyLogs}
-              title="Weight Changes this Diet Log"
-              unit="lbs"
-              dataKeys={["weight"]}
-              showUnit
-              rounding={2}
-              primaryKey="weight"
-              subtitle="this calorie adjustment"
-            />
           </div>
         </CardContent>
         <CardFooter className="p-0">
