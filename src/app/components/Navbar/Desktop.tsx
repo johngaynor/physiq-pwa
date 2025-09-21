@@ -98,9 +98,9 @@ export default function DesktopNavAuth() {
             navigateToTab("Health")
           )}
           {TabComponent("Diet", path === "Diet", () => navigateToTab("Diet"))}
-          {TabComponent("Training", path === "Training", () =>
+          {/* {TabComponent("Training", path === "Training", () =>
             navigateToTab("Training")
-          )}
+          )} */}
           {TabComponent("Check Ins", path === "Check Ins", () =>
             navigateToTab("Check Ins")
           )}

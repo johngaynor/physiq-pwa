@@ -1065,7 +1065,10 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       marginBottom: "12px",
                     }}
                   >
-                    Diet and Activity (Effective {dietLog?.effectiveDate})
+                    Diet and Activity{" "}
+                    {dietLog?.effectiveDate
+                      ? `(Effective ${dietLog.effectiveDate})`
+                      : "(No Diet)"}
                   </h2>
                   <table
                     style={{
@@ -1254,7 +1257,10 @@ const Html2CanvasModal: React.FC<Html2CanvasModalProps> = ({
                       marginBottom: "12px",
                     }}
                   >
-                    Supplements (Effective {dietLog?.effectiveDate})
+                    Supplements{" "}
+                    {dietLog?.effectiveDate
+                      ? `(Effective ${dietLog.effectiveDate})`
+                      : "(No Supplements)"}
                   </h2>
                   {dietLog?.supplements && dietLog.supplements.length > 0 ? (
                     <table
