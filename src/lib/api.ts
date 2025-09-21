@@ -25,16 +25,28 @@ async function apiCall<T>(
 
     return response.data;
   } catch (err: any) {
-    let errorMessage = "An error occurred while processing your request.";
+    // console.log(err);
+    let errorMessage = "An unknown error occurred.";
 
-    if (err?.response?.status === 403) {
-      // probably app access denied
-      errorMessage = "You are not authorized to access this route.";
-    } else if (err?.response?.data?.error) {
-      errorMessage = err.response.data.error;
+    // Nonexistent routes
+    if (err?.status === 404) {
+      console.log("-- ROUTE NOT FOUND --");
+      errorMessage = err?.response?.data?.message;
     }
 
-    toast.error(errorMessage);
+    // User does not have access
+    if (err?.status === 403) {
+      console.log("-- USER NOT AUTHORIZED --");
+      errorMessage = "You are not authorized to access this route.";
+    }
+
+    // Bad request
+    if (err?.status === 400) {
+      console.log("-- BAD REQUEST --");
+      errorMessage = err?.response?.data?.message;
+    }
+
+    toast.error(`Error: ${errorMessage}`);
     throw err;
   }
 }
