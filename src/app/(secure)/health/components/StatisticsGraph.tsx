@@ -169,13 +169,26 @@ export function StatisticsGraph({
               )}
             </div> */}
             <div className="text-muted-foreground flex items-center gap-2 leading-none">
-              {DateTime.fromISO(
-                startingValue ? startingValue.date : ""
-              ).toFormat("LLL dd")}{" "}
-              -{" "}
-              {DateTime.fromISO(endingValue ? endingValue.date : "").toFormat(
-                "LLL dd"
-              )}
+              {(() => {
+                const startDate = startingValue?.date;
+                const endDate = endingValue?.date;
+
+                // Check if both dates exist and are valid
+                if (!startDate || !endDate) {
+                  return "Insufficient Data";
+                }
+
+                const startDateTime = DateTime.fromISO(startDate);
+                const endDateTime = DateTime.fromISO(endDate);
+
+                if (!startDateTime.isValid || !endDateTime.isValid) {
+                  return "Insufficient Data";
+                }
+
+                return `${startDateTime.toFormat(
+                  "LLL dd"
+                )} - ${endDateTime.toFormat("LLL dd")}`;
+              })()}
             </div>
           </div>
         </div>
