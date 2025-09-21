@@ -7,7 +7,7 @@ const title = "AI";
 export default function Page() {
   return (
     <PageTemplate title={title}>
-      <AppsGrid filter="ai" />
+      <AppsGrid filter="/ai" />
     </PageTemplate>
   );
 }
