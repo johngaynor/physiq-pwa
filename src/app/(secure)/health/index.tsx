@@ -99,7 +99,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   }, [filter, lastCheckIn]);
 
   const filteredLogs = React.useMemo(() => {
-    const startDate = DateTime.now().minus({ days });
+    const startDate = DateTime.now().minus({ days: days + 1 });
     const endDate = DateTime.now();
 
     return sortedLogs?.filter((log) => {
