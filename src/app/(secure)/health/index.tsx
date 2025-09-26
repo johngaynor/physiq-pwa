@@ -122,9 +122,11 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
         return logDate >= today && logDate < tomorrow;
       });
     } else {
-      // For other filters, use the original logic
-      const startDate = DateTime.now().minus({ days: days + 1 });
-      const endDate = DateTime.now();
+      // For other filters, get logs from the last N days
+      const startDate = DateTime.now()
+        .startOf("day")
+        .minus({ days: days - 1 });
+      const endDate = DateTime.now().endOf("day");
 
       return sortedLogs?.filter((log) => {
         const logDate = DateTime.fromISO(log.date);
@@ -210,13 +212,6 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
 
     return reduced;
   })();
-
-  const statsLabel =
-    filter === "today"
-      ? "today"
-      : filter === "lastCheckIn" || filter === "last30"
-      ? `over the last ${days} day${days !== 1 ? "s" : ""}`
-      : "";
 
   function getStatInterpretation(type: string, diff: number, avg: number) {
     switch (type) {
@@ -330,9 +325,9 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
               statistics?.weight.diff || 0,
               statistics?.weight.avg || 0
             )}
-            description={`Weight ${statsLabel}`}
             values={statistics?.weight.values || []}
             onClick={() => router.push("/health/logs/weight")}
+            days={days}
           />
           <StatisticsCard
             title="Bodyfat %"
@@ -344,9 +339,9 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
               statistics?.bodyfat.diff || 0,
               statistics?.bodyfat.avg || 0
             )}
-            description={`Bodyfat % ${statsLabel}`}
             values={statistics?.bodyfat.values || []}
             onClick={() => router.push("/health/logs/bodyfat")}
+            days={days}
           />
           <StatisticsCard
             title="Steps"
@@ -358,9 +353,9 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
               statistics?.steps.diff || 0,
               statistics?.steps.avg || 0
             )}
-            description={`Steps ${statsLabel}`}
             values={statistics?.steps.values || []}
             onClick={() => router.push("/health/logs/steps")}
+            days={days}
           />
           <StatisticsCard
             title="Sleep"
@@ -372,9 +367,9 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
               statistics?.totalSleep.diff || 0,
               statistics?.totalSleep.avg || 0
             )}
-            description={`Sleep ${statsLabel}`}
             values={statistics?.totalSleep.values || []}
             onClick={() => router.push("/health/logs/sleep")}
+            days={days}
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full pt-4">

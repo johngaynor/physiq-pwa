@@ -13,10 +13,10 @@ type StatisticsCardProps = {
   type: "weight" | "bodyfat" | "steps" | "sleep"; // used to determine interpretation logic
   value: number;
   stat: number;
-  description: string;
   interpretation?: "positive" | "negative" | "neutral"; // used to determine whether or not the value is perceived as good or bad
   onClick?: () => void;
   values?: number[]; // array of values used in calculation
+  days: number;
 };
 
 function formatStatistic(type: string, stat: number) {
@@ -64,15 +64,21 @@ function formatSubtitle(value: number) {
   }
 }
 
+function formatDescription(title: string, days: number) {
+  return days === 1
+    ? `${title} today`
+    : `${title} over the last ${days} day${days !== 1 ? "s" : ""}`;
+}
+
 export default function StatisticsCard({
   title,
   type,
   value,
   stat,
-  description,
   interpretation = "neutral",
   onClick,
   values = [],
+  days,
 }: StatisticsCardProps) {
   const tooltipContent = (
     <Card className="p-2">
@@ -143,7 +149,9 @@ export default function StatisticsCard({
               ? "Only 1 entry"
               : formatSubtitle(stat)}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {formatDescription(title, days)}
+          </p>
         </div>
       </CardContent>
     </Card>

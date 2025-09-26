@@ -59,7 +59,7 @@ describe("StatisticsCard", () => {
     type: "weight" as const,
     value: 180.5,
     stat: 2.3,
-    description: "Test description",
+    days: 7,
   };
 
   describe("Weight Type", () => {
@@ -307,6 +307,34 @@ describe("StatisticsCard", () => {
     });
   });
 
+  describe("Description Generation", () => {
+    it('shows "today" for days = 1', () => {
+      render(<StatisticsCard {...defaultProps} title="Weight" days={1} />);
+      expect(screen.getByText("Weight today")).toBeInTheDocument();
+    });
+
+    it('shows "over the last X days" for days > 1', () => {
+      render(<StatisticsCard {...defaultProps} title="Weight" days={7} />);
+      expect(
+        screen.getByText("Weight over the last 7 days")
+      ).toBeInTheDocument();
+    });
+
+    it('shows "over the last X days" for days = 2 (plural)', () => {
+      render(<StatisticsCard {...defaultProps} title="Weight" days={2} />);
+      expect(
+        screen.getByText("Weight over the last 2 days")
+      ).toBeInTheDocument();
+    });
+
+    it('shows "over the last 30 days" for days = 30', () => {
+      render(<StatisticsCard {...defaultProps} title="Steps" days={30} />);
+      expect(
+        screen.getByText("Steps over the last 30 days")
+      ).toBeInTheDocument();
+    });
+  });
+
   describe("Tooltip Functionality", () => {
     it("renders tooltip with values when values array is provided", () => {
       render(<StatisticsCard {...defaultProps} values={[180, 182, 184]} />);
@@ -401,18 +429,14 @@ describe("StatisticsCard", () => {
   });
 
   describe("Content Display", () => {
-    it("displays title, value, and description correctly", () => {
-      render(
-        <StatisticsCard
-          {...defaultProps}
-          title="Weight"
-          description="Your current weight trend"
-        />
-      );
+    it("displays title, value, and generated description correctly", () => {
+      render(<StatisticsCard {...defaultProps} title="Weight" days={7} />);
 
       expect(screen.getByText("Weight")).toBeInTheDocument();
       expect(screen.getByText("180.5 lbs")).toBeInTheDocument();
-      expect(screen.getByText("Your current weight trend")).toBeInTheDocument();
+      expect(
+        screen.getByText("Weight over the last 7 days")
+      ).toBeInTheDocument();
     });
 
     it("renders the component structure correctly", () => {
@@ -434,7 +458,7 @@ describe("StatisticsCard", () => {
           type="weight"
           value={null as any}
           stat={null as any}
-          description="Test"
+          days={5}
         />
       );
 
