@@ -121,6 +121,8 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
     });
   }, [sortedLogs, days]);
 
+  console.log({ filteredLogs });
+
   const statistics = (() => {
     const reduced = filteredLogs?.reduce(
       (acc, val) => {
@@ -210,17 +212,21 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
     switch (type) {
       case "weight":
         if (dietLog && dietLog.phase === "Bulk") {
-          if (diff >= 0) {
+          if (diff > 0) {
             return "positive";
-          } else return "negative";
+          } else if (diff < 0) {
+            return "negative";
+          } else return "neutral";
         } else if (dietLog && dietLog.phase === "Cut") {
-          if (diff <= 0) {
+          if (diff < 0) {
             return "positive";
-          } else return "negative";
+          } else if (diff > 0) {
+            return "negative";
+          } else return "neutral";
         } else return "neutral"; // case for no diet log or phase === "Maintenance"
       case "bodyfat":
         if (dietLog && dietLog.phase === "Bulk") {
-          if (diff > 0) {
+          if (diff >= 0) {
             return "neutral";
           } else return "positive";
         } else if (dietLog && dietLog.phase === "Cut") {
@@ -236,11 +242,15 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
           if (avg < dietLog.steps) {
             if (diff < 0) {
               return "positive";
-            } else return "negative";
+            } else if (diff > 0) {
+              return "negative";
+            } else return "neutral";
           } else {
             if (diff > 0) {
               return "positive";
-            } else return "negative";
+            } else if (diff < 0) {
+              return "negative";
+            } else return "neutral";
           }
         } else if (dietLog && dietLog.phase === "Cut" && dietLog.steps) {
           // if average is at/above target, anything is positive, otherwise increasing is positive, decreasing is negative
