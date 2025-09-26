@@ -7,9 +7,9 @@ import { getCheckIns } from "../checkins/state/actions";
 import StatisticsCard from "./components/StatisticsCard";
 import { StatisticsGraph } from "./components/StatisticsGraph";
 import { DateTime } from "luxon";
-import { convertTime } from "@/app/components/Time";
 import { Button, Skeleton } from "@/components/ui";
 import { useRouter } from "next/navigation";
+import { getLatestDietLog } from "../diet/state/actions";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -17,10 +17,16 @@ function mapStateToProps(state: RootState) {
     dailyLogsLoading: state.health.dailyLogsLoading,
     checkIns: state.checkins.checkIns,
     checkInsLoading: state.checkins.checkInsLoading,
+    dietLog: state.diet.dietLog,
+    dietLogLoading: state.diet.dietLogLoading,
   };
 }
 
-const connector = connect(mapStateToProps, { getDailyLogs, getCheckIns });
+const connector = connect(mapStateToProps, {
+  getDailyLogs,
+  getCheckIns,
+  getLatestDietLog,
+});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 const filterOptions: {
@@ -39,6 +45,9 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   checkIns,
   checkInsLoading,
   getCheckIns,
+  dietLog,
+  dietLogLoading,
+  getLatestDietLog,
 }) => {
   const [filter, setFilter] = React.useState<
     "today" | "lastCheckIn" | "last30"
@@ -50,6 +59,7 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   React.useEffect(() => {
     if (!dailyLogs && !dailyLogsLoading) getDailyLogs();
     if (!checkIns && !checkInsLoading) getCheckIns();
+    if (!dietLogLoading && !dietLog) getLatestDietLog();
   }, [
     dailyLogs,
     dailyLogsLoading,
@@ -57,6 +67,9 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
     checkIns,
     checkInsLoading,
     getCheckIns,
+    dietLog,
+    dietLogLoading,
+    getLatestDietLog,
   ]);
 
   const sortedLogs = React.useMemo(() => {
@@ -193,7 +206,70 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
       ? `over the last ${days} day${days !== 1 ? "s" : ""}`
       : "";
 
-  if (dailyLogsLoading) {
+  function getStatInterpretation(type: string, diff: number, avg: number) {
+    switch (type) {
+      case "weight":
+        if (dietLog && dietLog.phase === "Bulk") {
+          if (diff >= 0) {
+            return "positive";
+          } else return "negative";
+        } else if (dietLog && dietLog.phase === "Cut") {
+          if (diff <= 0) {
+            return "positive";
+          } else return "negative";
+        } else return "neutral"; // case for no diet log or phase === "Maintenance"
+      case "bodyfat":
+        if (dietLog && dietLog.phase === "Bulk") {
+          if (diff > 0) {
+            return "neutral";
+          } else return "positive";
+        } else if (dietLog && dietLog.phase === "Cut") {
+          if (diff < 0) {
+            return "positive";
+          } else if (diff > 0) {
+            return "negative";
+          } else return "neutral";
+        } else return "neutral"; // case for no diet log or phase === "Maintenance"
+      case "steps":
+        if (dietLog && dietLog.phase === "Bulk" && dietLog.steps) {
+          // if average is below target, increasing is positive, otherwise increasing is negative
+          if (avg < dietLog.steps) {
+            if (diff < 0) {
+              return "positive";
+            } else return "negative";
+          } else {
+            if (diff > 0) {
+              return "positive";
+            } else return "negative";
+          }
+        } else if (dietLog && dietLog.phase === "Cut" && dietLog.steps) {
+          // if average is at/above target, anything is positive, otherwise increasing is positive, decreasing is negative
+          if (avg >= dietLog.steps) {
+            return "positive";
+          } else {
+            if (diff > 0) {
+              return "positive";
+            } else return "negative";
+          }
+        } else {
+          if (diff > 0) {
+            return "positive";
+          } else if (diff < 0) {
+            return "negative";
+          } else return "neutral";
+        }
+      case "sleep":
+        if (diff > 0) {
+          return "positive";
+        } else if (diff < 0) {
+          return "negative";
+        } else return "neutral";
+      default:
+        return "neutral";
+    }
+  }
+
+  if (dailyLogsLoading || checkInsLoading || dietLogLoading) {
     return (
       <div className="w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
@@ -226,118 +302,58 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
           <StatisticsCard
             title="Weight"
-            value={
-              statistics?.weight.avg !== 0
-                ? statistics?.weight.avg.toFixed(1) + " lbs"
-                : "--"
-            }
-            stat={
-              Math.abs(statistics?.weight.diff || 0).toFixed(1) + " lbs" || "--"
-            }
-            positive={
-              statistics?.weight.diff && statistics?.weight.diff > 0
-                ? true
-                : statistics?.weight.diff === 0
-                ? undefined
-                : false
-            }
-            subtitle={`${
-              statistics?.weight.diff && statistics?.weight.diff > 0
-                ? "Trending up on"
-                : statistics?.weight.diff === 0
-                ? "This is the"
-                : "Trending down on"
-            } latest entry`}
+            type="weight"
+            value={statistics?.weight.avg || 0}
+            stat={statistics?.weight.diff || 0}
+            interpretation={getStatInterpretation(
+              "weight",
+              statistics?.weight.diff || 0,
+              statistics?.weight.avg || 0
+            )}
             description={`Weight ${statsLabel}`}
             values={statistics?.weight.values || []}
-            unit="lbs"
             onClick={() => router.push("/health/logs/weight")}
           />
           <StatisticsCard
-            title="Body Fat %"
-            value={
-              statistics?.bodyfat.avg !== 0
-                ? statistics?.bodyfat.avg.toFixed(1) + "%"
-                : "--"
-            }
-            stat={
-              Math.abs(statistics?.bodyfat.diff || 0).toFixed(1) + "%" || "--"
-            }
-            positive={
-              statistics?.bodyfat.diff && statistics?.bodyfat.diff > 0
-                ? true
-                : statistics?.bodyfat.diff === 0
-                ? undefined
-                : false
-            }
-            subtitle={`${
-              statistics?.bodyfat.diff && statistics?.bodyfat.diff > 0
-                ? "Trending up on"
-                : statistics?.bodyfat.diff === 0
-                ? "This is the"
-                : "Trending down on"
-            } latest entry`}
+            title="Bodyfat %"
+            type="bodyfat"
+            value={statistics?.bodyfat.avg || 0}
+            stat={statistics?.bodyfat.diff || 0}
+            interpretation={getStatInterpretation(
+              "bodyfat",
+              statistics?.bodyfat.diff || 0,
+              statistics?.bodyfat.avg || 0
+            )}
             description={`Bodyfat % ${statsLabel}`}
             values={statistics?.bodyfat.values || []}
-            unit="%"
             onClick={() => router.push("/health/logs/bodyfat")}
           />
           <StatisticsCard
             title="Steps"
-            value={
-              statistics?.steps.avg !== 0
-                ? statistics?.steps.avg.toFixed(0) + ""
-                : "--"
-            }
-            stat={Math.abs(statistics?.steps.diff || 0).toFixed(0) + "" || "--"}
-            positive={
-              statistics?.steps.diff && statistics?.steps.diff > 0
-                ? true
-                : statistics?.steps.diff === 0
-                ? undefined
-                : false
-            }
-            subtitle={`${
-              statistics?.steps.diff && statistics?.steps.diff > 0
-                ? "Trending up on"
-                : statistics?.steps.diff === 0
-                ? "This is the"
-                : "Trending down on"
-            } latest entry`}
+            type="steps"
+            value={statistics?.steps.avg || 0}
+            stat={statistics?.steps.diff || 0}
+            interpretation={getStatInterpretation(
+              "steps",
+              statistics?.steps.diff || 0,
+              statistics?.steps.avg || 0
+            )}
             description={`Steps ${statsLabel}`}
             values={statistics?.steps.values || []}
-            unit=""
             onClick={() => router.push("/health/logs/steps")}
           />
           <StatisticsCard
             title="Sleep"
-            value={
-              statistics?.totalSleep.avg !== 0
-                ? convertTime(statistics?.totalSleep.avg || 0)
-                : "--"
-            }
-            stat={
-              statistics?.totalSleep.diff !== 0
-                ? convertTime(statistics?.totalSleep.diff || 0)
-                : "--"
-            }
-            positive={
-              statistics?.totalSleep.diff && statistics?.totalSleep.diff > 0
-                ? true
-                : statistics?.totalSleep.diff === 0
-                ? undefined
-                : false
-            }
-            subtitle={`${
-              statistics?.totalSleep.diff && statistics?.totalSleep.diff > 0
-                ? "Trending up on"
-                : statistics?.totalSleep.diff === 0
-                ? "This is the"
-                : "Trending down on"
-            } latest entry`}
+            type="sleep"
+            value={statistics?.totalSleep.avg || 0}
+            stat={statistics?.totalSleep.diff || 0}
+            interpretation={getStatInterpretation(
+              "sleep",
+              statistics?.totalSleep.diff || 0,
+              statistics?.totalSleep.avg || 0
+            )}
             description={`Sleep ${statsLabel}`}
             values={statistics?.totalSleep.values || []}
-            unit="hrs"
             onClick={() => router.push("/health/logs/sleep")}
           />
         </div>
