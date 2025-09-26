@@ -112,16 +112,26 @@ const HealthDashboard: React.FC<PropsFromRedux> = ({
   }, [filter, lastCheckIn]);
 
   const filteredLogs = React.useMemo(() => {
-    const startDate = DateTime.now().minus({ days: days + 1 });
-    const endDate = DateTime.now();
+    if (filter === "today") {
+      // For "today" filter, only include logs from today
+      const today = DateTime.now().startOf("day");
+      const tomorrow = today.plus({ days: 1 });
 
-    return sortedLogs?.filter((log) => {
-      const logDate = DateTime.fromISO(log.date);
-      return logDate >= startDate && logDate <= endDate;
-    });
-  }, [sortedLogs, days]);
+      return sortedLogs?.filter((log) => {
+        const logDate = DateTime.fromISO(log.date);
+        return logDate >= today && logDate < tomorrow;
+      });
+    } else {
+      // For other filters, use the original logic
+      const startDate = DateTime.now().minus({ days: days + 1 });
+      const endDate = DateTime.now();
 
-  console.log({ filteredLogs });
+      return sortedLogs?.filter((log) => {
+        const logDate = DateTime.fromISO(log.date);
+        return logDate >= startDate && logDate <= endDate;
+      });
+    }
+  }, [sortedLogs, days, filter]);
 
   const statistics = (() => {
     const reduced = filteredLogs?.reduce(
