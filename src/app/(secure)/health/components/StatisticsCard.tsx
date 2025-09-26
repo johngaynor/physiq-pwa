@@ -54,7 +54,7 @@ function formatValue(type: string, value: number) {
 }
 
 function formatSubtitle(value: number) {
-  let str = "on the latest entry";
+  const str = "on the latest entry";
   if (value > 0) {
     return `Trending up ${str}`;
   } else if (value < 0) {
